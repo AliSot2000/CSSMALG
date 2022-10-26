@@ -41,6 +41,11 @@ function isEmpty(variable) {
 
 function calculateCoordsX (x, mid, offset, angle) {
     let length = mid - offset;
+
+    if (length === 0) {
+        return x;
+    }
+
     let target = (Math.cos(angle) * length);
 
     if (angle < Math.PI) {
@@ -51,6 +56,10 @@ function calculateCoordsX (x, mid, offset, angle) {
 
 function calculateCoordsY(y, mid, offset, angle) {
     let length = mid - offset;
+
+    if (length === 0) {
+        return y;
+    }
 
     let target = (Math.sin(angle) * length);
 
