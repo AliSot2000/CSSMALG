@@ -130,7 +130,8 @@ class Road {
 
     updatePosition() {
         let children = this._self.find('path.road_asphalt, path.road_border');
-        let path = `M ${this._start_x} ${this._start_y} L ${this._end_x} ${this._end_y}`;
+        let path = this.generatePath(this._start_x, this._start_y, this._end_x, this._end_y);
+
         for (let i = 0; i < children.length; i++) {
             $(children[i]).attr('d', path);
         }
@@ -140,7 +141,7 @@ class Road {
         let mid_lane = this._lane_width / 2;
 
         for (let i = 0; i < children.length; i++) {
-            path = this.generatePath(mid, this._lane_width * (i + 1));
+            path = this.generateOffsetPath(mid, this._lane_width * (i + 1));
             $(children[i]).attr('d', path);
         }
 
@@ -148,21 +149,18 @@ class Road {
         let bike_path = 0;
         for (let i = 0; i < this._lanes.length; i++) {
             if (this._lanes[i].type === 'bike') {
-                path = this.generatePath(mid, this._lane_width * i + mid_lane);
+                path = this.generateOffsetPath(mid, this._lane_width * i + mid_lane);
                 $(children[bike_path++]).attr('d', path);
             }
         }
     }
 
     updateLineTypes() {
-        let path;
         let lane_type;
         let line;
-        let mid = this._lane_width * this._lanes.length / 2;
 
         for (let i = 0; i < this._lines.length; i++) {
             line = this._lines[i].removeClass('car_direction bike_direction bike car');
-            path = this.generatePath(mid, (i * this._lane_width));
 
             lane_type = '';
 
@@ -188,18 +186,20 @@ class Road {
         return this._id;
     }
 
-    generatePath(mid, offset) {
-        // this._start_angle
+    generateOffsetPath(mid, offset) {
         let px = calculateCoordsX(this._start_x, mid, offset, this._start_angle);
         let py = calculateCoordsY(this._start_y, mid, offset, this._start_angle);
 
+        let qx = calculateCoordsX(this._end_x, mid, offset, this._end_angle);
+        let qy = calculateCoordsY(this._end_y, mid, offset, this._end_angle);
+
+        return this.generatePath(px, py, qx, qy);
+    }
+
+    generatePath(px, py, qx, qy) {
         let pa = truncateAngle(this._start_angle);
         let x2 = Math.sin(pa);
         let y2 = Math.cos(pa);
-
-        // this._end_angle
-        let qx = calculateCoordsX(this._end_x, mid, offset, this._end_angle);
-        let qy = calculateCoordsY(this._end_y, mid, offset, this._end_angle);
 
         let qa = truncateAngle(this._end_angle);
         let x1= Math.sin(qa);
@@ -207,15 +207,21 @@ class Road {
 
         let t2 = (qy + px/x1 - qx/x1 - py) / (y2 - x2/x1);
 
-        let mid_x = px + t2 * x2;
-        let mid_y = py + t2 * y2;
+        let mx = px + t2 * x2;
+        let my = py + t2 * y2;
 
-        this._self.append($(svgElement("circle")).attr('cx', mid_x).attr('cy', mid_y).attr('r', 2).attr('fill', 'red'));
+        this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
 
+        return this.generateCurvedPath(px, py, mx, my, qx, qy);
+    }
+
+    generateCurvedPath(px, py, mx, my, qx, qy) {
         let path = 'M ' + px;
-        path += ' ' + py;
-        path += ' L ' + qx;
-        path += ' ' + qy;
+        path += ',' + py;
+        path += ' Q ' + mx;
+        path += ',' + my;
+        path += ' ' + qx;
+        path += ',' + qy;
 
         return path;
     }
