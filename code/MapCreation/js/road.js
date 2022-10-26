@@ -210,10 +210,12 @@ class Road {
         let mid_x = px + t2 * x2;
         let mid_y = py + t2 * y2;
 
-        let path = 'M ' + x1;
-        path += ' ' + y1;
-        path += ' L ' + x2;
-        path += ' ' + y2;
+        this._self.append($(svgElement("circle")).attr('cx', mid_x).attr('cy', mid_y).attr('r', 2).attr('fill', 'red'));
+
+        let path = 'M ' + px;
+        path += ' ' + py;
+        path += ' L ' + qx;
+        path += ' ' + qy;
 
         return path;
     }

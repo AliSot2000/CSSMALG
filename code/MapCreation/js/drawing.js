@@ -3,7 +3,7 @@ var grid;
 
 window.addEventListener('load', function() {
     map = new Map();
-    let road = map.createRoad(50, 50, angle(225), 500, 500, angle(45));
+    let road = map.createRoad(50, 50, angle(270), 500, 500, angle(0));
 
     road.createLane('bike', -1).createLane('car', -1).createLane('car', 1).createLane('bike', 1);
 
