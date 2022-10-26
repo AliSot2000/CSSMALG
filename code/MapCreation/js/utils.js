@@ -68,3 +68,7 @@ function calculateCoordsY(y, mid, offset, angle) {
     }
     return y - target;
 }
+
+function truncateAngle(angle) {
+    return  angle > Math.PI ? angle - Math.PI : angle;
+}

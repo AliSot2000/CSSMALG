@@ -189,13 +189,31 @@ class Road {
     }
 
     generatePath(mid, offset) {
-        let mid_x;
-        let mid_y;
+        // this._start_angle
+        let px = calculateCoordsX(this._start_x, mid, offset, this._start_angle);
+        let py = calculateCoordsY(this._start_y, mid, offset, this._start_angle);
 
-        let path = 'M ' + calculateCoordsX(this._start_x, mid, offset, this._start_angle);
-        path += ' ' + calculateCoordsY(this._start_y, mid, offset, this._start_angle);
-        path += ' L ' + calculateCoordsX(this._end_x, mid, offset, this._end_angle);
-        path += ' ' + calculateCoordsY(this._end_y, mid, offset, this._end_angle);
+        let pa = truncateAngle(this._start_angle);
+        let x2 = Math.sin(pa);
+        let y2 = Math.cos(pa);
+
+        // this._end_angle
+        let qx = calculateCoordsX(this._end_x, mid, offset, this._end_angle);
+        let qy = calculateCoordsY(this._end_y, mid, offset, this._end_angle);
+
+        let qa = truncateAngle(this._end_angle);
+        let x1= Math.sin(qa);
+        let y1 = Math.cos(qa);
+
+        let t2 = (qy + px/x1 - qx/x1 - py) / (y2 - x2/x1);
+
+        let mid_x = px + t2 * x2;
+        let mid_y = py + t2 * y2;
+
+        let path = 'M ' + x1;
+        path += ' ' + y1;
+        path += ' L ' + x2;
+        path += ' ' + y2;
 
         return path;
     }
