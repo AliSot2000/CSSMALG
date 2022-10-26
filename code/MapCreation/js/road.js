@@ -21,7 +21,11 @@ class Road {
     _border = null;
     _asphalt = null;
 
+    _lane_width = 20;
+
     _lanes = null;
+    _lines = [];
+    _bike_lanes = [];
 
     /**
      * Creates a road
@@ -47,11 +51,11 @@ class Road {
         this._end_x = end_x;
         this._end_y = end_y;
         this._end_angle = end_angle;
-        this._lanes = [{type:'bike', direction: -1},{type:'car', direction: -1}, {type:'car', direction: 1}, {type:'bike', direction: 1}];
+        this._lanes = [];
+
 
         this.createElement();
         this.updatePosition();
-        this.updateLanes();
     }
 
     createElement() {
@@ -66,68 +70,84 @@ class Road {
         this._self.append(this._border, this._asphalt);
     }
 
+    createLane(type, direction) {
+        if (this._lanes.length > 0) {
+            let line = $(svgElement("path")).addClass("road_line");
+            this._lines.push(line);
+            this._self.append(line);
+        }
+
+        if (type === 'bike') {
+            let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', this._lane_width);
+            this._bike_lanes.push(lane);
+            this._self.append(lane);
+        }
+
+        this._lanes.push({type: type, direction: direction});
+
+        let count = this._lanes.length;
+        let width = this._lane_width * count;
+
+        this._asphalt.attr('stroke-width', width);
+        this._border.attr('stroke-width', width + 4);
+
+        this.updateLineTypes();
+        this.updatePosition();
+
+        return this;
+    }
+
     updatePosition() {
         let children = this._self.find('path.road_asphalt, path.road_border');
         let path = `M ${this._start_x} ${this._start_y} L ${this._end_x} ${this._end_y}`;
         for (let i = 0; i < children.length; i++) {
             $(children[i]).attr('d', path);
         }
-    }
 
-    updateLanes() {
-        let count = this._lanes.length;
-        let lane_width = 20;
-        let width = lane_width * count;
+        children = this._self.find('path.road_line');
+        let mid = this._lane_width * this._lanes.length / 2;
+        let mid_lane = this._lane_width / 2;
 
-        this._asphalt.attr('stroke-width', width);
-        this._border.attr('stroke-width', width + 4);
+        for (let i = 0; i < children.length; i++) {
+            path = this.generatePath(mid, this._lane_width * (i + 1));
+            $(children[i]).attr('d', path);
+        }
 
-        let mid = width / 2;
-        let mid_lane = lane_width / 2;
-        let line;
-        let path;
-
-        this._self.find('path.road_line, path.bike_path').remove();
-
-        for (let i = 0; i < count; i++) {
+        children = this._self.find('path.bike_path');
+        let bike_path = 0;
+        for (let i = 0; i < this._lanes.length; i++) {
             if (this._lanes[i].type === 'bike') {
-                line = $(svgElement("path")).addClass("bike_path");
-                path = 'M ' + calculateCoordsX(this._start_x, mid, (i * lane_width) + mid_lane, this._start_angle) +
-                       ' ' + calculateCoordsY(this._start_y, mid, (i * lane_width) + mid_lane, this._start_angle) +
-                       ' L ' + calculateCoordsX(this._end_x, mid, (i * lane_width) + mid_lane, this._end_angle) +
-                       ' ' + calculateCoordsY(this._end_y, mid, (i * lane_width) + mid_lane, this._end_angle);
-                line.attr('d', path);
-                line.attr('stroke-width', lane_width);
-                this._self.append(line);
-            }
-
-            if (i >= 1) {
-                path = 'M ' + calculateCoordsX(this._start_x, mid, (i * lane_width), this._start_angle) +
-                    ' ' + calculateCoordsY(this._start_y, mid, (i * lane_width), this._start_angle) +
-                    ' L ' + calculateCoordsX(this._end_x, mid, (i * lane_width), this._end_angle) +
-                    ' ' + calculateCoordsY(this._end_y, mid, (i * lane_width), this._end_angle);
-                line = $(svgElement("path")).attr('d', path);
-
-                let laneType = 'road_line ';
-
-                if (this._lanes[i - 1].type === 'bike' || this._lanes[i].type === 'bike') {
-                    laneType += 'bike';
-                } else {
-                    laneType += 'car';
-                }
-
-                if(this._lanes[i].direction !== this._lanes[i - 1].direction) {
-                    laneType += '_direction';
-                }
-
-                line.addClass(laneType);
-
-                this._self.append(line);
+                path = this.generatePath(mid, this._lane_width * i + mid_lane);
+                $(children[bike_path++]).attr('d', path);
             }
         }
     }
 
+    updateLineTypes() {
+        let path;
+        let lane_type;
+        let line;
+        let mid = this._lane_width * this._lanes.length / 2;
 
+        for (let i = 0; i < this._lines.length; i++) {
+            line = this._lines[i].removeClass('car_direction bike_direction bike car');
+            path = this.generatePath(mid, (i * this._lane_width));
+
+            lane_type = '';
+
+            if (this._lanes[i].type === 'bike' || this._lanes[i + 1].type === 'bike') {
+                lane_type += 'bike';
+            } else {
+                lane_type += 'car';
+            }
+
+            if(this._lanes[i].direction !== this._lanes[i + 1].direction) {
+                lane_type += '_direction';
+            }
+
+            line.addClass(lane_type);
+        }
+    }
 
     getElement() {
         return this._self;
@@ -136,26 +156,16 @@ class Road {
     getId() {
         return this._id;
     }
-}
-function calculateCoordsX (x, mid, offset, angle) {
-    let length = mid - offset;
-    let target = (Math.cos(angle) * length);
 
-    if (angle < Math.PI) {
-        return x - target;
+    generatePath(mid, offset) {
+        let mid_x;
+        let mid_y;
+
+        let path = 'M ' + calculateCoordsX(this._start_x, mid, offset, this._start_angle);
+        path += ' ' + calculateCoordsY(this._start_y, mid, offset, this._start_angle);
+        path += ' L ' + calculateCoordsX(this._end_x, mid, offset, this._end_angle);
+        path += ' ' + calculateCoordsY(this._end_y, mid, offset, this._end_angle);
+
+        return path;
     }
-    return x + target;
-}
-
-function calculateCoordsY(y, mid, offset, angle) {
-    let length = mid - offset;
-
-    let target = (Math.sin(angle) * length);
-
-    if (angle < Math.PI) {
-        return y + target;
-    }
-    return y - target;
-
-
 }
