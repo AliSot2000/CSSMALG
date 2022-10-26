@@ -205,7 +205,26 @@ class Road {
         let x1= Math.sin(qa);
         let y1 = Math.cos(qa);
 
-        let t2 = (qy + px/x1 - qx/x1 - py) / (y2 - x2/x1);
+        if (y1 === 0){
+            // try with x
+            if (x1 === 0) {
+                alert("SCREAM AT ALEX - implement t1")
+                return
+            }
+
+            // Dividing by x1
+            let t2 = (py - pq - px*y1/x1) / (x2*y1/x1 - y2);
+            if (isNaN(t2)){
+                alert("SCREAM AT ALEX - x2*y1/x1 - y2 is NAN")
+                return
+            }
+        } else {
+            let t2 = (px - qx - py*x1/y1) / (y2*x1/y1 - x2);
+            if (isNaN(t2)){
+                alert("SCREAM AT ALEX - y2*x1/y1 - x2 is NAN")
+                return
+            }
+        }
 
         let mx = px + t2 * x2;
         let my = py + t2 * y2;
