@@ -12,8 +12,10 @@ class Road {
 
     _start_x = null;
     _start_y = null;
+    _start_angle = null;
     _end_x = null;
     _end_y = null;
+    _end_angle = null;
 
     _self = null;
     _border = null;
@@ -32,7 +34,7 @@ class Road {
      * @param  {number} end_y The y coordinate of the end of the road
      * @param  {number} end_angle The angle of the end of the road
      */
-    constructor(id = '', start_x = 0, start_y = 0, start_angle = 0, end_x = 0, end_y = 0, end_angle = 0) {
+    constructor(id = '', start_x = 0, start_y = 0, start_angle = 0, end_x = 0, end_y = 0, end_angle = Math.PI) {
         if (isEmpty(id)) { // Check if the id is empty
             throw new Error("Road ID cannot be empty"); // Throw an error
         }
@@ -41,8 +43,10 @@ class Road {
         this._id = id;
         this._start_x = start_x;
         this._start_y = start_y;
+        this._start_angle = start_angle;
         this._end_x = end_x;
         this._end_y = end_y;
+        this._end_angle = end_angle;
         this._lanes = [{type:'bike', direction: -1},{type:'car', direction: -1}, {type:'car', direction: 1}, {type:'bike', direction: 1}];
 
         this.createElement();
@@ -88,14 +92,20 @@ class Road {
         for (let i = 0; i < count; i++) {
             if (this._lanes[i].type === 'bike') {
                 line = $(svgElement("path")).addClass("bike_path");
-                path = `M ${this._start_x - mid  + (i * lane_width) + mid_lane} ${this._start_y} L ${this._end_x - mid + (i * lane_width) + mid_lane} ${this._end_y}`;
+                path = 'M ' + calculateCoordsX(this._start_x, mid, (i * lane_width) + mid_lane, this._start_angle) +
+                       ' ' + calculateCoordsY(this._start_y, mid, (i * lane_width) + mid_lane, this._start_angle) +
+                       ' L ' + calculateCoordsX(this._end_x, mid, (i * lane_width) + mid_lane, this._end_angle) +
+                       ' ' + calculateCoordsY(this._end_y, mid, (i * lane_width) + mid_lane, this._end_angle);
                 line.attr('d', path);
                 line.attr('stroke-width', lane_width);
                 this._self.append(line);
             }
 
             if (i >= 1) {
-                path = `M ${this._start_x - mid + (i * lane_width)} ${this._start_y} L ${this._end_x - mid + (i * lane_width)} ${this._end_y}`;
+                path = 'M ' + calculateCoordsX(this._start_x, mid, (i * lane_width), this._start_angle) +
+                    ' ' + calculateCoordsY(this._start_y, mid, (i * lane_width), this._start_angle) +
+                    ' L ' + calculateCoordsX(this._end_x, mid, (i * lane_width), this._end_angle) +
+                    ' ' + calculateCoordsY(this._end_y, mid, (i * lane_width), this._end_angle);
                 line = $(svgElement("path")).attr('d', path);
 
                 let laneType = 'road_line ';
@@ -117,6 +127,8 @@ class Road {
         }
     }
 
+
+
     getElement() {
         return this._self;
     }
@@ -124,4 +136,26 @@ class Road {
     getId() {
         return this._id;
     }
+}
+function calculateCoordsX (x, mid, offset, angle) {
+    let length = mid - offset;
+    let target = (Math.cos(angle) * length);
+
+    if (angle < Math.PI) {
+        return x - target;
+    }
+    return x + target;
+}
+
+function calculateCoordsY(y, mid, offset, angle) {
+    let length = mid - offset;
+
+    let target = (Math.sin(angle) * length);
+
+    if (angle < Math.PI) {
+        return y + target;
+    }
+    return y - target;
+
+
 }

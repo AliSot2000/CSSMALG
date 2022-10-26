@@ -55,12 +55,14 @@ class Map {
      * @function createRoad
      * @param  {number} start_x The x coordinate of the start of the road
      * @param  {number} start_y The y coordinate of the start of the road
+     * @param  {number} start_angle The angle of the start of the road
      * @param  {number} end_x The x coordinate of the end of the road
      * @param  {number} end_y The y coordinate of the end of the road
+     * @param  {number} end_angle The angle of the end of the road
      * @return {Road} The road object you created
      */
-    createRoad(start_x = 0, start_y= 0, end_x= 0, end_y= 0) {
-        let road = new Road(this.generateId(), start_x, start_y, 0, end_x, end_y, 0);
+    createRoad(start_x = 0, start_y= 0, start_angle = 0, end_x= 0, end_y= 0, end_angle = Math.PI) {
+        let road = new Road(this.generateId(), start_x, start_y, start_angle, end_x, end_y, end_angle);
         this.addRoad(road);
         return road;
     }
