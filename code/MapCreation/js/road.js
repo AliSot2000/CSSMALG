@@ -20,6 +20,8 @@ class Road {
     _self = null;
     _border = null;
     _asphalt = null;
+    _bike_lane_container = null;
+    _lines_container = null;
 
     _lane_width = 20;
 
@@ -67,34 +69,63 @@ class Road {
         this._self.addClass("road");
         this._border = $(svgElement("path")).addClass("road_border");
         this._asphalt = $(svgElement("path")).addClass("road_asphalt");
-        this._self.append(this._border, this._asphalt);
+        this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container");
+        this._lines_container = $(svgElement("g")).addClass("lines_container");
+        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container);
     }
 
     createLane(type, direction) {
         if (this._lanes.length > 0) {
             let line = $(svgElement("path")).addClass("road_line");
             this._lines.push(line);
-            this._self.append(line);
+            this._lines_container.append(line);
         }
 
         if (type === 'bike') {
             let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', this._lane_width);
             this._bike_lanes.push(lane);
-            this._self.append(lane);
+            this._bike_lane_container.append(lane);
         }
 
         this._lanes.push({type: type, direction: direction});
 
+        this.updateLineTypes();
+        this.updatePosition();
+        this.updateRoadWidth();
+
+        return this;
+    }
+
+    deleteLane(index) {
+        if (index < 0 || index >= this._lanes.length) {
+            return this;
+        }
+
+        let isBikeLane = this._lanes[index].type === 'bike';
+
+        if (this._lanes.length > 0) {
+            $(this._lines[0]).remove();
+            this._lines.splice(0, 1);
+        }
+
+        if (isBikeLane) {
+            $(this._bike_lanes[0]).remove();
+            this._bike_lanes.splice(0, 1);
+        }
+
+        this._lanes.splice(index, 1);
+
+        this.updatePosition();
+        this.updateLineTypes();
+        this.updateRoadWidth();
+    }
+
+    updateRoadWidth() {
         let count = this._lanes.length;
         let width = this._lane_width * count;
 
         this._asphalt.attr('stroke-width', width);
         this._border.attr('stroke-width', width + 4);
-
-        this.updateLineTypes();
-        this.updatePosition();
-
-        return this;
     }
 
     updatePosition() {
