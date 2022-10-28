@@ -130,7 +130,7 @@ class Road {
 
     updatePosition() {
         let children = this._self.find('path.road_asphalt, path.road_border');
-        let path = this.generatePath(this._start_x, this._start_y, this._end_x, this._end_y);
+        let path = this.calculateMidPoint(this._start_x, this._start_y, this._end_x, this._end_y);
 
         for (let i = 0; i < children.length; i++) {
             $(children[i]).attr('d', path);
@@ -141,7 +141,7 @@ class Road {
         let mid_lane = this._lane_width / 2;
 
         for (let i = 0; i < children.length; i++) {
-            path = this.generateOffsetPath(mid, this._lane_width * (i + 1));
+            path = this.calculateOffsetPath(mid, this._lane_width * (i + 1));
             $(children[i]).attr('d', path);
         }
 
@@ -149,7 +149,7 @@ class Road {
         let bike_path = 0;
         for (let i = 0; i < this._lanes.length; i++) {
             if (this._lanes[i].type === 'bike') {
-                path = this.generateOffsetPath(mid, this._lane_width * i + mid_lane);
+                path = this.calculateOffsetPath(mid, this._lane_width * i + mid_lane);
                 $(children[bike_path++]).attr('d', path);
             }
         }
@@ -186,52 +186,47 @@ class Road {
         return this._id;
     }
 
-    generateOffsetPath(mid, offset) {
+    calculateOffsetPath(mid, offset) {
         let px = calculateCoordsX(this._start_x, mid, offset, this._start_angle);
         let py = calculateCoordsY(this._start_y, mid, offset, this._start_angle);
 
         let qx = calculateCoordsX(this._end_x, mid, offset, this._end_angle);
         let qy = calculateCoordsY(this._end_y, mid, offset, this._end_angle);
 
-        return this.generatePath(px, py, qx, qy);
+        return this.calculateMidPoint(px, py, qx, qy);
     }
 
-    generatePath(px, py, qx, qy) {
+    calculateMidPoint(px, py, qx, qy) {
         let pa = truncateAngle(this._start_angle);
-        let x2 = Math.sin(pa);
-        let y2 = Math.cos(pa);
+        let dpx = Math.cos(pa);
+        let dpy = Math.sin(pa);
 
         let qa = truncateAngle(this._end_angle);
-        let x1= Math.sin(qa);
-        let y1 = Math.cos(qa);
+        let dqx = Math.cos(qa);
+        let dqy = Math.sin(qa);
 
-        if (y1 === 0){
-            // try with x
-            if (x1 === 0) {
-                alert("SCREAM AT ALEX - implement t1")
-                return
-            }
+        let intersection_x;
+        let intersection_y;
 
-            // Dividing by x1
-            let t2 = (py - pq - px*y1/x1) / (x2*y1/x1 - y2);
-            if (isNaN(t2)){
-                alert("SCREAM AT ALEX - x2*y1/x1 - y2 is NAN")
-                return
+        if (dpy !== 0) {
+            if (dqy !== 0) {
+                let pm = dpx / dpy;
+                let qm = dqx / dqy;
+
+                intersection_x = (-pm * px - py + qm * qx + qy) / (qm - pm);
+                intersection_y = -pm * (intersection_x - px) - py;
+            } else {
+                intersection_x = qx;
+                intersection_y = -dpx * (intersection_x - px) - py;
             }
         } else {
-            let t2 = (px - qx - py*x1/y1) / (y2*x1/y1 - x2);
-            if (isNaN(t2)){
-                alert("SCREAM AT ALEX - y2*x1/y1 - x2 is NAN")
-                return
-            }
+            intersection_x = px;
+            intersection_y = -dqx * (intersection_x - qx) - qy;
         }
 
-        let mx = px + t2 * x2;
-        let my = py + t2 * y2;
+        this._self.append($(svgElement("circle")).attr('cx', intersection_x).attr('cy', intersection_y).attr('r', 2).attr('fill', 'red'));
 
-        this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
-
-        return this.generateCurvedPath(px, py, mx, my, qx, qy);
+        return this.generateCurvedPath(px, py, intersection_x, intersection_y, qx, qy);
     }
 
     generateCurvedPath(px, py, mx, my, qx, qy) {
