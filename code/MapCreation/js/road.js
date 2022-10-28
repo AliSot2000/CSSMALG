@@ -130,7 +130,7 @@ class Road {
 
     updatePosition() {
         let children = this._self.find('path.road_asphalt, path.road_border');
-        let path = this.generatePath(this._start_x, this._start_y, this._end_x, this._end_y);
+        let path = this.calculateMidPoint(this._start_x, this._start_y, this._end_x, this._end_y);
 
         for (let i = 0; i < children.length; i++) {
             $(children[i]).attr('d', path);
@@ -141,7 +141,7 @@ class Road {
         let mid_lane = this._lane_width / 2;
 
         for (let i = 0; i < children.length; i++) {
-            path = this.generateOffsetPath(mid, this._lane_width * (i + 1));
+            path = this.calculateOffsetPath(mid, this._lane_width * (i + 1));
             $(children[i]).attr('d', path);
         }
 
@@ -149,7 +149,7 @@ class Road {
         let bike_path = 0;
         for (let i = 0; i < this._lanes.length; i++) {
             if (this._lanes[i].type === 'bike') {
-                path = this.generateOffsetPath(mid, this._lane_width * i + mid_lane);
+                path = this.calculateOffsetPath(mid, this._lane_width * i + mid_lane);
                 $(children[bike_path++]).attr('d', path);
             }
         }
@@ -186,17 +186,17 @@ class Road {
         return this._id;
     }
 
-    generateOffsetPath(mid, offset) {
+    calculateOffsetPath(mid, offset) {
         let px = calculateCoordsX(this._start_x, mid, offset, this._start_angle);
         let py = calculateCoordsY(this._start_y, mid, offset, this._start_angle);
 
         let qx = calculateCoordsX(this._end_x, mid, offset, this._end_angle);
         let qy = calculateCoordsY(this._end_y, mid, offset, this._end_angle);
 
-        return this.generatePath(px, py, qx, qy);
+        return this.calculateMidPoint(px, py, qx, qy);
     }
 
-    generatePath(px, py, qx, qy) {
+    calculateMidPoint(px, py, qx, qy) {
         let pa = truncateAngle(this._start_angle);
         let x2 = Math.sin(pa);
         let y2 = Math.cos(pa);
@@ -229,7 +229,6 @@ class Road {
                 return
             }
         }
-        console.log(t2);
 
         let mx = px + t2 * x2;
         let my = py + t2 * y2;
