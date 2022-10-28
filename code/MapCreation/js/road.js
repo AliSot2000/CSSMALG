@@ -200,12 +200,16 @@ class Road {
         let pa = truncateAngle(this._start_angle);
         let x2 = Math.sin(pa);
         let y2 = Math.cos(pa);
+        console.log(`pa: ${pa}, x2: ${x2}, y2: ${y2}`)
 
         let qa = truncateAngle(this._end_angle);
         let x1= Math.sin(qa);
         let y1 = Math.cos(qa);
+        console.log(`qa: ${qa}, x1: ${x1}, y1: ${y1}`)
 
-        if (y1 === 0){
+        let t2;
+
+        if (Math.abs(y1) < 0.0000001){
             // try with x
             if (x1 === 0) {
                 alert("SCREAM AT ALEX - implement t1")
@@ -213,23 +217,24 @@ class Road {
             }
 
             // Dividing by x1
-            let t2 = (py - pq - px*y1/x1) / (x2*y1/x1 - y2);
+            t2 = (qx - px - px*y1/x1) / (y1*x2/y2 - x1);
             if (isNaN(t2)){
                 alert("SCREAM AT ALEX - x2*y1/x1 - y2 is NAN")
                 return
             }
         } else {
-            let t2 = (px - qx - py*x1/y1) / (y2*x1/y1 - x2);
+            t2 = (px - qx - py*x1/y1) / (y2*x1/y1 - x2);
             if (isNaN(t2)){
                 alert("SCREAM AT ALEX - y2*x1/y1 - x2 is NAN")
                 return
             }
         }
+        console.log(t2);
 
         let mx = px + t2 * x2;
         let my = py + t2 * y2;
 
-        this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
+        // this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
 
         return this.generateCurvedPath(px, py, mx, my, qx, qy);
     }

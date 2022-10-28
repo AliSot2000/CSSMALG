@@ -48,9 +48,6 @@ function calculateCoordsX (x, mid, offset, angle) {
 
     let target = (Math.cos(angle) * length);
 
-    if (angle < Math.PI) {
-        return x - target;
-    }
     return x + target;
 }
 
@@ -63,10 +60,7 @@ function calculateCoordsY(y, mid, offset, angle) {
 
     let target = (Math.sin(angle) * length);
 
-    if (angle < Math.PI) {
-        return y + target;
-    }
-    return y - target;
+    return y + target;
 }
 
 function truncateAngle(angle) {
