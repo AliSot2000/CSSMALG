@@ -218,12 +218,22 @@ class Road {
                 alert("SCREAM AT ALEX - x2*y1/x1 - y2 is NAN")
                 return
             }
+
+            let t1 = (px + t2*x2)/x1;
         } else {
             let t2 = (px - qx - py*x1/y1) / (y2*x1/y1 - x2);
+            let t1 = (py + t2*y2)/y1;
             if (isNaN(t2)){
                 alert("SCREAM AT ALEX - y2*x1/y1 - x2 is NAN")
                 return
             }
+        }
+
+        if (t1 < 0) {
+            alert("t1 < 0")
+        }
+        if (t2 < 0){
+            alert("t2 < 0")
         }
 
         let mx = px + t2 * x2;
