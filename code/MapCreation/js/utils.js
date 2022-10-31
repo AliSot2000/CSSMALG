@@ -60,9 +60,16 @@ function calculateCoordsY(y, mid, offset, angle) {
 
     let target = (Math.sin(angle) * length);
 
-    return y + target;
+    return y - target;
 }
 
-function truncateAngle(angle) {
-    return  angle > Math.PI ? angle - Math.PI : angle;
+function truncateAngle(angle, truncate = Math.PI) {
+    while (angle > truncate) {
+        angle -= Math.PI;
+    }
+    return angle;
+}
+
+function approxEqual(a, b, epsilon = 0.00001) {
+    return Math.abs(a - b) < epsilon;
 }
