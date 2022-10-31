@@ -73,3 +73,15 @@ function truncateAngle(angle, truncate = Math.PI) {
 function approxEqual(a, b, epsilon = 0.00001) {
     return Math.abs(a - b) < epsilon;
 }
+
+function radToDeg(rad) {
+    return rad * (180 / Math.PI);
+}
+
+function degToRad(deg) {
+    return deg * (Math.PI / 180);
+}
+
+function distance(px, py, qx, qy) {
+    return Math.sqrt(Math.pow(px - qx, 2) + Math.pow(py - qy, 2));
+}

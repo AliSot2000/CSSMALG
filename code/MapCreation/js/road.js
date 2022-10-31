@@ -210,28 +210,39 @@ class Road {
         let pa = truncateAngle(this._start_angle, 2 * Math.PI);
         let qa = truncateAngle(this._end_angle, 2 * Math.PI);
 
-        if (approxEqual(pa, qa)) {
+        /*if (approxEqual(pa, qa)) {
             return this.calculateHalfCirclePath(px, py, qx, qy);
         }
 
         if (approxEqual(truncateAngle(pa), truncateAngle(qa))) {
             return this.calculateMidPath(px, py, qx, qy);
+        }*/
+
+        let intersection = this.calculateIntersectionPoint(px, py, qx, qy);
+
+        let pi = distance(px, py, intersection.x, intersection.y);
+        let qi = distance(qx, qy, intersection.x, intersection.y);
+        let pq = distance(px, py, qx, qy);
+
+        let p_bound = Math.abs(Math.acos((Math.pow(pi, 2) + Math.pow(pq, 2) - Math.pow(qi, 2)) / (2 * pi * pq)));
+        let q_bound = Math.abs(Math.acos((Math.pow(qi, 2) + Math.pow(pq, 2) - Math.pow(pi, 2)) / (2 * qi * pq)));
+
+        if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2) {
+            let c = this.calculateCubicPoints(px, py, qx, qy);
+            return this.generateCubicBezierPath(px, py, c.pm.x, c.pm.y, c.qm.x, c.qm.y, qx, qy);
         }
 
-        return this.calculateIntersectedPath(px, py, qx, qy);
+        return this.generateQuadraticBezierPath(px, py, intersection.x, intersection.y, qx, qy);
     }
 
     calculateHalfCirclePath(px, py, qx, qy) {
         let radius = Math.sqrt(Math.pow(px - qx, 2) + Math.pow(py - qy, 2)) / 2;
-        let angle = Math.atan2(qy - py, qx - px) + Math.PI / 2;
-        let cx = px + radius * Math.cos(angle);
-        let cy = py + radius * Math.sin(angle);
 
         return "M " + px + " " + py + " A " + radius + " " + radius + " 0 0 0 " + qx + " " + qy;
     }
 
-    calculateMidPath(px, py, qx, qy) {
-        let offset = Math.sqrt(Math.pow(px - qx, 2) + Math.pow(py - qy, 2)) / 2;
+    calculateCubicPoints(px, py, qx, qy) {
+        let offset = distance(px, py, qx, qy) / 2;
 
         let pmx = px - Math.sin(this._start_angle) * offset;
         let pmy = py - Math.cos(this._start_angle) * offset;
@@ -239,53 +250,59 @@ class Road {
         let qmx = qx - Math.sin(this._end_angle) * offset;
         let qmy = qy - Math.cos(this._end_angle) * offset;
 
-        return this.generateCubicBezierPath(px, py, pmx, pmy, qmx, qmy, qx, qy);
+        return {pm: {x: pmx, y: pmy}, qm: {x: qmx, y: qmy}};
+
+        // return this.generateCubicBezierPath(px, py, pmx, pmy, qmx, qmy, qx, qy);
     }
 
-    calculateIntersectedPath(px, py, qx, qy) {
-        let pa = truncateAngle(this._start_angle);
+    calculateIntersectionPoint(px, py, qx, qy) {
+        let pa = this._start_angle;// truncateAngle(this._start_angle);
         let x2 = Math.sin(pa);
         let y2 = Math.cos(pa);
 
-        let qa = truncateAngle(this._end_angle);
-        let x1= Math.sin(qa);
+        let qa = this._end_angle;// truncateAngle(this._end_angle);
+        let x1 = Math.sin(qa);
         let y1 = Math.cos(qa);
 
-        let t2;
         let mx;
         let my;
 
-        if (approxEqual(y1, 0)) {
-            // try with x
-            if (x1 === 0) {
+        if (approxEqual(y1, 0)){
+            if (approxEqual(x1, 0)) {
                 // This error is Alex's responsibility
                 throw new Error("Error Calculating MidPoints - implement t1");
             }
 
-            // Dividing by x1
-            t2 = (qx - px - px*y1/x1) / (y1*x2/y2 - x1);
+            let t2 = (py - qy - px*y1/x1) / (x2*y1/x1 - y2);
 
             if (isNaN(t2)){
                 // This error is Alex's responsibility
                 throw new Error("Error Calculating MidPoints - x2*y1/x1 - y2 is NAN");
             }
 
-            mx = qx + t2 * x1;
-            my = qy + t2 * y1;
-        } else {
-            t2 = (px - qx - py*x1/y1) / (y2*x1/y1 - x2);
-            if (isNaN(t2)){
-                // This error is Alex's responsibility
-                throw new Error("Error Calculating MidPoints - y2*x1/y1 - x2 is NAN");
-            }
-
             mx = px + t2 * x2;
             my = py + t2 * y2;
+        } else {
+            if (approxEqual(x2, 0)) {
+                // This error is Alex's responsibility
+                throw new Error("Error Calculating MidPoints - implement t1");
+            }
+
+            let t1 = (qy - py - qx*y2/x2) / (x1*y2/x2 - y1);
+
+            if (isNaN(t1)){
+                // This error is Alex's responsibility
+                throw new Error("Error Calculating MidPoints - x1*y2/x2 - y1 is NAN");
+            }
+
+            mx = qx + t1 * x1;
+            my = qy + t1 * y1;
         }
 
+        // Debug Circles
         // this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
 
-        return this.generateQuadraticBezierPath(px, py, mx, my, qx, qy);
+        return {x: mx, y: my};
     }
 
     generateQuadraticBezierPath(px, py, mx, my, qx, qy) {
