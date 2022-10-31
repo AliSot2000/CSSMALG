@@ -207,8 +207,8 @@ class Road {
             qy = calculateCoordsY(this._end_y, -mid, -offset, this._end_angle);
         }
 
-        let pa = truncateAngle(this._start_angle, 2 * Math.PI);
-        let qa = truncateAngle(this._end_angle, 2 * Math.PI);
+        let pa = truncateAngle(this._start_angle);
+        let qa = truncateAngle(this._end_angle);
 
         /*if (approxEqual(pa, qa)) {
             return this.calculateHalfCirclePath(px, py, qx, qy);
@@ -227,7 +227,7 @@ class Road {
         let p_bound = Math.abs(Math.acos((Math.pow(pi, 2) + Math.pow(pq, 2) - Math.pow(qi, 2)) / (2 * pi * pq)));
         let q_bound = Math.abs(Math.acos((Math.pow(qi, 2) + Math.pow(pq, 2) - Math.pow(pi, 2)) / (2 * qi * pq)));
 
-        if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2) {
+        if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2 || approxEqual(pa, qa)) {
             let c = this.calculateCubicPoints(px, py, qx, qy);
             return this.generateCubicBezierPath(px, py, c.pm.x, c.pm.y, c.qm.x, c.qm.y, qx, qy);
         }
