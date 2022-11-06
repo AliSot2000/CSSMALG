@@ -1,9 +1,12 @@
 /**
  * Map Class
  * @class Map
+ *
+ * @param {string} selector The selector of the element you would like to be the map
  */
 class Map {
     _self = null;
+    _road_wrapper = null;
     _roads = null;
     _intersections = null;
     _grid = null;
@@ -11,18 +14,32 @@ class Map {
     /**
      * Creates a Map
      * @constructor
+     * @param {string} selector The selector of the element you would like to be the map
      */
-    constructor() {
+    constructor(selector = 'div.drawing_area') {
         // Initialize Private Values
-        this._self = $(svgElement("svg")); // Create the SVG element
+        this._self = $(selector);
+        this._self.data('map', this);
+        this._road_wrapper = $(svgElement("svg")); // Create the SVG element
         this._roads = {}; // Create the roads object
         this._intersections = {}; // Create the intersections object
         this._grid = new Grid(50); // Create the grid object
 
-        $('div.drawing_area').append(this._self); // Add the SVG element to the DOM
+        // Add elements to the map
+        this._self.append(this._road_wrapper, '<div class="grabpoints"></div>', this._grid.getGrid()); // Add the SVG element to the DOM
+
+        // Make the grabpoints element draggable
+        $('div.grabpoints').on('mousedown', '.grabbable', function(event) {
+            event.preventDefault(); // Prevent the default action
+            let target = $(event.target); // Get the target element
+            let road = target.data('road'); // Get the road object
+            target.addClass('grabbed'); // Add the grabbed class to the target
+            $(document.body).addClass('grabbing'); // Change the cursor to grabbing
+            road.startDrag(target.data('type')); // Start dragging the road
+        });
 
         // Set the SVG element's attributes
-        this._self.addClass("roads");
+        this._road_wrapper.addClass("roads");
     }
 
     /**
@@ -46,7 +63,7 @@ class Map {
      */
     addRoad(road) {
         this._roads[road.getId()] = road;
-        this._self.append(road.getElement());
+        this._road_wrapper.append(road.getElement());
         return this;
     }
 

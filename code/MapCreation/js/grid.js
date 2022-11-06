@@ -16,8 +16,6 @@ class Grid {
         // Initialize Private Values
         this._self = $(svgElement("svg")); // Create the SVG element
 
-        $('div.drawing_area').append(this._self); // Add the SVG element to the DOM
-
         // Set the SVG element's attributes
         this._self.addClass("grid_container");
 
@@ -98,5 +96,13 @@ class Grid {
         }
 
         return this;
+    }
+
+    /**
+     * Gets the grid element
+     * @returns {jQuery} The grid element
+     */
+    getGrid() {
+        return this._self;
     }
 }

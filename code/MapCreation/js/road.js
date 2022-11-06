@@ -10,6 +10,7 @@
 class Road {
     _id = null;
 
+    // Positions and Angles
     _start_x = null;
     _start_y = null;
     _start_angle = null;
@@ -17,14 +18,20 @@ class Road {
     _end_y = null;
     _end_angle = null;
 
+    // jQuery Elements
     _self = null;
     _border = null;
     _asphalt = null;
     _bike_lane_container = null;
     _lines_container = null;
+    _start_grabbable = null;
+    _start_angle_grabbable = null;
+    _end_grabbable = null;
+    _end_angle_grabbable = null;
 
     _lane_width = 20;
 
+    // Stored Values
     _lanes = null;
     _lines = [];
     _bike_lanes = [];
@@ -55,15 +62,17 @@ class Road {
         this._end_angle = end_angle;
         this._lanes = [];
 
-
-        this.createElement();
-        this.updatePosition();
+        this.createElement().updatePosition().updateGrabPoints(); // Create the SVG elements, update the position, and update the grab points position
     }
 
+    /**
+     * Creates the SVG elements for the road
+     * @returns {Road} Self reference for chaining
+     */
     createElement() {
         // Create the SVG element
         this._self = $(svgElement("g"));
-        this._self.attr("id", this._id);
+        this._self.attr("id", this._id).data("road", this);
 
         // Set the SVG element's attributes
         this._self.addClass("road");
@@ -72,64 +81,94 @@ class Road {
         this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container");
         this._lines_container = $(svgElement("g")).addClass("lines_container");
         this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container);
-    }
 
-    createLane(type, direction) {
-        if (this._lanes.length > 0) {
-            let line = $(svgElement("path")).addClass("road_line");
-            this._lines.push(line);
-            this._lines_container.append(line);
-        }
+        // Create the grab points
+        this._start_grabbable = $('<div class="grabbable"></div>').data('road', this).data('type', 'start');
+        this._end_grabbable = $('<div class="grabbable"></div>').data('road', this).data('type', 'end');
+        this._start_angle_grabbable = $('<div class="grabbable angle"></div>').data('road', this).data('type', 'start_angle');
+        this._end_angle_grabbable = $('<div class="grabbable angle"></div>').data('road', this).data('type', 'end_angle');
 
-        if (type === 'bike') {
-            let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', this._lane_width);
-            this._bike_lanes.push(lane);
-            this._bike_lane_container.append(lane);
-        }
-
-        this._lanes.push({type: type, direction: direction});
-
-        this.updateLineTypes();
-        this.updatePosition();
-        this.updateRoadWidth();
+        $('div.grabpoints').append(this._start_grabbable, this._end_grabbable, this._start_angle_grabbable, this._end_angle_grabbable);
 
         return this;
     }
 
+    /**
+     * Adds a lane to the road
+     * @param {string} type The type of lane to add
+     * @param {number} direction The direction of the lane
+     * @returns {Road} Self reference for chaining
+     */
+    createLane(type, direction) {
+        if (this._lanes.length > 0) { // Check if there are any lanes
+            let line = $(svgElement("path")).addClass("road_line"); // Create the line
+            this._lines.push(line); // Add the line to the lines array
+            this._lines_container.append(line); // Append the line to the lines container
+        }
+
+        if (type === 'bike') { // Check if the lane is a bike lane
+            let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', this._lane_width); // Create the bike lane
+            this._bike_lanes.push(lane); // Add the bike lane to the bike lanes array
+            this._bike_lane_container.append(lane); // Append the bike lane to the bike lane container
+        }
+
+        this._lanes.push({type: type, direction: direction}); // Add the lane to the lanes array
+
+        this.updateRoadWidth().updateLineTypes().updatePosition(); // Update the road width, update the line types, and update the position
+
+        return this;
+    }
+
+    /**
+     * Deletes a lane from the road
+     * @param {number} index The index of the lane to delete
+     * @returns {Road} Self reference for chaining
+     */
     deleteLane(index) {
-        if (index < 0 || index >= this._lanes.length) {
-            return this;
+        if (index < 0 || index >= this._lanes.length) { // Check if the index is out of bounds
+            throw new Error("Index out of bounds"); // Throw an error
         }
 
-        let isBikeLane = this._lanes[index].type === 'bike';
+        let isBikeLane = this._lanes[index].type === 'bike'; // Check if the lane is a bike lane
 
-        if (this._lanes.length > 0) {
-            $(this._lines[0]).remove();
-            this._lines.splice(0, 1);
+        if (this._lanes.length > 0) { // Check if there are any lanes
+            $(this._lines[0]).remove(); // Remove the line
+            this._lines.splice(0, 1); // Remove the line from the lines array
         }
 
-        if (isBikeLane) {
-            $(this._bike_lanes[0]).remove();
-            this._bike_lanes.splice(0, 1);
+        if (isBikeLane) { // Check if the lane is a bike lane
+            $(this._bike_lanes[0]).remove(); // Remove the bike lane
+            this._bike_lanes.splice(0, 1); // Remove the bike lane from the bike lanes array
         }
 
-        this._lanes.splice(index, 1);
+        this._lanes.splice(index, 1); // Remove the lane from the lanes array
 
-        this.updatePosition();
-        this.updateLineTypes();
-        this.updateRoadWidth();
+        this.updateRoadWidth().updateLineTypes().updatePosition(); // Update the road width, update the line types, and update the position
+
+        return this;
     }
 
+    /**
+     * Updates the road width
+     * @returns {Road} Self reference for chaining
+     */
     updateRoadWidth() {
-        let count = this._lanes.length;
-        let width = this._lane_width * count;
+        let count = this._lanes.length; // Get the number of lanes
+        let width = this._lane_width * count; // Calculate the width of the road
 
-        this._asphalt.attr('stroke-width', width);
-        this._border.attr('stroke-width', width + 4);
+        this._asphalt.attr('stroke-width', width); // Set the width of the asphalt
+        this._border.attr('stroke-width', width + 4); // Set the width of the border
+
+        return this;
     }
 
+    /**
+     * Updates the position of the road
+     * @returns {Road} Self reference for chaining
+     */
     updatePosition() {
-        let children = this._self.find('path.road_asphalt, path.road_border');
+        // TODO: Make all paths update to the same type of path
+        let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
         let path = this.calculateOffsetPath();
 
         for (let i = 0; i < children.length; i++) {
@@ -153,6 +192,32 @@ class Road {
                 $(children[bike_path++]).attr('d', path);
             }
         }
+
+        return this;
+    }
+
+    updateGrabPoints() {
+        this._start_grabbable.css({
+            left: this._start_x,
+            top: this._start_y
+        });
+
+        this._end_grabbable.css({
+            left: this._end_x,
+            top: this._end_y
+        });
+
+        let start_angle = this._start_angle + Math.PI / 2;
+        this._start_angle_grabbable.css({
+            left: calculateOffsetCosCoords(this._start_x, 0, 20, start_angle),
+            top: calculateOffsetSinCoords(this._start_y, 0, 20, start_angle)
+        });
+
+        let end_angle = this._end_angle + Math.PI / 2;
+        this._end_angle_grabbable.css({
+            left: calculateOffsetCosCoords(this._end_x, 0, 20, end_angle),
+            top: calculateOffsetSinCoords(this._end_y, 0, 20, end_angle)
+        });
     }
 
     updateLineTypes() {
@@ -176,6 +241,8 @@ class Road {
 
             line.addClass(lane_type);
         }
+
+        return this;
     }
 
     getElement() {
@@ -200,11 +267,11 @@ class Road {
             qx = this._end_x;
             qy = this._end_y;
         } else {
-            px = calculateCoordsX(this._start_x, mid, offset, this._start_angle);
-            py = calculateCoordsY(this._start_y, mid, offset, this._start_angle);
+            px = calculateOffsetCosCoords(this._start_x, mid, offset, this._start_angle);
+            py = calculateOffsetSinCoords(this._start_y, mid, offset, this._start_angle);
 
-            qx = calculateCoordsX(this._end_x, -mid, -offset, this._end_angle);
-            qy = calculateCoordsY(this._end_y, -mid, -offset, this._end_angle);
+            qx = calculateOffsetCosCoords(this._end_x, -mid, -offset, this._end_angle);
+            qy = calculateOffsetSinCoords(this._end_y, -mid, -offset, this._end_angle);
         }
 
         let pa = truncateAngle(this._start_angle);
@@ -327,5 +394,83 @@ class Road {
         path += ',' + qy;
 
         return path;
+    }
+
+    /**
+     * Makes a road draggable when a user clicks a grab point
+     * @param {string} type The type of grab point
+     * @returns {Road} Self reference for chaining
+     */
+    startDrag(type) {
+        switch (type) { // Switch depending on the type of grab point
+            case 'start':
+                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
+                    event.preventDefault(); // Prevent the default action
+                    let road = event.data.road; // Get the road from the event data
+
+                    road._start_x = snap(event.pageX); // Set the start x to the mouse x
+                    road._start_y = snap(event.pageY); // Set the start y to the mouse y
+
+                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
+                });
+                break;
+            case 'end':
+                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
+                    event.preventDefault(); // Prevent the default action
+                    let road = event.data.road; // Get the road from the event data
+
+                    road._end_x = snap(event.pageX); // Set the end x to the mouse x
+                    road._end_y = snap(event.pageY); // Set the end y to the mouse y
+
+                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
+                });
+                break;
+            case 'start_angle':
+                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
+                    event.preventDefault(); // Prevent the default action
+                    let road = event.data.road; // Get the road from the event data
+
+                    road._start_angle = snapAngle(Math.atan2(event.pageX - road._start_x, event.pageY - road._start_y)); // Calculate the angle from the start point to the mouse
+
+                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
+                });
+                break;
+            case 'end_angle':
+                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
+                    event.preventDefault(); // Prevent the default action
+                    let road = event.data.road; // Get the road from the event data
+
+                    road._end_angle = snapAngle(Math.atan2(event.pageX - road._end_x, event.pageY - road._end_y)); // Calculate the angle from the end point to the mouse
+                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
+                });
+                break;
+            default:
+                throw new Error(`"${type}" is a invalid grabbable type`); // Throw an error if the type is invalid
+        }
+
+        $(document).on('mouseup', '', {road: this, type: type}, function (event) { // When the mouse is released
+            event.preventDefault(); // Prevent the default action
+            let road = event.data.road; // Get the road from the event data
+            switch (event.data.type) { // Switch depending on the type of grab point
+                case 'start':
+                    road._start_grabbable.removeClass('grabbed'); // Remove the grabbed class from the start grabbable
+                    break;
+                case 'end':
+                    road._end_grabbable.removeClass('grabbed'); // Remove the grabbed class from the end grabbable
+                    break;
+                case 'start_angle':
+                    road._start_angle_grabbable.removeClass('grabbed'); // Remove the grabbed class from the start angle grabbable
+                    break;
+                case 'end_angle':
+                    road._end_angle_grabbable.removeClass('grabbed'); // Remove the grabbed class from the end angle grabbable
+                    break;
+                default:
+                    throw new Error(`"${type}" is a invalid grabbable type`); // Throw an error if the type is invalid
+            }
+            $(document.body).removeClass('grabbing'); // Change the cursor back to the default
+            $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+        });
+
+        return this;
     }
 }

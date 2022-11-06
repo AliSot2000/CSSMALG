@@ -5,7 +5,9 @@
     --road_line: rgba(255, 255, 255, 1);
     --bike_line: rgba(255, 255, 0, 1);
     --bike_lane: rgba(255, 0, 0, 0.3);
-    --grid: rgba(0, 150, 150, 1)
+    --grid: rgba(0, 150, 150, 1);
+    --grabbable: rgba(255, 255, 255, 1);
+    --angle: rgba(255, 255, 255, 1);
 }
 
 html, body {
@@ -19,13 +21,17 @@ html, body {
     cursor: crosshair;
 }
 
+body.grabbing * {
+    cursor: grabbing !important;
+}
+
 .roads {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 3;
 }
 
 .road_border {
@@ -90,4 +96,34 @@ html, body {
 
 .grid {
     stroke-width: 1;
+}
+
+.grabpoints {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+}
+
+.grabbable {
+    background-color: var(--grabbable);
+    opacity: 0.7;
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    z-index: 6;
+    transform: translate(-5px, -5px);
+    cursor: grab;
+}
+
+.grabbed {
+    opacity: 1;
+    cursor: grabbing;
+}
+
+.angle {
+    background-color: var(--angle);
 }
