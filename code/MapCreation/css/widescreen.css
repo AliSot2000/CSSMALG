@@ -7,7 +7,6 @@
     --bike_lane: rgba(255, 0, 0, 0.3);
     --grid: rgba(0, 150, 150, 1);
     --grabbable: rgba(255, 255, 255, 1);
-    --angle: rgba(255, 255, 255, 1);
 }
 
 html, body {
@@ -122,8 +121,4 @@ body.grabbing * {
 .grabbed {
     opacity: 1;
     cursor: grabbing;
-}
-
-.angle {
-    background-color: var(--angle);
 }

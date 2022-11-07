@@ -11,12 +11,8 @@ class Road {
     _id = null;
 
     // Positions and Angles
-    _start_x = null;
-    _start_y = null;
-    _start_angle = null;
-    _end_x = null;
-    _end_y = null;
-    _end_angle = null;
+    _start = null;
+    _end = null;
 
     // jQuery Elements
     _self = null;
@@ -24,10 +20,7 @@ class Road {
     _asphalt = null;
     _bike_lane_container = null;
     _lines_container = null;
-    _start_grabbable = null;
-    _start_angle_grabbable = null;
-    _end_grabbable = null;
-    _end_angle_grabbable = null;
+    _grab_points = null;
 
     _lane_width = 20;
 
@@ -54,13 +47,10 @@ class Road {
 
         // Initialize Private Values
         this._id = id;
-        this._start_x = start_x;
-        this._start_y = start_y;
-        this._start_angle = start_angle;
-        this._end_x = end_x;
-        this._end_y = end_y;
-        this._end_angle = end_angle;
+        this._start = {x: start_x, y: start_y, angle: start_angle};
+        this._end = {x: end_x, y: end_y, angle: end_angle};
         this._lanes = [];
+        this._grab_points = {};
 
         this.createElement().updatePosition().updateGrabPoints(); // Create the SVG elements, update the position, and update the grab points position
     }
@@ -83,12 +73,13 @@ class Road {
         this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container);
 
         // Create the grab points
-        this._start_grabbable = $('<div class="grabbable"></div>').data('road', this).data('type', 'start');
-        this._end_grabbable = $('<div class="grabbable"></div>').data('road', this).data('type', 'end');
-        this._start_angle_grabbable = $('<div class="grabbable angle"></div>').data('road', this).data('type', 'start_angle');
-        this._end_angle_grabbable = $('<div class="grabbable angle"></div>').data('road', this).data('type', 'end_angle');
-
-        $('div.grabpoints').append(this._start_grabbable, this._end_grabbable, this._start_angle_grabbable, this._end_angle_grabbable);
+        let points = ['start', 'end', 'start_angle', 'end_angle'];
+        for (let i = 0; i < points.length; i++) {
+            let point = $('<div class="grabbable"></div>');
+            point.data('road', this).data('type', points[i]);
+            this._grab_points[points[i]] = point;
+            $('div.grabpoints').append(point);
+        }
 
         return this;
     }
@@ -167,8 +158,12 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updatePosition() {
-        // TODO: Make all paths update to the same type of path
+        // TODO: Make all paths update to the same type of path - use curveType function
+        // TODO: Make 180 degree difference work
+        // TODO: Make 0 degree difference work
+
         let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
+
         let path = this.calculateOffsetPath();
 
         for (let i = 0; i < children.length; i++) {
@@ -196,27 +191,72 @@ class Road {
         return this;
     }
 
+    curveType() {
+        // TODO: Make transitions between curves smooth
+        let p = this._start;
+        let q = this._end;
+
+        p.angle = truncateAngle(p.angle, 2 * Math.PI);
+        q.angle = truncateAngle(q.angle, 2 * Math.PI);
+
+        if (approxEqual(p.angle, q.angle)) { // Check if the angles are the same
+            return '0_diff';
+        }
+
+        if (approxEqual(p.angle, truncateAngle(q.angle + Math.PI, 2 * Math.PI))) { // Check if are 180 degrees apart
+            if (approxEqual(p.x, q.x)) { // Check if the points are the same
+                if (approxEqual(p.angle, 0) || approxEqual(q.angle, 0)) {
+                    return 'straight';
+                } else {
+                    return '180_diff'
+                }
+            }
+            if (approxEqual(p.y, q.y)) { // Check if the points are the same
+                if (approxEqual(p.angle, Math.PI / 2) || approxEqual(q.angle, Math.PI / 2)) {
+                    return 'straight';
+                } else {
+                    return '180_diff'
+                }
+            }
+        }
+
+        let intersection = this.calculateIntersectionPoint(p, q);
+
+        let pi = distance(p.x, p.y, intersection.x, intersection.y);
+        let qi = distance(q.x, q.y, intersection.x, intersection.y);
+        let pq = distance(p.x, p.y, q.x, q.y);
+
+        let p_bound = Math.abs(Math.acos((Math.pow(pi, 2) + Math.pow(pq, 2) - Math.pow(qi, 2)) / (2 * pi * pq)));
+        let q_bound = Math.abs(Math.acos((Math.pow(qi, 2) + Math.pow(pq, 2) - Math.pow(pi, 2)) / (2 * qi * pq)));
+
+        if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2 || approxEqual(p.angle, q.angle)) {
+            return 'cubic_bezier';
+        }
+
+        return 'quadratic_bezier';
+    }
+
     updateGrabPoints() {
-        this._start_grabbable.css({
-            left: this._start_x,
-            top: this._start_y
+        this._grab_points.start.css({
+            left: this._start.x,
+            top: this._start.y
         });
 
-        this._end_grabbable.css({
-            left: this._end_x,
-            top: this._end_y
+        this._grab_points.end.css({
+            left: this._end.x,
+            top: this._end.y
         });
 
-        let start_angle = this._start_angle + Math.PI / 2;
-        this._start_angle_grabbable.css({
-            left: calculateOffsetCosCoords(this._start_x, 0, 20, start_angle),
-            top: calculateOffsetSinCoords(this._start_y, 0, 20, start_angle)
+        let start_angle = this._start.angle + Math.PI / 2;
+        this._grab_points.start_angle.css({
+            left: calculateOffsetCosCoords(this._start.x, 0, 20, start_angle),
+            top: calculateOffsetSinCoords(this._start.y, 0, 20, start_angle)
         });
 
-        let end_angle = this._end_angle + Math.PI / 2;
-        this._end_angle_grabbable.css({
-            left: calculateOffsetCosCoords(this._end_x, 0, 20, end_angle),
-            top: calculateOffsetSinCoords(this._end_y, 0, 20, end_angle)
+        let end_angle = this._end.angle + Math.PI / 2;
+        this._grab_points.end_angle.css({
+            left: calculateOffsetCosCoords(this._end.x, 0, 20, end_angle),
+            top: calculateOffsetSinCoords(this._end.y, 0, 20, end_angle)
         });
     }
 
@@ -261,38 +301,41 @@ class Road {
         let qy;
 
         if (offset === 0) {
-            px = this._start_x;
-            py = this._start_y;
+            px = this._start.x;
+            py = this._start.y;
 
-            qx = this._end_x;
-            qy = this._end_y;
+            qx = this._end.x;
+            qy = this._end.y;
         } else {
-            px = calculateOffsetCosCoords(this._start_x, mid, offset, this._start_angle);
-            py = calculateOffsetSinCoords(this._start_y, mid, offset, this._start_angle);
+            px = calculateOffsetCosCoords(this._start.x, mid, offset, this._start.angle);
+            py = calculateOffsetSinCoords(this._start.y, mid, offset, this._start.angle);
 
-            qx = calculateOffsetCosCoords(this._end_x, -mid, -offset, this._end_angle);
-            qy = calculateOffsetSinCoords(this._end_y, -mid, -offset, this._end_angle);
+            qx = calculateOffsetCosCoords(this._end.x, -mid, -offset, this._end.angle);
+            qy = calculateOffsetSinCoords(this._end.y, -mid, -offset, this._end.angle);
         }
 
-        let pa = truncateAngle(this._start_angle);
-        let qa = truncateAngle(this._end_angle);
+        let pa = truncateAngle(this._start.angle, 2 * Math.PI);
+        let qa = truncateAngle(this._end.angle, 2 * Math.PI);
 
-        /*if (approxEqual(pa, qa)) {
+        /*if (approxEqual(pa, qa)) { // Check if the angles are the same
             return this.calculateHalfCirclePath(px, py, qx, qy);
-        }
+        }*/
 
-        if (approxEqual(truncateAngle(pa), truncateAngle(qa))) {
+        pa = truncateAngle(pa);
+        qa = truncateAngle(qa);
+
+        /*if (approxEqual(pa, qa)) { // Check if angles are 180 degrees apart
             return this.calculateMidPath(px, py, qx, qy);
         }*/
 
-        let intersection = this.calculateIntersectionPoint(px, py, qx, qy);
+        let intersection = this.calculateIntersectionPoint({x: px, y: py, angle: pa}, {x: qx, y: qy, angle: qa});
 
         let pi = distance(px, py, intersection.x, intersection.y);
         let qi = distance(qx, qy, intersection.x, intersection.y);
         let pq = distance(px, py, qx, qy);
 
-        let p_bound = Math.abs(Math.acos((Math.pow(pi, 2) + Math.pow(pq, 2) - Math.pow(qi, 2)) / (2 * pi * pq)));
-        let q_bound = Math.abs(Math.acos((Math.pow(qi, 2) + Math.pow(pq, 2) - Math.pow(pi, 2)) / (2 * qi * pq)));
+        let p_bound = angleBetweenPoints(pi, qi, pq);
+        let q_bound = angleBetweenPoints(qi, pi, pq);
 
         if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2 || approxEqual(pa, qa)) {
             let c = this.calculateCubicPoints(px, py, qx, qy);
@@ -311,28 +354,25 @@ class Road {
     calculateCubicPoints(px, py, qx, qy) {
         let offset = distance(px, py, qx, qy) / 2;
 
-        let pmx = px - Math.sin(this._start_angle) * offset;
-        let pmy = py - Math.cos(this._start_angle) * offset;
+        let pmx = px - Math.sin(this._start.angle) * offset;
+        let pmy = py - Math.cos(this._start.angle) * offset;
 
-        let qmx = qx - Math.sin(this._end_angle) * offset;
-        let qmy = qy - Math.cos(this._end_angle) * offset;
+        let qmx = qx - Math.sin(this._end.angle) * offset;
+        let qmy = qy - Math.cos(this._end.angle) * offset;
 
         return {pm: {x: pmx, y: pmy}, qm: {x: qmx, y: qmy}};
 
         // return this.generateCubicBezierPath(px, py, pmx, pmy, qmx, qmy, qx, qy);
     }
 
-    calculateIntersectionPoint(px, py, qx, qy) {
-        let pa = this._start_angle;// truncateAngle(this._start_angle);
-        let x2 = Math.sin(pa);
-        let y2 = Math.cos(pa);
+    calculateIntersectionPoint(p, q) {
+        let x2 = Math.sin(p.angle);
+        let y2 = Math.cos(p.angle);
 
-        let qa = this._end_angle;// truncateAngle(this._end_angle);
-        let x1 = Math.sin(qa);
-        let y1 = Math.cos(qa);
+        let x1 = Math.sin(q.angle);
+        let y1 = Math.cos(q.angle);
 
-        let mx;
-        let my;
+        let m = {};
 
         if (approxEqual(y1, 0)){
             if (approxEqual(x1, 0)) {
@@ -340,36 +380,36 @@ class Road {
                 throw new Error("Error Calculating MidPoints - implement t1");
             }
 
-            let t2 = (py - qy - px*y1/x1) / (x2*y1/x1 - y2);
+            let t2 = (p.y - q.y - p.x*y1/x1) / (x2*y1/x1 - y2);
 
             if (isNaN(t2)){
                 // This error is Alex's responsibility
                 throw new Error("Error Calculating MidPoints - x2*y1/x1 - y2 is NAN");
             }
 
-            mx = px + t2 * x2;
-            my = py + t2 * y2;
+            m.x = p.x + t2 * x2;
+            m.y = p.y + t2 * y2;
         } else {
             if (approxEqual(x2, 0)) {
                 // This error is Alex's responsibility
                 throw new Error("Error Calculating MidPoints - implement t1");
             }
 
-            let t1 = (qy - py - qx*y2/x2) / (x1*y2/x2 - y1);
+            let t1 = (q.y - p.y - q.x*y2/x2) / (x1*y2/x2 - y1);
 
             if (isNaN(t1)){
                 // This error is Alex's responsibility
                 throw new Error("Error Calculating MidPoints - x1*y2/x2 - y1 is NAN");
             }
 
-            mx = qx + t1 * x1;
-            my = qy + t1 * y1;
+            m.x = q.x + t1 * x1;
+            m.y = q.y + t1 * y1;
         }
 
         // Debug Circles
         // this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
 
-        return {x: mx, y: my};
+        return m;
     }
 
     generateQuadraticBezierPath(px, py, mx, my, qx, qy) {
@@ -402,45 +442,42 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     startDrag(type) {
+        let data = {road: this};
         switch (type) { // Switch depending on the type of grab point
             case 'start':
-                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
-                    event.preventDefault(); // Prevent the default action
-                    let road = event.data.road; // Get the road from the event data
-
-                    road._start_x = snap(event.pageX); // Set the start x to the mouse x
-                    road._start_y = snap(event.pageY); // Set the start y to the mouse y
-
-                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
-                });
-                break;
+                data.point = this._start;
             case 'end':
-                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
+                if (isEmpty(data.point)) {
+                    data.point = this._end;
+                }
+                $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
                     let road = event.data.road; // Get the road from the event data
+                    let point = event.data.point; // Get the point from the event data
 
-                    road._end_x = snap(event.pageX); // Set the end x to the mouse x
-                    road._end_y = snap(event.pageY); // Set the end y to the mouse y
+                    let x = snap(event.pageX); // Get the x position of the mouse
+                    let y = snap(event.pageY); // Get the y position of the mouse
 
-                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
+                    if (point.x !== x || road._start.y !== y) { // If the position has changed
+                        point.x = x; // Set the start x position
+                        point.y = y; // Set the start y position
+                        road.updatePosition().updateGrabPoints(); // Update the position and grab points
+                    }
                 });
                 break;
             case 'start_angle':
-                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
-                    event.preventDefault(); // Prevent the default action
-                    let road = event.data.road; // Get the road from the event data
-
-                    road._start_angle = snapAngle(Math.atan2(event.pageX - road._start_x, event.pageY - road._start_y)); // Calculate the angle from the start point to the mouse
-
-                    road.updatePosition().updateGrabPoints(); // Update the road position and grab points
-                });
-                break;
+                data.point = this._start;
             case 'end_angle':
-                $(document).on('mousemove', '', {road: this}, function (event) { // When the mouse moves
+                if (isEmpty(data.point)) {
+                    data.point = this._end;
+                }
+                $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
                     let road = event.data.road; // Get the road from the event data
+                    let point = event.data.point; // Get the point from the event data
 
-                    road._end_angle = snapAngle(Math.atan2(event.pageX - road._end_x, event.pageY - road._end_y)); // Calculate the angle from the end point to the mouse
+                    point.angle = snapAngle(Math.atan2(event.pageX - point.x, event.pageY - point.y)); // Calculate the angle from the start point to the mouse
+
                     road.updatePosition().updateGrabPoints(); // Update the road position and grab points
                 });
                 break;
@@ -451,22 +488,9 @@ class Road {
         $(document).on('mouseup', '', {road: this, type: type}, function (event) { // When the mouse is released
             event.preventDefault(); // Prevent the default action
             let road = event.data.road; // Get the road from the event data
-            switch (event.data.type) { // Switch depending on the type of grab point
-                case 'start':
-                    road._start_grabbable.removeClass('grabbed'); // Remove the grabbed class from the start grabbable
-                    break;
-                case 'end':
-                    road._end_grabbable.removeClass('grabbed'); // Remove the grabbed class from the end grabbable
-                    break;
-                case 'start_angle':
-                    road._start_angle_grabbable.removeClass('grabbed'); // Remove the grabbed class from the start angle grabbable
-                    break;
-                case 'end_angle':
-                    road._end_angle_grabbable.removeClass('grabbed'); // Remove the grabbed class from the end angle grabbable
-                    break;
-                default:
-                    throw new Error(`"${type}" is a invalid grabbable type`); // Throw an error if the type is invalid
-            }
+
+            road._grab_points[event.data.type].removeClass('grabbing'); // Remove the grabbing class from the grab point
+
             $(document.body).removeClass('grabbing'); // Change the cursor back to the default
             $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
         });

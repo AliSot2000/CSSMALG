@@ -169,3 +169,15 @@ function snapAngle(angle, snap = Math.PI / 16) {
 
     return angle; // Return the original angle if no near snap point were found
 }
+
+/**
+ * Calculates the angle between two points in respect to a third point.
+ * r is the rotation point while the points p and q are the angle endpoints.
+ * @param {number} rp Distance from r to p
+ * @param {number} rq Distance from r to q
+ * @param {number} pq Distance from q to p
+ * @returns {number} The angle between the two points
+ */
+function angleBetweenPoints(rp, pq, rq) {
+    return Math.abs(Math.acos((Math.pow(rp, 2) + Math.pow(rq, 2) - Math.pow(pq, 2)) / (2 * rp * rq)));
+}
