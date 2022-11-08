@@ -207,7 +207,7 @@ function interpolateCoordinates(p, q, percent, angle = false) {
     return i;
 }
 
-function approximateBezier(points, mid, offset) {
+function approximateBezierCurve(points, mid, offset) {
     let path = 'M ';
     path += calculateOffsetCosCoords(points[0].x, mid, offset, points[0].angle) + ',';
     path += calculateOffsetSinCoords(points[0].y, mid, offset, points[0].angle) + ' ';
@@ -219,4 +219,12 @@ function approximateBezier(points, mid, offset) {
     path += 'L ' + calculateOffsetCosCoords(points[points.length - 1].x, mid, offset, angle) + ',';
     path += calculateOffsetSinCoords(points[points.length - 1].y, mid, offset, angle);
     return path;
+}
+
+function approximateDistance(points) {
+    let d = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+        d += distance(points[i], points[i + 1]);
+    }
+    return d;
 }

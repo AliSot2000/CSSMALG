@@ -181,7 +181,7 @@ class Road {
         let mid_lane = this._lane_width / 2;
 
         for (let i = 0; i < children.length; i++) {
-            path = approximateBezier(points, mid, this._lane_width * (i + 1));
+            path = approximateBezierCurve(points, mid, this._lane_width * (i + 1));
             $(children[i]).attr('d', path);
         }
 
@@ -189,44 +189,12 @@ class Road {
         let bike_path = 0;
         for (let i = 0; i < this._lanes.length; i++) {
             if (this._lanes[i].type === 'bike') {
-                path = approximateBezier(points, mid, this._lane_width * i + mid_lane);
+                path = approximateBezierCurve(points, mid, this._lane_width * i + mid_lane);
                 $(children[bike_path++]).attr('d', path);
             }
         }
 
         return this;
-    }
-
-    curveInfo() {
-        // TODO: Make transitions between curves smooth
-        let p = this._start;
-        let q = this._end;
-
-        p.angle = truncateAngle(p.angle, 2 * Math.PI);
-        q.angle = truncateAngle(q.angle, 2 * Math.PI);
-
-        if (approxEqual(p.angle, q.angle)) { // Check if the angles are the same
-            return '0_diff';
-        }
-
-        if (approxEqual(p.angle, truncateAngle(q.angle + Math.PI, 2 * Math.PI))) { // Check if are 180 degrees apart
-            return '180_diff';
-        }
-
-        let intersection = this.calculateIntersectionPoint(p, q);
-
-        let pi = distance(p, intersection);
-        let qi = distance(q, intersection);
-        let pq = distance(p, q);
-
-        let p_bound = Math.abs(Math.acos((Math.pow(pi, 2) + Math.pow(pq, 2) - Math.pow(qi, 2)) / (2 * pi * pq)));
-        let q_bound = Math.abs(Math.acos((Math.pow(qi, 2) + Math.pow(pq, 2) - Math.pow(pi, 2)) / (2 * qi * pq)));
-
-        if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2 || approxEqual(p.angle, q.angle)) {
-            return {type: 'cubic_bezier', precalculated: {distance: pq}};
-        }
-
-        return {type: 'quadratic_bezier', precalculated: {intersection: intersection}};
     }
 
     updateGrabPoints() {
@@ -299,53 +267,6 @@ class Road {
                 y: q.y - Math.cos(this._end.angle) * offset
             }
         }
-    }
-
-    calculateIntersectionPoint(p, q) {
-        let x2 = Math.sin(p.angle);
-        let y2 = Math.cos(p.angle);
-
-        let x1 = Math.sin(q.angle);
-        let y1 = Math.cos(q.angle);
-
-        let m = {};
-
-        if (approxEqual(y1, 0)){
-            if (approxEqual(x1, 0)) {
-                // This error is Alex's responsibility
-                throw new Error("Error Calculating MidPoints - implement t1");
-            }
-
-            let t2 = (p.y - q.y - p.x*y1/x1) / (x2*y1/x1 - y2);
-
-            if (isNaN(t2)){
-                // This error is Alex's responsibility
-                throw new Error("Error Calculating MidPoints - x2*y1/x1 - y2 is NAN");
-            }
-
-            m.x = p.x + t2 * x2;
-            m.y = p.y + t2 * y2;
-        } else {
-            if (approxEqual(x2, 0)) {
-                // This error is Alex's responsibility
-                throw new Error("Error Calculating MidPoints - implement t1");
-            }
-
-            let t1 = (q.y - p.y - q.x*y2/x2) / (x1*y2/x2 - y1);
-
-            if (isNaN(t1)){
-                // This error is Alex's responsibility
-                throw new Error("Error Calculating MidPoints - x1*y2/x2 - y1 is NAN");
-            }
-
-            m.x = q.x + t1 * x1;
-            m.y = q.y + t1 * y1;
-        }
-
-        // Debug Circles
-        // this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
-
-        return m;
     }
 
     /**
