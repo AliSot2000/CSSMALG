@@ -75,7 +75,7 @@ class Road {
         // Create the grab points
         let points = ['start', 'end', 'start_angle', 'end_angle'];
         for (let i = 0; i < points.length; i++) {
-            let point = $('<div class="grabbable"></div>');
+            let point = $('<div class="grabbable ' + points[i] + '"></div>');
             point.data('road', this).data('type', points[i]);
             this._grab_points[points[i]] = point;
             $('div.grabpoints').append(point);
@@ -158,24 +158,30 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updatePosition() {
-        // TODO: Make all paths update to the same type of path - use curveType function
-        // TODO: Make 180 degree difference work
-        // TODO: Make 0 degree difference work
-
         let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
 
-        let path = this.calculateOffsetPath();
+        let c = this.calculateCubicPoints(this._start, this._end);
+        let control_points = [this._start, c.pm, c.qm , this._end];
+        let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`;
 
         for (let i = 0; i < children.length; i++) {
             $(children[i]).attr('d', path);
         }
+
+        let points = [];
+
+        points.push(this._start);
+        for (let i = 1; i < 50; i++) {
+            points.push(deCasteljausAlgorithm(control_points, i / 50));
+        }
+        points.push(this._end);
 
         children = this._self.find('path.road_line');
         let mid = this._lane_width * this._lanes.length / 2;
         let mid_lane = this._lane_width / 2;
 
         for (let i = 0; i < children.length; i++) {
-            path = this.calculateOffsetPath(mid, this._lane_width * (i + 1));
+            path = approximateBezier(points, mid, this._lane_width * (i + 1));
             $(children[i]).attr('d', path);
         }
 
@@ -183,7 +189,7 @@ class Road {
         let bike_path = 0;
         for (let i = 0; i < this._lanes.length; i++) {
             if (this._lanes[i].type === 'bike') {
-                path = this.calculateOffsetPath(mid, this._lane_width * i + mid_lane);
+                path = approximateBezier(points, mid, this._lane_width * i + mid_lane);
                 $(children[bike_path++]).attr('d', path);
             }
         }
@@ -191,7 +197,7 @@ class Road {
         return this;
     }
 
-    curveType() {
+    curveInfo() {
         // TODO: Make transitions between curves smooth
         let p = this._start;
         let q = this._end;
@@ -204,36 +210,23 @@ class Road {
         }
 
         if (approxEqual(p.angle, truncateAngle(q.angle + Math.PI, 2 * Math.PI))) { // Check if are 180 degrees apart
-            if (approxEqual(p.x, q.x)) { // Check if the points are the same
-                if (approxEqual(p.angle, 0) || approxEqual(q.angle, 0)) {
-                    return 'straight';
-                } else {
-                    return '180_diff'
-                }
-            }
-            if (approxEqual(p.y, q.y)) { // Check if the points are the same
-                if (approxEqual(p.angle, Math.PI / 2) || approxEqual(q.angle, Math.PI / 2)) {
-                    return 'straight';
-                } else {
-                    return '180_diff'
-                }
-            }
+            return '180_diff';
         }
 
         let intersection = this.calculateIntersectionPoint(p, q);
 
-        let pi = distance(p.x, p.y, intersection.x, intersection.y);
-        let qi = distance(q.x, q.y, intersection.x, intersection.y);
-        let pq = distance(p.x, p.y, q.x, q.y);
+        let pi = distance(p, intersection);
+        let qi = distance(q, intersection);
+        let pq = distance(p, q);
 
         let p_bound = Math.abs(Math.acos((Math.pow(pi, 2) + Math.pow(pq, 2) - Math.pow(qi, 2)) / (2 * pi * pq)));
         let q_bound = Math.abs(Math.acos((Math.pow(qi, 2) + Math.pow(pq, 2) - Math.pow(pi, 2)) / (2 * qi * pq)));
 
         if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2 || approxEqual(p.angle, q.angle)) {
-            return 'cubic_bezier';
+            return {type: 'cubic_bezier', precalculated: {distance: pq}};
         }
 
-        return 'quadratic_bezier';
+        return {type: 'quadratic_bezier', precalculated: {intersection: intersection}};
     }
 
     updateGrabPoints() {
@@ -293,76 +286,19 @@ class Road {
         return this._id;
     }
 
-    calculateOffsetPath(mid = 0, offset = 0) {
-        let px;
-        let py;
+    calculateCubicPoints(p, q) {
+        let offset = distance(p, q) / 2;
 
-        let qx;
-        let qy;
-
-        if (offset === 0) {
-            px = this._start.x;
-            py = this._start.y;
-
-            qx = this._end.x;
-            qy = this._end.y;
-        } else {
-            px = calculateOffsetCosCoords(this._start.x, mid, offset, this._start.angle);
-            py = calculateOffsetSinCoords(this._start.y, mid, offset, this._start.angle);
-
-            qx = calculateOffsetCosCoords(this._end.x, -mid, -offset, this._end.angle);
-            qy = calculateOffsetSinCoords(this._end.y, -mid, -offset, this._end.angle);
+        return {
+            pm: {
+                x: p.x - Math.sin(this._start.angle) * offset,
+                y: p.y - Math.cos(this._start.angle) * offset
+            },
+            qm: {
+                x: q.x - Math.sin(this._end.angle) * offset,
+                y: q.y - Math.cos(this._end.angle) * offset
+            }
         }
-
-        let pa = truncateAngle(this._start.angle, 2 * Math.PI);
-        let qa = truncateAngle(this._end.angle, 2 * Math.PI);
-
-        /*if (approxEqual(pa, qa)) { // Check if the angles are the same
-            return this.calculateHalfCirclePath(px, py, qx, qy);
-        }*/
-
-        pa = truncateAngle(pa);
-        qa = truncateAngle(qa);
-
-        /*if (approxEqual(pa, qa)) { // Check if angles are 180 degrees apart
-            return this.calculateMidPath(px, py, qx, qy);
-        }*/
-
-        let intersection = this.calculateIntersectionPoint({x: px, y: py, angle: pa}, {x: qx, y: qy, angle: qa});
-
-        let pi = distance(px, py, intersection.x, intersection.y);
-        let qi = distance(qx, qy, intersection.x, intersection.y);
-        let pq = distance(px, py, qx, qy);
-
-        let p_bound = angleBetweenPoints(pi, qi, pq);
-        let q_bound = angleBetweenPoints(qi, pi, pq);
-
-        if (p_bound > Math.PI / 2 || q_bound > Math.PI / 2 || approxEqual(pa, qa)) {
-            let c = this.calculateCubicPoints(px, py, qx, qy);
-            return this.generateCubicBezierPath(px, py, c.pm.x, c.pm.y, c.qm.x, c.qm.y, qx, qy);
-        }
-
-        return this.generateQuadraticBezierPath(px, py, intersection.x, intersection.y, qx, qy);
-    }
-
-    calculateHalfCirclePath(px, py, qx, qy) {
-        let radius = Math.sqrt(Math.pow(px - qx, 2) + Math.pow(py - qy, 2)) / 2;
-
-        return "M " + px + " " + py + " A " + radius + " " + radius + " 0 0 0 " + qx + " " + qy;
-    }
-
-    calculateCubicPoints(px, py, qx, qy) {
-        let offset = distance(px, py, qx, qy) / 2;
-
-        let pmx = px - Math.sin(this._start.angle) * offset;
-        let pmy = py - Math.cos(this._start.angle) * offset;
-
-        let qmx = qx - Math.sin(this._end.angle) * offset;
-        let qmy = qy - Math.cos(this._end.angle) * offset;
-
-        return {pm: {x: pmx, y: pmy}, qm: {x: qmx, y: qmy}};
-
-        // return this.generateCubicBezierPath(px, py, pmx, pmy, qmx, qmy, qx, qy);
     }
 
     calculateIntersectionPoint(p, q) {
@@ -410,30 +346,6 @@ class Road {
         // this._self.append($(svgElement("circle")).attr('cx', mx).attr('cy', my).attr('r', 2).attr('fill', 'red'));
 
         return m;
-    }
-
-    generateQuadraticBezierPath(px, py, mx, my, qx, qy) {
-        let path = 'M ' + px;
-        path += ',' + py;
-        path += ' Q ' + mx;
-        path += ',' + my;
-        path += ' ' + qx;
-        path += ',' + qy;
-
-        return path;
-    }
-
-    generateCubicBezierPath(px, py, pmx, pmy, qmx, qmy, qx, qy) {
-        let path = 'M ' + px;
-        path += ',' + py;
-        path += ' C ' + pmx;
-        path += ',' + pmy;
-        path += ' ' + qmx;
-        path += ',' + qmy;
-        path += ' ' + qx;
-        path += ',' + qy;
-
-        return path;
     }
 
     /**
@@ -489,7 +401,7 @@ class Road {
             event.preventDefault(); // Prevent the default action
             let road = event.data.road; // Get the road from the event data
 
-            road._grab_points[event.data.type].removeClass('grabbing'); // Remove the grabbing class from the grab point
+            road._grab_points[event.data.type].removeClass('grabbed'); // Remove the grabbing class from the grab point
 
             $(document.body).removeClass('grabbing'); // Change the cursor back to the default
             $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events

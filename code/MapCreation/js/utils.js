@@ -20,7 +20,7 @@ function isEmpty(variable) {
                 return true;
             }
             if (variable instanceof Array) { // Check if the object is an array
-                return obj.length < 1; // Return true if the array is empty
+                return variable.length < 1; // Return true if the array is empty
             }
             return Object.keys(variable).length < 1; // Return true if the object is empty
         case "string":
@@ -129,14 +129,12 @@ function degToRad(deg) {
 
 /**
  * Calculates the distance between two points
- * @param {number} px The x coordinate of the first point
- * @param {number} py The y coordinate of the first point
- * @param {number} qx The x coordinate of the second point
- * @param {number} qy The y coordinate of the second point
+ * @param {object} p Object of the first point, with a x and y property
+ * @param {object} q Object of the second point, with a x and y property
  * @returns {number} The distance between the two points
  */
-function distance(px, py, qx, qy) {
-    return Math.sqrt(Math.pow(px - qx, 2) + Math.pow(py - qy, 2)); // Return the distance between the two points
+function distance(p, q) {
+    return Math.sqrt(Math.pow(p.x - q.x, 2) + Math.pow(p.y - q.y, 2)); // Return the distance between the two points
 }
 
 /**
@@ -172,7 +170,7 @@ function snapAngle(angle, snap = Math.PI / 16) {
 
 /**
  * Calculates the angle between two points in respect to a third point.
- * r is the rotation point while the points p and q are the angle endpoints.
+ * "r" is the rotation point while the points "p" and "q" are the angle endpoints.
  * @param {number} rp Distance from r to p
  * @param {number} rq Distance from r to q
  * @param {number} pq Distance from q to p
@@ -180,4 +178,45 @@ function snapAngle(angle, snap = Math.PI / 16) {
  */
 function angleBetweenPoints(rp, pq, rq) {
     return Math.abs(Math.acos((Math.pow(rp, 2) + Math.pow(rq, 2) - Math.pow(pq, 2)) / (2 * rp * rq)));
+}
+
+function deCasteljausAlgorithm(controlPoints, percent) {
+    let len =  controlPoints.length;
+    if (len < 2) {
+        throw new Error('Not enough control points');
+    }
+    if (len === 2) {
+        return interpolateCoordinates(controlPoints[0], controlPoints[1], percent, true);
+    }
+
+    let newPoints = [];
+    for (let i = 0; i < len - 1; i++) {
+        newPoints[i] = interpolateCoordinates(controlPoints[i], controlPoints[i + 1], percent);
+    }
+
+    return deCasteljausAlgorithm(newPoints, percent);
+}
+
+function interpolateCoordinates(p, q, percent, angle = false) {
+    let i = {};
+    i.x = p.x + (q.x - p.x) * percent;
+    i.y = p.y + (q.y - p.y) * percent;
+    if (angle) {
+        i.angle = Math.atan2(p.x - q.x, p.y - q.y);
+    }
+    return i;
+}
+
+function approximateBezier(points, mid, offset) {
+    let path = 'M ';
+    path += calculateOffsetCosCoords(points[0].x, mid, offset, points[0].angle) + ',';
+    path += calculateOffsetSinCoords(points[0].y, mid, offset, points[0].angle) + ' ';
+    for (let i = 1; i < points.length - 1; i++) {
+        path += 'L ' + calculateOffsetCosCoords(points[i].x, mid, offset, points[i].angle) + ',';
+        path += calculateOffsetSinCoords(points[i].y, mid, offset, points[i].angle) + ' ';
+    }
+    let angle = truncateAngle(points[points.length - 1].angle + Math.PI, 2 * Math.PI);
+    path += 'L ' + calculateOffsetCosCoords(points[points.length - 1].x, mid, offset, angle) + ',';
+    path += calculateOffsetSinCoords(points[points.length - 1].y, mid, offset, angle);
+    return path;
 }
