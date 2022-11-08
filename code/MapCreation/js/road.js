@@ -76,7 +76,7 @@ class Road {
         let points = ['start', 'end', 'start_angle', 'end_angle'];
         for (let i = 0; i < points.length; i++) {
             let point = $('<div class="grabbable ' + points[i] + '"></div>');
-            point.data('road', this).data('type', points[i]);
+            point.data('link', this).data('type', points[i]);
             this._grab_points[points[i]] = point;
             $('div.grabpoints').append(point);
         }
@@ -197,6 +197,10 @@ class Road {
         return this;
     }
 
+    /**
+     * Updates the grab points of the road
+     * @returns {Road} Self reference for chaining
+     */
     updateGrabPoints() {
         this._grab_points.start.css({
             left: this._start.x,
@@ -219,8 +223,14 @@ class Road {
             left: calculateOffsetCosCoords(this._end.x, 0, 20, end_angle),
             top: calculateOffsetSinCoords(this._end.y, 0, 20, end_angle)
         });
+
+        return this;
     }
 
+    /**
+     * Updates the line types of the road
+     * @returns {Road} Self reference for chaining
+     */
     updateLineTypes() {
         let lane_type;
         let line;
@@ -246,25 +256,39 @@ class Road {
         return this;
     }
 
+    /**
+     * Returns the Element of the road
+     * @returns {jQuery} The Element of the road
+     */
     getElement() {
         return this._self;
     }
 
+    /**
+     * Returns the id of the road
+     * @returns {string} The id of the road
+     */
     getId() {
         return this._id;
     }
 
+    /**
+     * Calculates the cubic control points
+     * @param {object} p The start point
+     * @param {object} q The end point
+     * @returns {{qm: {x: number, y: number}, pm: {x: number, y: number}}}
+     */
     calculateCubicPoints(p, q) {
-        let offset = distance(p, q) / 2;
+        let offset = distance(p, q) / 2; // Calculate the offset
 
         return {
             pm: {
-                x: p.x - Math.sin(this._start.angle) * offset,
-                y: p.y - Math.cos(this._start.angle) * offset
+                x: p.x - Math.sin(this._start.angle) * offset, // Calculate the x coordinate of the first control point
+                y: p.y - Math.cos(this._start.angle) * offset // Calculate the y coordinate of the first control point
             },
             qm: {
-                x: q.x - Math.sin(this._end.angle) * offset,
-                y: q.y - Math.cos(this._end.angle) * offset
+                x: q.x - Math.sin(this._end.angle) * offset, // Calculate the x coordinate of the second control point
+                y: q.y - Math.cos(this._end.angle) * offset // Calculate the y coordinate of the second control point
             }
         }
     }
@@ -291,7 +315,7 @@ class Road {
                     let x = snap(event.pageX); // Get the x position of the mouse
                     let y = snap(event.pageY); // Get the y position of the mouse
 
-                    if (point.x !== x || road._start.y !== y) { // If the position has changed
+                    if (point.x !== x || point.y !== y) { // If the position has changed
                         point.x = x; // Set the start x position
                         point.y = y; // Set the start y position
                         road.updatePosition().updateGrabPoints(); // Update the position and grab points

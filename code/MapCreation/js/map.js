@@ -10,6 +10,8 @@ class Map {
     _roads = null;
     _intersections = null;
     _grid = null;
+    _grab_points = null;
+    _snap_points = null;
 
     /**
      * Creates a Map
@@ -21,25 +23,34 @@ class Map {
         this._self = $(selector);
         this._self.data('map', this);
         this._road_wrapper = $(svgElement("svg")); // Create the SVG element
+        this._intersection_wrapper = $(svgElement("svg")); // Create the SVG element
         this._roads = {}; // Create the roads object
         this._intersections = {}; // Create the intersections object
         this._grid = new Grid(50); // Create the grid object
+        this._grab_points = $('<div class="grabpoints"></div>');
+        this._snap_points = $('<div class="snappoints"></div>');
 
-        // Add elements to the map
-        this._self.append(this._road_wrapper, '<div class="grabpoints"></div>', this._grid.getGrid()); // Add the SVG element to the DOM
+        this._self.append(
+            this._road_wrapper,
+            this._intersection_wrapper,
+            this._grab_points,
+            this._snap_points,
+            this._grid.getGrid()
+        ); // Add the SVG element to the map
 
         // Make the grabpoints element draggable
         $('div.grabpoints').on('mousedown', '.grabbable', function(event) {
             event.preventDefault(); // Prevent the default action
             let target = $(event.target); // Get the target element
-            let road = target.data('road'); // Get the road object
+            let link = target.data('link'); // Get the road object
             target.addClass('grabbed'); // Add the grabbed class to the target
             $(document.body).addClass('grabbing'); // Change the cursor to grabbing
-            road.startDrag(target.data('type')); // Start dragging the road
+            link.startDrag(target.data('type')); // Start dragging the road
         });
 
         // Set the SVG element's attributes
         this._road_wrapper.addClass("roads");
+        this._intersection_wrapper.addClass("intersections");
     }
 
     /**
@@ -67,6 +78,12 @@ class Map {
         return this;
     }
 
+    addIntersection(intersection) {
+        this._intersections[intersection.getId()] = intersection;
+        this._intersection_wrapper.append(intersection.getElement());
+        return this;
+    }
+
     /**
      * Adds a road to the map
      * @function createRoad
@@ -82,5 +99,11 @@ class Map {
         let road = new Road(this.generateId(), start_x, start_y, start_angle, end_x, end_y, end_angle); // Create the road
         this.addRoad(road); // Add the road to the map
         return road;
+    }
+
+    createIntersection(x, y) {
+        let intersection = new Intersection(this.generateId(), x, y);
+        this.addIntersection(intersection);
+        return intersection;
     }
 }

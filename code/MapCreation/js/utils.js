@@ -180,51 +180,93 @@ function angleBetweenPoints(rp, pq, rq) {
     return Math.abs(Math.acos((Math.pow(rp, 2) + Math.pow(rq, 2) - Math.pow(pq, 2)) / (2 * rp * rq)));
 }
 
+/**
+ * Approximates a bezier curve using the de Casteljau algorithm.
+ * The algorithm is recursive and will continue to split the lines between the control points until we reach a point on the curve.
+ * @param {Array} controlPoints Array of points to approximate
+ * @param {number} percent The percent along the curve to approximate
+ * @returns {Object} The point on the curve, with x, y and the tangent angle.
+ */
 function deCasteljausAlgorithm(controlPoints, percent) {
-    let len =  controlPoints.length;
-    if (len < 2) {
+    let len =  controlPoints.length; // Get the length of the control points
+    if (len < 2) { // Check if the length is less than 2
         throw new Error('Not enough control points');
     }
-    if (len === 2) {
+
+    if (len === 2) { // Check if the length is 2, end the recursion
         return interpolateCoordinates(controlPoints[0], controlPoints[1], percent, true);
     }
 
-    let newPoints = [];
-    for (let i = 0; i < len - 1; i++) {
-        newPoints[i] = interpolateCoordinates(controlPoints[i], controlPoints[i + 1], percent);
+    let newPoints = []; // Create a new array for the new points
+    for (let i = 0; i < len - 1; i++) { // Loop through the control points
+        newPoints[i] = interpolateCoordinates(controlPoints[i], controlPoints[i + 1], percent); // Interpolate the points
     }
 
-    return deCasteljausAlgorithm(newPoints, percent);
+    return deCasteljausAlgorithm(newPoints, percent); // Recurse with the new points
 }
 
+/**
+ * Interpolates between two points
+ * @param {Object} p The first point
+ * @param {Object} q The second point
+ * @param {number} percent The percent to interpolate
+ * @param {boolean} angle If true the angle between the two points will be returned
+ * @returns {Object} The interpolated point, with x, y and the tangent angle.
+ */
 function interpolateCoordinates(p, q, percent, angle = false) {
-    let i = {};
-    i.x = p.x + (q.x - p.x) * percent;
-    i.y = p.y + (q.y - p.y) * percent;
-    if (angle) {
-        i.angle = Math.atan2(p.x - q.x, p.y - q.y);
+    let i = {}; // Create a new object for the interpolated point
+    i.x = p.x + (q.x - p.x) * percent; // Interpolate the x coordinate
+    i.y = p.y + (q.y - p.y) * percent; // Interpolate the y coordinate
+    if (angle) { // Check if we should return the angle
+        i.angle = Math.atan2(p.x - q.x, p.y - q.y); // Calculate the angle between the two points
     }
-    return i;
+    return i; // Return the interpolated point
 }
 
+/**
+ *
+ * @param {Array} points Array of points to approximate
+ * @param {number} mid Width of the road
+ * @param {number} offset Offset of the line on the road
+ * @returns {string} The SVG path
+ */
 function approximateBezierCurve(points, mid, offset) {
-    let path = 'M ';
+    let path = 'M '; // Create a new path
+
+    // Add the start point
     path += calculateOffsetCosCoords(points[0].x, mid, offset, points[0].angle) + ',';
     path += calculateOffsetSinCoords(points[0].y, mid, offset, points[0].angle) + ' ';
+
+    // Add the points on the curve
     for (let i = 1; i < points.length - 1; i++) {
         path += 'L ' + calculateOffsetCosCoords(points[i].x, mid, offset, points[i].angle) + ',';
         path += calculateOffsetSinCoords(points[i].y, mid, offset, points[i].angle) + ' ';
     }
+
+    // Add the end point
+    // Flip the angle for the end side of the road, else the last point will be mirrored
     let angle = truncateAngle(points[points.length - 1].angle + Math.PI, 2 * Math.PI);
     path += 'L ' + calculateOffsetCosCoords(points[points.length - 1].x, mid, offset, angle) + ',';
     path += calculateOffsetSinCoords(points[points.length - 1].y, mid, offset, angle);
     return path;
 }
 
+/**
+ * Calculates the distance between a Array of points
+ * @param {Array} points Array of points
+ * @returns {number} The sum of the distance between the points
+ */
 function approximateDistance(points) {
     let d = 0;
     for (let i = 0; i < points.length - 1; i++) {
         d += distance(points[i], points[i + 1]);
     }
     return d;
+}
+
+function minOffset(offset, min = 100) {
+    if (offset < 0) {
+        return Math.min(offset, -min);
+    }
+    return Math.max(offset, min);
 }
