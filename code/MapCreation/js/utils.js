@@ -86,13 +86,13 @@ function calculateOffsetSinCoords(coordinates, mid, offset, angle) {
  * @returns {number} The truncated angle
  */
 function truncateAngle(angle, truncate = Math.PI) {
-    if (angle < 0) { // Check if the angle is negative
+    if (angle < 0) {
         while (angle < 0) { // Loop until the angle is positive
             angle += truncate;
         }
     } else {
         while (angle > truncate) { // Loop until the angle is less than the truncate value
-            angle -= Math.PI;
+            angle -= truncate;
         }
     }
     return angle; // Return the truncated angle
