@@ -29,6 +29,8 @@ class Road {
     _lines = [];
     _bike_lanes = [];
 
+    _intersections = null;
+
     /**
      * Creates a road
      * @constructor
@@ -51,6 +53,7 @@ class Road {
         this._end = {x: end_x, y: end_y, angle: end_angle};
         this._lanes = [];
         this._grab_points = {};
+        this._intersections = {start: null, end: null};
 
         this.createElement().updatePosition().updateGrabPoints(); // Create the SVG elements, update the position, and update the grab points position
     }
@@ -144,8 +147,7 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updateRoadWidth() {
-        let count = this._lanes.length; // Get the number of lanes
-        let width = this._lane_width * count; // Calculate the width of the road
+        let width = this.getRoadWidth(); // Calculate the width of the road
 
         this._asphalt.attr('stroke-width', width); // Set the width of the asphalt
         this._border.attr('stroke-width', width + 4); // Set the width of the border
@@ -177,7 +179,7 @@ class Road {
         points.push(this._end);
 
         children = this._self.find('path.road_line');
-        let mid = this._lane_width * this._lanes.length / 2;
+        let mid = this.getRoadWidth() / 2;
         let mid_lane = this._lane_width / 2;
 
         for (let i = 0; i < children.length; i++) {
@@ -272,6 +274,10 @@ class Road {
         return this._id;
     }
 
+    getRoadWidth() {
+        return this._lane_width * this._lanes.length;
+    }
+
     /**
      * Calculates the cubic control points
      * @param {object} p The start point
@@ -299,18 +305,36 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     startDrag(type) {
-        let data = {road: this};
+        let data = {road: this, type: type};
         switch (type) { // Switch depending on the type of grab point
             case 'start':
                 data.point = this._start;
             case 'end':
+                if (!isEmpty(this._intersections[type])) {
+                    this._grab_points[type + '_angle'].css('display', 'block');
+                    window.setTimeout(function (intersection, snap_point) {
+                        intersection.disconnectRoad(snap_point)
+                    }, 500, this._intersections[type].intersection, this._intersections[type].snap_point);
+                    this._intersections[type] = null;
+                }
+
                 if (isEmpty(data.point)) {
                     data.point = this._end;
                 }
+
                 $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
+                    let target = $(event.target);
+
                     let road = event.data.road; // Get the road from the event data
                     let point = event.data.point; // Get the point from the event data
+
+                    if (target.hasClass('snap_point')) {
+                        let intersection = target.data('link');
+                        intersection.snapRoad(road, point, event.data.type, target.data('type'));
+                        road.stopDrag(type);
+                        return;
+                    }
 
                     let x = snap(event.pageX); // Get the x position of the mouse
                     let y = snap(event.pageY); // Get the y position of the mouse
@@ -346,12 +370,22 @@ class Road {
             event.preventDefault(); // Prevent the default action
             let road = event.data.road; // Get the road from the event data
 
-            road._grab_points[event.data.type].removeClass('grabbed'); // Remove the grabbing class from the grab point
-
-            $(document.body).removeClass('grabbing'); // Change the cursor back to the default
-            $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+            road.stopDrag(event.data.type); // Stop dragging the road
         });
 
         return this;
+    }
+
+    stopDrag(type) {
+        this._grab_points[type].removeClass('grabbed'); // Remove the grabbing class from the grab point
+
+        $(document.body).removeClass('grabbing'); // Change the cursor back to the default
+        $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+    }
+
+    connectToIntersection(intersection, type, snap_point) {
+        this._grab_points[type + '_angle'].css('display', 'none');
+        this._intersections[type] = {intersection: intersection, snap_point: snap_point};
+        this.updatePosition().updateGrabPoints();
     }
 }

@@ -270,3 +270,18 @@ function minOffset(offset, min = 100) {
     }
     return Math.max(offset, min);
 }
+
+function directionToRad(direction) {
+    switch (direction) {
+        case 'north':
+            return 0;
+        case 'east':
+            return Math.PI * 1.5;
+        case 'south':
+            return Math.PI;
+        case 'west':
+            return Math.PI * 0.5;
+        default:
+            throw new Error('Invalid direction');
+    }
+}

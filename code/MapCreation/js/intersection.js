@@ -2,17 +2,12 @@ class Intersection {
     _id = null;
 
     _position = null;
-    _width = 0;
-    _half_width = 0;
-    _height = 0;
-    _half_height = 0;
+    _size = 0;
+    _half_size = 0;
 
     _self = null;
 
-    _north = {connected: false}
-    _east = {connected: false}
-    _south = {connected: false}
-    _west = {connected: false}
+    _directions = ['north', 'east', 'south', 'west'];
 
     _grab_point = null;
 
@@ -42,29 +37,32 @@ class Intersection {
         this._grab_point = $('<div class="grabbable move"></div>').data('link', this).data('type', 'move');
         $('div.grabpoints').append(this._grab_point);
 
-        let points = ['north', 'east', 'south', 'west'];
-        for (let i = 0; i < points.length; i++) {
-            let point = $('<div class="snap_point ' + points[i] + '"></div>');
-            point.data('link', this).data('type', points[i]);
-            this._snap_points[points[i]] = point;
+        for (let i = 0; i < this._directions.length; i++) {
+            let point = $('<div class="snap_point ' + this._directions[i] + '"></div>');
+            point.data('link', this).data('type', this._directions[i]);
+            this._snap_points[this._directions[i]] = {snap_point: point, connected: false};
             $('div.snappoints').append(point);
         }
 
         return this;
     }
 
+    isConnected(direction) {
+        return this._snap_points[direction].connected;
+    }
+
     updatePosition() {
         this._asphalt.attr({
-            x: this._position.x - this._half_width,
-            y: this._position.y - this._half_height,
-            width: this._width,
-            height: this._height
+            x: this._position.x - this._half_size,
+            y: this._position.y - this._half_size,
+            width: this._size,
+            height: this._size
         });
         this._border.attr({
-            x: (this._position.x - this._half_width) - 2,
-            y: (this._position.y - this._half_height) - 2,
-            width: this._width + 4,
-            height: this._height + 4
+            x: (this._position.x - this._half_size) - (this.isConnected('west') ? 0 : 2),
+            y: (this._position.y - this._half_size) - (this.isConnected('north') ? 0 : 2),
+            width: this._size + (this.isConnected('west') ? 0 : (this.isConnected('east') ? 2 : 4)),
+            height: this._size + (this.isConnected('north') ? 0 : (this.isConnected('south') ? 2 : 4))
         });
 
         return this;
@@ -76,36 +74,91 @@ class Intersection {
             top: this._position.y
         });
 
-        this._snap_points.north.css({
-            left: this._position.x,
-            top: this._position.y - this._half_height - 15
-        });
-
-        this._snap_points.east.css({
-            left: this._position.x + this._half_width + 15,
-            top: this._position.y
-        });
-
-        this._snap_points.south.css({
-            left: this._position.x,
-            top: this._position.y + this._half_height + 15
-        });
-
-        this._snap_points.west.css({
-            left: this._position.x - this._half_width - 15,
-            top: this._position.y
-        });
+        for (let i = 0; i < this._directions.length; i++) {
+            let snap_point = this._snap_points[this._directions[i]];
+            let position;
+            if (!isEmpty(snap_point.road)) {
+                position = this.getOffsetForDirection(this._directions[i]);
+                snap_point.point.x = position.x;
+                snap_point.point.y = position.y;
+                snap_point.road.updatePosition().updateGrabPoints();
+            }
+            position = this.getOffsetForDirection(this._directions[i], 15);
+            snap_point.snap_point.css({
+                left: position.x,
+                top: position.y
+            });
+        }
 
         return this;
     }
 
+    getOffsetForDirection (side, offset = 0) {
+        switch (side) {
+            case 'north':
+                return {
+                    x: this._position.x,
+                    y: this._position.y - this._half_size - offset
+                }
+            case 'east':
+                return {
+                    x: this._position.x + this._half_size + offset,
+                    y: this._position.y
+                }
+            case 'south':
+                return {
+                    x: this._position.x,
+                    y: this._position.y + this._half_size + offset
+                }
+            case 'west':
+                return {
+                    x: this._position.x - this._half_size - offset,
+                    y: this._position.y
+                }
+            default:
+                throw new Error('This direction is not supported');
+        }
+    }
+
     updateWidthAndHeight() {
-        this._width = this._default_size;
-        this._half_width = this._width / 2;
-        this._height = this._default_size;
-        this._half_height = this._height / 2;
+        this._size = this.getBiggestRoadWidth();
+        this._half_size = this._size / 2;
 
         return this;
+    }
+
+    snapRoad(road, point, point_type, snap_point) {
+        this._snap_points[snap_point].snap_point.css('display', 'none');
+        this._snap_points[snap_point].connected = true;
+        this._snap_points[snap_point].road = road;
+        this._snap_points[snap_point].point = point;
+
+        this.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
+
+        let position = this.getOffsetForDirection(snap_point);
+        point.x = position.x;
+        point.y = position.y;
+        point.angle = directionToRad(snap_point);
+        road.connectToIntersection(this, point_type, snap_point);
+    }
+
+    disconnectRoad(snap_point) {
+        this._snap_points[snap_point].connected = false;
+        delete this._snap_points[snap_point].road;
+        delete this._snap_points[snap_point].point;
+        this._snap_points[snap_point].snap_point.css('display', 'block');
+        this.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
+    }
+
+    getBiggestRoadWidth() {
+        let biggest = this._default_size;
+        for (let i = 0; i < this._directions.length; i++) {
+            if (this._snap_points[this._directions[i]].connected) {
+                biggest = Math.max(biggest, this._snap_points[this._directions[i]].road.getRoadWidth());
+            }
+        }
+
+        return biggest;
     }
 
     getId() {
