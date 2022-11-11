@@ -61,10 +61,9 @@ class Intersection {
         this._border.attr({
             x: (this._position.x - this._half_size) - (this.isConnected('west') ? 0 : 2),
             y: (this._position.y - this._half_size) - (this.isConnected('north') ? 0 : 2),
-            width: this._size + (this.isConnected('west') ? 0 : (this.isConnected('east') ? 2 : 4)),
-            height: this._size + (this.isConnected('north') ? 0 : (this.isConnected('south') ? 2 : 4))
+            width: this._size + (this.isConnected('west') ? 0 : 2) + (this.isConnected('east') ? 0 : 2),
+            height: this._size + (this.isConnected('north') ? 0 : 2) + (this.isConnected('south') ? 0 : 2)
         });
-
         return this;
     }
 
