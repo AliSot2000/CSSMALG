@@ -62,8 +62,12 @@ class Map {
         let id; // Initialize the id variable
         do {
             id = Math.random().toString(16).slice(2); // Generate a random id
-        } while (id in this._roads || id in this._intersections); // Check if the id is already in use
+        } while (this.idInUse(id)); // Check if the id is already in use
         return id; // Return the id
+    }
+
+    idInUse(id) {
+        return id in this._roads || id in this._intersections;
     }
 
     /**
@@ -105,5 +109,21 @@ class Map {
         let intersection = new Intersection(this.generateId(), x, y);
         this.addIntersection(intersection);
         return intersection;
+    }
+
+    getRoads() {
+        return this._roads;
+    }
+
+    getIntersections() {
+        return this._intersections;
+    }
+
+    getRoad(id) {
+        return this._roads[id];
+    }
+
+    getIntersection(id) {
+        return this._intersections[id];
     }
 }

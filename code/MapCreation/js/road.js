@@ -388,4 +388,12 @@ class Road {
         this._intersections[type] = {intersection: intersection, snap_point: snap_point};
         this.updatePosition().updateGrabPoints();
     }
+
+    getLanes() {
+        return this._lanes;
+    }
+
+    getLinkedIntersections() {
+        return this._intersections;
+    }
 }
