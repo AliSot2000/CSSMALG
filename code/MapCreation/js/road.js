@@ -49,8 +49,8 @@ class Road {
 
         // Initialize Private Values
         this._id = id;
-        this._start = {x: start_x, y: start_y, angle: start_angle};
-        this._end = {x: end_x, y: end_y, angle: end_angle};
+        this._start = {x: snap(start_x), y: snap(start_y), angle: start_angle};
+        this._end = {x: snap(end_x), y: snap(end_y), angle: end_angle};
         this._lanes = [];
         this._grab_points = {};
         this._intersections = {start: null, end: null};
@@ -89,56 +89,33 @@ class Road {
 
     /**
      * Adds a lane to the road
-     * @param {string} type The type of lane to add
-     * @param {number} direction The direction of the lane
+     * @param {Object} data The type of lane to add
      * @returns {Road} Self reference for chaining
      */
-    createLane(type, direction) {
+    createLane(data) {
         if (this._lanes.length > 0) { // Check if there are any lanes
             let line = $(svgElement("path")).addClass("road_line"); // Create the line
             this._lines.push(line); // Add the line to the lines array
             this._lines_container.append(line); // Append the line to the lines container
         }
 
-        if (type === 'bike') { // Check if the lane is a bike lane
+        if (data.type === 'bike') { // Check if the lane is a bike lane
             let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', this._lane_width); // Create the bike lane
             this._bike_lanes.push(lane); // Add the bike lane to the bike lanes array
             this._bike_lane_container.append(lane); // Append the bike lane to the bike lane container
         }
 
-        this._lanes.push({type: type, direction: direction}); // Add the lane to the lanes array
-
-        this.updateRoadWidth().updateLineTypes().updatePosition(); // Update the road width, update the line types, and update the position
+        this._lanes.push(data); // Add the lane to the lanes array
 
         return this;
     }
 
-    /**
-     * Deletes a lane from the road
-     * @param {number} index The index of the lane to delete
-     * @returns {Road} Self reference for chaining
-     */
-    deleteLane(index) {
-        if (index < 0 || index >= this._lanes.length) { // Check if the index is out of bounds
-            throw new Error("Index out of bounds"); // Throw an error
-        }
-
-        let isBikeLane = this._lanes[index].type === 'bike'; // Check if the lane is a bike lane
-
-        if (this._lanes.length > 0) { // Check if there are any lanes
-            $(this._lines[0]).remove(); // Remove the line
-            this._lines.splice(0, 1); // Remove the line from the lines array
-        }
-
-        if (isBikeLane) { // Check if the lane is a bike lane
-            $(this._bike_lanes[0]).remove(); // Remove the bike lane
-            this._bike_lanes.splice(0, 1); // Remove the bike lane from the bike lanes array
-        }
-
-        this._lanes.splice(index, 1); // Remove the lane from the lanes array
-
-        this.updateRoadWidth().updateLineTypes().updatePosition(); // Update the road width, update the line types, and update the position
-
+    deleteAllLanes() {
+        this._lanes = [];
+        this._lines = [];
+        this._bike_lanes = [];
+        this._lines_container.empty();
+        this._bike_lane_container.empty();
         return this;
     }
 
@@ -310,13 +287,7 @@ class Road {
             case 'start':
                 data.point = this._start;
             case 'end':
-                if (!isEmpty(this._intersections[type])) {
-                    this._grab_points[type + '_angle'].css('display', 'block');
-                    window.setTimeout(function (intersection, snap_point) {
-                        intersection.disconnectRoad(snap_point)
-                    }, 500, this._intersections[type].intersection, this._intersections[type].snap_point);
-                    this._intersections[type] = null;
-                }
+                this.checkAndDissconnectFromIntersection(type);
 
                 if (isEmpty(data.point)) {
                     data.point = this._end;
@@ -395,5 +366,66 @@ class Road {
 
     getLinkedIntersections() {
         return this._intersections;
+    }
+
+    checkAndDissconnectFromIntersection(type) {
+        if (!isEmpty(this._intersections[type])) {
+            this._grab_points[type + '_angle'].css('display', 'block');
+            window.setTimeout(function (intersection, snap_point) {
+                intersection.disconnectRoad(snap_point)
+            }, 500, this._intersections[type].intersection, this._intersections[type].snap_point);
+            this._intersections[type] = null;
+        }
+    }
+
+    remove() {
+        this.checkAndDissconnectFromIntersection('start');
+        this.checkAndDissconnectFromIntersection('end');
+        this._self.remove();
+        let points = ['start', 'end', 'start_angle', 'end_angle'];
+        for (let i = 0; i < points.length; i++) {
+            this._grab_points[points[i]].remove();
+        }
+    }
+
+    setLanes(lanes) {
+        this.deleteAllLanes();
+        for (let i = 0; i < lanes.length; i++) {
+            this.createLane(lanes[i]);
+        }
+        this.updateRoadWidth().updateLineTypes().updatePosition().updateGrabPoints();
+
+        if (!isEmpty(this._intersections.start)) {
+            this._intersections.start.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
+        }
+        if (!isEmpty(this._intersections.end)) {
+            this._intersections.end.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
+        }
+    }
+
+    exportSaveData() {
+        let data = {
+            id: this._id,
+            start: this._start,
+            end: this._end,
+            lanes: this._lanes,
+            intersections: {}
+        };
+
+        if (!isEmpty(this._intersections.start)) {
+            data.intersections.start = {
+                id: this._intersections.start.intersection.getId(),
+                snap_point: this._intersections.start.snap_point
+            }
+        }
+
+        if (!isEmpty(this._intersections.end)) {
+            data.intersections.end = {
+                id: this._intersections.end.intersection.getId(),
+                snap_point: this._intersections.end.snap_point
+            }
+        }
+
+        return data;
     }
 }

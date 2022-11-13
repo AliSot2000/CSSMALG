@@ -126,4 +126,29 @@ class Map {
     getIntersection(id) {
         return this._intersections[id];
     }
+
+    removeRoad(id) {
+        this.getRoad(id).remove();
+        delete this._roads[id];
+    }
+
+    removeIntersection(id) {
+        this.getIntersection(id).remove();
+        delete this._intersections[id];
+    }
+
+    exportSaveData() {
+        let data = {
+            roads: {},
+            intersections: {},
+            peripherals : {}
+        };
+        for (let id in this._roads) {
+            data.roads[id] = this._roads[id].exportSaveData();
+        }
+        for (let id in this._intersections) {
+            data.intersections[id] = this._intersections[id].exportSaveData();
+        }
+        return data;
+    }
 }

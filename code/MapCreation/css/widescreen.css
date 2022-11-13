@@ -296,7 +296,7 @@ body.grabbing * {
     font-weight: bold;
 }
 
-.del_lane {
+.delete {
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;

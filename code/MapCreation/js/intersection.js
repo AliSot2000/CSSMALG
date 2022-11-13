@@ -17,7 +17,7 @@ class Intersection {
 
     constructor(id, x, y) {
         this._id = id;
-        this._position = {x: x, y: y};
+        this._position = {x: snap(x), y: snap(y)};
         this._snap_points = {};
 
         this.createElement().updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
@@ -131,6 +131,7 @@ class Intersection {
         this._snap_points[snap_point].connected = true;
         this._snap_points[snap_point].road = road;
         this._snap_points[snap_point].point = point;
+        this._snap_points[snap_point].point_type = point_type;
 
         this.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
 
@@ -145,6 +146,7 @@ class Intersection {
         this._snap_points[snap_point].connected = false;
         delete this._snap_points[snap_point].road;
         delete this._snap_points[snap_point].point;
+        delete this._snap_points[snap_point].point_type;
         this._snap_points[snap_point].snap_point.css('display', 'block');
         this.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
     }
@@ -194,5 +196,50 @@ class Intersection {
         });
 
         return this;
+    }
+
+    getLinkedRoads() {
+        let roads = [];
+        for (let i = 0; i < this._directions.length; i++) {
+            if (this._snap_points[this._directions[i]].connected) {
+                roads.push(this._snap_points[this._directions[i]].road);
+            }
+        }
+        return roads;
+    }
+
+    remove() {
+        this._self.remove();
+        this._grab_point.remove();
+        for (let i = 0; i < this._directions.length; i++) {
+            let snap_point = this._snap_points[this._directions[i]];
+            if (snap_point.connected) {
+                snap_point.point.x = snap(snap_point.point.x);
+                snap_point.point.y = snap(snap_point.point.y);
+                snap_point.road._grab_points[snap_point.point_type + '_angle'].css('display', 'block');
+                snap_point.road.updatePosition().updateGrabPoints();
+                this.disconnectRoad(this._directions[i]);
+            }
+            snap_point.snap_point.remove();
+        }
+    }
+
+    exportSaveData() {
+        let data = {
+            id: this._id,
+            position: this._position,
+            roads: {}
+        };
+
+        for (let i = 0; i < this._directions.length; i++) {
+            if (this._snap_points[this._directions[i]].connected) {
+                data.roads[this._directions[i]] = {
+                    id: this._snap_points[this._directions[i]].road.getId(),
+                    point_type: this._snap_points[this._directions[i]].point_type
+                };
+            }
+        }
+
+        return data;
     }
 }
