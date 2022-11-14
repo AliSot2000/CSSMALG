@@ -12,10 +12,12 @@ enum ActorTypes {
 typedef struct Actor {
 	ActorTypes type;
 
-	float distance = 0.0f;
-	float speed;
-	float length;
-	float width;
+	bool waitingAtCrossing;
+	float distanceToCrossing = 0.0f;
+	float distanceToRight = 0.0f;
+	float speed; // m/s
+	float length; // m
+	float width; // m
 } actor_t;
 
 enum StreetTypes {
@@ -33,6 +35,8 @@ typedef struct Street {
 	float width;
 	float length;
 
+	// Ordered by distance to end, must be reordered when actors change position
+	// Furthermore, when vehicles swap position, their position to the left of the road side must be swapped aswell
 	std::vector<Actor*> traffic;
 } street_t;
 
