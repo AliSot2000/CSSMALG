@@ -290,3 +290,56 @@ function currentTime() {
     let now = new Date();
     return now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + '_' + now.getHours() + '-' + now.getMinutes() + '-' + now.getSeconds();
 }
+
+function downloadAsJson(data, filename = '') {
+    if (isEmpty(filename)) {
+        filename = currentTime();
+    }
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+    let downloadAnchorNode = document.createElement('a');
+    let exportName = currentTime();
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".map");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+function setCookie(name, value, expirationDays) {
+    const date = new Date();
+    date.setTime(date.getTime() + (expirationDays*86400000));
+    let expires = "expires="+ date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/;SameSite=Lax";
+}
+
+function getCookie(name) {
+    name += "=";
+    let cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let current = cookies[i].trim();
+        if ((current.indexOf(name)) === 0) {
+            return current.substring(name.length);
+        }
+    }
+    return null;
+}
+
+function getSnappedMiddleOfScreen() {
+    return {
+        x: snap((window.innerWidth / 2) + $(document).scrollLeft()),
+        y: snap((window.innerHeight / 2) + $(document).scrollTop())
+    }
+}
+
+function getConfig(name) {
+    try {
+        return CONFIG[name];
+    } catch (e) {
+        let defaultConfig = {
+            grid_size: 50,
+            road_border_width: 2,
+            road_lane_width: 20
+        };
+        return defaultConfig[name];
+    }
+}

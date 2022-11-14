@@ -23,6 +23,7 @@ class Road {
     _grab_points = null;
 
     _lane_width = 20;
+    _grid_size = 50;
 
     // Stored Values
     _lanes = null;
@@ -49,11 +50,16 @@ class Road {
 
         // Initialize Private Values
         this._id = id;
-        this._start = {x: snap(start_x), y: snap(start_y), angle: start_angle};
-        this._end = {x: snap(end_x), y: snap(end_y), angle: end_angle};
+        this._start = {x: snap(start_x, this._grid_size), y: snap(start_y, this._grid_size), angle: start_angle};
+        this._end = {x: snap(end_x, this._grid_size), y: snap(end_y, this._grid_size), angle: end_angle};
         this._lanes = [];
         this._grab_points = {};
         this._intersections = {start: null, end: null};
+
+        // Initialize the config values
+        this._lane_width = getConfig('road_lane_width');
+        this._grid_size = getConfig('grid_size');
+
 
         this.createElement().updatePosition().updateGrabPoints(); // Create the SVG elements, update the position, and update the grab points position
     }
@@ -307,8 +313,8 @@ class Road {
                         return;
                     }
 
-                    let x = snap(event.pageX); // Get the x position of the mouse
-                    let y = snap(event.pageY); // Get the y position of the mouse
+                    let x = snap(event.pageX, getConfig('grid_size')); // Get the x position of the mouse
+                    let y = snap(event.pageY, getConfig('grid_size')); // Get the y position of the mouse
 
                     if (point.x !== x || point.y !== y) { // If the position has changed
                         point.x = x; // Set the start x position

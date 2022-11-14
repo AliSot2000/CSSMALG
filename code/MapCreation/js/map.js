@@ -149,6 +149,50 @@ class Map {
         for (let id in this._intersections) {
             data.intersections[id] = this._intersections[id].exportSaveData();
         }
+        data.peripherals.saveDate = currentTime();
+        data.peripherals.type = 'save';
         return data;
+    }
+
+    load(data) {
+        if (data.peripherals.type !== 'save') {
+            alert("This is not a valid save!");
+            throw new Error('Invalid Save Data');
+        }
+
+        this.clear();
+
+        for (let id in data.intersections) {
+            let intersection = data.intersections[id];
+            let i = new Intersection(id, intersection.position.x, intersection.position.y);
+            this.addIntersection(i);
+        }
+
+        for (let id in data.roads) {
+            let road = data.roads[id];
+            let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle);
+            this.addRoad(r);
+            r.setLanes(road.lanes);
+            if (!isEmpty(road.intersections.start)) {
+                let intersection = this.getIntersection(road.intersections.start.id);
+                intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point);
+            }
+            if (!isEmpty(road.intersections.end)) {
+                let intersection = this.getIntersection(road.intersections.end.id);
+                intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point);
+            }
+        }
+
+        alert('Finished loading save of ' + data.peripherals.saveDate);
+
+    }
+
+    clear() {
+        for (let id in this._roads) {
+            this.removeRoad(id);
+        }
+        for (let id in this._intersections) {
+            this.removeIntersection(id);
+        }
     }
 }

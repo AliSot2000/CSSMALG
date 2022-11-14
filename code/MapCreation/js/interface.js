@@ -56,8 +56,9 @@ class Interface {
         this._body.empty();
         this._body.append('<button class="small_button">Back to Menu</button>');
         this._body.append('<h2>Roads</h2><div class="spacer"></div>');
-        let roads = this._map.getRoads();
-        for (let road in roads) {
+        let roads = Object.keys(this._map.getRoads());
+        roads.sort();
+        for (let road of roads) {
             this._body.append($('<button class="interface_button">' + road + '</button>').data('command', 'editRoad'));
         }
     }
@@ -77,14 +78,7 @@ class Interface {
         let lane;
         for (let i = 0; i < lanes.length; i++) {
             lane = lanes[i];
-            l = '<div class="lane"><div class="name">Lane <span>' + i + '</span></div>';
-            l += '<div class="input">Bike Only <input type="checkbox" name="bike"' + (lane.type === 'bike' ? ' checked' : '') + '></div>';
-            l += '<div class="input">Facing <input type="checkbox" name="facing"' + (lane.direction > 0 ? ' checked' : '') + '></div>';
-            l += '<button class="delete">Delete</button>';
-            l += '<div class="input">Left <input type="checkbox" name="left"' + (1 > 0 ? ' checked' : '') + '></div>';
-            l += '<div class="input">Forward <input type="checkbox" name="forward"' + (1 > 0 ? ' checked' : '') + '></div>';
-            l += '<div class="input">Right <input type="checkbox" name="right"' + (1 > 0 ? ' checked' : '') + '></div>';
-            l += '</div>';
+            l = this.generateLane(i, lane.type === 'bike', lane.direction > 0, lane.left, lane.forward, lane.right);
             lane_list.append(l);
         }
         this._body.append(lane_list);
@@ -127,14 +121,95 @@ class Interface {
         }
     }
 
+    loadSave() {
+        let save;
+        try {
+            let cookie = getCookie('map');
+            if (isEmpty(cookie)) {
+                alert('No save found');
+                throw new Error('No save found');
+            }
+            save = JSON.parse(decodeURIComponent(cookie));
+        } catch (e) {
+            alert('Error loading save');
+            throw new Error('Error loading save');
+        }
+        this._map.load(save);
+    }
+
+    addRoad() {
+        let mid = getSnappedMiddleOfScreen();
+        let road = this._map.createRoad(mid.x - 50, mid.y, degToRad(270), mid.x + 50, mid.y, degToRad(90));
+        road.setLanes([{
+            type: 'car',
+            direction: 1,
+            left: true,
+            forward: true,
+            right: true
+        }]);
+        this.editRoad(road.getId());
+    }
+
+    addIntersection() {
+        let mid = getSnappedMiddleOfScreen();
+        let intersection = this._map.createIntersection(mid.x, mid.y);
+        this.editIntersection(intersection.getId());
+    }
+
+    addLane() {
+        let count = this._body.find('.lane').length;
+        let html = this.generateLane(count);
+        this._body.find('.lanes').append(html);
+    }
+
+    generateLane(count, bike = false, facing = true, left = true, forward = true, right = true) {
+        let html = '<div class="lane"><div class="name">Lane <span>' + count + '</span></div>';
+        html += '<div class="input">Bike Only <input type="checkbox" name="bike"' + (bike ? ' checked' : '') + '></div>';
+        html += '<div class="input">Facing <input type="checkbox" name="facing"' + (facing ? ' checked' : '') + '></div>';
+        html += '<button class="delete">Delete</button>';
+        html += '<div class="input">Left <input type="checkbox" name="left"' + (left ? ' checked' : '') + '></div>';
+        html += '<div class="input">Forward <input type="checkbox" name="forward"' + (forward ? ' checked' : '') + '></div>';
+        html += '<div class="input">Right <input type="checkbox" name="right"' + (right ? ' checked' : '') + '></div>';
+        html += '</div>';
+        return html;
+    }
+
+    upload() {
+        this._body.empty();
+        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<h2>Upload</h2><div class="spacer"></div>');
+        this._body.append('<input type="file" class="inputfile" accept=".map"><div class="spacer"></div>');
+        this._body.append('<button class="interface_button">Upload</button>');
+    }
+
+    uploadSave() {
+        let files = document.getElementsByClassName('inputfile')[0].files;
+        if (isEmpty(files)) {
+            alert('No file selected');
+            return;
+        }
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let save = JSON.parse(e.target.result);
+            this._map.load(save);
+            this.overview();
+        }.bind(this);
+        reader.readAsText(files[0]);
+    }
+
     runCommand(command, data, target) {
-        console.log(command, data);
         switch (command) {
-            case 'Save':
-            case 'Load':
             case 'Export for Simulation':
-            case 'Import Save':
                 alert('Not Implemented');
+                break;
+            case 'Import Save':
+                this.upload();
+                break;
+            case 'Upload':
+                this.uploadSave();
+                break;
+            case 'Load':
+                this.loadSave();
                 break;
             case 'Edit Roads':
                 this.editRoads();
@@ -152,35 +227,13 @@ class Interface {
                 this.editIntersections();
                 break;
             case 'Add Road':
-                let rx = snap((window.innerWidth / 2) + $(document).scrollLeft());
-                let ry = snap((window.innerHeight / 2) + $(document).scrollTop());
-                let r = this._map.createRoad(rx - 50, ry, degToRad(270), rx + 50, ry, degToRad(90));
-                r.setLanes([{
-                    type: 'car',
-                    direction: 1,
-                    left: true,
-                    forward: true,
-                    right: true
-                }]);
-                this.editRoad(r.getId());
+                this.addRoad();
                 break;
             case 'Add Intersection':
-                let ix = snap((window.innerWidth / 2) + $(document).scrollLeft());
-                let iy = snap((window.innerHeight / 2) + $(document).scrollTop());
-                let i = this._map.createIntersection(ix, iy);
-                this.editIntersection(i.getId());
+                this.addIntersection();
                 break;
             case 'Add Lane':
-                let count = this._body.find('.lane').length;
-                let html = '<div class="lane"><div class="name">Lane <span>' + count + '</span></div>';
-                html += '<div class="input">Bike Only <input type="checkbox" name="bike"></div>';
-                html += '<div class="input">Facing <input type="checkbox" name="facing" checked></div>';
-                html += '<button class="delete">Delete</button>';
-                html += '<div class="input">Left <input type="checkbox" name="left" checked></div>';
-                html += '<div class="input">Forward <input type="checkbox" name="forward" checked></div>';
-                html += '<div class="input">Right <input type="checkbox" name="right" checked></div>';
-                html += '</div>';
-                this._body.find('.lanes').append(html);
+                this.addLane();
                 break;
             case 'Delete':
                 target.closest('.lane').remove();
@@ -194,14 +247,11 @@ class Interface {
                 this.editIntersections();
                 break;
             case 'Export as Save':
-                let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this._map.exportSaveData()));
-                let downloadAnchorNode = document.createElement('a');
-                let exportName = currentTime();
-                downloadAnchorNode.setAttribute("href",     dataStr);
-                downloadAnchorNode.setAttribute("download", exportName + ".json");
-                document.body.appendChild(downloadAnchorNode); // required for firefox
-                downloadAnchorNode.click();
-                downloadAnchorNode.remove();
+                downloadAsJson(this._map.exportSaveData());
+                break;
+            case 'Save':
+                setCookie('map', encodeURIComponent(JSON.stringify(this._map.exportSaveData())), 14);
+                break;
             case 'Save Road':
                 let lanes = [];
                 let lane;
