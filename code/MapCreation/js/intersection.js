@@ -13,11 +13,10 @@ class Intersection {
 
     _snap_points = null;
 
-    _default_size = 40;
-
     constructor(id, x, y) {
         this._id = id;
-        this._position = {x: snap(x), y: snap(y)};
+        let grid_size = getConfig('grid_size');
+        this._position = {x: snap(x, grid_size), y: snap(y, grid_size)};
         this._snap_points = {};
 
         this.createElement().updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
@@ -58,11 +57,12 @@ class Intersection {
             width: this._size,
             height: this._size
         });
+        let border_size = getConfig('road_border_width');
         this._border.attr({
-            x: (this._position.x - this._half_size) - (this.isConnected('west') ? 0 : 2),
-            y: (this._position.y - this._half_size) - (this.isConnected('north') ? 0 : 2),
-            width: this._size + (this.isConnected('west') ? 0 : 2) + (this.isConnected('east') ? 0 : 2),
-            height: this._size + (this.isConnected('north') ? 0 : 2) + (this.isConnected('south') ? 0 : 2)
+            x: (this._position.x - this._half_size) - (this.isConnected('west') ? 0 : border_size),
+            y: (this._position.y - this._half_size) - (this.isConnected('north') ? 0 : border_size),
+            width: this._size + (this.isConnected('west') ? 0 : border_size) + (this.isConnected('east') ? 0 : border_size),
+            height: this._size + (this.isConnected('north') ? 0 : border_size) + (this.isConnected('south') ? 0 : border_size)
         });
         return this;
     }
@@ -152,7 +152,7 @@ class Intersection {
     }
 
     getBiggestRoadWidth() {
-        let biggest = this._default_size;
+        let biggest = getConfig('road_lane_width') * 2;
         for (let i = 0; i < this._directions.length; i++) {
             if (this._snap_points[this._directions[i]].connected) {
                 biggest = Math.max(biggest, this._snap_points[this._directions[i]].road.getRoadWidth());
@@ -175,8 +175,8 @@ class Intersection {
             event.preventDefault(); // Prevent the default action
             let intersection = event.data.intersection; // Get the road from the event data
 
-            let x = snap(event.pageX); // Get the x position of the mouse
-            let y = snap(event.pageY); // Get the y position of the mouse
+            let x = snap(event.pageX, getConfig('grid_size')); // Get the x position of the mouse
+            let y = snap(event.pageY, getConfig('grid_size')); // Get the y position of the mouse
 
             if (intersection._position.x !== x || intersection._position.y !== y) { // If the position has changed
                 intersection._position.x = x; // Set the start x position
@@ -211,11 +211,12 @@ class Intersection {
     remove() {
         this._self.remove();
         this._grab_point.remove();
+        let grid_size = getConfig('grid_size');
         for (let i = 0; i < this._directions.length; i++) {
             let snap_point = this._snap_points[this._directions[i]];
             if (snap_point.connected) {
-                snap_point.point.x = snap(snap_point.point.x);
-                snap_point.point.y = snap(snap_point.point.y);
+                snap_point.point.x = snap(snap_point.point.x, grid_size);
+                snap_point.point.y = snap(snap_point.point.y, grid_size);
                 snap_point.road._grab_points[snap_point.point_type + '_angle'].css('display', 'block');
                 snap_point.road.updatePosition().updateGrabPoints();
                 this.disconnectRoad(this._directions[i]);

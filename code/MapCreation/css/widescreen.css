@@ -5,6 +5,7 @@
     --road_line: rgba(255, 255, 255, 1);
     --bike_line: rgba(255, 255, 0, 1);
     --bike_lane: rgba(255, 0, 0, 0.3);
+    --arrow_line: rgba(255, 255, 255, 1);
     --grid: rgba(0, 150, 150, 1);
     --grabbable: rgba(255, 255, 255, 1);
     --interface-background: rgba(255, 255, 255, 1);
@@ -39,7 +40,6 @@ body.grabbing * {
     height: 100%;
     z-index: 3;
 }
-
 
 .intersections {
     position: absolute;
@@ -97,6 +97,20 @@ body.grabbing * {
 .bike {
     stroke: var(--bike_line);
     stroke-dasharray: 5, 10;
+}
+
+.arrow_line {
+    stroke: var(--arrow_line);
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill: none;
+}
+
+.arrow_head {
+    stroke: var(--arrow_line);
+    stroke-width: 1;
+    stroke-opacity: 1;
+    fill: var(--arrow_line);
 }
 
 .grid_container {

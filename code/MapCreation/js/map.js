@@ -51,6 +51,24 @@ class Map {
         // Set the SVG element's attributes
         this._road_wrapper.addClass("roads");
         this._intersection_wrapper.addClass("intersections");
+
+        let def = $(svgElement("defs")); // Create the defs element
+        let arrow = $(svgElement("marker")); // Create the arrow element
+        arrow.attr({
+            id: 'arrow',
+            viewBox: '0 0 10 10',
+            refX: '3',
+            refY: '3',
+            orient: 'auto-start-reverse',
+            markerWidth: '6',
+            markerHeight: '6',
+        });
+        arrow.append($(svgElement("path")).addClass('arrow_head').attr({
+            d: 'M 0 0 L 6 3 L 0 6 z',
+        }));
+        def.append(arrow); // Add the arrow element to the defs element
+
+        this._road_wrapper.append(def); // Add the defs element to the SVG element
     }
 
     /**
@@ -184,7 +202,6 @@ class Map {
         }
 
         alert('Finished loading save of ' + data.peripherals.saveDate);
-
     }
 
     clear() {

@@ -1,7 +1,7 @@
 var map;
-var interface;
+var gui;
 
 window.addEventListener('load', function() {
     map = new Map();
-    interface = new Interface('div.interface', map);
+    gui = new Interface('div.interface', map);
 });

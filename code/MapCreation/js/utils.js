@@ -335,11 +335,20 @@ function getConfig(name) {
     try {
         return CONFIG[name];
     } catch (e) {
+        console.error('Default Config Used');
         let defaultConfig = {
             grid_size: 50,
             road_border_width: 2,
-            road_lane_width: 20
+            road_lane_width: 20,
+            arrow_length: 20
         };
         return defaultConfig[name];
     }
+}
+
+function createArrow(path) {
+    return $(svgElement("path")).addClass("arrow_line").attr({
+        'd': path,
+        'marker-end': 'url(#arrow)'
+    });
 }

@@ -20,17 +20,16 @@ class Road {
     _asphalt = null;
     _bike_lane_container = null;
     _lines_container = null;
+    _arrows_container = null;
     _grab_points = null;
 
-    _lane_width = 20;
-    _grid_size = 50;
 
     // Stored Values
     _lanes = null;
     _lines = [];
     _bike_lanes = [];
-
     _intersections = null;
+    _distance = null;
 
     /**
      * Creates a road
@@ -50,15 +49,13 @@ class Road {
 
         // Initialize Private Values
         this._id = id;
-        this._start = {x: snap(start_x, this._grid_size), y: snap(start_y, this._grid_size), angle: start_angle};
-        this._end = {x: snap(end_x, this._grid_size), y: snap(end_y, this._grid_size), angle: end_angle};
+        let grid_size = getConfig('grid_size');
+        this._start = {x: snap(start_x, grid_size), y: snap(start_y, grid_size), angle: start_angle};
+        this._end = {x: snap(end_x, grid_size), y: snap(end_y, grid_size), angle: end_angle};
         this._lanes = [];
         this._grab_points = {};
         this._intersections = {start: null, end: null};
 
-        // Initialize the config values
-        this._lane_width = getConfig('road_lane_width');
-        this._grid_size = getConfig('grid_size');
 
 
         this.createElement().updatePosition().updateGrabPoints(); // Create the SVG elements, update the position, and update the grab points position
@@ -79,7 +76,8 @@ class Road {
         this._asphalt = $(svgElement("path")).addClass("road_asphalt");
         this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container");
         this._lines_container = $(svgElement("g")).addClass("lines_container");
-        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container);
+        this._arrows_container = $(svgElement("g")).addClass("arrows_container");
+        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container);
 
         // Create the grab points
         let points = ['start', 'end', 'start_angle', 'end_angle'];
@@ -106,7 +104,7 @@ class Road {
         }
 
         if (data.type === 'bike') { // Check if the lane is a bike lane
-            let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', this._lane_width); // Create the bike lane
+            let lane = $(svgElement("path")).addClass("bike_path").attr('stroke-width', getConfig('road_lane_width')); // Create the bike lane
             this._bike_lanes.push(lane); // Add the bike lane to the bike lanes array
             this._bike_lane_container.append(lane); // Append the bike lane to the bike lane container
         }
@@ -133,7 +131,7 @@ class Road {
         let width = this.getRoadWidth(); // Calculate the width of the road
 
         this._asphalt.attr('stroke-width', width); // Set the width of the asphalt
-        this._border.attr('stroke-width', width + 4); // Set the width of the border
+        this._border.attr('stroke-width', width + getConfig('road_border_width') * 2); // Set the width of the border
 
         return this;
     }
@@ -156,28 +154,78 @@ class Road {
         let points = [];
 
         points.push(this._start);
-        for (let i = 1; i < 50; i++) {
-            points.push(deCasteljausAlgorithm(control_points, i / 50));
+        for (let i = 1; i < 100; i++) {
+            points.push(deCasteljausAlgorithm(control_points, i / 100));
         }
         points.push(this._end);
 
+        this._distance = approximateDistance(points);
+
         children = this._self.find('path.road_line');
         let mid = this.getRoadWidth() / 2;
-        let mid_lane = this._lane_width / 2;
+        let mid_lane = getConfig('road_lane_width') / 2;
+        let road_lane_width = getConfig('road_lane_width');
 
         for (let i = 0; i < children.length; i++) {
-            path = approximateBezierCurve(points, mid, this._lane_width * (i + 1));
+            path = approximateBezierCurve(points, mid, road_lane_width * (i + 1));
             $(children[i]).attr('d', path);
         }
 
+        let arrow_length = getConfig('arrow_length') / this._distance;
+        this._arrows_container.empty();
         children = this._self.find('path.bike_path');
         let bike_path = 0;
+        let arrow;
+        let lane;
+        let arrow_start;
+        let arrow_end;
+        let arrow_head;
+        let offset;
         for (let i = 0; i < this._lanes.length; i++) {
-            if (this._lanes[i].type === 'bike') {
-                path = approximateBezierCurve(points, mid, this._lane_width * i + mid_lane);
+            lane = this._lanes[i];
+            offset = road_lane_width * i + mid_lane;
+            if (lane.type === 'bike') {
+                path = approximateBezierCurve(points, mid, offset);
                 $(children[bike_path++]).attr('d', path);
             }
+            if (lane.direction < 0) {
+                arrow_start = deCasteljausAlgorithm(control_points, arrow_length);
+                arrow_end = deCasteljausAlgorithm(control_points, arrow_length * 2);
+                arrow_head = deCasteljausAlgorithm(control_points, arrow_length * 0.2);
+            } else {
+                arrow_start = deCasteljausAlgorithm(control_points, 1 - arrow_length);
+                arrow_end = deCasteljausAlgorithm(control_points, 1 - arrow_length * 2);
+                arrow_head = deCasteljausAlgorithm(control_points, 1 - arrow_length * 0.2);
+            }
+
+            arrow = 'M ' + calculateOffsetCosCoords(arrow_start.x, mid, offset, arrow_start.angle);
+            arrow += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset, arrow_start.angle);
+            path = ' L ' + calculateOffsetCosCoords(arrow_end.x, mid, offset, arrow_end.angle);
+            path += ',' + calculateOffsetSinCoords(arrow_end.y, mid, offset, arrow_end.angle);
+
+            this._arrows_container.append($(svgElement("path")).addClass("arrow_line").attr('d', arrow + path));
+
+            if (lane.forward) {
+                path = ' L ' + calculateOffsetCosCoords(arrow_head.x, mid, offset, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_head.y, mid, offset, arrow_head.angle);
+
+                this._arrows_container.append(createArrow(arrow + path));
+            }
+            if (lane.left) {
+                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, mid, offset + 6 * lane.direction, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset + 6 * lane.direction, arrow_head.angle);
+
+                this._arrows_container.append(createArrow(arrow + path));
+            }
+            if (lane.right) {
+                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, mid, offset - 6 * lane.direction, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset - 6 * lane.direction, arrow_head.angle);
+
+                this._arrows_container.append(createArrow(arrow + path));
+            }
         }
+
+
 
         return this;
     }
@@ -258,7 +306,7 @@ class Road {
     }
 
     getRoadWidth() {
-        return this._lane_width * this._lanes.length;
+        return getConfig('road_lane_width') * this._lanes.length;
     }
 
     /**
