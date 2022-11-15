@@ -1,8 +1,6 @@
-# Agent-Based Modeling and Social System Simulation 2019 (Template)
-(text between brackets to be removed)
-
-> * Group Name: (be creative!)
-> * Group participants names: (alphabetically sorted by last name)
+# Agent-Based Modeling and Social System Simulation 2022
+> * Group Name: BBAG (Big Brain Algorithm Group)
+> * Group participants names: Nils Egger, Sophia Herrmann, Jan Hochstrasser, Jannick Schröer, Alexander Sotoudeh
 > * Project Title: (can be changed later)
 
 ## General Introduction
