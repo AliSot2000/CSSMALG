@@ -3,6 +3,17 @@
     --road_border: rgba(200, 200, 200, 1);
     --road_asphalt: rgba(120, 120, 120, 1);
     --road_line: rgba(255, 255, 255, 1);
+    --bike_line: rgba(255, 255, 0, 1);
+    --bike_lane: rgba(255, 0, 0, 0.3);
+    --arrow_line: rgba(255, 255, 255, 1);
+    --grid: rgba(0, 150, 150, 1);
+    --grabbable: rgba(255, 255, 255, 1);
+    --interface-background: rgba(255, 255, 255, 1);
+    --interface-back: rgba(80, 80, 80, 1);
+    --interface-border: rgba(180, 180, 180, 1);
+    --interface-hover: rgba(220, 220, 220, 1);
+    --interface_width: 20rem;
+    --interface-border-width: 2px;
 }
 
 html, body {
@@ -10,27 +21,41 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: scroll;
     background-color: var(--background);
     position: relative;
+    cursor: crosshair;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.drawing_area {
+body.grabbing * {
+    cursor: grabbing !important;
+}
+
+.roads {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 3;
 }
 
-.map {
+.intersections {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 4;
+}
+
+.intersection_border {
+    fill: var(--road_border);
+}
+
+.intersection_asphalt {
+    fill: var(--road_asphalt);
 }
 
 .road_border {
@@ -46,8 +71,251 @@ html, body {
 }
 
 .road_line {
-    stroke-width: 1;
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill: none;
+}
+
+.bike_path {
+    stroke: var(--bike_lane);
+    fill: none;
+}
+
+.car_direction {
+    stroke: var(--road_line);
+}
+
+.car {
     stroke: var(--road_line);
     stroke-dasharray: 5, 10;
+}
+
+.bike_direction {
+    stroke: var(--bike_line);
+}
+
+.bike {
+    stroke: var(--bike_line);
+    stroke-dasharray: 5, 10;
+}
+
+.arrow_line {
+    stroke: var(--arrow_line);
+    stroke-width: 2;
+    stroke-opacity: 1;
     fill: none;
+}
+
+.arrow_head {
+    stroke: var(--arrow_line);
+    stroke-width: 1;
+    stroke-opacity: 1;
+    fill: var(--arrow_line);
+}
+
+.grid_container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.gradient_inner {
+    stop-color: var(--grid);
+    stop-opacity: 1;
+}
+
+.gradient_outer {
+    stop-color: var(--background);
+    stop-opacity: 1;
+}
+
+.grid {
+    stroke-width: 1;
+}
+
+.grabpoints {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.snappoints {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+}
+
+.grabbable {
+    background-color: var(--grabbable);
+    opacity: 0.7;
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    transform: translate(-5px, -5px);
+    cursor: grab;
+    z-index: 5;
+}
+
+.grabbed {
+    opacity: 1;
+    cursor: grabbing;
+}
+
+.snap_point {
+    background-color: var(--grabbable);
+    opacity: 0;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    transform: translate(-25px, -25px);
+    cursor: grab;
+    z-index: 6;
+}
+
+.interface {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    width: var(--interface_width);
+    height: 70%;
+    transform: translate(0, -50%);
+    background-color: var(--interface-background);
+    z-index: 20;
+    border-radius: 1rem 0 0 1rem;
+    border-left: var(--interface-border-width) solid var(--interface-border);
+    border-top: var(--interface-border-width) solid var(--interface-border);
+    border-bottom: var(--interface-border-width) solid var(--interface-border);
+    transition-duration: 0.5s;
+    box-sizing: border-box;
+    cursor: default;
+}
+
+.interface_hidden {
+    transform: translate(calc(var(--interface_width) + var(--interface-border-width)), -50%);
+    transition-duration: 0.5s;
+}
+
+.interface_toggle {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    top: 2rem;
+    left: -2rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--interface-background);
+    border-radius: 5px 0 0 5px;
+    border: 2px solid var(--interface-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.interface_toggle:hover {
+    background-color: var(--interface-hover);
+    transition-duration: 0.2s;
+}
+
+.interface_body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+.interface_body .interface_button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border-radius: 5px;
+    border: 2px solid var(--interface-border);
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--interface-background);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.interface_body .interface_button:hover {
+    background-color: var(--interface-hover);
+    transition-duration: 0.2s;
+}
+
+.interface_body > h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.interface_body > .spacer {
+    height: 1rem;
+    width: 100%;
+}
+
+.small_button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background-color: transparent;
+    border-radius: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 0.2rem;
+    width: max-content;
+    cursor: pointer;
+    color: var(--interface-back);
+}
+
+.small_button:hover {
+    background-color: var(--interface-hover);
+    transition-duration: 0.2s;
+}
+
+.lane {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--interface-border);
+    padding: 0.5rem 0;
+}
+
+.lane:last-child {
+    border-bottom: none;
+}
+
+.name {
+    font-weight: bold;
+}
+
+.delete {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background-color: #ff3333;
+    border-radius: 5px;
+    color: white;
 }
