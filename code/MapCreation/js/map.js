@@ -54,17 +54,17 @@ class Map {
 
         let def = $(svgElement("defs")); // Create the defs element
         let arrow = $(svgElement("marker")); // Create the arrow element
-        arrow.attr({
-            id: 'arrow',
-            viewBox: '0 0 10 10',
-            refX: '3',
-            refY: '3',
-            orient: 'auto-start-reverse',
-            markerWidth: '6',
-            markerHeight: '6',
+        arrow.attr({ // Create arrow end marker
+            id: 'arrow', // Set the id
+            viewBox: '0 0 10 10', // Set the viewbox
+            refX: '3', // Set the x reference
+            refY: '3', // Set the y reference
+            orient: 'auto-start-reverse', // Set the orientation
+            markerWidth: '6', // Set the width
+            markerHeight: '6', // Set the height
         });
         arrow.append($(svgElement("path")).addClass('arrow_head').attr({
-            d: 'M 0 0 L 6 3 L 0 6 z',
+            d: 'M 0 0 L 6 3 L 0 6 z', // Create the arrow head
         }));
         def.append(arrow); // Add the arrow element to the defs element
 
@@ -73,7 +73,6 @@ class Map {
 
     /**
      * Generates a random ID for a road or intersection
-     * @function generateId
      * @return {string} A unique random ID
      */
     generateId() {
@@ -84,31 +83,39 @@ class Map {
         return id; // Return the id
     }
 
+    /**
+     * Checks if an ID is already in use
+     * @param {string} id The ID you would like to check
+     * @returns {boolean} True if the ID is in use, false if it is not
+     */
     idInUse(id) {
-        return id in this._roads || id in this._intersections;
+        return id in this._roads || id in this._intersections; // Check if the id is in use
     }
 
     /**
      * Adds a road to the map
-     * @function addRoad
      * @param  {Road} road The road you would like to add
      * @return {Map} Self reference for chaining
      */
     addRoad(road) {
-        this._roads[road.getId()] = road;
-        this._road_wrapper.append(road.getElement());
+        this._roads[road.getId()] = road; // Add the road to the roads object
+        this._road_wrapper.append(road.getElement()); // Add the road to the SVG element
         return this;
     }
 
+    /**
+     * Adds an intersection to the map
+     * @param {Intersection} intersection The intersection you would like to add
+     * @returns {Map} Self reference for chaining
+     */
     addIntersection(intersection) {
-        this._intersections[intersection.getId()] = intersection;
-        this._intersection_wrapper.append(intersection.getElement());
+        this._intersections[intersection.getId()] = intersection; // Add the intersection to the intersections object
+        this._intersection_wrapper.append(intersection.getElement()); // Add the intersection to the SVG element
         return this;
     }
 
     /**
      * Adds a road to the map
-     * @function createRoad
      * @param  {number} start_x The x coordinate of the start of the road
      * @param  {number} start_y The y coordinate of the start of the road
      * @param  {number} start_angle The angle of the start of the road
@@ -123,93 +130,142 @@ class Map {
         return road;
     }
 
+    /**
+     * Adds an intersection to the map
+     * @param {number} x The x coordinate of the intersection
+     * @param {number} y The y coordinate of the intersection
+     * @returns {Intersection} The intersection object you created
+     */
     createIntersection(x, y) {
-        let intersection = new Intersection(this.generateId(), x, y);
-        this.addIntersection(intersection);
+        let intersection = new Intersection(this.generateId(), x, y); // Create the intersection
+        this.addIntersection(intersection); // Add the intersection to the map
         return intersection;
     }
 
+    /**
+     * Gets a roads from the map
+     * @returns {Object} The roads object
+     */
     getRoads() {
         return this._roads;
     }
 
+    /**
+     * Gets an intersections from the map
+     * @returns {Object} The intersections object
+     */
     getIntersections() {
         return this._intersections;
     }
 
+    /**
+     * Gets a road with a certain id
+     * @param {string} id The id of the road you would like to get
+     * @returns {Road} The road object
+     */
     getRoad(id) {
         return this._roads[id];
     }
 
+    /**
+     * Gets an intersection with a certain id
+     * @param {string} id The id of the intersection you would like to get
+     * @returns {Intersection} The intersection object
+     */
     getIntersection(id) {
         return this._intersections[id];
     }
 
+    /**
+     * Removes a road from the map
+     * @param {string} id The id of the road you would like to remove
+     */
     removeRoad(id) {
-        this.getRoad(id).remove();
-        delete this._roads[id];
+        this.getRoad(id).remove(); // Remove the road from the SVG element
+        delete this._roads[id]; // Remove the road from the roads object
     }
 
+    /**
+     * Removes an intersection from the map
+     * @param {string} id The id of the intersection you would like to remove
+     */
     removeIntersection(id) {
-        this.getIntersection(id).remove();
-        delete this._intersections[id];
+        this.getIntersection(id).remove(); // Remove the intersection from the SVG element
+        delete this._intersections[id]; // Remove the intersection from the intersections object
     }
 
+    /**
+     * Exports the map as a object that can be used to recreate or load the map
+     * @returns {Object} The map object
+     */
     exportSaveData() {
-        let data = {
-            roads: {},
-            intersections: {},
-            peripherals : {}
+        let data = { // Initialize the data object
+            roads: {}, // Initialize the roads object
+            intersections: {}, // Initialize the intersections object
+            peripherals : {} // Initialize the peripherals object
         };
-        for (let id in this._roads) {
-            data.roads[id] = this._roads[id].exportSaveData();
+
+        for (let id in this._roads) { // Loop through the roads
+            data.roads[id] = this._roads[id].exportSaveData(); // Add the road to the roads object
         }
-        for (let id in this._intersections) {
-            data.intersections[id] = this._intersections[id].exportSaveData();
+
+        for (let id in this._intersections) { // Loop through the intersections
+            data.intersections[id] = this._intersections[id].exportSaveData(); // Add the intersection to the intersections object
         }
-        data.peripherals.saveDate = currentTime();
-        data.peripherals.type = 'save';
+
+        data.peripherals.saveDate = currentTime(); // Add the save date to the peripherals object
+        data.peripherals.type = 'save'; // Add the type of the export
         return data;
     }
 
+    /**
+     * Loads a map from a save object
+     * @param data The save object
+     */
     load(data) {
-        if (data.peripherals.type !== 'save') {
-            alert("This is not a valid save!");
+        if (data.peripherals.type !== 'save') { // Check if the data is a save object
+            alert("This is not a valid save!"); // Alert the user that the data is not a save object
             throw new Error('Invalid Save Data');
         }
 
-        this.clear();
+        this.clear(); // Clear the map
 
-        for (let id in data.intersections) {
-            let intersection = data.intersections[id];
-            let i = new Intersection(id, intersection.position.x, intersection.position.y);
-            this.addIntersection(i);
+        // Add the intersections first, so that we can add the roads and directly snap them to the intersections
+        for (let id in data.intersections) { // Loop through the intersections
+            let intersection = data.intersections[id]; // Get the intersection
+            let i = new Intersection(id, intersection.position.x, intersection.position.y); // Create the intersection
+            this.addIntersection(i); // Add the intersection to the map
         }
 
-        for (let id in data.roads) {
-            let road = data.roads[id];
-            let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle);
-            this.addRoad(r);
-            r.setLanes(road.lanes);
-            if (!isEmpty(road.intersections.start)) {
-                let intersection = this.getIntersection(road.intersections.start.id);
-                intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point);
+        for (let id in data.roads) { // Loop through the roads
+            let road = data.roads[id]; // Get the road
+            let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle); // Create the road
+            this.addRoad(r); // Add the road to the map
+            r.setLanes(road.lanes); // Set the lanes of the road
+            if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
+                let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
+                intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point); // Snap the road to the intersection
             }
-            if (!isEmpty(road.intersections.end)) {
-                let intersection = this.getIntersection(road.intersections.end.id);
-                intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point);
+            if (!isEmpty(road.intersections.end)) { // Check if the road has an intersection at the end
+                let intersection = this.getIntersection(road.intersections.end.id); // Get the intersection
+                intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point); // Snap the road to the intersection
             }
         }
 
-        alert('Finished loading save of ' + data.peripherals.saveDate);
+        alert('Finished loading save of ' + data.peripherals.saveDate); // Notify the user that the save has been loaded
     }
 
+    /**
+     * Clears the map
+     * @returns {Map} Self Reference for chaining
+     */
     clear() {
-        for (let id in this._roads) {
-            this.removeRoad(id);
+        for (let id in this._roads) { // Loop through the roads
+            this.removeRoad(id); // Remove the road
         }
-        for (let id in this._intersections) {
-            this.removeIntersection(id);
+        for (let id in this._intersections) { // Loop through the intersections
+            this.removeIntersection(id); // Remove the intersection
         }
+        return this;
     }
 }

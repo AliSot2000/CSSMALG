@@ -4,7 +4,7 @@
  * @returns {Element} The SVG element
  */
 function svgElement(type) {
-    return document.createElementNS("http://www.w3.org/2000/svg", type);
+    return document.createElementNS("http://www.w3.org/2000/svg", type); // Return the SVG element
 }
 
 /**
@@ -48,15 +48,15 @@ function isEmpty(variable) {
  * @returns {number} The new coordinates of the point
  */
 function calculateOffsetCosCoords (coordinates, mid, offset, angle) {
-    let length = mid - offset;
+    let length = mid - offset; // Calculate the length of the offset
 
-    if (length === 0) {
-        return coordinates;
+    if (length === 0) { // Check if the length is 0
+        return coordinates; // Return the original coordinates
     }
 
-    let target = (Math.cos(angle) * length);
+    let target = (Math.cos(angle) * length); // Calculate the target offset
 
-    return coordinates + target;
+    return coordinates + target; // Return the new coordinates
 }
 
 /**
@@ -74,7 +74,7 @@ function calculateOffsetSinCoords(coordinates, mid, offset, angle) {
         return coordinates; // Return the original coordinates
     }
 
-    let target = (Math.sin(angle) * length); // Calculate the target coordinates
+    let target = (Math.sin(angle) * length); // Calculate the target offset
 
     return coordinates - target; // Return the new coordinates
 }
@@ -181,7 +181,7 @@ function angleBetweenPoints(rp, pq, rq) {
 }
 
 /**
- * Approximates a bezier curve using the de Casteljau algorithm.
+ * Approximates a bezier curve using the de Casteljau algorithm. (Read more on [wikipedia](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm))
  * The algorithm is recursive and will continue to split the lines between the control points until we reach a point on the curve.
  * @param {Array} controlPoints Array of points to approximate
  * @param {number} percent The percent along the curve to approximate
@@ -257,22 +257,20 @@ function approximateBezierCurve(points, mid, offset) {
  * @returns {number} The sum of the distance between the points
  */
 function approximateDistance(points) {
-    let d = 0;
-    for (let i = 0; i < points.length - 1; i++) {
-        d += distance(points[i], points[i + 1]);
+    let d = 0; // Create a new variable for the distance
+    for (let i = 0; i < points.length - 1; i++) { // Loop through the points
+        d += distance(points[i], points[i + 1]); // Add the distance between the points
     }
-    return d;
+    return d; // Return the distance
 }
 
-function minOffset(offset, min = 100) {
-    if (offset < 0) {
-        return Math.min(offset, -min);
-    }
-    return Math.max(offset, min);
-}
-
+/**
+ * Converts a point on the compass to a radian angle
+ * @param {string} direction The direction on the compass. Should be one of the following: north, east, south, west
+ * @returns {number} The angle in radians
+ */
 function directionToRad(direction) {
-    switch (direction) {
+    switch (direction) { // Switch through the direction
         case 'north':
             return 0;
         case 'east':
@@ -281,49 +279,80 @@ function directionToRad(direction) {
             return Math.PI;
         case 'west':
             return Math.PI * 0.5;
-        default:
+        default: // If the direction is not valid, throw an error
             throw new Error('Invalid direction');
     }
 }
 
+/**
+ * Formats the current time to a string
+ * @returns {string} The current time
+ */
 function currentTime() {
-    let now = new Date();
-    return now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + '_' + now.getHours() + '-' + now.getMinutes() + '-' + now.getSeconds();
+    let now = new Date(); // Get the current date
+    // Format the date to a string yyyy-mm-dd_hh-mm-ss
+    return now.getFullYear() + '-' + padDateTime(now.getMonth() + 1) + '-' + padDateTime(now.getDay()) + '_' + padDateTime(now.getHours()) + '-' + padDateTime(now.getMinutes()) + '-' + padDateTime(now.getSeconds());
 }
 
-function downloadAsJson(data, filename = '') {
-    if (isEmpty(filename)) {
-        filename = currentTime();
-    }
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    let downloadAnchorNode = document.createElement('a');
-    let exportName = currentTime();
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".map");
+/**
+ * Pads a number with a 0 if it is less than 10
+ * @param {number} time The number to pad
+ * @returns {string} The padded number
+ */
+function padDateTime(time) {
+    return String(time).padStart(2, '0');
+}
+
+/**
+ * Downloads a file as a json
+ * @param data The data to download
+ * @param filename The filename of the file
+ * @param extension The extension of the file
+ */
+function downloadAsJson(data, filename = 'data', extension = 'json') {
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); // Create a data string
+    let downloadAnchorNode = document.createElement('a'); // Create a new anchor element
+    downloadAnchorNode.setAttribute("href",     dataStr); // Set the href attribute
+    downloadAnchorNode.setAttribute("download", filename + '.' + extension); // Set the download attribute
     document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    downloadAnchorNode.click(); // Click the anchor element
+    downloadAnchorNode.remove(); // Remove the anchor element
 }
 
+/**
+ * Sets a cookie. (Doesn't work in localhost in Safari)
+ * @param {string} name The name of the cookie
+ * @param {string} value The value of the cookie
+ * @param {number} expirationDays The number of days the cookie should be valid
+ */
 function setCookie(name, value, expirationDays) {
-    const date = new Date();
-    date.setTime(date.getTime() + (expirationDays*86400000));
-    let expires = "expires="+ date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/;SameSite=Lax";
+    const date = new Date();  // Create a new date
+    date.setTime(date.getTime() + (expirationDays*86400000)); // Set the time to the current time + the expiration days
+    let expires = "expires="+ date.toUTCString(); // Create a string with the expiration date
+    document.cookie = name + "=" + value + ";" + expires + ";path=/"; // Set the cookie
 }
 
+/**
+ * Gets a cookie
+ * @param {string} name The name of the cookie
+ * @returns {string} The value of the cookie
+ */
 function getCookie(name) {
-    name += "=";
-    let cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        let current = cookies[i].trim();
-        if ((current.indexOf(name)) === 0) {
-            return current.substring(name.length);
+    name += "="; // Add the = to the name
+    let cookies = document.cookie.split(';'); // Split the cookies
+    for (let i = 0; i < cookies.length; i++) { // Loop through the cookies
+        let current = cookies[i].trim(); // Trim the current cookie
+        if ((current.indexOf(name)) === 0) { // Check if the current cookie starts with the name
+            return current.substring(name.length); // Return the value of the cookie
         }
     }
-    return null;
+    throw new Error('Cookie not found');
 }
 
+/**
+ * Gets the snapped middle of the screen with scroll offset.
+ * @returns {Object} The middle of the screen
+ */
 function getSnappedMiddleOfScreen() {
     return {
         x: snap((window.innerWidth / 2) + $(document).scrollLeft()),
@@ -331,22 +360,33 @@ function getSnappedMiddleOfScreen() {
     }
 }
 
+/**
+ * Gets the config value or returns the default config value
+ * @param {string} name The name of the config value
+ * @returns {*} The config value
+ */
 function getConfig(name) {
     try {
-        return CONFIG[name];
+        return CONFIG[name]; // Try to get the config value
     } catch (e) {
-        console.error('Default Config Used');
-        let defaultConfig = {
+        console.warn('Default Config Used'); // Log a warning, since the config should always be set
+        let defaultConfig = { // Create a default config
             grid_size: 50,
             road_border_width: 2,
             road_lane_width: 20,
             arrow_length: 20
         };
-        return defaultConfig[name];
+        return defaultConfig[name]; // Return the default config value
     }
 }
 
+/**
+ * Creates a arrow element with a given path
+ * @param {string} path The path of the arrow
+ * @returns {jQuery} The arrow element
+ */
 function createArrow(path) {
+    // Create a new arrow element
     return $(svgElement("path")).addClass("arrow_line").attr({
         'd': path,
         'marker-end': 'url(#arrow)'

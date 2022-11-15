@@ -114,12 +114,16 @@ class Road {
         return this;
     }
 
+    /**
+     * Deletes the all Lanes of the road
+     * @returns {Road} Self reference for chaining
+     */
     deleteAllLanes() {
-        this._lanes = [];
-        this._lines = [];
-        this._bike_lanes = [];
-        this._lines_container.empty();
-        this._bike_lane_container.empty();
+        this._lanes = []; // Clear the lanes array
+        this._lines = []; // Clear the lines array
+        this._bike_lanes = []; // Clear the bike lanes array
+        this._lines_container.empty(); // Empty the lines container
+        this._bike_lane_container.empty(); // Empty the bike lane container
         return this;
     }
 
@@ -143,37 +147,39 @@ class Road {
     updatePosition() {
         let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
 
-        let c = this.calculateCubicPoints(this._start, this._end);
-        let control_points = [this._start, c.pm, c.qm , this._end];
-        let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`;
+        let c = this.calculateCubicPoints(this._start, this._end); // Calculate the cubic points
+        let control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
+        let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`; // Create the path
 
-        for (let i = 0; i < children.length; i++) {
-            $(children[i]).attr('d', path);
+        for (let i = 0; i < children.length; i++) { // Loop through the children
+            $(children[i]).attr('d', path); // Set the path of the child
         }
 
-        let points = [];
+        let points = []; // Create the points array
 
-        points.push(this._start);
-        for (let i = 1; i < 100; i++) {
-            points.push(deCasteljausAlgorithm(control_points, i / 100));
+        points.push(this._start); // Add the start point to the points array
+        for (let i = 1; i < 100; i++) { // Loop through the points
+            points.push(deCasteljausAlgorithm(control_points, i / 100)); // Add the point to the points array
         }
-        points.push(this._end);
+        points.push(this._end); // Add the end point to the points array
 
-        this._distance = approximateDistance(points);
+        this._distance = approximateDistance(points); // Calculate the distance of the road
 
-        children = this._self.find('path.road_line');
-        let mid = this.getRoadWidth() / 2;
-        let mid_lane = getConfig('road_lane_width') / 2;
-        let road_lane_width = getConfig('road_lane_width');
+        children = this._self.find('path.road_line'); // Get the road lines
+        let mid = this.getRoadWidth() / 2; // Calculate the middle of the road
+        let mid_lane = getConfig('road_lane_width') / 2; // Calculate the middle of the lane
+        let road_lane_width = getConfig('road_lane_width'); // Get the road lane width
 
-        for (let i = 0; i < children.length; i++) {
-            path = approximateBezierCurve(points, mid, road_lane_width * (i + 1));
-            $(children[i]).attr('d', path);
+        for (let i = 0; i < children.length; i++) { // Loop through the road lines
+            path = approximateBezierCurve(points, mid, road_lane_width * (i + 1)); // Calculate the path of the road line
+            $(children[i]).attr('d', path); // Set the path of the road line
         }
 
-        let arrow_length = getConfig('arrow_length') / this._distance;
-        this._arrows_container.empty();
-        children = this._self.find('path.bike_path');
+        let arrow_length = getConfig('arrow_length') / this._distance; // Calculate the length of the arrow
+        this._arrows_container.empty(); // Empty the arrows container
+        children = this._self.find('path.bike_path'); // Get the bike lanes
+
+        // Create variables for loop
         let bike_path = 0;
         let arrow;
         let lane;
@@ -181,30 +187,34 @@ class Road {
         let arrow_end;
         let arrow_head;
         let offset;
-        for (let i = 0; i < this._lanes.length; i++) {
-            lane = this._lanes[i];
-            offset = road_lane_width * i + mid_lane;
-            if (lane.type === 'bike') {
-                path = approximateBezierCurve(points, mid, offset);
-                $(children[bike_path++]).attr('d', path);
+
+        for (let i = 0; i < this._lanes.length; i++) { // Loop through the lanes
+            lane = this._lanes[i]; // Get the lane
+            offset = road_lane_width * i + mid_lane; // Calculate the offset of the lane
+            if (lane.type === 'bike') { // Check if the lane is a bike lane
+                path = approximateBezierCurve(points, mid, offset); // Calculate the path of the bike lane
+                $(children[bike_path++]).attr('d', path); // Set the path of the bike lane
             }
-            if (lane.direction < 0) {
-                arrow_start = deCasteljausAlgorithm(control_points, arrow_length);
-                arrow_end = deCasteljausAlgorithm(control_points, arrow_length * 2);
-                arrow_head = deCasteljausAlgorithm(control_points, arrow_length * 0.2);
+            if (lane.direction < 0) { // Check if the lane is going backwards
+                arrow_start = deCasteljausAlgorithm(control_points, arrow_length); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(control_points, arrow_length * 2); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(control_points, arrow_length * 0.2); // Calculate the head of the arrow
             } else {
-                arrow_start = deCasteljausAlgorithm(control_points, 1 - arrow_length);
-                arrow_end = deCasteljausAlgorithm(control_points, 1 - arrow_length * 2);
-                arrow_head = deCasteljausAlgorithm(control_points, 1 - arrow_length * 0.2);
+                arrow_start = deCasteljausAlgorithm(control_points, 1 - arrow_length); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(control_points, 1 - arrow_length * 2); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(control_points, 1 - arrow_length * 0.2); // Calculate the head of the arrow
             }
 
+            // Create the arrow path
             arrow = 'M ' + calculateOffsetCosCoords(arrow_start.x, mid, offset, arrow_start.angle);
             arrow += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset, arrow_start.angle);
             path = ' L ' + calculateOffsetCosCoords(arrow_end.x, mid, offset, arrow_end.angle);
             path += ',' + calculateOffsetSinCoords(arrow_end.y, mid, offset, arrow_end.angle);
 
+            // Create the arrow line
             this._arrows_container.append($(svgElement("path")).addClass("arrow_line").attr('d', arrow + path));
 
+            // Create the arrow head depending on the directions you can go
             if (lane.forward) {
                 path = ' L ' + calculateOffsetCosCoords(arrow_head.x, mid, offset, arrow_head.angle);
                 path += ',' + calculateOffsetSinCoords(arrow_head.y, mid, offset, arrow_head.angle);
@@ -224,8 +234,6 @@ class Road {
                 this._arrows_container.append(createArrow(arrow + path));
             }
         }
-
-
 
         return this;
     }
@@ -268,19 +276,19 @@ class Road {
         let lane_type;
         let line;
 
-        for (let i = 0; i < this._lines.length; i++) {
-            line = this._lines[i].removeClass('car_direction bike_direction bike car');
+        for (let i = 0; i < this._lines.length; i++) { // Loop through the lines
+            line = this._lines[i].removeClass('car_direction bike_direction bike car'); // Remove all the line types
 
-            lane_type = '';
+            lane_type = ''; // Reset the lane type
 
-            if (this._lanes[i].type === 'bike' || this._lanes[i + 1].type === 'bike') {
-                lane_type += 'bike';
+            if (this._lanes[i].type === 'bike' || this._lanes[i + 1].type === 'bike') { // Check if the lane is a bike lane
+                lane_type += 'bike'; // Add the bike lane type
             } else {
-                lane_type += 'car';
+                lane_type += 'car'; // Add the car lane type
             }
 
-            if(this._lanes[i].direction !== this._lanes[i + 1].direction) {
-                lane_type += '_direction';
+            if(this._lanes[i].direction !== this._lanes[i + 1].direction) { // Check if the lane is going backwards
+                lane_type += '_direction'; // Add the direction lane type
             }
 
             line.addClass(lane_type);
@@ -401,6 +409,10 @@ class Road {
         return this;
     }
 
+    /**
+     * Stops dragging a road
+     * @param {string} type The type of grab point
+     */
     stopDrag(type) {
         this._grab_points[type].removeClass('grabbed'); // Remove the grabbing class from the grab point
 
@@ -408,75 +420,109 @@ class Road {
         $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
     }
 
+    /**
+     * Connects the road to an intersection
+     * @param {Intersection} intersection The intersection to connect to
+     * @param {string} type The side of the road that is connected
+     * @param {string} snap_point The snap point that is connected
+     */
     connectToIntersection(intersection, type, snap_point) {
-        this._grab_points[type + '_angle'].css('display', 'none');
-        this._intersections[type] = {intersection: intersection, snap_point: snap_point};
-        this.updatePosition().updateGrabPoints();
+        this._grab_points[type + '_angle'].css('display', 'none'); // Hide the angle grab point
+        this._intersections[type] = {intersection: intersection, snap_point: snap_point}; // Set the intersection
+        this.updatePosition().updateGrabPoints(); // Update the position and grab points
     }
 
+    /**
+     * Gets all the lanes of the road
+     * @returns {Array} The lanes of the road
+     */
     getLanes() {
-        return this._lanes;
+        return this._lanes; // Return the lanes
     }
 
+    /**
+     * Returns all connected intersections
+     * @returns {Object} The connected intersections
+     */
     getLinkedIntersections() {
-        return this._intersections;
+        return this._intersections; // Return the intersections
     }
 
+    /**
+     * Disconnects the road from an intersection if it is connected
+     * @param {string} type The side of the road that is connected
+     */
     checkAndDissconnectFromIntersection(type) {
-        if (!isEmpty(this._intersections[type])) {
-            this._grab_points[type + '_angle'].css('display', 'block');
-            window.setTimeout(function (intersection, snap_point) {
-                intersection.disconnectRoad(snap_point)
-            }, 500, this._intersections[type].intersection, this._intersections[type].snap_point);
-            this._intersections[type] = null;
+        if (!isEmpty(this._intersections[type])) { // If the road is connected to an intersection
+            this._grab_points[type + '_angle'].css('display', 'block'); // Show the angle grab point
+            window.setTimeout(function (intersection, snap_point) { // Wait for the road to be removed from the intersection
+                intersection.disconnectRoad(snap_point) // Disconnect the road from the intersection
+            }, 500, this._intersections[type].intersection, this._intersections[type].snap_point); // Set the timeout and parameters
+            this._intersections[type] = null; // Set the intersection to null
         }
     }
 
+    /**
+     * Deletes itself
+     */
     remove() {
-        this.checkAndDissconnectFromIntersection('start');
-        this.checkAndDissconnectFromIntersection('end');
-        this._self.remove();
+        this.checkAndDissconnectFromIntersection('start'); // Check and disconnect from the start intersection
+        this.checkAndDissconnectFromIntersection('end'); // Check and disconnect from the end intersection
+        this._self.remove(); // Remove the road from the DOM
         let points = ['start', 'end', 'start_angle', 'end_angle'];
-        for (let i = 0; i < points.length; i++) {
-            this._grab_points[points[i]].remove();
+        for (let i = 0; i < points.length; i++) { // Loop through the grab points
+            this._grab_points[points[i]].remove(); // Remove the grab point from the DOM
         }
     }
 
+    /**
+     * Updates the lanes of the road
+     * @param {Array} lanes The new lanes
+     * @returns {Road} Self reference for chaining
+     */
     setLanes(lanes) {
-        this.deleteAllLanes();
+        this.deleteAllLanes(); // Delete all the lanes
         for (let i = 0; i < lanes.length; i++) {
-            this.createLane(lanes[i]);
+            this.createLane(lanes[i]); // Create a new lane
         }
-        this.updateRoadWidth().updateLineTypes().updatePosition().updateGrabPoints();
+        this.updateRoadWidth().updateLineTypes().updatePosition().updateGrabPoints(); // Update the road width, line types, position and grab points
 
-        if (!isEmpty(this._intersections.start)) {
-            this._intersections.start.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
+        if (!isEmpty(this._intersections.start)) { // If the road is connected to an intersection
+            this._intersections.start.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints(); // Update the intersection width, height, position, grab point and snap points
         }
-        if (!isEmpty(this._intersections.end)) {
-            this._intersections.end.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
+        if (!isEmpty(this._intersections.end)) { // If the road is connected to an intersection
+            this._intersections.end.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints(); // Update the intersection width, height, position, grab point and snap points
         }
+
+        return this;
     }
 
+
+    /**
+     * Exports the road to an object
+     * @returns {Object} The exported road
+     */
     exportSaveData() {
         let data = {
-            id: this._id,
-            start: this._start,
-            end: this._end,
-            lanes: this._lanes,
-            intersections: {}
+            id: this._id, // The id of the road
+            start: this._start, // The start point of the road
+            end: this._end, // The end point of the road
+            lanes: this._lanes, // The lanes of the road
+            intersections: {}, // The intersections of the road
+            distance: this._distance // The distance of the road
         };
 
-        if (!isEmpty(this._intersections.start)) {
-            data.intersections.start = {
-                id: this._intersections.start.intersection.getId(),
-                snap_point: this._intersections.start.snap_point
+        if (!isEmpty(this._intersections.start)) { // If the start of the road is connected to an intersection
+            data.intersections.start = { // Set the start intersection
+                id: this._intersections.start.intersection.getId(), // The id of the intersection
+                snap_point: this._intersections.start.snap_point // The snap point of the intersection
             }
         }
 
-        if (!isEmpty(this._intersections.end)) {
-            data.intersections.end = {
-                id: this._intersections.end.intersection.getId(),
-                snap_point: this._intersections.end.snap_point
+        if (!isEmpty(this._intersections.end)) { // If the end of the road is connected to an intersection
+            data.intersections.end = { // Set the end intersection
+                id: this._intersections.end.intersection.getId(), // The id of the intersection
+                snap_point: this._intersections.end.snap_point // The snap point of the intersection
             }
         }
 

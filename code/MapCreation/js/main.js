@@ -1,7 +1,7 @@
-var map;
-var gui;
+var map; // The map object
+var gui; // The GUI object
 
-window.addEventListener('load', function() {
-    map = new Map();
-    gui = new Interface('div.interface', map);
+window.addEventListener('load', function() { // When the window has finished loading
+    map = new Map(); // Create a new map object
+    gui = new Interface('div.interface', map); // Create a new GUI object
 });
