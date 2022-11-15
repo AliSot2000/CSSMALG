@@ -8,7 +8,7 @@ project ("CSSMALG")
 include_directories("include")
 
 # Add source to this project's executable.
-add_executable (CSSMALG "src/main.cpp" "src/actors.cpp")
+add_executable (CSSMALG "src/main.cpp"  "src/routing.cpp" "src/update.cpp")
 
 set_property(TARGET CSSMALG PROPERTY CXX_STANDARD 20)
 

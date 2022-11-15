@@ -1,21 +1,53 @@
 #pragma once
 
 #include <cstdint>
+#include <queue>
+#include <vector>
 
-class Actor {
-
-public:
-	virtual void doAction() = 0;
+enum ActorTypes {
+	Bike,
+	Car
 };
 
-class Car : public Actor {
+typedef struct Actor {
+	ActorTypes type;
 
-public:
-		void doAction() override;
+	bool waitingAtCrossing;
+	float distanceToCrossing = 0.0f;
+	float distanceToRight = 0.0f;
+	float speed; // m/s
+	float length; // m
+	float width; // m
+} actor_t;
+
+enum StreetTypes {
+	OnlyBike,
+	OnlyCar,
+	Both
 };
 
-class Bicycle : public Actor {
+typedef struct Street {
+	int32_t start;
+	int32_t end;
 
-public:
-	void doAction() override;
-};
+	struct Street* opposite = nullptr;
+	StreetTypes type;
+	float width;
+	float length;
+
+	// Ordered by distance to end, must be reordered when actors change position
+	// Furthermore, when vehicles swap position, their position to the left of the road side must be swapped aswell
+	std::vector<Actor*> traffic;
+} street_t;
+
+typedef struct Crossing {
+	int32_t id;
+	std::vector<Street*> inbound;
+	std::vector<Street*> outbound;
+} crossing_t;
+
+typedef struct World {
+	std::vector<Crossing> crossings;
+	std::vector<Street> streets;
+	std::vector<Actor> actors;
+} world_t;
