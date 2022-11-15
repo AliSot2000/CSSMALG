@@ -30,6 +30,11 @@ class Road {
     _bike_lanes = [];
     _intersections = null;
     _distance = null;
+    _control_points = null;
+
+    // Simulation
+    _simulation_mode = false;
+    _simulation_points = [];
 
     /**
      * Creates a road
@@ -134,6 +139,7 @@ class Road {
     updateRoadWidth() {
         let width = this.getRoadWidth(); // Calculate the width of the road
 
+        this._mid = width / 2; // Calculate the middle of the road
         this._asphalt.attr('stroke-width', width); // Set the width of the asphalt
         this._border.attr('stroke-width', width + getConfig('road_border_width') * 2); // Set the width of the border
 
@@ -148,30 +154,29 @@ class Road {
         let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
 
         let c = this.calculateCubicPoints(this._start, this._end); // Calculate the cubic points
-        let control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
+        this._control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
         let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`; // Create the path
 
         for (let i = 0; i < children.length; i++) { // Loop through the children
             $(children[i]).attr('d', path); // Set the path of the child
         }
 
-        let points = []; // Create the points array
+        let points = []; // Clear the points array
 
         points.push(this._start); // Add the start point to the points array
         for (let i = 1; i < 100; i++) { // Loop through the points
-            points.push(deCasteljausAlgorithm(control_points, i / 100)); // Add the point to the points array
+            points.push(deCasteljausAlgorithm(this._control_points, i / 100)); // Add the point to the points array
         }
         points.push(this._end); // Add the end point to the points array
 
         this._distance = approximateDistance(points); // Calculate the distance of the road
 
         children = this._self.find('path.road_line'); // Get the road lines
-        let mid = this.getRoadWidth() / 2; // Calculate the middle of the road
         let mid_lane = getConfig('road_lane_width') / 2; // Calculate the middle of the lane
         let road_lane_width = getConfig('road_lane_width'); // Get the road lane width
 
         for (let i = 0; i < children.length; i++) { // Loop through the road lines
-            path = approximateBezierCurve(points, mid, road_lane_width * (i + 1)); // Calculate the path of the road line
+            path = approximateBezierCurve(points, this._mid, road_lane_width * (i + 1)); // Calculate the path of the road line
             $(children[i]).attr('d', path); // Set the path of the road line
         }
 
@@ -192,44 +197,44 @@ class Road {
             lane = this._lanes[i]; // Get the lane
             offset = road_lane_width * i + mid_lane; // Calculate the offset of the lane
             if (lane.type === 'bike') { // Check if the lane is a bike lane
-                path = approximateBezierCurve(points, mid, offset); // Calculate the path of the bike lane
+                path = approximateBezierCurve(points, this._mid, offset); // Calculate the path of the bike lane
                 $(children[bike_path++]).attr('d', path); // Set the path of the bike lane
             }
             if (lane.direction < 0) { // Check if the lane is going backwards
-                arrow_start = deCasteljausAlgorithm(control_points, arrow_length); // Calculate the start of the arrow
-                arrow_end = deCasteljausAlgorithm(control_points, arrow_length * 2); // Calculate the end of the arrow
-                arrow_head = deCasteljausAlgorithm(control_points, arrow_length * 0.2); // Calculate the head of the arrow
+                arrow_start = deCasteljausAlgorithm(this._control_points, arrow_length); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(this._control_points, arrow_length * 2); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(this._control_points, arrow_length * 0.2); // Calculate the head of the arrow
             } else {
-                arrow_start = deCasteljausAlgorithm(control_points, 1 - arrow_length); // Calculate the start of the arrow
-                arrow_end = deCasteljausAlgorithm(control_points, 1 - arrow_length * 2); // Calculate the end of the arrow
-                arrow_head = deCasteljausAlgorithm(control_points, 1 - arrow_length * 0.2); // Calculate the head of the arrow
+                arrow_start = deCasteljausAlgorithm(this._control_points, 1 - arrow_length); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 2); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 0.2); // Calculate the head of the arrow
             }
 
             // Create the arrow path
-            arrow = 'M ' + calculateOffsetCosCoords(arrow_start.x, mid, offset, arrow_start.angle);
-            arrow += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset, arrow_start.angle);
-            path = ' L ' + calculateOffsetCosCoords(arrow_end.x, mid, offset, arrow_end.angle);
-            path += ',' + calculateOffsetSinCoords(arrow_end.y, mid, offset, arrow_end.angle);
+            arrow = 'M ' + calculateOffsetCosCoords(arrow_start.x, this._mid, offset, arrow_start.angle);
+            arrow += ',' + calculateOffsetSinCoords(arrow_start.y, this._mid, offset, arrow_start.angle);
+            path = ' L ' + calculateOffsetCosCoords(arrow_end.x, this._mid, offset, arrow_end.angle);
+            path += ',' + calculateOffsetSinCoords(arrow_end.y, this._mid, offset, arrow_end.angle);
 
             // Create the arrow line
             this._arrows_container.append($(svgElement("path")).addClass("arrow_line").attr('d', arrow + path));
 
             // Create the arrow head depending on the directions you can go
             if (lane.forward) {
-                path = ' L ' + calculateOffsetCosCoords(arrow_head.x, mid, offset, arrow_head.angle);
-                path += ',' + calculateOffsetSinCoords(arrow_head.y, mid, offset, arrow_head.angle);
+                path = ' L ' + calculateOffsetCosCoords(arrow_head.x, this._mid, offset, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_head.y, this._mid, offset, arrow_head.angle);
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
             if (lane.left) {
-                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, mid, offset + 6 * lane.direction, arrow_head.angle);
-                path += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset + 6 * lane.direction, arrow_head.angle);
+                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, this._mid, offset + 6 * lane.direction, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_start.y, this._mid, offset + 6 * lane.direction, arrow_head.angle);
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
             if (lane.right) {
-                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, mid, offset - 6 * lane.direction, arrow_head.angle);
-                path += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset - 6 * lane.direction, arrow_head.angle);
+                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, this._mid, offset - 6 * lane.direction, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_start.y, this._mid, offset - 6 * lane.direction, arrow_head.angle);
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
@@ -527,5 +532,31 @@ class Road {
         }
 
         return data;
+    }
+
+    getCarPosition(percent, offset) {
+        let point;
+        offset += this._mid / 2;
+        if (this._simulation_mode) {
+            point = this._simulation_points[Math.round(percent * 1000)];
+        } else {
+            point = deCasteljausAlgorithm(this._control_points, percent);
+        }
+        point.x = calculateOffsetCosCoords(point.x, this._mid, offset, point.angle);
+        point.y = calculateOffsetSinCoords(point.y, this._mid, offset, point.angle);
+        return point;
+    }
+
+    simulationMode(set) {
+        this._simulation_mode = set;
+        if (set) {
+            this._simulation_points.push(this._start); // Add the start point to the points array
+            for (let i = 1; i < 1000; i++) { // Loop through the points
+                this._simulation_points.push(deCasteljausAlgorithm(this._control_points, i / 1000)); // Add the point to the points array
+            }
+            this._simulation_points.push(this._end); // Add the end point to the points array
+        } else {
+            this._simulation_points = [];
+        }
     }
 }

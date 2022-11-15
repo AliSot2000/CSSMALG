@@ -162,7 +162,7 @@ body.grabbing * {
     position: absolute;
     transform: translate(-5px, -5px);
     cursor: grab;
-    z-index: 5;
+    z-index: 9;
 }
 
 .grabbed {
@@ -177,8 +177,7 @@ body.grabbing * {
     height: 50px;
     position: absolute;
     transform: translate(-25px, -25px);
-    cursor: grab;
-    z-index: 6;
+    z-index: 10;
 }
 
 .interface {
@@ -318,4 +317,26 @@ body.grabbing * {
     background-color: #ff3333;
     border-radius: 5px;
     color: white;
+}
+
+.agent {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.car {
+    background-image: url("../car.png");
+}
+
+.bike {
+    background-image: url("../bike.png");
+}
+
+.agents {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 7;
 }

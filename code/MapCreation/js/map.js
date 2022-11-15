@@ -7,11 +7,13 @@
 class Map {
     _self = null;
     _road_wrapper = null;
+    _agents_wrapper = null;
     _roads = null;
     _intersections = null;
     _grid = null;
     _grab_points = null;
     _snap_points = null;
+    _agents = null;
 
     /**
      * Creates a Map
@@ -26,16 +28,19 @@ class Map {
         this._intersection_wrapper = $(svgElement("svg")); // Create the SVG element
         this._roads = {}; // Create the roads object
         this._intersections = {}; // Create the intersections object
+        this._agents = {}; // Create the agents object
         this._grid = new Grid(50); // Create the grid object
         this._grab_points = $('<div class="grabpoints"></div>');
         this._snap_points = $('<div class="snappoints"></div>');
+        this._agents_wrapper = $('<div class="agents"></div>');
 
         this._self.append(
             this._road_wrapper,
             this._intersection_wrapper,
             this._grab_points,
             this._snap_points,
-            this._grid.getGrid()
+            this._grid.getGrid(),
+            this._agents_wrapper
         ); // Add the SVG element to the map
 
         // Make the grabpoints element draggable
@@ -89,7 +94,7 @@ class Map {
      * @returns {boolean} True if the ID is in use, false if it is not
      */
     idInUse(id) {
-        return id in this._roads || id in this._intersections; // Check if the id is in use
+        return id in this._roads || id in this._intersections || id in this._agents; // Check if the id is in use
     }
 
     /**
@@ -267,5 +272,26 @@ class Map {
             this.removeIntersection(id); // Remove the intersection
         }
         return this;
+    }
+
+    addAgent(agent) {
+        this._agents[agent.id] = agent;
+        this._agents_wrapper.append(agent.getElement());
+        return this;
+    }
+
+    createAgent(type) {
+        let agent;
+        switch (type) {
+            case 'car':
+                agent = new Car(this.generateId());
+                break;
+            case 'bike':
+                agent = new Bike(this.generateId());
+                break;
+            default:
+                throw new Error('Invalid Agent Type');
+        }
+        this.addAgent(agent);
     }
 }
