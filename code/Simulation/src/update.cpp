@@ -115,12 +115,13 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 			checkNewDistance();
 		}
 
-		actor->distanceToRight = maxDistanceLane;
-
-	/* else {
-		// Car can go as fast as it wants on this lane
-		// but lets check if it could go right with the same speed
-	} */
+		// This distinction removes vehicles trying to switch to lanes more to the right when standing still at the crossing.
+		if (allowedDistance > 0.0f) {
+			actor->distanceToRight = maxDistanceLane;
+		}
+		else {
+			actor->distanceToRight = originLane;
+		}
 
 	return allowedDistance;
 }
@@ -145,6 +146,10 @@ void updateStreets(world_t* world, const float timeDelta) {
 			
 			// Will make sure traffic is still sorted
 			std::sort(start, end, [](const Actor* a, const Actor* b) {
+				// this if statement make sure that no vehicles have the same ordering
+				if (a->distanceToCrossing == b->distanceToCrossing) {
+					return a < b;
+				}
 				return a->distanceToCrossing <= b->distanceToCrossing;
 			});
 		}
