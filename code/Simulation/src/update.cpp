@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cassert>
+#include <iostream>
 
 #include "update.hpp"
 
@@ -43,14 +44,12 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 
 	float maxForwardDistance = std::min(distance, actor->distanceToCrossing); // dont overshoot crossing
 	const float actorRearEnd = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
-	while (iter != trafficEnd) {
+	for (TrafficIterator iter = trafficStart; iter != trafficEnd; iter++) {
 		// If space is less than MIN_DISTANCE_BETWEEN_VEHICLES then there is no space to drive forward
 		Actor* other = *iter;
 
-		if (actor == other) { 
-			iter++;
+		if (actor == other)
 			continue;
-		};
 
 		// they are in the same lane, thus collision could happen
 		if (actor->distanceToRight == other->distanceToRight) { // TEST IF SAME LANE AND RETURN SPACE TO FORWARD VEHICLE
@@ -67,8 +66,6 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 			// Calculates maximum distance vehicle is allowed to move forward
 			maxForwardDistance = std::min(maxForwardDistance, actor->distanceToCrossing - otherRearEnd);
 		}
-
-		iter++;
 	}
 
 	assert(maxForwardDistance >= 0.0f && "Vehicle can not drive backwards.");
@@ -86,27 +83,29 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 	const float distance = actor->speed * timeDelta;
 	float allowedDistance = maxSpaceInFrontOfVehicle(street,  actor, timeDelta, trafficStart, trafficEnd);
 
-	// Car could go faster but is not able to
-	if (allowedDistance < distance) {
-		// Try if there are open lanes
+			// Try if there are open lanes
 		const int originLane = actor->distanceToRight;
 		int maxDistanceLane = actor->distanceToRight;
 
 		// Swaps maxDistanceLane if allowed distance to drive in other lane is higher
 		auto checkNewDistance = [&]() {
 			float newAllowedDistance = maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
-			if (newAllowedDistance > allowedDistance) {
+			if (newAllowedDistance > allowedDistance || (newAllowedDistance == allowedDistance && actor->distanceToRight < maxDistanceLane)) {
 				maxDistanceLane = actor->distanceToRight;
 				allowedDistance = newAllowedDistance;
 			}
 		};
 
-		// This while loop is efficient because the traffic in front has been cached, hence no new lookups will appear
-		// Furthermore there are at most c * #Lanes many vehicles in front, which could be in driving range
-		while (actor->distanceToRight + actor->width < street.width) {
-			// there is still space to go left
-			actor->distanceToRight += LANE_WIDTH;
-			checkNewDistance();
+		// Car could go faster but is not able to
+		if (allowedDistance < distance) {
+
+			// This while loop is efficient because the traffic in front has been cached, hence no new lookups will appear
+			// Furthermore there are at most c * #Lanes many vehicles in front, which could be in driving range
+			while (actor->distanceToRight + actor->width < street.width) {
+				// there is still space to go left
+				actor->distanceToRight += LANE_WIDTH;
+				checkNewDistance();
+			}
 		}
 
 		// Same as above, but checks for free lanes on the left.
@@ -117,7 +116,11 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 		}
 
 		actor->distanceToRight = maxDistanceLane;
-	}
+
+	/* else {
+		// Car can go as fast as it wants on this lane
+		// but lets check if it could go right with the same speed
+	} */
 
 	return allowedDistance;
 }
