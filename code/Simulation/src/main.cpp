@@ -1,48 +1,57 @@
+/*
+	TODO Overtaking if opposite street is free
+*/
+
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 #include "actors.hpp"
 #include "routing.hpp"
+#include "update.hpp"
 
 int main(int argc, char* argv[]) {
 
 	world_t world;
 
-	world.crossings = std::vector<Crossing>(4);
-	world.streets = std::vector<Street>(5);
+	Actor actor1 = {
+		.type = ActorTypes::Car,
+		.distanceToCrossing = 50.0f,
+		.distanceToRight = 0,
+		.speed = 0.00f,
+		.length = 4.5f,
+		.width = 1.5f,
+	};
 
-	world.crossings[0].id = 0;
-	world.crossings[1].id = 1;
-	world.crossings[2].id = 2;
-	world.crossings[3].id = 3;
+	Actor actor2 = {
+		.type = ActorTypes::Car,
+		.distanceToCrossing = 90.0f,
+		.distanceToRight = 0,
+		.speed = 2.78f,
+		.length = 4.5f,
+		.width = 1.5f,
+	};
 
-	world.streets[0].start = 0;
-	world.streets[0].end = 2;
-	world.streets[0].length = -2.0f;
+	world.streets = std::vector<Street>(1);
+	Street& street = world.streets[0];
+	street.length = 100.0f;
+	street.width = 4.0f;
+	street.type = StreetTypes::Both;
 
-	world.streets[1].start = 2;
-	world.streets[1].end = 3;
-	world.streets[1].length = 2.0f;
+	street.traffic.push_back(&actor1);
+	street.traffic.push_back(&actor2);
 
-	world.streets[2].start = 3;
-	world.streets[2].end = 1;
-	world.streets[2].length = -1.0f;
+	float maxTime = 46.0f; // 10 seconds
+	const float deltaTime = 0.0334f; // "30fps" 
 
-	world.streets[3].start = 1;
-	world.streets[3].end = 0;
-	world.streets[3].length = 4.0f;
+	while (maxTime > 0.0f) {
+		maxTime -= deltaTime;
+		updateStreets(&world, deltaTime);
 
-	world.streets[4].start = 1;
-	world.streets[4].end = 2;
-	world.streets[4].length = 3.0f;
-
-	SPT spt = calculateShortestPathTree(&world);
-	std::queue<int32_t> path = retrievePath(spt, 3, 2);
-
-	while (!path.empty()) {
-		int32_t step = path.front();
-		std::cout << "Step: " << step << std::endl;
-		path.pop();
+		std::cout << "--- FRAME ---" << std::endl;
+		for (const auto& actor : street.traffic) {
+			std::cout << "Lane" << actor->distanceToRight / LANE_WIDTH << "   " << std::setprecision(4) << actor->distanceToCrossing << std::endl;
+		}
 	}
 
 	return 0;
