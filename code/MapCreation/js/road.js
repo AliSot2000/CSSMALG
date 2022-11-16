@@ -576,4 +576,8 @@ class Road {
     removeAgents(count) {
         this._agents.splice(-count, count);
     }
+
+    removeAgent(index) {
+        this._agents.splice(index, 1);
+    }
 }

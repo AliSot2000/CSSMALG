@@ -13,14 +13,26 @@ class Simulation {
     }
 
     createElements() {
-        this._slider_wrapper = $('<div></div>').addClass('slider_wrapper');
+        let close_button = $('<button>Close</button>').addClass('simulation_input');
         this._slider = $('<input></input>').attr({
             'type': 'range',
             'min': 0,
             'max': 100,
             'value': 0,
         }).addClass('slider');
-        this._slider_wrapper.append(this._slider);
-        this._self.append(this._slider_wrapper);
+
+        let html = '<button class="simulation_input">Play</button>';
+        html += '<select class="simulation_input">';
+        html += '<option value="0.25">0.25x</option>';
+        html += '<option value="0.5">0.5x</option>';
+        html += '<option value="1" selected>1x</option>';
+        html += '<option value="2">2x</option>';
+        html += '<option value="4">4x</option>';
+        html += '</select>';
+        this._self.append(
+            close_button,
+            this._slider,
+            html
+        );
     }
 }
