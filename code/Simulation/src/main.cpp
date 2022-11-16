@@ -1,5 +1,5 @@
 /*
-	TODO Overtaking if opposite street is free
+	TODO feature: Overtaking if opposite street is free
 */
 
 #include <iostream>
@@ -54,13 +54,23 @@ int main(int argc, char* argv[]) {
 	float maxTime = 46.0f; // 10 seconds
 	const float deltaTime = 0.0334f; // "30fps" 
 
+	std::vector<int32_t> lastLanes = {-1, -1, -1};
 	while (maxTime > 0.0f) {
 		maxTime -= deltaTime;
 		updateStreets(&world, deltaTime);
 
-		std::cout << "--- FRAME ---" << std::endl;
+		std::vector<int32_t> currentLanes;
+
 		for (const auto& actor : street.traffic) {
-			std::cout << std::setprecision(4) << &actor << " L" << actor->distanceToRight / LANE_WIDTH << "   D" << actor->distanceToCrossing << std::endl;
+			currentLanes.push_back(actor->distanceToRight);
+		}
+
+		if (lastLanes != currentLanes) {
+			std::cout << "--- FRAME ---" << std::endl;
+			for (const auto& actor : street.traffic) {
+				std::cout << std::setprecision(4) << "S" << actor->speed << "\tL" << actor->distanceToRight / LANE_WIDTH << "\tD" << actor->distanceToCrossing << std::endl;
+			}
+			lastLanes = currentLanes;
 		}
 	}
 
