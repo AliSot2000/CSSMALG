@@ -101,7 +101,7 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 
 			// This while loop is efficient because the traffic in front has been cached, hence no new lookups will appear
 			// Furthermore there are at most c * #Lanes many vehicles in front, which could be in driving range
-			while (actor->distanceToRight + actor->width < street.width) {
+			while (actor->distanceToRight + LANE_WIDTH < street.width) {
 				// there is still space to go left
 				actor->distanceToRight += LANE_WIDTH;
 				checkNewDistance();
