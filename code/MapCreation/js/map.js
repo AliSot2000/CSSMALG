@@ -227,7 +227,7 @@ class Map {
             data.intersections[id] = this._intersections[id].exportSaveData(); // Add the intersection to the intersections object
         }
 
-        data.peripherals.saveDate = currentTime(); // Add the save date to the peripherals object
+        data.peripherals.date = currentTime(); // Add the save date to the peripherals object
         data.peripherals.type = 'save'; // Add the type of the export
         return data;
     }
@@ -266,7 +266,7 @@ class Map {
             }
         }
 
-        alert('Finished loading save of ' + data.peripherals.saveDate); // Notify the user that the save has been loaded
+        alert('Finished loading save of ' + data.peripherals.date); // Notify the user that the save has been loaded
     }
 
     /**

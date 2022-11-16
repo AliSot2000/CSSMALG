@@ -412,4 +412,5 @@ body.grabbing * {
     border: 2px solid var(--simulation-input-border);
     border-radius: 5px;
     padding: 0.25rem 0.75rem;
+    margin: 0 0.5rem;
 }
