@@ -386,6 +386,12 @@ body.grabbing * {
     outline: none;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    opacity: 1;
+}
+
+.slider:disabled {
+    opacity: 0.5;
+    transition-duration: 0.2s;
 }
 
 .slider::-webkit-slider-thumb {

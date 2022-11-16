@@ -98,12 +98,14 @@ class Simulation {
                     this.jumpToStep(0)
                 }
                 this._speed_dial.prop('disabled', true);
+                this._slider.prop('disabled', true);
                 this.runSimulation();
                 target.text('Pause');
                 break;
             case 'Pause':
                 this.stopSimulation();
                 this._speed_dial.prop('disabled', false);
+                this._slider.prop('disabled', false);
                 target.text('Play');
                 break;
             case 'Close':
@@ -150,6 +152,7 @@ class Simulation {
         clearInterval(this._interval);
         this._play_button.text('Play');
         this._speed_dial.prop('disabled', false);
+        this._slider.prop('disabled', false);
         return this;
     }
 
