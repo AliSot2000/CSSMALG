@@ -25,9 +25,18 @@ int main(int argc, char* argv[]) {
 
 	Actor actor2 = {
 		.type = ActorTypes::Car,
-		.distanceToCrossing = 90.0f,
+		.distanceToCrossing = 70.0f,
 		.distanceToRight = 0,
 		.speed = 2.78f,
+		.length = 4.5f,
+		.width = 1.5f,
+	};
+
+	Actor actor3 = {
+		.type = ActorTypes::Car,
+		.distanceToCrossing = 90.0f,
+		.distanceToRight = 0,
+		.speed = 4.0f,
 		.length = 4.5f,
 		.width = 1.5f,
 	};
@@ -40,6 +49,7 @@ int main(int argc, char* argv[]) {
 
 	street.traffic.push_back(&actor1);
 	street.traffic.push_back(&actor2);
+	street.traffic.push_back(&actor3);
 
 	float maxTime = 46.0f; // 10 seconds
 	const float deltaTime = 0.0334f; // "30fps" 
@@ -50,7 +60,7 @@ int main(int argc, char* argv[]) {
 
 		std::cout << "--- FRAME ---" << std::endl;
 		for (const auto& actor : street.traffic) {
-			std::cout << "Lane" << actor->distanceToRight / LANE_WIDTH << "   " << std::setprecision(4) << actor->distanceToCrossing << std::endl;
+			std::cout << &actor << " Lane" << actor->distanceToRight / LANE_WIDTH << "   " << std::setprecision(4) << actor->distanceToCrossing << std::endl;
 		}
 	}
 
