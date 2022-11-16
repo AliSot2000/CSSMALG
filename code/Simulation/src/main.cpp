@@ -51,7 +51,8 @@ int main(int argc, char* argv[]) {
 	street.traffic.push_back(&actor2);
 	street.traffic.push_back(&actor3);
 
-	float maxTime = 46.0f; // 10 seconds
+	const float runtime = 46.0f;
+	float maxTime = runtime; 
 	const float deltaTime = 0.0334f; // "30fps" 
 
 	std::vector<int32_t> lastLanes = {-1, -1, -1};
@@ -66,10 +67,11 @@ int main(int argc, char* argv[]) {
 		}
 
 		if (lastLanes != currentLanes) {
-			std::cout << "--- FRAME ---" << std::endl;
+			std::cout << std::setprecision(3) << "FRAME " << runtime - maxTime << "s" << std::endl;
 			for (const auto& actor : street.traffic) {
-				std::cout << std::setprecision(4) << "S" << actor->speed << "\tL" << actor->distanceToRight / LANE_WIDTH << "\tD" << actor->distanceToCrossing << std::endl;
+				std::cout << std::setprecision(4) << "\tS" << actor->speed << "\tL" << actor->distanceToRight / LANE_WIDTH << "\tD" << actor->distanceToCrossing << std::endl;
 			}
+			std::cout << std::endl;
 			lastLanes = currentLanes;
 		}
 	}
