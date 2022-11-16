@@ -19,6 +19,7 @@ class Interface {
     constructor(selector = 'div.interface', map = null) {
         this._self = $(selector).data('interface', this); // The interface element
         this._map = map; // The map that is connected to the interface
+        this._simulation_interface = new Simulation('div.simulation', this._map, this); // The simulation interface
 
         this.createElements() // Create the elements for the interface
         this.overview(); // Show the overview
