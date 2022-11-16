@@ -181,6 +181,10 @@ class Map {
         return this._intersections[id];
     }
 
+    getAgent(id) {
+        return this._agents[id];
+    }
+
     /**
      * Removes a road from the map
      * @param {string} id The id of the road you would like to remove
@@ -197,6 +201,11 @@ class Map {
     removeIntersection(id) {
         this.getIntersection(id).remove(); // Remove the intersection from the SVG element
         delete this._intersections[id]; // Remove the intersection from the intersections object
+    }
+
+    removeAgent(id) {
+        this.getAgent(id).remove(); // Remove the agent from the SVG element
+        delete this._agents[id]; // Remove the agent from the agents object
     }
 
     /**
@@ -265,6 +274,9 @@ class Map {
      * @returns {Map} Self Reference for chaining
      */
     clear() {
+        for (let id in this._agents) { // Loop through the agents
+            this.removeAgent(id); // Remove the agent
+        }
         for (let id in this._roads) { // Loop through the roads
             this.removeRoad(id); // Remove the road
         }
@@ -275,23 +287,15 @@ class Map {
     }
 
     addAgent(agent) {
-        this._agents[agent.id] = agent;
+        this._agents[agent.getId()] = agent;
         this._agents_wrapper.append(agent.getElement());
         return this;
     }
 
     createAgent(type) {
         let agent;
-        switch (type) {
-            case 'car':
-                agent = new Car(this.generateId());
-                break;
-            case 'bike':
-                agent = new Bike(this.generateId());
-                break;
-            default:
-                throw new Error('Invalid Agent Type');
-        }
+        agent = new Agent(this.generateId(), type);
         this.addAgent(agent);
+        return agent;
     }
 }

@@ -180,6 +180,14 @@ body.grabbing * {
     z-index: 10;
 }
 
+.simulation {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 15;
+}
+
 .interface {
     position: fixed;
     top: 50%;
@@ -305,6 +313,24 @@ body.grabbing * {
     border-bottom: none;
 }
 
+.ag {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--interface-border);
+}
+
+.ag:last-child {
+    border-bottom: none;
+}
+
+.ag input[type="number"] {
+    width: 3rem;
+    text-align: center;
+}
+
 .name {
     font-weight: bold;
 }
@@ -339,4 +365,9 @@ body.grabbing * {
     width: 100%;
     height: 100%;
     z-index: 7;
+}
+
+.slider_wrapper {
+    position: relative;
+    width: 50%;
 }

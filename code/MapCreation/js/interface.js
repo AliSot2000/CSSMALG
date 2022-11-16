@@ -118,6 +118,18 @@ class Interface {
         this._body.append('<h2>Edit Road</h2><div class="spacer"></div>');
         this._body.append($('<button class="interface_button">Save Road</button>').data('road', road));
         this._body.append($('<button class="interface_button">Delete Road</button>').data('road', road));
+        this._body.append('<h2>Agents</h2>');
+        this._body.append('<button class="small_button">Add Agent</button>');
+        let agent_list = $('<div class="agent_list"></div>'); // The list of agents
+        let agents = r.getAgents(); // The agents of the road
+        let a; // The current agent
+        let agent; // The current agent element
+        for (let i = 0; i < agents.length; i++) { // Loop through the agents
+            agent = agents[i]; // Get the current agent
+            a = this.generateAgent(i, agent._distance_to_end, agent._lane, agent._speed, agent._type); // Generate the agent element
+            agent_list.append(a); // Add the agent to the list
+        }
+        this._body.append(agent_list);
         this._body.append('<h2>Connected Intersections</h2>');
         let intersections = r.getLinkedIntersections(); // The intersections that are connected to the road
         if (!isEmpty(intersections.start)) { // If there is a start intersection
@@ -126,6 +138,17 @@ class Interface {
         if (!isEmpty(intersections.end)) { // If there is an end intersection
             this._body.append($('<button class="interface_button">' + intersections.end.intersection.getId() + '</button>').data('command', 'editIntersection'));
         }
+    }
+
+    generateAgent(count, start, lane, speed, type) {
+        let html = '<div class="ag"><div class="name">Agent <span>' + count + '</span></div>';
+        html += '<div class="input">Start <input type="number" name="start" min="0" max="1" step="0.01" value="' + start + '"></div>';
+        html += '<div class="input">Lane <input type="number" name="lane" min="0" value="' + lane + '"></div>';
+        html += '<div class="input">Type <select name="type"><option value="car"' + (type === 'car' ? ' selected' : '') + '>Car</option><option value="bike"' + (type === 'bike' ? ' selected' : '') + '>Bike</option></select></div>';
+        html += '<div class="input">Speed <input type="number" name="speed" min="0" step="5" value="' + speed + '"></div>';
+        html += '<button class="delete">Delete</button>';
+        html += '</div>';
+        return html;
     }
 
     /**
@@ -212,6 +235,12 @@ class Interface {
         this._body.find('.lanes').append(html); // Add the lane to the list
     }
 
+    addAgent() {
+        let count = this._body.find('.ag').length; // The number of agents
+        let html = this.generateAgent(count, 0, 0, 0, 'car'); // Generate the agent element
+        this._body.find('.agent_list').append(html); // Add the agent to the list
+    }
+
     /**
      * Generates a lane element for the edit road screen
      * @param {number} count The number of the lane
@@ -263,6 +292,58 @@ class Interface {
         reader.readAsText(files[0]); // Read the file
     }
 
+    saveRoad(road_id) {
+        let lanes = []; // The lanes of the road
+        let lane; // The current lane
+        let lane_html = this._body.find('.lane'); // The lane elements
+        for (let i = 0; i < lane_html.length; i++) { // For each lane
+            lane = $(lane_html[i]); // Get the lane
+            lanes.push({ // Add the lane to the list by getting the inputs
+                type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : 'car',
+                direction: lane.find('input[name="facing"]').is(':checked') ? 1 : -1,
+                left: lane.find('input[name="left"]').is(':checked'),
+                forward: lane.find('input[name="forward"]').is(':checked'),
+                right: lane.find('input[name="right"]').is(':checked')
+            });
+        }
+        let road = this._map.getRoad(road_id); // Get the road
+        road.setLanes(lanes); // Set the lanes
+
+        let agents = road.getAgents(); // The agents of the road
+        let agent_html = this._body.find('.ag'); // The agent elements
+        for (let i = 0; i < Math.min(agent_html.length, agents.length); i++) { // For each agent
+            let agent = $(agent_html[i]); // Get the agent
+            agents[i].initialMapPosition(
+                agent.find('input[name="start"]').val(),
+                agent.find('input[name="lane"]').val(),
+                agent.find('input[name="speed"]').val(),
+                road,
+                agent.find('select[name="type"] option:selected').val()
+            );
+        }
+
+        if (agent_html.length > agents.length) {
+            for (let i = agents.length; i < agent_html.length; i++) { // For each agent
+                let agent = $(agent_html[i]); // Get the agent
+                let type = agent.find('select[name="type"] option:selected').val();
+                let ag = this._map.createAgent(type);
+                road.addAgent(ag);
+                ag.initialMapPosition(
+                    agent.find('input[name="start"]').val(),
+                    agent.find('input[name="lane"]').val(),
+                    agent.find('input[name="speed"]').val(),
+                    road,
+                    type
+                );
+            }
+        } else if (agent_html.length < agents.length) {
+            for (let i = agent_html.length; i < agents.length; i++) {
+                this._map.removeAgent(agents[i].getId());
+            }
+            road.removeAgents(agents.length - agent_html.length);
+        }
+    }
+
     /**
      * Runs a command based on the button that was clicked
      * @param {string} command The command to run
@@ -304,6 +385,9 @@ class Interface {
             case 'Add Intersection':
                 this.addIntersection();
                 break;
+            case 'Add Agent':
+                this.addAgent();
+                break;
             case 'Clear':
                 this._map.clear(); // Clear the map
                 break;
@@ -311,6 +395,11 @@ class Interface {
                 this.addLane();
                 break;
             case 'Delete':
+                if (target.parent().hasClass('ag')) {
+                    target.closest('.ag').remove();
+                } else {
+                    target.closest('.lane').remove(); // Remove the lane
+                }
                 target.closest('.lane').remove(); // Remove the lane
                 break;
             case 'Delete Road':
@@ -328,21 +417,7 @@ class Interface {
                 setCookie('map', encodeURIComponent(JSON.stringify(this._map.exportSaveData())), 14); // Save the map to a cookie
                 break;
             case 'Save Road':
-                let lanes = []; // The lanes of the road
-                let lane; // The current lane
-                let lane_html = this._body.find('.lane'); // The lane elements
-                for (let i = 0; i < lane_html.length; i++) { // For each lane
-                    lane = $(lane_html[i]); // Get the lane
-                    lanes.push({ // Add the lane to the list by getting the inputs
-                        type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : 'car',
-                        direction: lane.find('input[name="facing"]').is(':checked') ? 1 : -1,
-                        left: lane.find('input[name="left"]').is(':checked'),
-                        forward: lane.find('input[name="forward"]').is(':checked'),
-                        right: lane.find('input[name="right"]').is(':checked')
-                    });
-                }
-                let road = this._map.getRoad(data.road); // Get the road
-                road.setLanes(lanes); // Set the lanes
+                this.saveRoad(data.road);
                 break;
             default: // If the command is not recognized
                 if (isEmpty(data.command)) { // If there is no command in the data

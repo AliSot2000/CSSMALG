@@ -35,6 +35,7 @@ class Road {
     // Simulation
     _simulation_mode = false;
     _simulation_points = [];
+    _agents = [];
 
     /**
      * Creates a road
@@ -238,6 +239,10 @@ class Road {
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
+        }
+
+        for (let i = 0; i < this._agents.length; i++) { // Loop through the agents
+            this._agents[i].initialMapUpdate(); // Update the position of the agent
         }
 
         return this;
@@ -534,9 +539,8 @@ class Road {
         return data;
     }
 
-    getCarPosition(percent, offset) {
+    getAgentPosition(percent, offset) {
         let point;
-        offset += this._mid / 2;
         if (this._simulation_mode) {
             point = this._simulation_points[Math.round(percent * 1000)];
         } else {
@@ -558,5 +562,18 @@ class Road {
         } else {
             this._simulation_points = [];
         }
+    }
+
+    getAgents() {
+        return this._agents;
+    }
+
+    addAgent(agent) {
+        this._agents.push(agent);
+        return this;
+    }
+
+    removeAgents(count) {
+        this._agents.splice(-count, count);
     }
 }
