@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 		.type = ActorTypes::Car,
 		.distanceToCrossing = 50.0f,
 		.distanceToRight = 0,
-		.speed = 0.00f,
+		.speed = 1.00f,
 		.length = 4.5f,
 		.width = 1.5f,
 	};
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 
 		std::cout << "--- FRAME ---" << std::endl;
 		for (const auto& actor : street.traffic) {
-			std::cout << &actor << " Lane" << actor->distanceToRight / LANE_WIDTH << "   " << std::setprecision(4) << actor->distanceToCrossing << std::endl;
+			std::cout << std::setprecision(4) << &actor << " L" << actor->distanceToRight / LANE_WIDTH << "   D" << actor->distanceToCrossing << std::endl;
 		}
 	}
 
