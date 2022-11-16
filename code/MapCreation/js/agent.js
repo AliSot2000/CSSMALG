@@ -1,40 +1,53 @@
 class Agent {
-    _current_road = null;
-    _percent_to_end = 0;
-    _distance_to_side = 0;
     _type = 'agent';
 
     _id = '';
 
     _self = null;
     _model = null;
+    _map = null;
 
     _width = 0;
     _half_width = 0;
     _height = 0;
     _half_height = 0;
+    _lane_width = 0;
+    _half_lane_width = 0;
 
     _initial_facing = 0;
     _initial_speed = 0;
     _initial_lane = 0;
     _initial_percent_to_end = 0;
 
-    constructor(id, type) {
+    _current_road = null;
+    _current_road_id = '';
+    _current_position = null;
+    _current_flip = false;
+    _current_road_width = 0;
+    _time_interval = 1000;
+
+    constructor(id, type, map) {
         this._id = id;
+        this._map = map;
         this._self = $('<div></div>').addClass('agent').data('link', this);
         this._model = $('<div></div>');
         this.updateType(type);
         this._self.append(this._model);
+        this._lane_width = getConfig('road_lane_width');
+        this._half_lane_width = this._lane_width / 2;
+        this._time_interval = getConfig('simulation_interval');
+
         this.updateWidthAndHeight();
     }
 
     updatePosition(position) {
         this._self.css({
-            'left': position.x,
-            'top': position.y,
+            left: position.x,
+            top: position.y,
         });
         this._model.css({
-            'transform': 'rotate(' + -position.angle + 'rad)'
+            transform: 'rotate(' + -position.angle + 'rad)',
+            letterSpacing: -position.angle
         });
     }
 
@@ -68,12 +81,11 @@ class Agent {
         this._initial_facing = facing;
         percent_to_end = facing ? 1 - percent_to_end : percent_to_end;
         let lane_width = getConfig('road_lane_width')
-        this.moveOnRoad(percent_to_end, lane * lane_width + 0.5 * lane_width, facing);
+        this.moveOnRoad(percent_to_end, lane * this._lane_width + this._half_lane_width, facing);
     }
 
     initialMapUpdate() {
-        let lane_width = getConfig('road_lane_width')
-        this.moveOnRoad(this._initial_percent_to_end, this._initial_lane * lane_width + 0.5 * lane_width, this._initial_facing);
+        this.moveOnRoad(this._initial_percent_to_end, this._initial_lane * this._lane_width + this._half_lane_width, this._initial_facing);
     }
 
     updateType(type) {
@@ -106,5 +118,65 @@ class Agent {
         });
         this._half_width = this._width / 2;
         this._half_height = this._height / 2;
+    }
+
+    nextPosition(step) {
+        if (step.road !== this._current_road_id) {
+            this.snapToRoad(this._map.getRoad(step.road));
+            this._current_road_id = step.road;
+            this._current_road_width = this._current_road.getRoadWidth();
+            this._current_flip = step.road.charAt(0) === '!';
+        }
+        let new_position;
+        if (this._current_flip) {
+            new_position = this._current_road.getAgentPosition(1 - step.percent_to_end, this._current_road_width - step.distance_to_side - this._half_width);
+            new_position.angle = truncateAngle(new_position.angle + Math.PI, 2 * Math.PI);
+        } else {
+            new_position = this._current_road.getAgentPosition(step.percent_to_end, step.distance_to_side + this._half_lane_width);
+        }
+        return new_position;
+    }
+
+    jumpTo(step) {
+        this._current_position = this.nextPosition(step);
+        this.updatePosition(this._current_position);
+    }
+
+    simulate(step, speed) {
+        let new_position = this.nextPosition(step);
+
+        this._self.animate({
+            left: new_position.x,
+            top: new_position.y
+        }, {
+            duration: this._time_interval / speed,
+            easing: 'linear'
+        });
+
+        this._model.animate({
+            letterSpacing: -new_position.angle
+        }, {
+            duration: this._time_interval / speed,
+            easing: 'linear',
+            step: function (now, fx) {
+                $(this).css({
+                    transform: 'rotate(' + now + 'rad)'
+                });
+            }
+        });
+
+        this._current_position = new_position;
+        this.updatePosition(this._current_position);
+    }
+
+    exportSaveData() {
+        return {
+            id: this._id,
+            type: this._type,
+            speed: this._initial_speed,
+            lane: this._initial_lane,
+            percent_to_end: this._initial_percent_to_end,
+            road: this._current_road.getId()
+        };
     }
 }

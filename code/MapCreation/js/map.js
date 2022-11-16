@@ -181,6 +181,10 @@ class Map {
         return this._intersections[id];
     }
 
+    getAgents() {
+        return this._agents;
+    }
+
     getAgent(id) {
         return this._agents[id];
     }
@@ -216,6 +220,7 @@ class Map {
         let data = { // Initialize the data object
             roads: {}, // Initialize the roads object
             intersections: {}, // Initialize the intersections object
+            agents: {}, // Initialize the agents object
             peripherals : {} // Initialize the peripherals object
         };
 
@@ -227,6 +232,10 @@ class Map {
             data.intersections[id] = this._intersections[id].exportSaveData(); // Add the intersection to the intersections object
         }
 
+        for (let id in this._agents) { // Loop through the agents
+            data.agents[id] = this._agents[id].exportSaveData(); // Add the agent to the agents object
+        }
+
         data.peripherals.date = currentTime(); // Add the save date to the peripherals object
         data.peripherals.type = 'save'; // Add the type of the export
         return data;
@@ -236,7 +245,7 @@ class Map {
      * Loads a map from a save object
      * @param data The save object
      */
-    load(data) {
+    load(data, with_agents = true) {
         if (data.peripherals.type !== 'save') { // Check if the data is a save object
             alert("This is not a valid save!"); // Alert the user that the data is not a save object
             throw new Error('Invalid Save Data');
@@ -263,6 +272,15 @@ class Map {
             if (!isEmpty(road.intersections.end)) { // Check if the road has an intersection at the end
                 let intersection = this.getIntersection(road.intersections.end.id); // Get the intersection
                 intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point); // Snap the road to the intersection
+            }
+        }
+
+        if (with_agents) {
+            for (let id in data.agents) { // Loop through the agents
+                let agent = data.agents[id]; // Get the agent
+                let a = new Agent(id, agent.type, this); // Create the agent
+                this.addAgent(a); // Add the agent to the map
+                a.initialMapPosition(agent.percent_to_end, agent.lane, agent.speed, this.getRoad(agent.road), agent.type); // Set the initial position of the agent
             }
         }
 
@@ -294,8 +312,18 @@ class Map {
 
     createAgent(type) {
         let agent;
-        agent = new Agent(this.generateId(), type);
+        agent = new Agent(this.generateId(), type, this);
         this.addAgent(agent);
         return agent;
+    }
+
+    simulationMode(set) {
+        for (let id in this._roads) {
+            this._roads[id].simulationMode(set);
+        }
+        let type = set ? 'none' : 'block';
+        this._snap_points.css('display', type);
+        this._grab_points.css('display', type);
+        this._grid.getGrid().css('display', type);
     }
 }

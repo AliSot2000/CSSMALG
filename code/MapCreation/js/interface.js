@@ -67,8 +67,9 @@ class Interface {
         this._body.append('<button class="interface_button">Save</button>');
         this._body.append('<button class="interface_button">Load</button>');
         this._body.append('<button class="interface_button">Export as Save</button>');
-        this._body.append('<button class="interface_button">Export for Simulation</button>');
+        //this._body.append('<button class="interface_button">Export for Simulation</button>');
         this._body.append('<button class="interface_button">Import Save</button>');
+        this._body.append('<button class="interface_button">Import Simulation</button>');
         this._body.append('<button class="interface_button">Clear</button>')
 
         this._body.append('<h2>Creation</h2><div class="spacer"></div>');
@@ -275,6 +276,14 @@ class Interface {
         this._body.append('<button class="interface_button">Upload</button>');
     }
 
+    simulate() {
+        this._body.empty();
+        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<h2>Simulation</h2><div class="spacer"></div>');
+        this._body.append('<input type="file" class="inputfile" accept=".sim"><div class="spacer"></div>');
+        this._body.append('<button class="interface_button">Load Simulation</button>');
+    }
+
     /**
      * Uploads a file and loads the map from that
      */
@@ -288,6 +297,22 @@ class Interface {
         reader.onload = function(e) { // When the file is loaded
             let save = JSON.parse(e.target.result); // Parse the file
             this._map.load(save); // Load the map
+            this.overview(); // Load the overview
+        }.bind(this);
+        reader.readAsText(files[0]); // Read the file
+    }
+
+    loadSimulation() {
+        let files = document.getElementsByClassName('inputfile')[0].files; // The files of the input
+        if (isEmpty(files)) { // If there are no files
+            alert('No file selected'); // Alert the user
+            return;
+        }
+        let reader = new FileReader(); // Create a file reader
+        reader.onload = function(e) { // When the file is loaded
+            let simulation = JSON.parse(e.target.result); // Parse the file
+            this._simulation_interface.loadSimulation(simulation).setupSimulation().jumpToStep(0); // Load the simulation
+            this.toggle(); // Toggle the interface
             this.overview(); // Load the overview
         }.bind(this);
         reader.readAsText(files[0]); // Read the file
@@ -361,6 +386,12 @@ class Interface {
                 break;
             case 'Upload':
                 this.uploadSave();
+                break;
+            case 'Load Simulation':
+                this.loadSimulation();
+                break;
+            case 'Import Simulation':
+                this.simulate();
                 break;
             case 'Load':
                 this.loadSave();

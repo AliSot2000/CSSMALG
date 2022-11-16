@@ -18,6 +18,7 @@
     --simulation-slider-thumb: rgba(200, 0, 0, 1);
     --simulation-input-background: rgba(255, 255, 255, 1);
     --simulation-input-border: rgba(180, 180, 180, 1);
+    --simulation-input-hover: rgba(220, 220, 220, 1);
 }
 
 html, body {
@@ -407,10 +408,21 @@ body.grabbing * {
 
 .simulation_input {
     appearance: none;
+    opacity: 1;
     font-size: 1rem;
     background-color: var(--simulation-input-background);
     border: 2px solid var(--simulation-input-border);
     border-radius: 5px;
     padding: 0.25rem 0.75rem;
     margin: 0 0.5rem;
+}
+
+.simulation_input:hover {
+    background-color: var(--simulation-input-hover);
+    transition-duration: 0.2s;
+}
+
+.simulation_input:disabled {
+    opacity: 0.5;
+    transition-duration: 0.2s;
 }
