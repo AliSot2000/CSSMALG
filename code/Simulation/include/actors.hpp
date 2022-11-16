@@ -14,7 +14,7 @@ typedef struct Actor {
 
 	bool waitingAtCrossing;
 	float distanceToCrossing = 0.0f;
-	float distanceToRight = 0.0f;
+	int distanceToRight = 0;
 	float speed; // m/s
 	float length; // m
 	float width; // m
@@ -27,13 +27,13 @@ enum StreetTypes {
 };
 
 typedef struct Street {
-	int32_t start;
-	int32_t end;
+	int32_t start = -1;
+	int32_t end = -1;
 
 	struct Street* opposite = nullptr;
-	StreetTypes type;
-	float width;
-	float length;
+	StreetTypes type = StreetTypes::Both;
+	float width = 0.0f;
+	float length = 0.0f;
 
 	// Ordered by distance to end, must be reordered when actors change position
 	// Furthermore, when vehicles swap position, their position to the left of the road side must be swapped aswell
@@ -49,5 +49,4 @@ typedef struct Crossing {
 typedef struct World {
 	std::vector<Crossing> crossings;
 	std::vector<Street> streets;
-	std::vector<Actor> actors;
 } world_t;

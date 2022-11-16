@@ -1,110 +1,149 @@
 
-#include "actors.hpp"
+#include <algorithm>
+#include <cmath>
+#include <cassert>
 
-#define MIN_TRAFFIC_OFFSET_LENGTH 1.0f // There should be atleast half a meter distance between vehicles
-#define MIN_TRAFFIC_OFFSET_WIDTH 0.5f // There should be atleast half a meter distance between vehicles
+#include "update.hpp"
 
-#define PRECISION 2.0f * std::numeric_limits<float>::epsilon()
+void trafficInDrivingDistance(Street& street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
 
-bool hasArrivedAtCrossing(Street* street, int32_t vehicleIndex) {
-	Actor* actor = street->traffic[vehicleIndex];
-	const bool distanceFactor = actor->distanceToCrossing <= PRECISION;
+	auto& traffic = street.traffic;
+	
+	// Find all elements infront of vehicle which are in range of a collision if the vehicle would move forward
+	// Lower bound binary search (traffic must always be sorted!)
+	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
+		[](const Actor* a, const float& b) { 
+			return a->distanceToCrossing + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
+	});
 
-	if (vehicleIndex == 0)
-		return distanceFactor;
+	*end = std::lower_bound(traffic.begin(), traffic.end(), maxDistance,
+		[](const Actor* a, const float& b) { 
+			return a->distanceToCrossing < b;
+	});
+		
+	/*
+	// This code somehow does not compile, even though it has exactly the same data as lower bound
 
-	Actor* other = street->traffic[vehicleIndex - 1];
-	bool hasNoSpaceFront = other->distanceToCrossing + other->length + MIN_TRAFFIC_OFFSET_LENGTH >= actor->distanceToCrossing;
-
-	return other->waitingAtCrossing && hasNoSpaceFront;
+	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
+		// TODO check if correct, could be that a must be of type Actor** a!!!
+		[](const Actor* a, const float& b) { 
+			return a->distanceToCrossing > b;
+	});
+	*/
 }
 
-bool hasEnoughSpaceForDriving(Street* street, int32_t vehicleIndex) {
+float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
 
-	if (vehicleIndex == 0)
-		return true;
+	if (actor->distanceToCrossing <= 0.0f) 
+		return 0.0f;
 
-	Actor* actor = street->traffic[vehicleIndex];
-	Actor* other = street->traffic[vehicleIndex - 1];
-	
-	bool hasSpaceFront = other->distanceToCrossing + other->length + MIN_TRAFFIC_OFFSET_LENGTH < actor->distanceToCrossing;
-	
-	return hasSpaceFront;
-}
+	const float distance = actor->speed * timeDelta;
 
-bool hasSpaceForOvertake(Street* street, int32_t vehicleIndex) {
+	TrafficIterator iter = trafficStart;
 
-	if (vehicleIndex == 0)
-		return false;
+	float maxForwardDistance = std::min(distance, actor->distanceToCrossing); // dont overshoot crossing
+	const float actorRearEnd = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+	while (iter != trafficEnd) {
+		// If space is less than MIN_DISTANCE_BETWEEN_VEHICLES then there is no space to drive forward
+		Actor* other = *iter;
 
-	Actor* actor = street->traffic[vehicleIndex];
-	Actor* other = street->traffic[vehicleIndex - 1];
+		if (actor == other) { 
+			iter++;
+			continue;
+		};
 
-	if (actor->speed <= other->speed)
-		// overtaking doesnt make sense when one isnt faster
-		return false;
+		// they are in the same lane, thus collision could happen
+		if (actor->distanceToRight == other->distanceToRight) { // TEST IF SAME LANE AND RETURN SPACE TO FORWARD VEHICLE
 
-	bool isOvertaking = actor->distanceToRight > 0.0f;
-	bool hasSpaceLeft = other->distanceToRight + other->width + actor->width + MIN_TRAFFIC_OFFSET_WIDTH < street->width;
+			const float otherRearEnd = other->distanceToCrossing + other->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
-	if (!isOvertaking) {
-		// Distance to car in front does not matter, since there is still space left on the breadth of the street.
-		return hasSpaceLeft;
+			// Check if they are already colliding, this should only happen when car is trying to swap lanes
+			if ((otherRearEnd > actor->distanceToCrossing && other->distanceToCrossing < actor->distanceToCrossing) ||
+				(actorRearEnd > other->distanceToCrossing && actor->distanceToCrossing < other->distanceToCrossing)) {
+				maxForwardDistance = 0.0f;
+				continue;
+			}
+
+			// Calculates maximum distance vehicle is allowed to move forward
+			maxForwardDistance = std::min(maxForwardDistance, actor->distanceToCrossing - otherRearEnd);
+		}
+
+		iter++;
 	}
 
-	// Double overtaking is not allowed for now
-	return false;
-
+	assert(maxForwardDistance >= 0.0f && "Vehicle can not drive backwards.");
+	return maxForwardDistance;
 }
 
-void updateStreets(world_t* world, float timeStepS) {
+float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
+
+	assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
+	assert((street.type != StreetTypes::OnlyBike || actor->type != ActorTypes::Car) && "Car is not allowed on this street!");
+
+	if(actor->type == ActorTypes::Bike) // Bikes are never allowed to overtake on another lane!
+		return maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
+
+	const float distance = actor->speed * timeDelta;
+	float allowedDistance = maxSpaceInFrontOfVehicle(street,  actor, timeDelta, trafficStart, trafficEnd);
+
+	// Car could go faster but is not able to
+	if (allowedDistance < distance) {
+		// Try if there are open lanes
+		const int originLane = actor->distanceToRight;
+		int maxDistanceLane = actor->distanceToRight;
+
+		// Swaps maxDistanceLane if allowed distance to drive in other lane is higher
+		auto checkNewDistance = [&]() {
+			float newAllowedDistance = maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
+			if (newAllowedDistance > allowedDistance) {
+				maxDistanceLane = actor->distanceToRight;
+				allowedDistance = newAllowedDistance;
+			}
+		};
+
+		// This while loop is efficient because the traffic in front has been cached, hence no new lookups will appear
+		// Furthermore there are at most c * #Lanes many vehicles in front, which could be in driving range
+		while (actor->distanceToRight + actor->width < street.width) {
+			// there is still space to go left
+			actor->distanceToRight += LANE_WIDTH;
+			checkNewDistance();
+		}
+
+		// Same as above, but checks for free lanes on the left.
+		actor->distanceToRight = originLane;
+		while (actor->distanceToRight > 0.0f) {
+			actor->distanceToRight -= LANE_WIDTH;
+			checkNewDistance();
+		}
+
+		actor->distanceToRight = maxDistanceLane;
+	}
+
+	return allowedDistance;
+}
+
+void updateStreets(world_t* world, const float timeDelta) {
 	for (auto& street : world->streets) {
-		const size_t n = street.traffic.size();
-		for(size_t i = 0; i < n; i++) { 
+		for (int32_t i = 0; i < street.traffic.size(); i++) {
+
 			Actor* actor = street.traffic[i];
+			const float distance = actor->speed * timeDelta;
+			const float wantedDistanceToCrossing = std::max(0.0f, actor->distanceToCrossing - (distance));
+			const float maxDistance = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
-			if (hasArrivedAtCrossing(&street, i)) {
-				actor->waitingAtCrossing = true;
-			}
-			else if (hasEnoughSpaceForDriving(&street, i)) {
-				float maxDistance = actor->distanceToCrossing;
+			TrafficIterator start;
+			TrafficIterator end;
 
-				if (i > 0) {
-					// dont accidentally overtake front car without testing if there is space on the left
-					Actor* front = street.traffic[i - 1];
-					maxDistance = front->distanceToCrossing + front->length; // No MIN_TRAFFIC_OFFSET_LENGTH added so that actor can start overtaking in next loop
-				}
-				
-				actor->distanceToCrossing -= std::min(maxDistance, actor->speed * timeStepS);
-			}
-			else if (hasSpaceForOvertake(&street, i)) {
-				// TODO overtake
-				Actor* front = street.traffic[i - 1];
-				actor->distanceToRight = front->distanceToRight + front->width + MIN_TRAFFIC_OFFSET_WIDTH;
-			}
+			// Find all traffic which could be colliding with vehicle
+			trafficInDrivingDistance(street, wantedDistanceToCrossing, maxDistance, &start, &end);
 
-			if (i > 0) {
-				// Traffic Ordering checks
-
-				Actor* front = street.traffic[i - 1];
-
-				if (front->distanceToCrossing > actor->distanceToCrossing) {
-					// Swaps position between two vehicles if their order based on distance to next crossing is no longer correct.
-					street.traffic[i - 1] = actor;
-					street.traffic[i] = front;
-					float temp = actor->distanceToRight;
-					actor->distanceToRight = front->distanceToRight;
-					front->distanceToRight = temp;
-				}
-				else if (actor->distanceToRight > 0.0f && (actor->speed < front->speed)) {
-					// This happens when bike has been overtaken by car, they change position and their space to the right
-					// Then it happens that bikes are on the left side of the road even though the car infront is gone
-					// so one has to reset it to the right
-					if (front->distanceToCrossing + front->length + MIN_TRAFFIC_OFFSET_LENGTH < actor->distanceToCrossing) {
-						actor->distanceToRight = 0.0f;
-					}
-				}
-			}
+			float maxDrivingDistance = choseLaneGetMaxDrivingDistance(street, actor, timeDelta, start, end);
+			actor->distanceToCrossing -= maxDrivingDistance;
+			
+			// Will make sure traffic is still sorted
+			std::sort(start, end, [](const Actor* a, const Actor* b) {
+				return a->distanceToCrossing <= b->distanceToCrossing;
+			});
 		}
 	}
 }
