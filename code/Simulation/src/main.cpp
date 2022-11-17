@@ -72,6 +72,12 @@ int main(int argc, char* argv[]) {
 		.id = "ab",
 	};
 
+	Street db = {
+		.start = "D",
+		.end = "B",
+		.id = "db",
+	};
+
 	Street bc = {
 		.start = "B",
 		.end = "C",
@@ -81,6 +87,7 @@ int main(int argc, char* argv[]) {
 
 	world.streets.push_back(ab);
 	world.streets.push_back(bc);
+	world.streets.push_back(db);
 
 	Crossing a = {
 		.id = "A",
@@ -90,7 +97,7 @@ int main(int argc, char* argv[]) {
 
 	Crossing b = {
 		.id = "B",
-		.inbound = {&world.streets[0]},
+		.inbound = {&world.streets[0], &world.streets[2]},
 		.outbound = {{"C", &world.streets[1]}}
 	};
 
@@ -100,15 +107,27 @@ int main(int argc, char* argv[]) {
 		.outbound = {}
 	};
 
+	Crossing d = {
+		.id = "D",
+		.inbound = {},
+		.outbound = {{"B", &world.streets[2]}}
+	};
+
 	world.crossings.push_back(a);
 	world.crossings.push_back(b);
 	world.crossings.push_back(c);
+	world.crossings.push_back(d);
 
 	SPT spt = calculateShortestPathTree(&world);
 
 	Actor test = {
 		.id = "test actor",
 		.path = retrievePath(spt, "A", "C")
+	};
+
+	Actor test2 = {
+		.id = "other lane actor",
+		.path = retrievePath(spt, "D", "C")
 	};
 
 	Actor obstacle = {
@@ -120,10 +139,11 @@ int main(int argc, char* argv[]) {
 
 	world.actors.push_back(test);
 	world.actors.push_back(obstacle);
+	world.actors.push_back(test2);
 
 	world.crossings[0].waitingToBeInserted.push_back(&world.actors[0]);
+	world.crossings[3].waitingToBeInserted.push_back(&world.actors[2]);
 	world.streets[1].traffic.push_back(&world.actors[1]);
-	// TODO write function which inserts actors at crossings
 	
 	const float runtime = 46.0f;
 	const float deltaTime = 0.25f;
