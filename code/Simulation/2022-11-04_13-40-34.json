@@ -1,0 +1,49 @@
+{
+	"roads": {
+		"779354e8fb963": {
+			"distance": 600,
+			"end": {
+				"x": 1100,
+				"y": 500,
+				"angle": 1.5707963267948966
+			},
+			"id": "779354e8fb963",
+			"intersections": {},
+			"lanes": [
+				{
+					"type": "car",
+					"direction": 1,
+					"left": false,
+					"forward": true,
+					"right": false
+				},
+				{
+					"type": "car",
+					"direction": 1,
+					"left": false,
+					"forward": true,
+					"right": false
+				}
+			],
+			"start": {
+				"x": 500,
+				"y": 500,
+				"angle": 4.71238898038469
+			}
+		}
+	},
+	"intersections": {
+		"07ae109e38199": {
+			"id": "07ae109e38199",
+			"position": {
+				"x": 1150,
+				"y": 500
+			},
+			"roads": {}
+		}
+	},
+	"peripherals": {
+		"saveDate": "2022-11-04_13-40-34",
+		"type": "save"
+	}
+}

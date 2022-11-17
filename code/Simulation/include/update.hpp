@@ -53,6 +53,14 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
 
 /*
+	Sorts vehicles in a street based on their distance to the next crossing.
+
+	@param start Where to begin sorting
+	@param end Where to stop sorting
+*/
+void sortStreet(TrafficIterator& start, TrafficIterator& end);
+
+/*
 	Updates all vehicles in all streets
 
 	@param world World instance to update
