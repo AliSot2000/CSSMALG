@@ -12,7 +12,7 @@ include_directories("include")
 add_subdirectory(third_party/json)
 
 # Add source to this project's executable.
-add_executable (CSSMALG "src/main.cpp"  "src/routing.cpp" "src/update.cpp" "src/export.cpp")
+add_executable (CSSMALG "src/main.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp")
 
 target_link_libraries(CSSMALG PRIVATE nlohmann_json::nlohmann_json)
 
