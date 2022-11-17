@@ -24,15 +24,14 @@ typedef struct Actor {
 } actor_t;
 
 enum StreetTypes {
-
 	OnlyBike,
 	OnlyCar,
 	Both
 };
 
 typedef struct Street {
-	int32_t start = -1;
-	int32_t end = -1;
+	std::string start = "";
+	std::string end = "";
 
 	struct Street* opposite = nullptr;
 	StreetTypes type = StreetTypes::Both;
@@ -49,7 +48,7 @@ typedef struct Street {
 } street_t;
 
 typedef struct Crossing {
-	int32_t id;
+	std::string id;
 	std::vector<Street*> inbound;
 	std::vector<Street*> outbound;
 

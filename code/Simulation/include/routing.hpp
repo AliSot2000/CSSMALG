@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "actors.hpp"
 
 /*
@@ -47,7 +48,9 @@
 	}
 */
 
-typedef std::vector<std::vector<int32_t>> SPT;
+typedef std::map<std::string, std::map<std::string, std::string>> SPT;
+typedef std::queue<std::string> Path;
 
-std::vector<std::vector<int32_t>> calculateShortestPathTree(const world_t* world);
-std::queue<int32_t> retrievePath(const SPT & spt, const int32_t start, const int32_t end);
+SPT calculateShortestPathTree(const world_t* world);
+
+Path retrievePath(SPT& spt, const std::string start, const std::string end);
