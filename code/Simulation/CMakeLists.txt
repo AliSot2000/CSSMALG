@@ -3,12 +3,18 @@
 #
 cmake_minimum_required (VERSION 3.12)
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
 project ("CSSMALG")
 
 include_directories("include")
 
+add_subdirectory(third_party/json)
+
 # Add source to this project's executable.
-add_executable (CSSMALG "src/main.cpp"  "src/routing.cpp" "src/update.cpp")
+add_executable (CSSMALG "src/main.cpp"  "src/routing.cpp" "src/update.cpp" "src/export.cpp")
+
+target_link_libraries(CSSMALG PRIVATE nlohmann_json::nlohmann_json)
 
 set_property(TARGET CSSMALG PROPERTY CXX_STANDARD 20)
 
