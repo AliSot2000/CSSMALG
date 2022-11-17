@@ -49,7 +49,7 @@ Path retrievePath(SPT& spt, const std::string start, const std::string end) {
 	}
 
 	Path p;
-	p.push(start);
+	// p.push(start);
 
 	std::string u = start;
 	while (u != end) {

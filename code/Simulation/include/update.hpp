@@ -4,6 +4,7 @@
 
 #define MIN_DISTANCE_BETWEEN_VEHICLES 1.0f // There should be atleast half a meter distance between vehicles
 #define LANE_WIDTH 2 // A lane is per default 2 meters
+#define DISTANCE_TO_CROSSING_FOR_TELEPORT 5.0f
 
 typedef std::vector<Actor*>::iterator TrafficIterator;
 
@@ -70,3 +71,6 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end);
 */
 void updateStreets(world_t* world, const float timeDelta);
 
+
+bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta);
+void updateCrossings(world_t* world, const float timeDelta);
