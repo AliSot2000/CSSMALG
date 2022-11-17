@@ -46,8 +46,10 @@ typedef struct Street {
 	// These values are not used by the simulation itself, just for the visulisation later
 	// start and end position
 	std::string id;
-	float sx, sy;
-	float ex, ey;
+	float sx = 0.0f;
+	float sy = 0.0f;
+	float ex = 0.0f;
+	float ey = 0.0f;
 } street_t;
 
 typedef struct Crossing {
