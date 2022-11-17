@@ -57,8 +57,8 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 			const float otherRearEnd = other->distanceToCrossing + other->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
 			// Check if they are already colliding, this should only happen when car is trying to swap lanes
-			if ((otherRearEnd > actor->distanceToCrossing && other->distanceToCrossing < actor->distanceToCrossing) ||
-				(actorRearEnd > other->distanceToCrossing && actor->distanceToCrossing < other->distanceToCrossing)) {
+			if ((otherRearEnd >= actor->distanceToCrossing && other->distanceToCrossing <= actor->distanceToCrossing) ||
+				(actorRearEnd >= other->distanceToCrossing && actor->distanceToCrossing <= other->distanceToCrossing)) {
 				maxForwardDistance = 0.0f;
 				continue;
 			}
@@ -126,6 +126,16 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 	return allowedDistance;
 }
 
+void sortStreet(TrafficIterator& start, TrafficIterator& end) {
+	std::sort(start, end, [](const Actor* a, const Actor* b) {
+		// this if statement make sure that no vehicles have the same ordering
+		if (a->distanceToCrossing == b->distanceToCrossing) {
+			return a < b;
+		}
+		return a->distanceToCrossing <= b->distanceToCrossing;
+	});
+}
+
 void updateStreets(world_t* world, const float timeDelta) {
 	for (auto& street : world->streets) {
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
@@ -145,13 +155,7 @@ void updateStreets(world_t* world, const float timeDelta) {
 			actor->distanceToCrossing -= maxDrivingDistance;
 			
 			// Will make sure traffic is still sorted
-			std::sort(start, end, [](const Actor* a, const Actor* b) {
-				// this if statement make sure that no vehicles have the same ordering
-				if (a->distanceToCrossing == b->distanceToCrossing) {
-					return a < b;
-				}
-				return a->distanceToCrossing <= b->distanceToCrossing;
-			});
+			sortStreet(start, end);
 		}
 	}
 }

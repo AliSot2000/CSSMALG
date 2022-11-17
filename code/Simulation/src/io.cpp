@@ -1,65 +1,63 @@
 
-#include "update.hpp"
+#include <iostream>
 
+#include "update.hpp"
 #include "io.hpp"
 
-using nlohmann::json;
 
-json exportWorld(const world_t& world) {
+bool loadFile(std::string file, json& input) {
+	std::ifstream f(file);
+	if (f.is_open()) {
+		f >> input;
+		f.close();
+		return true;
+	}
+	std::cerr << "Failed to load " << file << std::endl;
+	return false;
+}
+
+void importMap(world_t& world, json& map) {
+
+	assert(world.streets.size() == 0 && "Streets is not empty");
+
+	// Data will be packed more neatly when first creating array with given size
+	world.streets = std::vector<Street>(map["roads"].size());
+	
+	int32_t index = 0;
+	for (const auto& [id, data] : map["roads"].items()) {
+		Street& street = world.streets[index];
+		street.id = id;
+		street.length = data["distance"];
+		street.width = LANE_WIDTH * data["lanes"].size();
+
+		// TODO fix
+		// street.type = data["type"];
+		street.type = StreetTypes::Both;
+
+		index++;
+	}
+}
+
+json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap) {
 	json output;
 
-	output["setup"]["map"] = {};
-	output["setup"]["map"]["roads"] = {};
-	output["setup"]["map"]["intersections"] = {};
-	output["setup"]["map"]["peripherals"] = {};
-	output["setup"]["map"]["agents"] = {};
+	output["setup"]["map"] = originMap;
 
-	output["setup"]["agents"] = {};
 	output["peripherals"] = {};
-
-	output["setup"]["map"]["peripherals"]["date"] = "2022-11-03_20-26-32";
-	output["setup"]["map"]["peripherals"]["type"] = "save";
-	output["peripherals"]["date"] = "2022-11-03_20-26-32";
+	output["peripherals"]["date"] = "Ich weiss doch ned wie mer date in c++ bechunt?";
 	output["peripherals"]["type"] = "simulation";
+	output["peripherals"]["elapsed_time"] = time;
+	output["peripherals"]["time_step"] = timeDelta;
 
 	output["simulation"] = std::vector<json>();
-
-	for (const auto& street : world.streets) {
-		output["setup"]["map"]["roads"][street.id] = {};
-		json& obj = output["setup"]["map"]["roads"][street.id];
-		obj["id"] = street.id;
-		obj["start"] = {};
-		obj["start"]["x"] = street.sx;
-		obj["start"]["y"] = street.sy;
-		obj["end"]["x"] = street.ex;
-		obj["end"]["y"] = street.ey;
-
-		std::vector<json> lanes;
-		for (int i = street.width; i > 0; i -= LANE_WIDTH) {
-			json lane;
-			lane["type"] = "car";
-			lane["direction"] = 1;
-			lane["left"] = false;
-			lane["forward"] = true;
-			lane["right"] = false;
-			lanes.push_back(lane);
-		}
-
-		obj["lanes"] = lanes;
-		obj["intersections"] = std::vector<json>();
-		obj["distance"] = street.length;
-	}
 
 	for (const auto& actor : world.actors) {
 		output["setup"]["agents"][actor.id] = {};
 		json& obj = output["setup"]["agents"][actor.id];
 		obj["id"] = actor.id;
 		obj["type"] = "car";
-		// obj["speed"] = actor.speed;
-		// obj["lane"] = actor.distanceToRight;
-		// obj["percent_to_end"] = 0.0f;
-		// obj["road"] = 
 	}
+
 	return output;
 }
 
@@ -85,5 +83,8 @@ void save(const std::string file, const json& out) {
 	if (f.is_open()) {
 		f << std::setw(4) << out << std::endl;
 		f.close();
+	}
+	else {
+		std::cerr << "Failed to save to " << file << std::endl;
 	}
 }
