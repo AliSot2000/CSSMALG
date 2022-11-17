@@ -3,16 +3,15 @@
 
 #include <iostream>
 
-std::vector<std::vector<int32_t>> calculateShortestPathTree(const world_t* world) {
+SPT calculateShortestPathTree(const world_t* world) {
 	const size_t n = world->crossings.size();
 
-	std::vector<std::vector<float>> minimumDistance(n, std::vector<float>(n));
+	std::map<std::string, std::map<std::string, float>> minimumDistance;
+	SPT spt;
 
-	SPT spt(n, std::vector<int32_t>(n));
-
-	// Fill with -1 to distinguish empty entries from index 0 entries.
-	for(auto& row: spt)
-		std::fill(row.begin(), row.end(), -1);
+	for (const auto& crossing : world->crossings) {
+		minimumDistance[crossing.id] = std::map<std::string, float>();
+	}
 
 	for (const auto& street : world->streets) {
 		minimumDistance[street.start][street.end] = street.length;
@@ -25,12 +24,17 @@ std::vector<std::vector<int32_t>> calculateShortestPathTree(const world_t* world
 	}
 
 	for (int32_t k = 0; k < n; k++) {
+		std::string ks = world->crossings[k].id;
 		for (int32_t i = 0; i < n; i++) {
+			std::string is = world->crossings[i].id;
 			for (int32_t j = 0; j < n; j++) {
+				std::string js = world->crossings[j].id;
 
-				if (spt[i][k] != -1 && spt[k][j] != -1 && (spt[i][j] == -1  || minimumDistance[i][j] > minimumDistance[i][k] + minimumDistance[k][j])) {
-					minimumDistance[i][j] = minimumDistance[i][k] + minimumDistance[k][j];
-					spt[i][j] = spt[i][k];
+				bool hasEdge = spt[is].contains(ks) && spt[ks].contains(js);
+
+				if (hasEdge && (!spt[is].contains(js) || minimumDistance[is][js] > minimumDistance[is][ks] + minimumDistance[ks][js])) {
+					minimumDistance[is][js] = minimumDistance[is][ks] + minimumDistance[ks][js];
+					spt[is][js] = spt[is][ks];
 				}
 			}
 		}
@@ -39,18 +43,18 @@ std::vector<std::vector<int32_t>> calculateShortestPathTree(const world_t* world
 	return spt;
 }
 
-std::queue<int32_t> retrievePath(const SPT& spt, const int32_t start, const int32_t end) {
-	if (spt[start][end] == -1) {
-		return std::queue<int32_t>();
+Path retrievePath(SPT& spt, const std::string start, const std::string end) {
+	if (!spt[start].contains(end)) {
+		return Path();
 	}
 
-	std::queue<int32_t> path;
-	path.push(start);
+	Path p;
+	p.push(start);
 
-	int32_t u = start;
+	std::string u = start;
 	while (u != end) {
 		u = spt[u][end];
-		path.push(u);
+		p.push(u);
 	}
-	return path;
+	return p;
 }
