@@ -1,0 +1,136 @@
+{
+    "setup": {
+        "map":{
+            "roads": {
+                "5d5936e6768d2": {
+                    "id":"5d5936e6768d2",
+                    "start":{
+                        "x":300,
+                        "y":500,
+                        "angle":4.71238898038469
+                    },
+                    "end":{
+                        "x":850,
+                        "y":200,
+                        "angle":3.141592653589793
+                    },
+                    "lanes":[
+                        {
+                        "type":"car",
+                        "direction":1,
+                        "left":true,
+                        "forward":true,
+                        "right":true
+                        }
+                    ],
+                    "intersections":{},
+                    "distance":730.327645026717
+                }
+            },
+            "intersections":{},
+            "peripherals":{
+                "date":"2022-11-03_20-26-32",
+                "type":"save"
+            },
+            "agents":{
+                "7491284a81114":{
+                    "id":"7491284a81114",
+                    "type":"car",
+                    "speed":"0",
+                    "lane":"0",
+                    "percent_to_end":"0.01",
+                    "road":"5d5936e6768d2"
+                }
+            }
+        },
+        "agents":{
+            "7491284a81114":{
+                "id":"7491284a81114",
+                "type":"car"
+            }
+        }
+    },
+    "peripherals":{
+        "date":"2022-11-03_20-26-32",
+        "type":"simulation"
+    },
+    "simulation":[
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.01,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.10,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.20,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.3,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.4,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.5,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.6,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.7,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.8,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.9,
+                "distance_to_side": 0
+            }
+        },
+        {
+            "7491284a81114":{
+                "road": "5d5936e6768d2",
+                "percent_to_end": 0.99,
+                "distance_to_side": 0
+            }
+        }
+    ]
+}
