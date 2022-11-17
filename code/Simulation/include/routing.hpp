@@ -49,7 +49,6 @@
 */
 
 typedef std::map<std::string, std::map<std::string, std::string>> SPT;
-typedef std::queue<std::string> Path;
 
 SPT calculateShortestPathTree(const world_t* world);
 

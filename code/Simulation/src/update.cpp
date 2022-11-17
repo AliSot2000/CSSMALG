@@ -136,6 +136,73 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 	});
 }
 
+bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) {
+	bool spaceInTargetStreet = false;
+	Street* target = crossing.outbound[actor->path.front()];
+	TrafficIterator targetStart;
+	TrafficIterator targetEnd;
+	trafficInDrivingDistance(*target, target->length - actor->length, target->length, &targetStart, &targetEnd);
+
+	Actor dummy = *actor;
+	dummy.distanceToRight = 0;
+	dummy.distanceToCrossing = target->length - dummy.length;
+	while (dummy.distanceToRight + LANE_WIDTH <= target->width) {
+		dummy.distanceToRight += LANE_WIDTH;
+		if (maxSpaceInFrontOfVehicle(*target, &dummy, timeDelta, targetStart, targetEnd) > 0.0f) {
+			actor->distanceToCrossing = dummy.distanceToCrossing;
+			actor->distanceToRight = dummy.distanceToRight;
+			actor->path.pop();
+			target->traffic.push_back(actor);
+			return true;
+		}
+	}
+	return false;
+}
+
+void updateCrossings(world_t* world, const float timeDelta) {
+	
+	for (auto& crossing : world->crossings) {
+
+		if (crossing.waitingToBeInserted.size() > 0) {
+			Actor* actor = crossing.waitingToBeInserted[0];
+			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
+				crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
+			}
+		}
+
+		if (crossing.inbound.size() == 0)
+			continue;
+
+		crossing.currentPhase -= timeDelta;
+
+		// Change street for which the light is green
+		if (crossing.currentPhase <= 0.0f) {
+			crossing.green = (crossing.green + 1) % (crossing.inbound.size());
+			crossing.currentPhase = crossing.greenPhaseDuration;
+		}
+
+		Street* street = crossing.inbound[crossing.green];
+		for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
+			Actor* actor = *iter;
+			if (actor->distanceToCrossing >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
+				// No vehicle is close enough to change street
+				break;
+
+			if (actor->path.empty()) {
+				// Actor has arrived at its target
+				street->traffic.erase(iter);
+				break;
+			}
+
+			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
+				street->traffic.erase(iter);
+				break; // I dont know if removing an element from a vector during iteration would lead to good code, hence break
+			}
+		}
+
+	}
+}
+
 void updateStreets(world_t* world, const float timeDelta) {
 	for (auto& street : world->streets) {
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
