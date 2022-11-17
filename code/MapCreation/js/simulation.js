@@ -73,6 +73,7 @@ class Simulation {
         this._sim_map = sim.setup.map;
         this._slider.attr('max', this._simulation.length - 1);
         this._slider.val(0);
+        this.setupSimulation();
         return this;
     }
 
@@ -81,12 +82,13 @@ class Simulation {
         this._map.load(this._sim_map, false);
         this._map.simulationMode(true);
 
-        for (let agent in this._agents) {
-            let a = new Agent(this._agents[agent].id, this._agents[agent].type, this._map);
+        for (let id in this._agents) {
+            let a = new Agent(id, this._agents[id].type, this._map);
             this._map.addAgent(a);
         }
 
         this._a = this._map.getAgents();
+        this.jumpToStep(0);
         return this;
     }
 

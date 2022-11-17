@@ -1,31 +1,45 @@
+/**
+ * The Agent Class
+ * @class Agent
+ * @param {String} id The id of the agent
+ * @param {String} type The type of the agent. Either "car" or "bike"
+ * @param {Map} map The map the agent is on
+ */
 class Agent {
-    _type = 'agent';
+    _type = 'agent'; // Type of the agent
 
-    _id = '';
+    _id = ''; // ID of the agent
 
-    _self = null;
-    _model = null;
-    _map = null;
+    _self = null; // Self Reference
+    _model = null; // Reference to the picture of the agent
+    _map = null; // Current Map the agent is on
 
-    _width = 0;
-    _half_width = 0;
-    _height = 0;
-    _half_height = 0;
-    _lane_width = 0;
-    _half_lane_width = 0;
+    _width = 0; // Width of the agent
+    _half_width = 0; // Half width of the agent
+    _height = 0; // Height of the agent
+    _half_height = 0; // Half height of the agent
+    _lane_width = 0; // Width of a lane
+    _half_lane_width = 0; // Half width of a lane
 
-    _initial_facing = 0;
-    _initial_speed = 0;
-    _initial_lane = 0;
-    _initial_percent_to_end = 0;
+    _initial_facing = 0; // Initial Facing direction of the agent
+    _initial_speed = 0; // Initial Speed of the agent
+    _initial_lane = 0; // Initial Lane the agent is on
+    _initial_percent_to_end = 0; // Initial percent to the end of the road
 
-    _current_road = null;
-    _current_road_id = '';
-    _current_position = null;
-    _current_flip = false;
-    _current_road_width = 0;
-    _time_interval = 1000;
+    _current_road = null; // Current Road the agent is on
+    _current_road_id = ''; // Current Road ID
+    _current_position = null; // Current Position of the agent
+    _current_flip = false; // Current Facing direction of the agent
+    _current_road_width = 0; // Current Road Width
+    _time_interval = 1000; // Time interval between two steps
 
+    /**
+     * Initialize the agent
+     * @constructor
+     * @param {String} id The id of the agent
+     * @param {String} type The type of the agent. Either "car" or "bike"
+     * @param {Map} map The map the agent is on
+     */
     constructor(id, type, map) {
         this._id = id;
         this._map = map;
@@ -133,6 +147,7 @@ class Agent {
             new_position.angle = truncateAngle(new_position.angle + Math.PI, 2 * Math.PI);
         } else {
             new_position = this._current_road.getAgentPosition(step.percent_to_end, step.distance_to_side + this._half_lane_width);
+
         }
         return new_position;
     }

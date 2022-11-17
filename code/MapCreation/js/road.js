@@ -542,7 +542,14 @@ class Road {
     getAgentPosition(percent, offset) {
         let point;
         if (this._simulation_mode) {
-            point = this._simulation_points[Math.round(percent * 1000)];
+            percent = Math.round(percent * 1000)
+            if(percent === 0) {
+                percent = 1;
+            }
+            if(percent === 1000) {
+                percent = 999;
+            }
+            point = this._simulation_points[percent];
         } else {
             point = deCasteljausAlgorithm(this._control_points, percent);
         }

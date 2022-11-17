@@ -244,6 +244,7 @@ class Map {
     /**
      * Loads a map from a save object
      * @param data The save object
+     * @param {boolean} with_agents Whether or not to load the agents
      */
     load(data, with_agents = true) {
         if (data.peripherals.type !== 'save') { // Check if the data is a save object
@@ -253,29 +254,37 @@ class Map {
 
         this.clear(); // Clear the map
 
+        let has_intersections = !isEmpty(data.intersections); // Check if there are intersections in the save object
+
         // Add the intersections first, so that we can add the roads and directly snap them to the intersections
-        for (let id in data.intersections) { // Loop through the intersections
-            let intersection = data.intersections[id]; // Get the intersection
-            let i = new Intersection(id, intersection.position.x, intersection.position.y); // Create the intersection
-            this.addIntersection(i); // Add the intersection to the map
-        }
-
-        for (let id in data.roads) { // Loop through the roads
-            let road = data.roads[id]; // Get the road
-            let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle); // Create the road
-            this.addRoad(r); // Add the road to the map
-            r.setLanes(road.lanes); // Set the lanes of the road
-            if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
-                let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
-                intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point); // Snap the road to the intersection
-            }
-            if (!isEmpty(road.intersections.end)) { // Check if the road has an intersection at the end
-                let intersection = this.getIntersection(road.intersections.end.id); // Get the intersection
-                intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point); // Snap the road to the intersection
+        if (has_intersections) { // Check if there are intersections
+            for (let id in data.intersections) { // Loop through the intersections
+                let intersection = data.intersections[id]; // Get the intersection
+                let i = new Intersection(id, intersection.position.x, intersection.position.y); // Create the intersection
+                this.addIntersection(i); // Add the intersection to the map
             }
         }
 
-        if (with_agents) {
+        if (!isEmpty(data.roads)) { // Check if there are roads
+            for (let id in data.roads) { // Loop through the roads
+                let road = data.roads[id]; // Get the road
+                let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle); // Create the road
+                this.addRoad(r); // Add the road to the map
+                r.setLanes(road.lanes); // Set the lanes of the road
+                if (has_intersections) { // Check if there are intersections
+                    if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
+                        let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
+                        intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point); // Snap the road to the intersection
+                    }
+                    if (!isEmpty(road.intersections.end)) { // Check if the road has an intersection at the end
+                        let intersection = this.getIntersection(road.intersections.end.id); // Get the intersection
+                        intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point); // Snap the road to the intersection
+                    }
+                }
+            }
+        }
+
+        if (with_agents && !isEmpty(data.agents)) { // Check if there are agents
             for (let id in data.agents) { // Loop through the agents
                 let agent = data.agents[id]; // Get the agent
                 let a = new Agent(id, agent.type, this); // Create the agent

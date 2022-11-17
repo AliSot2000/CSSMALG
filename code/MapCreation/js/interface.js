@@ -311,7 +311,7 @@ class Interface {
         let reader = new FileReader(); // Create a file reader
         reader.onload = function(e) { // When the file is loaded
             let simulation = JSON.parse(e.target.result); // Parse the file
-            this._simulation_interface.loadSimulation(simulation).setupSimulation().jumpToStep(0); // Load the simulation
+            this._simulation_interface.loadSimulation(simulation);
             this.toggle(); // Toggle the interface
             this.overview(); // Load the overview
         }.bind(this);
