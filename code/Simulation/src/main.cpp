@@ -1,4 +1,7 @@
 /*
+
+	TODO bug: Cars swap lane when entering crossing even though there is only 1 lane
+
 	TODO missing: Path planning must be able to differentiate between the different types of edges. (Simply do multiple SPT)
 	TODO missing: input and output is hard coded for only street types of car / both
 	TODO feature: Overtaking if opposite street is free
@@ -23,7 +26,29 @@ int randint(int min, int max) {
 	return std::rand() % (max - min + 1) + min;
 }
 
-void createRandomActors(world_t& world, Street& street, const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
+void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& end) {
+	int len = world.crossings.size() - 1;
+	SPT::iterator startIter = spt.begin();
+	std::advance(startIter, randint(0, len));
+	while (startIter->second.size() < 2) {
+		startIter = spt.begin();
+		std::advance(startIter, randint(0, len));
+	}
+
+	auto endIter = startIter->second.begin();
+	std::advance(endIter, randint(0, startIter->second.size() - 1));
+	
+	if (endIter->first == startIter->first) {
+		endIter = startIter->second.begin();
+		if (endIter->first == startIter->first) 
+			std::next(endIter);
+	}
+
+	start = startIter->first;
+	end = endIter->first;
+}
+
+void createRandomActors(world_t& world, SPT& spt, Street& street, const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
 	float offset = street.length / (end - start);
 	int index = 1;
 	for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
@@ -36,117 +61,54 @@ void createRandomActors(world_t& world, Street& street, const std::vector<Actor>
 				.width = 1.5f,
 				.id = std::to_string(std::rand())
 		};
+
+		
+		std::string start;
+		std::string end;
+		choseRandomPath(world, spt, start, end);
+		actor.path = retrievePath(spt, start, end);
+
+		for (auto& crossing : world.crossings) {
+			if (crossing.id == start) {
+				crossing.waitingToBeInserted.push_back(&(*iter));
+				break;
+			}
+		}
 		*iter = actor;
-		street.traffic.push_back(&(*iter));
+		// street.traffic.push_back(&(*iter));
 		index++;
 	}
 }
 
 int main(int argc, char* argv[]) {
 
-	
-	/*
-		world_t world;
-		nlohmann::json map;
-		
-		if (!loadFile("C:/Users/Nils/Documents/StreetSim/CSSMALG/code/Simulation/2022-11-04_13-40-34.json", map)) {
-			return -1;
-		}
+	if (argc < 3) {
+		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-actors>" << std::endl;
+		return -1;
+	}
 
-		importMap(world, map);
-
-		world.actors = std::vector<Actor>(5);
-		createRandomActors(world, world.streets[0], world.actors.begin(), world.actors.end());
-
-		nlohmann::json output = exportWorld(world, runtime, deltaTime, map);
-
-		addFrame(world, output);
-
-		save("C:/Users/Nils/Documents/StreetSim/CSSMALG/code/Simulation/test.sim", output);
-	*/
 	world_t world;
+	nlohmann::json map;
+	
+	if (!loadFile(argv[1], map)) {
+		return -1;
+	}
 
-	Street ab = {
-		.start = "A",
-		.end = "B",
-		.id = "ab",
-	};
-
-	Street db = {
-		.start = "D",
-		.end = "B",
-		.id = "db",
-	};
-
-	Street bc = {
-		.start = "B",
-		.end = "C",
-		.width = 4.0f,
-		.id = "bc",
-	};
-
-	world.streets.push_back(ab);
-	world.streets.push_back(bc);
-	world.streets.push_back(db);
-
-	Crossing a = {
-		.id = "A",
-		.inbound = {},
-		.outbound = {{"B", &world.streets[0]}}
-	};
-
-	Crossing b = {
-		.id = "B",
-		.inbound = {&world.streets[0], &world.streets[2]},
-		.outbound = {{"C", &world.streets[1]}}
-	};
-
-	Crossing c = {
-		.id = "C",
-		.inbound = {&world.streets[1]},
-		.outbound = {}
-	};
-
-	Crossing d = {
-		.id = "D",
-		.inbound = {},
-		.outbound = {{"B", &world.streets[2]}}
-	};
-
-	world.crossings.push_back(a);
-	world.crossings.push_back(b);
-	world.crossings.push_back(c);
-	world.crossings.push_back(d);
-
+	importMap(world, map);
+	
 	SPT spt = calculateShortestPathTree(&world);
 
-	Actor test = {
-		.id = "test actor",
-		.path = retrievePath(spt, "A", "C")
-	};
+	const int randomActors = argc >= 4 ? std::atoi(argv[3]) : 0;
 
-	Actor test2 = {
-		.id = "other lane actor",
-		.path = retrievePath(spt, "D", "C")
-	};
+	if (randomActors > 0) {
+		world.actors = std::vector<Actor>(randomActors);
+		createRandomActors(world, spt, world.streets[0], world.actors.begin(), world.actors.end());
+	}
 
-	Actor obstacle = {
-		.distanceToCrossing = 95.0f,
-		.speed = 0.0f,
-		.id = "obstacle",
-		.path = retrievePath(spt, "B", "C")
-	};
-
-	world.actors.push_back(test);
-	world.actors.push_back(obstacle);
-	world.actors.push_back(test2);
-
-	world.crossings[0].waitingToBeInserted.push_back(&world.actors[0]);
-	world.crossings[3].waitingToBeInserted.push_back(&world.actors[2]);
-	world.streets[1].traffic.push_back(&world.actors[1]);
-	
 	const float runtime = 46.0f;
 	const float deltaTime = 0.25f;
+
+	nlohmann::json output = exportWorld(world, runtime, deltaTime, map);
 
 	float maxTime = runtime; 
 	while (maxTime > 0.0f) {
@@ -154,6 +116,9 @@ int main(int argc, char* argv[]) {
 		updateStreets(&world, deltaTime);
 		maxTime -= deltaTime;
 
+		addFrame(world, output);
+
+		/*
 		std::cout << std::setprecision(3) << "FRAME " << runtime - maxTime << "s" << std::endl;
 		for (const auto& street : world.streets) {
 			std::cout << "Street " << street.id << std::endl;
@@ -162,8 +127,11 @@ int main(int argc, char* argv[]) {
 			}
 			std::cout << std::endl;
 		}
+		*/
 
 	}
+
+	save(argv[2], output);
 
 
 	return 0;
