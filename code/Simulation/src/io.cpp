@@ -20,10 +20,21 @@ void importMap(world_t& world, json& map) {
 
 	assert(world.streets.size() == 0 && "Streets is not empty");
 
+	world.crossings = std::vector<Crossing>(map["intersections"].size());
+
+	int32_t index = 0;
+	std::map<std::string, int32_t> intersectionIdToIndex;
+	for (const auto& [id, data] : map["intersections"].items()) {
+		intersectionIdToIndex[id] = index;
+		Crossing& crossing = world.crossings[index];
+		crossing.id = id;
+		index++;
+	}
+
 	// Data will be packed more neatly when first creating array with given size
 	world.streets = std::vector<Street>(map["roads"].size());
 	
-	int32_t index = 0;
+	index = 0;
 	for (const auto& [id, data] : map["roads"].items()) {
 		Street& street = world.streets[index];
 		street.id = id;
@@ -33,6 +44,12 @@ void importMap(world_t& world, json& map) {
 		// TODO fix
 		// street.type = data["type"];
 		street.type = StreetTypes::Both;
+
+		street.start = data["intersections"]["start"]["id"];
+		street.end = data["intersections"]["end"]["id"];
+
+		world.crossings[intersectionIdToIndex[street.start]].outbound[street.end] = &street;
+		world.crossings[intersectionIdToIndex[street.end]].inbound.push_back(&street);
 
 		index++;
 	}
