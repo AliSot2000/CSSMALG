@@ -3,7 +3,7 @@
 
 1. [MapCreation](#mapcreation)
 2. [Simulation](#simulation)
-3. [Parser](#parser)
+3. [Parsing](#parsing)
 
 ## MapCreation
 The Graphical User Interface for:
