@@ -206,8 +206,13 @@ class Interface {
      * Adds a new road to the map
      */
     addRoad() {
-        let mid = getSnappedMiddleOfScreen(); // The middle of the screen
-        let road = this._map.createRoad(mid.x - 50, mid.y, degToRad(270), mid.x + 50, mid.y, degToRad(90));
+        let start = getSnappedMiddleOfScreen(); // The middle of the screen
+        let end = start.clone();
+        start.x -= 50;
+        end.x += 50;
+        start.angle = degToRad(270);
+        end.angle = degToRad(90);
+        let road = this._map.createRoad(start, end); // Create the road
         // Create a road with default parameters
         road.setLanes([{
             type: 'car',
@@ -224,7 +229,7 @@ class Interface {
      */
     addIntersection() {
         let mid = getSnappedMiddleOfScreen(); // The middle of the screen
-        let intersection = this._map.createIntersection(mid.x, mid.y); // Create an intersection with default parameters
+        let intersection = this._map.createIntersection(mid); // Create an intersection with default parameters
         this.editIntersection(intersection.getId()); // Load the edit view
     }
 

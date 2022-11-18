@@ -10,7 +10,7 @@ function svgElement(type) {
 /**
  * Checks if a variable is empty. This means the value is *null, undefined, length 0, undefined, NaN, 0 or false*
  * @function isEmpty
- * @param variable The variable to check
+ * @param {any} variable The variable to check
  * @returns {boolean} True if the variable is empty
  */
 function isEmpty(variable) {
@@ -41,42 +41,48 @@ function isEmpty(variable) {
 
 /**
  * Calculates the offset of a point from a current point based on an angle and distance using the cos function
- * @param {number} coordinates The current coordinates of the point
+ * @param {number} coordinate The current coordinates of the point
  * @param {number} mid Half the road width
  * @param {number} offset Offset from the edge of the road
  * @param {number} angle The angle of the point
  * @returns {number} The new coordinates of the point
  */
-function calculateOffsetCosCoords (coordinates, mid, offset, angle) {
+function calculateOffsetCosCoords (coordinate, mid, offset, angle) {
     let length = mid - offset; // Calculate the length of the offset
 
     if (length === 0) { // Check if the length is 0
-        return coordinates; // Return the original coordinates
+        return coordinate; // Return the original coordinates
     }
 
     let target = (Math.cos(angle) * length); // Calculate the target offset
 
-    return coordinates + target; // Return the new coordinates
+    return coordinate + target; // Return the new coordinates
 }
 
 /**
  * Calculates the offset of a point from a current point based on an angle and distance using the sin function
- * @param {number} coordinates The current coordinates of the point
+ * @param {number} coordinate The current coordinate of the point
  * @param {number} mid Half the road width
  * @param {number} offset Offset from the edge of the road
  * @param {number} angle The angle of the point
  * @returns {number} The new coordinates of the point
  */
-function calculateOffsetSinCoords(coordinates, mid, offset, angle) {
+function calculateOffsetSinCoords(coordinate, mid, offset, angle) {
     let length = mid - offset; // Calculate the length of the offset
 
     if (length === 0) { // Check if the length is 0
-        return coordinates; // Return the original coordinates
+        return coordinate; // Return the original coordinates
     }
 
     let target = (Math.sin(angle) * length); // Calculate the target offset
 
-    return coordinates - target; // Return the new coordinates
+    return coordinate - target; // Return the new coordinates
+}
+
+function calculateOffsetCoords(point, mid, offset) {
+    point.x = calculateOffsetCosCoords(point.x, mid, offset, point.angle); // Calculate the x offset
+    point.y = calculateOffsetSinCoords(point.y, mid, offset, point.angle); // Calculate the y offset
+    return point;
 }
 
 /**
@@ -129,8 +135,8 @@ function degToRad(deg) {
 
 /**
  * Calculates the distance between two points
- * @param {object} p Object of the first point, with a x and y property
- * @param {object} q Object of the second point, with a x and y property
+ * @param {Point} p Object of the first point, with a x and y property
+ * @param {Point} q Object of the second point, with a x and y property
  * @returns {number} The distance between the two points
  */
 function distance(p, q) {
@@ -183,9 +189,9 @@ function angleBetweenPoints(rp, pq, rq) {
 /**
  * Approximates a bezier curve using the de Casteljau algorithm. (Read more on [wikipedia](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm))
  * The algorithm is recursive and will continue to split the lines between the control points until we reach a point on the curve.
- * @param {Array} controlPoints Array of points to approximate
+ * @param {Array.<Point>} controlPoints Array of points to approximate
  * @param {number} percent The percent along the curve to approximate
- * @returns {Object} The point on the curve, with x, y and the tangent angle.
+ * @returns {Point} The point on the curve, with x, y and the tangent angle.
  */
 function deCasteljausAlgorithm(controlPoints, percent) {
     let len =  controlPoints.length; // Get the length of the control points
@@ -207,14 +213,14 @@ function deCasteljausAlgorithm(controlPoints, percent) {
 
 /**
  * Interpolates between two points
- * @param {Object} p The first point
- * @param {Object} q The second point
+ * @param {Point} p The first point
+ * @param {Point} q The second point
  * @param {number} percent The percent to interpolate
  * @param {boolean} angle If true the angle between the two points will be returned
- * @returns {Object} The interpolated point, with x, y and the tangent angle.
+ * @returns {Point} The interpolated point, with x, y and the tangent angle.
  */
 function interpolateCoordinates(p, q, percent, angle = false) {
-    let i = {}; // Create a new object for the interpolated point
+    let i = new Point(); // Create a new object for the interpolated point
     i.x = p.x + (q.x - p.x) * percent; // Interpolate the x coordinate
     i.y = p.y + (q.y - p.y) * percent; // Interpolate the y coordinate
     if (angle) { // Check if we should return the angle
@@ -225,7 +231,7 @@ function interpolateCoordinates(p, q, percent, angle = false) {
 
 /**
  *
- * @param {Array} points Array of points to approximate
+ * @param {Array.<Point>} points Array of points to approximate
  * @param {number} mid Width of the road
  * @param {number} offset Offset of the line on the road
  * @returns {string} The SVG path
@@ -252,8 +258,8 @@ function approximateBezierCurve(points, mid, offset) {
 }
 
 /**
- * Calculates the distance between a Array of points
- * @param {Array} points Array of points
+ * Calculates the distance between an Array of points
+ * @param {Array.<Point>} points Array of points
  * @returns {number} The sum of the distance between the points
  */
 function approximateDistance(points) {
@@ -351,13 +357,13 @@ function getCookie(name) {
 
 /**
  * Gets the snapped middle of the screen with scroll offset.
- * @returns {Object} The middle of the screen
+ * @returns {Point} The middle of the screen
  */
 function getSnappedMiddleOfScreen() {
-    return {
-        x: snap((window.innerWidth / 2) + $(document).scrollLeft()),
-        y: snap((window.innerHeight / 2) + $(document).scrollTop())
-    }
+    let point = new Point();
+    point.x = snap((window.innerWidth / 2) + $(document).scrollLeft());
+    point.y = snap((window.innerHeight / 2) + $(document).scrollTop());
+    return point;
 }
 
 /**
@@ -371,4 +377,63 @@ function createArrow(path) {
         'd': path,
         'marker-end': 'url(#arrow)'
     });
+}
+
+function lerp(start, end, percent) {
+    return start + (end - start) * percent;
+}
+
+class Point {
+    _x;
+    _y;
+    _angle;
+
+    constructor(x = 0, y = 0, angle = 0) {
+        this._x = x;
+        this._y = y;
+        this._angle = angle;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    get angle() {
+        return this._angle;
+    }
+
+    set x(x) {
+        this._x = x;
+    }
+
+    set y(y) {
+        this._y = y;
+    }
+
+    set angle(angle) {
+        this._angle = angle;
+    }
+
+    set(x, y, angle) {
+        this._x = x;
+        this._y = y;
+        this._angle = angle;
+    }
+
+    clone() {
+        return new Point(this._x, this._y, this._angle);
+    }
+
+    snap() {
+        this._x = snap(this._x);
+        this._y = snap(this._y);
+    }
+
+    export() {
+        return {x: this._x, y: this._y, angle: this._angle};
+    }
 }

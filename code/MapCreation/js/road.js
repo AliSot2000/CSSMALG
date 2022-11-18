@@ -41,14 +41,10 @@ class Road {
      * Creates a road
      * @constructor
      * @param {string} id The id of the road
-     * @param  {number} start_x The x coordinate of the start of the road
-     * @param  {number} start_y The y coordinate of the start of the road
-     * @param  {number} start_angle The angle of the start of the road
-     * @param  {number} end_x The x coordinate of the end of the road
-     * @param  {number} end_y The y coordinate of the end of the road
-     * @param  {number} end_angle The angle of the end of the road
+     * @param {Point} start The start point of the road
+     * @param {Point} end The end point of the road
      */
-    constructor(id = '', start_x = 0, start_y = 0, start_angle = 0, end_x = 0, end_y = 0, end_angle = Math.PI) {
+    constructor(id = '', start, end) {
         if (isEmpty(id)) { // Check if the id is empty
             throw new Error("Road ID cannot be empty"); // Throw an error
         }
@@ -56,8 +52,13 @@ class Road {
         // Initialize Private Values
         this._id = id;
         let grid_size = getConfig('grid_size');
-        this._start = {x: snap(start_x, grid_size), y: snap(start_y, grid_size), angle: start_angle};
-        this._end = {x: snap(end_x, grid_size), y: snap(end_y, grid_size), angle: end_angle};
+
+        // Snap Points to grid
+        start.snap();
+        end.snap();
+
+        this._start = start;
+        this._end = end;
         this._lanes = [];
         this._grab_points = {};
         this._intersections = {start: null, end: null};
@@ -329,22 +330,22 @@ class Road {
 
     /**
      * Calculates the cubic control points
-     * @param {object} p The start point
-     * @param {object} q The end point
-     * @returns {{qm: {x: number, y: number}, pm: {x: number, y: number}}}
+     * @param {Point} p The start point
+     * @param {Point} q The end point
+     * @returns {{qm: Point, pm: Point}}
      */
     calculateCubicPoints(p, q) {
         let offset = distance(p, q) / 2; // Calculate the offset
 
         return {
-            pm: {
-                x: p.x - Math.sin(this._start.angle) * offset, // Calculate the x coordinate of the first control point
-                y: p.y - Math.cos(this._start.angle) * offset // Calculate the y coordinate of the first control point
-            },
-            qm: {
-                x: q.x - Math.sin(this._end.angle) * offset, // Calculate the x coordinate of the second control point
-                y: q.y - Math.cos(this._end.angle) * offset // Calculate the y coordinate of the second control point
-            }
+            pm: new Point(
+                p.x - offset * Math.sin(this._start.angle),
+                p.y - offset * Math.cos(this._start.angle)
+            ),
+            qm: new Point(
+                q.x - offset * Math.sin(this._end.angle),
+                q.y - offset * Math.cos(this._end.angle)
+            )
         }
     }
 
@@ -515,8 +516,8 @@ class Road {
     exportSaveData() {
         let data = {
             id: this._id, // The id of the road
-            start: this._start, // The start point of the road
-            end: this._end, // The end point of the road
+            start: this._start.export(), // The start point of the road
+            end: this._end.export(), // The end point of the road
             lanes: this._lanes, // The lanes of the road
             intersections: {}, // The intersections of the road
             distance: this._distance // The distance of the road
@@ -549,7 +550,7 @@ class Road {
             if(percent === 1000) {
                 percent = 999;
             }
-            point = this._simulation_points[percent];
+            point = this._simulation_points[percent].clone();
         } else {
             point = deCasteljausAlgorithm(this._control_points, percent);
         }

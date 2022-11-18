@@ -33,6 +33,8 @@ class Agent {
     _current_road_width = 0; // Current Road Width
     _time_interval = 1000; // Time interval between two steps
 
+    _animation = new Animate(this);
+
     /**
      * Initialize the agent
      * @constructor
@@ -60,8 +62,7 @@ class Agent {
             top: position.y,
         });
         this._model.css({
-            transform: 'rotate(' + -position.angle + 'rad)',
-            letterSpacing: -position.angle
+            transform: 'rotate(' + -position.angle + 'rad)'
         });
     }
 
@@ -79,6 +80,10 @@ class Agent {
 
     getElement() {
         return this._self;
+    }
+
+    getModel() {
+        return this._model;
     }
 
     getId() {
@@ -147,8 +152,8 @@ class Agent {
             new_position.angle = truncateAngle(new_position.angle + Math.PI, 2 * Math.PI);
         } else {
             new_position = this._current_road.getAgentPosition(step.percent_to_end, step.distance_to_side + this._half_lane_width);
-
         }
+        console.log(new_position); //TODO: remove
         return new_position;
     }
 
@@ -160,28 +165,9 @@ class Agent {
     simulate(step, speed) {
         let new_position = this.nextPosition(step);
 
-        this._self.animate({
-            left: new_position.x,
-            top: new_position.y
-        }, {
-            duration: this._time_interval / speed,
-            easing: 'linear'
-        });
-
-        this._model.animate({
-            letterSpacing: -new_position.angle
-        }, {
-            duration: this._time_interval / speed,
-            easing: 'linear',
-            step: function (now, fx) {
-                $(this).css({
-                    transform: 'rotate(' + now + 'rad)'
-                });
-            }
-        });
+        this._animation.start(this._current_position, new_position, this._time_interval / speed);
 
         this._current_position = new_position;
-        this.updatePosition(this._current_position);
     }
 
     exportSaveData() {

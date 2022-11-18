@@ -120,29 +120,24 @@ class Map {
     }
 
     /**
-     * Adds a road to the map
-     * @param  {number} start_x The x coordinate of the start of the road
-     * @param  {number} start_y The y coordinate of the start of the road
-     * @param  {number} start_angle The angle of the start of the road
-     * @param  {number} end_x The x coordinate of the end of the road
-     * @param  {number} end_y The y coordinate of the end of the road
-     * @param  {number} end_angle The angle of the end of the road
+     * Creates a road on the map
+     * @param {Point} start
+     * @param {Point} end
      * @return {Road} The road object you created
      */
-    createRoad(start_x = 0, start_y= 0, start_angle = 0, end_x= 0, end_y= 0, end_angle = Math.PI) {
-        let road = new Road(this.generateId(), start_x, start_y, start_angle, end_x, end_y, end_angle); // Create the road
+    createRoad(start, end) {
+        let road = new Road(this.generateId(), start, end); // Create the road
         this.addRoad(road); // Add the road to the map
         return road;
     }
 
     /**
      * Adds an intersection to the map
-     * @param {number} x The x coordinate of the intersection
-     * @param {number} y The y coordinate of the intersection
+     * @param {Point} point The coordinate of the intersection
      * @returns {Intersection} The intersection object you created
      */
-    createIntersection(x, y) {
-        let intersection = new Intersection(this.generateId(), x, y); // Create the intersection
+    createIntersection(point) {
+        let intersection = new Intersection(this.generateId(), point); // Create the intersection
         this.addIntersection(intersection); // Add the intersection to the map
         return intersection;
     }
@@ -260,7 +255,7 @@ class Map {
         if (has_intersections) { // Check if there are intersections
             for (let id in data.intersections) { // Loop through the intersections
                 let intersection = data.intersections[id]; // Get the intersection
-                let i = new Intersection(id, intersection.position.x, intersection.position.y); // Create the intersection
+                let i = new Intersection(id, new Point(intersection.position.x, intersection.position.y)); // Create the intersection
                 this.addIntersection(i); // Add the intersection to the map
             }
         }
@@ -268,7 +263,7 @@ class Map {
         if (!isEmpty(data.roads)) { // Check if there are roads
             for (let id in data.roads) { // Loop through the roads
                 let road = data.roads[id]; // Get the road
-                let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle); // Create the road
+                let r = new Road(id, new Point(road.start.x, road.start.y, road.start.angle), new Point(road.end.x, road.end.y, road.end.angle)); // Create the road
                 this.addRoad(r); // Add the road to the map
                 r.setLanes(road.lanes); // Set the lanes of the road
                 if (has_intersections) { // Check if there are intersections
