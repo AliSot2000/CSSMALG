@@ -73,8 +73,8 @@
                 "9f425879ed223": {
                     "id": "9f425879ed223",
                     "position": {
-                        "x": 1000,
-                        "y": 500
+                        "x": 800,
+                        "y": 400
                     },
                     "roads": {
                         "north": {
@@ -93,16 +93,16 @@
                 }
             },
             "peripherals": {
-                "date": "2022-11-05_11-35-12",
+                "date": "2022-11-05_15-15-10",
                 "type": "save"
             },
             "roads": {
                 "218ec3eb665c": {
-                    "distance": 560,
+                    "distance": 379.23782914464306,
                     "end": {
                         "angle": 1.5707963267948966,
-                        "x": 980,
-                        "y": 500
+                        "x": 780,
+                        "y": 400
                     },
                     "id": "218ec3eb665c",
                     "intersections": {
@@ -131,11 +131,11 @@
                     }
                 },
                 "823a5b76f7db5": {
-                    "distance": 160,
+                    "distance": 352.746710719189,
                     "end": {
                         "angle": 3.141592653589793,
-                        "x": 1000,
-                        "y": 520
+                        "x": 800,
+                        "y": 420
                     },
                     "id": "823a5b76f7db5",
                     "intersections": {
@@ -164,7 +164,7 @@
                     }
                 },
                 "91ab1f19a6251": {
-                    "distance": 260,
+                    "distance": 287.82100778689505,
                     "end": {
                         "angle": 3.141592653589793,
                         "x": 1000,
@@ -192,8 +192,8 @@
                     ],
                     "start": {
                         "angle": 0,
-                        "x": 1000,
-                        "y": 480
+                        "x": 800,
+                        "y": 380
                     }
                 }
             }
@@ -203,2378 +203,2368 @@
         {
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.013437509536743164,
+                "percent_to_end": 0.01984238624572754,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.0279807448387146,
+                "percent_to_end": 0.0252760648727417,
                 "road": "91ab1f19a6251"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.05281245708465576,
+                "percent_to_end": 0.02395486831665039,
                 "road": "823a5b76f7db5"
             }
         },
         {
-            "15724": {
-                "distance_to_side": 20.0,
-                "percent_to_end": 0.017589211463928223,
-                "road": "218ec3eb665c"
-            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.018839359283447266,
+                "percent_to_end": 0.027818918228149414,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.038653790950775146,
+                "percent_to_end": 0.034917473793029785,
                 "road": "91ab1f19a6251"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07749992609024048,
+                "percent_to_end": 0.03515279293060303,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
-                "distance_to_side": 20.0,
-                "percent_to_end": 0.027142763137817383,
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.02129262685775757,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.024241209030151367,
+                "percent_to_end": 0.03579545021057129,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.04932683706283569,
+                "percent_to_end": 0.04455888271331787,
                 "road": "91ab1f19a6251"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.10218745470046997,
+                "percent_to_end": 0.04635065793991089,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
-                "distance_to_side": 20.0,
-                "percent_to_end": 0.03669631481170654,
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.029269158840179443,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.029642999172210693,
+                "percent_to_end": 0.04377192258834839,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.05999988317489624,
+                "percent_to_end": 0.05420023202896118,
                 "road": "91ab1f19a6251"
-            },
-            "2995": {
-                "distance_to_side": 0.0,
-                "percent_to_end": 0.014642894268035889,
-                "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1268749237060547,
+                "percent_to_end": 0.05754852294921875,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
-                "distance_to_side": 20.0,
-                "percent_to_end": 0.04624980688095093,
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.03724569082260132,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.035044848918914795,
+                "percent_to_end": 0.051748454570770264,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07067292928695679,
+                "percent_to_end": 0.06384164094924927,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.021250009536743164,
+                "percent_to_end": 0.02162235975265503,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1515623927116394,
+                "percent_to_end": 0.06874638795852661,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.05580335855484009,
+                "percent_to_end": 0.04522216320037842,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.040446698665618896,
+                "percent_to_end": 0.05972492694854736,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.08134603500366211,
+                "percent_to_end": 0.07348304986953735,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.027857184410095215,
+                "percent_to_end": 0.030719399452209473,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.17624986171722412,
+                "percent_to_end": 0.07994425296783447,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.06535685062408447,
+                "percent_to_end": 0.05319869518280029,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.04584848880767822,
+                "percent_to_end": 0.06770145893096924,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09201908111572266,
+                "percent_to_end": 0.08312439918518066,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.034464359283447266,
+                "percent_to_end": 0.03869593143463135,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.20093733072280884,
+                "percent_to_end": 0.09114211797714233,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07491040229797363,
+                "percent_to_end": 0.06117516756057739,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.051250338554382324,
+                "percent_to_end": 0.07567799091339111,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1026921272277832,
+                "percent_to_end": 0.09276580810546875,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.041071534156799316,
+                "percent_to_end": 0.04667240381240845,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.22562485933303833,
+                "percent_to_end": 0.1023399829864502,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.08446395397186279,
+                "percent_to_end": 0.06915169954299927,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.056652188301086426,
+                "percent_to_end": 0.08365446329116821,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.11336517333984375,
+                "percent_to_end": 0.10240721702575684,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.04683077335357666,
+                "percent_to_end": 0.05464893579483032,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.25031232833862305,
+                "percent_to_end": 0.11353784799575806,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09401750564575195,
+                "percent_to_end": 0.07712823152542114,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.06205397844314575,
+                "percent_to_end": 0.09163099527359009,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1240382194519043,
+                "percent_to_end": 0.11204856634140015,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.052232563495635986,
+                "percent_to_end": 0.0626254677772522,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.27499979734420776,
+                "percent_to_end": 0.12473571300506592,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.10357111692428589,
+                "percent_to_end": 0.08510470390319824,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.06745582818984985,
+                "percent_to_end": 0.09960746765136719,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.13471126556396484,
+                "percent_to_end": 0.12168997526168823,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.05763441324234009,
+                "percent_to_end": 0.0706019401550293,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2996872663497925,
+                "percent_to_end": 0.13593363761901855,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.11312466859817505,
+                "percent_to_end": 0.09308123588562012,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07285767793655396,
+                "percent_to_end": 0.10758399963378906,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1453843116760254,
+                "percent_to_end": 0.13133132457733154,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.06303620338439941,
+                "percent_to_end": 0.07857847213745117,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3243747353553772,
+                "percent_to_end": 0.14713150262832642,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.12267827987670898,
+                "percent_to_end": 0.10105776786804199,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07825946807861328,
+                "percent_to_end": 0.11556053161621094,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.15605735778808594,
+                "percent_to_end": 0.14097273349761963,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.06843805313110352,
+                "percent_to_end": 0.08655494451522827,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3490622639656067,
+                "percent_to_end": 0.15832936763763428,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.13223183155059814,
+                "percent_to_end": 0.10903424024581909,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.08366131782531738,
+                "percent_to_end": 0.12353700399398804,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.16673046350479126,
+                "percent_to_end": 0.15061414241790771,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07383990287780762,
+                "percent_to_end": 0.09453147649765015,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3737497329711914,
+                "percent_to_end": 0.16952723264694214,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.14178544282913208,
+                "percent_to_end": 0.11701077222824097,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.08906310796737671,
+                "percent_to_end": 0.1315135359764099,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1774035096168518,
+                "percent_to_end": 0.16025549173355103,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07924169301986694,
+                "percent_to_end": 0.10250800848007202,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3984372019767761,
+                "percent_to_end": 0.18072509765625,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.15133899450302124,
+                "percent_to_end": 0.12498724460601807,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09446489810943604,
+                "percent_to_end": 0.1394900679588318,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.18807655572891235,
+                "percent_to_end": 0.1698969006538391,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.0846434235572815,
+                "percent_to_end": 0.11048448085784912,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.42312467098236084,
+                "percent_to_end": 0.19192296266555786,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.16089260578155518,
+                "percent_to_end": 0.13296377658843994,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09986662864685059,
+                "percent_to_end": 0.1474665403366089,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1987496018409729,
+                "percent_to_end": 0.1795383095741272,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09004521369934082,
+                "percent_to_end": 0.118461012840271,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.44781213998794556,
+                "percent_to_end": 0.20312082767486572,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.17044615745544434,
+                "percent_to_end": 0.14094030857086182,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.10526841878890991,
+                "percent_to_end": 0.15544307231903076,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.20942264795303345,
+                "percent_to_end": 0.1891796588897705,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09544700384140015,
+                "percent_to_end": 0.1264374852180481,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.47249966859817505,
+                "percent_to_end": 0.21431869268417358,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.17999976873397827,
+                "percent_to_end": 0.14891678094863892,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.11067020893096924,
+                "percent_to_end": 0.16341954469680786,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.220095694065094,
+                "percent_to_end": 0.1988210678100586,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.10084879398345947,
+                "percent_to_end": 0.13441401720046997,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49718713760375977,
+                "percent_to_end": 0.22551655769348145,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.18955332040786743,
+                "percent_to_end": 0.1568933129310608,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.11607193946838379,
+                "percent_to_end": 0.17139607667922974,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.23076874017715454,
+                "percent_to_end": 0.20846247673034668,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.10625052452087402,
+                "percent_to_end": 0.14239054918289185,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5218746066093445,
+                "percent_to_end": 0.2367144227027893,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.19910693168640137,
+                "percent_to_end": 0.1648697853088379,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.12147372961044312,
+                "percent_to_end": 0.1793726086616516,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2414417862892151,
+                "percent_to_end": 0.21810382604599,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.11165231466293335,
+                "percent_to_end": 0.15036702156066895,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5465620756149292,
+                "percent_to_end": 0.24791234731674194,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.20866048336029053,
+                "percent_to_end": 0.17284631729125977,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.12687551975250244,
+                "percent_to_end": 0.1873490810394287,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2521148920059204,
+                "percent_to_end": 0.22774523496627808,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.11705410480499268,
+                "percent_to_end": 0.15834355354309082,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5712496042251587,
+                "percent_to_end": 0.2591102123260498,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.21821409463882446,
+                "percent_to_end": 0.18082284927368164,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.13227730989456177,
+                "percent_to_end": 0.19532561302185059,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.26278793811798096,
+                "percent_to_end": 0.23738664388656616,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.12245583534240723,
+                "percent_to_end": 0.1663200855255127,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5959370136260986,
+                "percent_to_end": 0.27030807733535767,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.22776764631271362,
+                "percent_to_end": 0.18879932165145874,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.13767904043197632,
+                "percent_to_end": 0.20330208539962769,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2734609842300415,
+                "percent_to_end": 0.24702799320220947,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.12785762548446655,
+                "percent_to_end": 0.1742965579032898,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6206245422363281,
+                "percent_to_end": 0.28150588274002075,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.23732125759124756,
+                "percent_to_end": 0.19677585363388062,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.14308083057403564,
+                "percent_to_end": 0.21127861738204956,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.28413403034210205,
+                "percent_to_end": 0.25666940212249756,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.13325941562652588,
+                "percent_to_end": 0.18227308988571167,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6453120708465576,
+                "percent_to_end": 0.2927037477493286,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.24687480926513672,
+                "percent_to_end": 0.2047523856163025,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.14848262071609497,
+                "percent_to_end": 0.21925514936447144,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2948070764541626,
+                "percent_to_end": 0.26631075143814087,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1386612057685852,
+                "percent_to_end": 0.19024956226348877,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6699995994567871,
+                "percent_to_end": 0.3039015531539917,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.25642842054367065,
+                "percent_to_end": 0.2127288579940796,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1538844108581543,
+                "percent_to_end": 0.22723162174224854,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.30548012256622314,
+                "percent_to_end": 0.27595216035842896,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.14406293630599976,
+                "percent_to_end": 0.19822609424591064,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6946870684623718,
+                "percent_to_end": 0.3150993585586548,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2659819722175598,
+                "percent_to_end": 0.22070538997650146,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.15928614139556885,
+                "percent_to_end": 0.2352081537246704,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3161531686782837,
+                "percent_to_end": 0.28559356927871704,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.14946472644805908,
+                "percent_to_end": 0.20620262622833252,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7193745374679565,
+                "percent_to_end": 0.32629722356796265,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.27553558349609375,
+                "percent_to_end": 0.22868186235427856,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.16468793153762817,
+                "percent_to_end": 0.24318468570709229,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.32682621479034424,
+                "percent_to_end": 0.29523491859436035,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1548665165901184,
+                "percent_to_end": 0.21417909860610962,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.744062066078186,
+                "percent_to_end": 0.33749502897262573,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2850891351699829,
+                "percent_to_end": 0.23665839433670044,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1700897216796875,
+                "percent_to_end": 0.2511611580848694,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.33749932050704956,
+                "percent_to_end": 0.30487632751464844,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.16026830673217773,
+                "percent_to_end": 0.2221556305885315,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7687495946884155,
+                "percent_to_end": 0.3486928343772888,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.29464274644851685,
+                "percent_to_end": 0.24463492631912231,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.17549151182174683,
+                "percent_to_end": 0.25913769006729126,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3481723666191101,
+                "percent_to_end": 0.3145177364349365,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.16567003726959229,
+                "percent_to_end": 0.2301321029663086,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.793437123298645,
+                "percent_to_end": 0.3598906993865967,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.304196298122406,
+                "percent_to_end": 0.2526113986968994,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.18089324235916138,
+                "percent_to_end": 0.26711416244506836,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.35884541273117065,
+                "percent_to_end": 0.32415908575057983,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1710718274116516,
+                "percent_to_end": 0.23810863494873047,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8181245923042297,
+                "percent_to_end": 0.37108850479125977,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.31374990940093994,
+                "percent_to_end": 0.2605879306793213,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1862950325012207,
+                "percent_to_end": 0.27509069442749023,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3695184588432312,
+                "percent_to_end": 0.3338004946708679,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.17647361755371094,
+                "percent_to_end": 0.24608516693115234,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8428121209144592,
+                "percent_to_end": 0.3822863698005676,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3233035206794739,
+                "percent_to_end": 0.2685644030570984,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.19169682264328003,
+                "percent_to_end": 0.2830672264099121,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.38019150495529175,
+                "percent_to_end": 0.343441903591156,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.18187540769577026,
+                "percent_to_end": 0.25406163930892944,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.867499589920044,
+                "percent_to_end": 0.3934841752052307,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.33285707235336304,
+                "percent_to_end": 0.27654093503952026,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.19709861278533936,
+                "percent_to_end": 0.2910436987876892,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3908645510673523,
+                "percent_to_end": 0.3530832529067993,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.18727713823318481,
+                "percent_to_end": 0.2620381712913513,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8921871185302734,
+                "percent_to_end": 0.4046819806098938,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.342410683631897,
+                "percent_to_end": 0.28451746702194214,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2025003433227539,
+                "percent_to_end": 0.2990202307701111,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.40153759717941284,
+                "percent_to_end": 0.3627246618270874,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.19267892837524414,
+                "percent_to_end": 0.2700147032737732,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9168746471405029,
+                "percent_to_end": 0.41587984561920166,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.35196423530578613,
+                "percent_to_end": 0.29249393939971924,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.20790213346481323,
+                "percent_to_end": 0.3069967031478882,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4122106432914734,
+                "percent_to_end": 0.3723660707473755,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.19808071851730347,
+                "percent_to_end": 0.2779911756515503,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9415621161460876,
+                "percent_to_end": 0.42707765102386475,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.36151784658432007,
+                "percent_to_end": 0.3004704713821411,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.21330392360687256,
+                "percent_to_end": 0.31497323513031006,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4228837490081787,
+                "percent_to_end": 0.3820074200630188,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2034825086593628,
+                "percent_to_end": 0.28596770763397217,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9662495851516724,
+                "percent_to_end": 0.4382755160331726,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.37107139825820923,
+                "percent_to_end": 0.308447003364563,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.21870571374893188,
+                "percent_to_end": 0.32294976711273193,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.43355679512023926,
+                "percent_to_end": 0.3916488289833069,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.20888423919677734,
+                "percent_to_end": 0.29394418001174927,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9909371137619019,
+                "percent_to_end": 0.4494733214378357,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.38062500953674316,
+                "percent_to_end": 0.3164234757423401,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.22410744428634644,
+                "percent_to_end": 0.33092623949050903,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4442298412322998,
+                "percent_to_end": 0.4012901782989502,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.21428602933883667,
+                "percent_to_end": 0.30192071199417114,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.4606711268424988,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3901785612106323,
+                "percent_to_end": 0.32440000772476196,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.22950923442840576,
+                "percent_to_end": 0.3389027714729309,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.45490288734436035,
+                "percent_to_end": 0.4109315872192383,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.219687819480896,
+                "percent_to_end": 0.309897243976593,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.47186899185180664,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.39973217248916626,
+                "percent_to_end": 0.33237648010253906,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2349110245704651,
+                "percent_to_end": 0.3468793034553528,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4655759334564209,
+                "percent_to_end": 0.42057299613952637,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.22508960962295532,
+                "percent_to_end": 0.3178737163543701,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.4830667972564697,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4092857241630554,
+                "percent_to_end": 0.34035301208496094,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.24031281471252441,
+                "percent_to_end": 0.3548557758331299,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.47624897956848145,
+                "percent_to_end": 0.4302143454551697,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.23049134016036987,
+                "percent_to_end": 0.325850248336792,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.4942646026611328,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.41883933544158936,
+                "percent_to_end": 0.3483295440673828,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.24571454524993896,
+                "percent_to_end": 0.36283230781555176,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.486922025680542,
+                "percent_to_end": 0.43985575437545776,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2358931303024292,
+                "percent_to_end": 0.3338267207145691,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5054624676704407,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4283928871154785,
+                "percent_to_end": 0.3563060164451599,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2511163353919983,
+                "percent_to_end": 0.37080878019332886,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49759507179260254,
+                "percent_to_end": 0.44949716329574585,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.24129492044448853,
+                "percent_to_end": 0.34180325269699097,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5166602730751038,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.43794649839401245,
+                "percent_to_end": 0.3642825484275818,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2565181255340576,
+                "percent_to_end": 0.37878531217575073,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5082681775093079,
+                "percent_to_end": 0.45913851261138916,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.24669671058654785,
+                "percent_to_end": 0.34977978467941284,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5278581380844116,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4475000500679016,
+                "percent_to_end": 0.3722590208053589,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.26191991567611694,
+                "percent_to_end": 0.3867618441581726,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5189412832260132,
+                "percent_to_end": 0.46877992153167725,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2520984411239624,
+                "percent_to_end": 0.35775625705718994,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5390559434890747,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.45705366134643555,
+                "percent_to_end": 0.38023555278778076,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2673216462135315,
+                "percent_to_end": 0.3947383165359497,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5296143293380737,
+                "percent_to_end": 0.47842133045196533,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.25750023126602173,
+                "percent_to_end": 0.3657327890396118,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5502537488937378,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4666072130203247,
+                "percent_to_end": 0.38821208477020264,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2727234363555908,
+                "percent_to_end": 0.4027148485183716,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.540287435054779,
+                "percent_to_end": 0.48806267976760864,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.26290202140808105,
+                "percent_to_end": 0.3737093210220337,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5614515542984009,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.47616082429885864,
+                "percent_to_end": 0.39618855714797974,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.27812522649765015,
+                "percent_to_end": 0.4106913208961487,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5509605407714844,
+                "percent_to_end": 0.49770408868789673,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2683038115501404,
+                "percent_to_end": 0.3816857933998108,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5726494193077087,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4857143759727478,
+                "percent_to_end": 0.4041650891304016,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2835270166397095,
+                "percent_to_end": 0.41866785287857056,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5616335868835449,
+                "percent_to_end": 0.50734543800354,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.27370554208755493,
+                "percent_to_end": 0.38966232538223267,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5838472843170166,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49526798725128174,
+                "percent_to_end": 0.4121416211128235,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.288928747177124,
+                "percent_to_end": 0.42664438486099243,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5723066329956055,
+                "percent_to_end": 0.5169868469238281,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.27910733222961426,
+                "percent_to_end": 0.39763879776000977,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.5950450897216797,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5048215389251709,
+                "percent_to_end": 0.4201180934906006,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.29433053731918335,
+                "percent_to_end": 0.43462085723876953,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5829797983169556,
+                "percent_to_end": 0.5266282558441162,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2845091223716736,
+                "percent_to_end": 0.40561532974243164,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6062428951263428,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5143751502037048,
+                "percent_to_end": 0.42809462547302246,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2997323274612427,
+                "percent_to_end": 0.4425973892211914,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5936528444290161,
+                "percent_to_end": 0.5362696647644043,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2899109125137329,
+                "percent_to_end": 0.4135918617248535,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6174407005310059,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5239287614822388,
+                "percent_to_end": 0.43607109785079956,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.305134117603302,
+                "percent_to_end": 0.4505739212036133,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6043258905410767,
+                "percent_to_end": 0.5459110140800476,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.29531264305114746,
+                "percent_to_end": 0.4215683341026306,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6286385655403137,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5334823131561279,
+                "percent_to_end": 0.44404762983322144,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.31053584814071655,
+                "percent_to_end": 0.4585503935813904,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.614998996257782,
+                "percent_to_end": 0.5555524230003357,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3007144331932068,
+                "percent_to_end": 0.4295448660850525,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6398364305496216,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5430358648300171,
+                "percent_to_end": 0.4520241618156433,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3159376382827759,
+                "percent_to_end": 0.46652692556381226,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6256721019744873,
+                "percent_to_end": 0.5651938319206238,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3061162233352661,
+                "percent_to_end": 0.4375213384628296,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6510342359542847,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.552589476108551,
+                "percent_to_end": 0.4600006341934204,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3213394284248352,
+                "percent_to_end": 0.47450339794158936,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6363451480865479,
+                "percent_to_end": 0.5748353004455566,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.31151801347732544,
+                "percent_to_end": 0.44549787044525146,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6622320413589478,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.562143087387085,
+                "percent_to_end": 0.4679771661758423,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.32674115896224976,
+                "percent_to_end": 0.48247992992401123,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6470182538032532,
+                "percent_to_end": 0.5844767093658447,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.31691974401474,
+                "percent_to_end": 0.45347440242767334,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6734298467636108,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5716966390609741,
+                "percent_to_end": 0.4759536385536194,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3321429491043091,
+                "percent_to_end": 0.4904564619064331,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6576913595199585,
+                "percent_to_end": 0.5941181182861328,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3223215341567993,
+                "percent_to_end": 0.46145087480545044,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6846277117729187,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5812501907348633,
+                "percent_to_end": 0.48393017053604126,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3375447392463684,
+                "percent_to_end": 0.4984329342842102,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.668364405632019,
+                "percent_to_end": 0.6037595272064209,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.32772332429885864,
+                "percent_to_end": 0.4694274067878723,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.6958255767822266,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5908038020133972,
+                "percent_to_end": 0.49190670251846313,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.34294652938842773,
+                "percent_to_end": 0.5064094662666321,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6790375113487244,
+                "percent_to_end": 0.613400936126709,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3331250548362732,
+                "percent_to_end": 0.4774039387702942,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7070233821868896,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6003574132919312,
+                "percent_to_end": 0.49988317489624023,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3483482599258423,
+                "percent_to_end": 0.5143859386444092,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6897106170654297,
+                "percent_to_end": 0.6230423450469971,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3385268449783325,
+                "percent_to_end": 0.4853804111480713,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7182211875915527,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6099109649658203,
+                "percent_to_end": 0.5078597068786621,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3537500500679016,
+                "percent_to_end": 0.522362470626831,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7003836631774902,
+                "percent_to_end": 0.6326837539672852,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.34392863512039185,
+                "percent_to_end": 0.49335694313049316,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7294189929962158,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6194645166397095,
+                "percent_to_end": 0.515836238861084,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.35915184020996094,
+                "percent_to_end": 0.5303390026092529,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7110567092895508,
+                "percent_to_end": 0.6423251628875732,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.34933042526245117,
+                "percent_to_end": 0.501333475112915,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7406168580055237,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6290181279182434,
+                "percent_to_end": 0.5238127112388611,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.36455363035202026,
+                "percent_to_end": 0.5383155345916748,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7217298746109009,
+                "percent_to_end": 0.6519665718078613,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3547321557998657,
+                "percent_to_end": 0.5093099474906921,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7518146634101868,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6385717391967773,
+                "percent_to_end": 0.531789243221283,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3699553608894348,
+                "percent_to_end": 0.5462920069694519,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7324029207229614,
+                "percent_to_end": 0.6616079807281494,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.36013394594192505,
+                "percent_to_end": 0.5172864198684692,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7630125284194946,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6481252908706665,
+                "percent_to_end": 0.5397657155990601,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.37535715103149414,
+                "percent_to_end": 0.554268479347229,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.743075966835022,
+                "percent_to_end": 0.6712493896484375,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3655357360839844,
+                "percent_to_end": 0.5252629518508911,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7742103338241577,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6576788425445557,
+                "percent_to_end": 0.5477422475814819,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.38075894117355347,
+                "percent_to_end": 0.5622450113296509,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7537490725517273,
+                "percent_to_end": 0.6808907985687256,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3709375262260437,
+                "percent_to_end": 0.533239483833313,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7854081392288208,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6672324538230896,
+                "percent_to_end": 0.5557187795639038,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3861607313156128,
+                "percent_to_end": 0.5702215433120728,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7644221782684326,
+                "percent_to_end": 0.6905322074890137,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.37633925676345825,
+                "percent_to_end": 0.5412160158157349,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.7966060042381287,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6767860651016235,
+                "percent_to_end": 0.5636952519416809,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.39156246185302734,
+                "percent_to_end": 0.5781980752944946,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7750952243804932,
+                "percent_to_end": 0.7001736164093018,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3817410469055176,
+                "percent_to_end": 0.549192488193512,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8078038096427917,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6863396167755127,
+                "percent_to_end": 0.5716717839241028,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.39696425199508667,
+                "percent_to_end": 0.5861745476722717,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7857683300971985,
+                "percent_to_end": 0.7098150253295898,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3871428370475769,
+                "percent_to_end": 0.5571689605712891,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8190016746520996,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6958931684494019,
+                "percent_to_end": 0.5796482563018799,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.402366042137146,
+                "percent_to_end": 0.5941510200500488,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7964414358139038,
+                "percent_to_end": 0.7194564342498779,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.39254462718963623,
+                "percent_to_end": 0.5651454925537109,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8301994800567627,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7054467797279358,
+                "percent_to_end": 0.5876247882843018,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4077678322792053,
+                "percent_to_end": 0.6021275520324707,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8071144819259644,
+                "percent_to_end": 0.729097843170166,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3979463577270508,
+                "percent_to_end": 0.5731220245361328,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8413973450660706,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7150003910064697,
+                "percent_to_end": 0.5956013202667236,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4131695628166199,
+                "percent_to_end": 0.6101040840148926,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8177875876426697,
+                "percent_to_end": 0.7387393116950989,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4033481478691101,
+                "percent_to_end": 0.5810985565185547,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8525951504707336,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7245539426803589,
+                "percent_to_end": 0.6035778522491455,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4185713529586792,
+                "percent_to_end": 0.6180806159973145,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.828460693359375,
+                "percent_to_end": 0.748380720615387,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.40874993801116943,
+                "percent_to_end": 0.5890750288963318,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8637930154800415,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.734107494354248,
+                "percent_to_end": 0.6115543246269226,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4239731431007385,
+                "percent_to_end": 0.6260570883750916,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8391337394714355,
+                "percent_to_end": 0.758022129535675,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.41415172815322876,
+                "percent_to_end": 0.5970515012741089,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8749908208847046,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.743661105632782,
+                "percent_to_end": 0.6195307970046997,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.42937493324279785,
+                "percent_to_end": 0.6340335607528687,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8498068451881409,
+                "percent_to_end": 0.7676635384559631,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4195534586906433,
+                "percent_to_end": 0.6050280332565308,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8861886858940125,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7532147169113159,
+                "percent_to_end": 0.6275073289871216,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4347766637802124,
+                "percent_to_end": 0.6420100927352905,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8604798913002014,
+                "percent_to_end": 0.7773049473762512,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.42495524883270264,
+                "percent_to_end": 0.6130045652389526,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.8973865509033203,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7627682685852051,
+                "percent_to_end": 0.6354838609695435,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.44017845392227173,
+                "percent_to_end": 0.6499866247177124,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8711529970169067,
+                "percent_to_end": 0.7869463562965393,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.43035703897476196,
+                "percent_to_end": 0.6209810972213745,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9085843563079834,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7723218202590942,
+                "percent_to_end": 0.6434603929519653,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.44558024406433105,
+                "percent_to_end": 0.6579631567001343,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8818260431289673,
+                "percent_to_end": 0.7965877652168274,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4357588291168213,
+                "percent_to_end": 0.6289575695991516,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9197822213172913,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7818754315376282,
+                "percent_to_end": 0.6514368653297424,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4509820342063904,
+                "percent_to_end": 0.6659396886825562,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8924991488456726,
+                "percent_to_end": 0.8062291741371155,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.44116055965423584,
+                "percent_to_end": 0.6369341015815735,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9309800267219543,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7914289832115173,
+                "percent_to_end": 0.6594134569168091,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.45638376474380493,
+                "percent_to_end": 0.673916220664978,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9031722545623779,
+                "percent_to_end": 0.8158706426620483,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.44656234979629517,
+                "percent_to_end": 0.6449106335639954,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9421778917312622,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8009825348854065,
+                "percent_to_end": 0.6673899292945862,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.46178555488586426,
+                "percent_to_end": 0.6818927526473999,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9138453006744385,
+                "percent_to_end": 0.8255120515823364,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4519641399383545,
+                "percent_to_end": 0.652887225151062,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9533756971359253,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8105361461639404,
+                "percent_to_end": 0.6753664612770081,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4671873450279236,
+                "percent_to_end": 0.6898692846298218,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.924518346786499,
+                "percent_to_end": 0.8351534605026245,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4573659300804138,
+                "percent_to_end": 0.6608636975288391,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9645735621452332,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8200896978378296,
+                "percent_to_end": 0.6833429932594299,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4725891351699829,
+                "percent_to_end": 0.6978458166122437,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9351914525032043,
+                "percent_to_end": 0.8447948694229126,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.46276766061782837,
+                "percent_to_end": 0.668840229511261,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9757713675498962,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8296432495117188,
+                "percent_to_end": 0.6913195252418518,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.47799086570739746,
+                "percent_to_end": 0.7058222889900208,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9458644986152649,
+                "percent_to_end": 0.8544362783432007,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4681694507598877,
+                "percent_to_end": 0.6768167614936829,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.9869692325592041,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8391968011856079,
+                "percent_to_end": 0.6992960572242737,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4833926558494568,
+                "percent_to_end": 0.7137988209724426,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9565376043319702,
+                "percent_to_end": 0.8640776872634888,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.473571240901947,
+                "percent_to_end": 0.6847932934761047,
                 "road": "218ec3eb665c"
             },
             "32391": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 1.0,
+                "percent_to_end": 0.998167097568512,
                 "road": "823a5b76f7db5"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8487504124641418,
+                "percent_to_end": 0.7072725892066956,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4887944459915161,
+                "percent_to_end": 0.7217753529548645,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9672106504440308,
+                "percent_to_end": 0.8737190961837769,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.47897303104400635,
+                "percent_to_end": 0.6927698254585266,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2586,22 +2576,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.858303964138031,
+                "percent_to_end": 0.7152491211891174,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49419623613357544,
+                "percent_to_end": 0.7297518849372864,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9778837561607361,
+                "percent_to_end": 0.8833605051040649,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4843747615814209,
+                "percent_to_end": 0.7007463574409485,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2613,22 +2603,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8678575158119202,
+                "percent_to_end": 0.7232256531715393,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49959796667099,
+                "percent_to_end": 0.7377284169197083,
                 "road": "218ec3eb665c"
             },
             "24464": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9885568022727966,
+                "percent_to_end": 0.893001914024353,
                 "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4897765517234802,
+                "percent_to_end": 0.7087228298187256,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2640,17 +2630,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8774111270904541,
+                "percent_to_end": 0.7312021851539612,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5049997568130493,
+                "percent_to_end": 0.7457049489021301,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9026433229446411,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49517834186553955,
+                "percent_to_end": 0.7166993618011475,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2662,17 +2657,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8869646787643433,
+                "percent_to_end": 0.7391787171363831,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5104015469551086,
+                "percent_to_end": 0.753681480884552,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9122847318649292,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5005800724029541,
+                "percent_to_end": 0.7246758937835693,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2684,17 +2684,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8965182304382324,
+                "percent_to_end": 0.7471551895141602,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.515803337097168,
+                "percent_to_end": 0.7616580128669739,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9219261407852173,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5059819221496582,
+                "percent_to_end": 0.7326524257659912,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2706,17 +2711,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9060717821121216,
+                "percent_to_end": 0.7551317811012268,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5212050676345825,
+                "percent_to_end": 0.7696345448493958,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9315675497055054,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5113836526870728,
+                "percent_to_end": 0.7406289577484131,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2728,17 +2738,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9156253933906555,
+                "percent_to_end": 0.7631083130836487,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5266068577766418,
+                "percent_to_end": 0.7776110768318176,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9412089586257935,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5167854428291321,
+                "percent_to_end": 0.748605489730835,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2750,17 +2765,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9251789450645447,
+                "percent_to_end": 0.7710847854614258,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5320086479187012,
+                "percent_to_end": 0.7855876088142395,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9508503675460815,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5221872329711914,
+                "percent_to_end": 0.7565820217132568,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2772,17 +2792,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9347324967384338,
+                "percent_to_end": 0.7790613174438477,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5374103784561157,
+                "percent_to_end": 0.7935641407966614,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9604917764663696,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.527588963508606,
+                "percent_to_end": 0.7645585536956787,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2794,17 +2819,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9442861080169678,
+                "percent_to_end": 0.7870378494262695,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.542812168598175,
+                "percent_to_end": 0.8015406727790833,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9701331853866577,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5329907536506653,
+                "percent_to_end": 0.7725350856781006,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2816,17 +2846,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9538396596908569,
+                "percent_to_end": 0.7950143814086914,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5482139587402344,
+                "percent_to_end": 0.8095171451568604,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9797745943069458,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5383925437927246,
+                "percent_to_end": 0.7805116176605225,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2838,17 +2873,22 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9633932113647461,
+                "percent_to_end": 0.8029909133911133,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5536156892776489,
+                "percent_to_end": 0.8174936771392822,
                 "road": "218ec3eb665c"
+            },
+            "24464": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.9894160032272339,
+                "road": "91ab1f19a6251"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5437942743301392,
+                "percent_to_end": 0.7884881496429443,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2860,17 +2900,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.97294682264328,
+                "percent_to_end": 0.8109674453735352,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.559017539024353,
+                "percent_to_end": 0.8254702091217041,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5491960644721985,
+                "percent_to_end": 0.7964646816253662,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2882,17 +2922,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9825003743171692,
+                "percent_to_end": 0.818943977355957,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5644192695617676,
+                "percent_to_end": 0.833446741104126,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5545978546142578,
+                "percent_to_end": 0.8044412136077881,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2904,17 +2944,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9920539259910583,
+                "percent_to_end": 0.8269205093383789,
                 "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5698210597038269,
+                "percent_to_end": 0.8414232730865479,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5599995851516724,
+                "percent_to_end": 0.81241774559021,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2926,17 +2966,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.037884652614593506,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8348970413208008,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5752228498458862,
+                "percent_to_end": 0.8493998050689697,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5654014348983765,
+                "percent_to_end": 0.8203942775726318,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2948,17 +2988,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.05846160650253296,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8428735733032227,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5806245803833008,
+                "percent_to_end": 0.8573763370513916,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.570803165435791,
+                "percent_to_end": 0.8283708095550537,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2970,17 +3010,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.07903856039047241,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8508501052856445,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5860263705253601,
+                "percent_to_end": 0.8653528690338135,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5762049555778503,
+                "percent_to_end": 0.8363473415374756,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -2992,17 +3032,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.09961545467376709,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8588266372680664,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5914281606674194,
+                "percent_to_end": 0.8733294010162354,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5816067457199097,
+                "percent_to_end": 0.8443238735198975,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3014,17 +3054,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.12019240856170654,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8668031692504883,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.596829891204834,
+                "percent_to_end": 0.8813059329986572,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5870084762573242,
+                "percent_to_end": 0.8523004055023193,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3036,17 +3076,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.140769362449646,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8747797012329102,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6022317409515381,
+                "percent_to_end": 0.8892824649810791,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5924102663993835,
+                "percent_to_end": 0.8602769374847412,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3058,17 +3098,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.16134631633758545,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.882756233215332,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6076334714889526,
+                "percent_to_end": 0.897258996963501,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5978120565414429,
+                "percent_to_end": 0.8682534694671631,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3080,17 +3120,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.1819232702255249,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8907327651977539,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.613035261631012,
+                "percent_to_end": 0.9052355289459229,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6032137870788574,
+                "percent_to_end": 0.876230001449585,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3102,17 +3142,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.20250022411346436,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.8987092971801758,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6184370517730713,
+                "percent_to_end": 0.9132120609283447,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6086156368255615,
+                "percent_to_end": 0.8842065334320068,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3124,17 +3164,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2230771780014038,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9066858291625977,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6238387823104858,
+                "percent_to_end": 0.9211885929107666,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6140173673629761,
+                "percent_to_end": 0.8921830654144287,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3146,17 +3186,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.24365413188934326,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9146623611450195,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6292405724525452,
+                "percent_to_end": 0.9291651248931885,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6194191575050354,
+                "percent_to_end": 0.9001595377922058,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3168,17 +3208,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.26423102617263794,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9226388931274414,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6346423625946045,
+                "percent_to_end": 0.9371416568756104,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6248209476470947,
+                "percent_to_end": 0.9081360697746277,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3190,17 +3230,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.2848079800605774,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9306153655052185,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.640044093132019,
+                "percent_to_end": 0.9451181292533875,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6302226781845093,
+                "percent_to_end": 0.9161126017570496,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3212,17 +3252,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.30538493394851685,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9385918974876404,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6454459428787231,
+                "percent_to_end": 0.9530946612358093,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6356244683265686,
+                "percent_to_end": 0.9240891337394714,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3234,17 +3274,17 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3259618878364563,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9465684294700623,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6508476734161377,
+                "percent_to_end": 0.9610711932182312,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6410262584686279,
+                "percent_to_end": 0.9320656657218933,
                 "road": "218ec3eb665c"
             },
             "32391": {
@@ -3256,932 +3296,1097 @@
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.34653884172439575,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9545449614524841,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.656249463558197,
+                "percent_to_end": 0.9690477252006531,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6464279890060425,
+                "percent_to_end": 0.9400421977043152,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.3671157956123352,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.962521493434906,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6616512537002563,
+                "percent_to_end": 0.977024257183075,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6518298387527466,
+                "percent_to_end": 0.9480187296867371,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.38769274950027466,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9704980254173279,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6670529842376709,
+                "percent_to_end": 0.9850007891654968,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6572315692901611,
+                "percent_to_end": 0.9559952020645142,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4082697033882141,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.9784745573997498,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6724547743797302,
+                "percent_to_end": 0.9929773211479187,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6626333594322205,
+                "percent_to_end": 0.963971734046936,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4288465976715088,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6778565645217896,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6680351495742798,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.44942355155944824,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6832582950592041,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6734368801116943,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.4700005054473877,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6886601448059082,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6788386702537537,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.49057745933532715,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6940618753433228,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.684240460395813,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5111544132232666,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6994636654853821,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6896421909332275,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5317313075065613,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7048654556274414,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6950440406799316,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.552308201789856,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.710267186164856,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7004457712173462,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5728851556777954,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7156689763069153,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7058475613594055,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.5934620499610901,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7210707664489746,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7112493515014648,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6140389442443848,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7264724969863892,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7166510820388794,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6346158981323242,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7318742871284485,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7220528721809387,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6551927924156189,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7372760772705078,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.727454662322998,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.6757696866989136,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7426778078079224,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7328563928604126,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.696346640586853,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7480796575546265,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7382581830024719,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7169235944747925,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.753481388092041,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7436599731445313,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7375004291534424,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7588831782341003,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7490617036819458,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7580773830413818,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7642849683761597,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7544635534286499,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7786543369293213,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7696866989135742,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7598652839660645,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.799231231212616,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7750885486602783,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7652670741081238,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8198081254959106,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7804902791976929,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7706688642501831,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8403850793838501,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7858920693397522,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7760706543922424,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8609619736671448,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7912938594818115,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7814724445343018,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8815388679504395,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7966956496238708,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7868742346763611,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9021158218383789,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8020974397659302,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7922760248184204,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9226927757263184,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8074992299079895,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.7976778149604797,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.943269670009613,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8129010200500488,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8030796051025391,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9638465642929077,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8183028101921082,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8084813952445984,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
             "15724": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9844235181808472,
-                "road": "91ab1f19a6251"
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
             },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8237046003341675,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8138831853866577,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8291063904762268,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.819284975528717,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8345081806182861,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8246867656707764,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8399099707603455,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8300885558128357,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8453117609024048,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.835490345954895,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8507135510444641,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8408921360969543,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8561153411865234,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8462939262390137,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8615171313285828,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.851695716381073,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8669189214706421,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8570975065231323,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8723207116127014,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8624992966651917,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8777225017547607,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.867901086807251,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8831242918968201,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8733028173446655,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8885260820388794,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8787046670913696,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8939278721809387,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8841063976287842,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.899329662322998,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8895082473754883,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9047314524650574,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.8949099779129028,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9101332426071167,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9003118276596069,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.915535032749176,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9057135581970215,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9209368228912354,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9111153483390808,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9263386130332947,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9165171384811401,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.931740403175354,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9219189286231995,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9371421933174133,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9273207187652588,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9425439834594727,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9327225089073181,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9479457139968872,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9381242990493774,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9533475041389465,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9435260891914368,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9587492942810059,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9489278793334961,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9641510844230652,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9543296694755554,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9695528745651245,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9597314596176147,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9749546647071838,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9651332497596741,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9803564548492432,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9705350399017334,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9857582449913025,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9759368300437927,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9911600351333618,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.981338620185852,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9965618252754211,
+                "percent_to_end": 1.0,
                 "road": "218ec3eb665c"
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9867403507232666,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         },
         {
+            "15724": {
+                "distance_to_side": 0.0,
+                "percent_to_end": 0.985497236251831,
+                "road": "218ec3eb665c"
+            },
             "18467": {
                 "distance_to_side": 0.0,
                 "percent_to_end": 1.0,
@@ -4189,7 +4394,7 @@
             },
             "2995": {
                 "distance_to_side": 0.0,
-                "percent_to_end": 0.9901785850524902,
+                "percent_to_end": 0.9709944725036621,
                 "road": "218ec3eb665c"
             }
         }
