@@ -147,7 +147,6 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 	dummy.distanceToRight = 0;
 	dummy.distanceToCrossing = target->length - dummy.length;
 	while (dummy.distanceToRight + LANE_WIDTH <= target->width) {
-		dummy.distanceToRight += LANE_WIDTH;
 		if (maxSpaceInFrontOfVehicle(*target, &dummy, timeDelta, targetStart, targetEnd) > 0.0f) {
 			actor->distanceToCrossing = dummy.distanceToCrossing;
 			actor->distanceToRight = dummy.distanceToRight;
@@ -155,6 +154,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 			target->traffic.push_back(actor);
 			return true;
 		}
+		dummy.distanceToRight += LANE_WIDTH;
 	}
 	return false;
 }
