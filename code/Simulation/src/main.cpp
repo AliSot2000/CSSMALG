@@ -1,7 +1,5 @@
 /*
 
-	TODO bug: Cars swap lane when entering crossing even though there is only 1 lane
-
 	TODO missing: Path planning must be able to differentiate between the different types of edges. (Simply do multiple SPT)
 	TODO missing: input and output is hard coded for only street types of car / both
 	TODO feature: Overtaking if opposite street is free
