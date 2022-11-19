@@ -7,7 +7,7 @@ var CONFIG = {
 
     // Simulation settings
     simulation_interval: 250,
-    pixel_to_meter: 0.1
+    pixels_to_meter: 0.1
 };
 
 /**
@@ -26,7 +26,7 @@ function getConfig(name) {
             road_lane_width: 20,
             arrow_length: 20,
             simulation_interval: 250,
-            pixel_to_meter: 0.1
+            pixels_to_meter: 0.1
         };
         return defaultConfig[name]; // Return the default config value
     }
