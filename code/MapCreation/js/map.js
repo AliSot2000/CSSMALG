@@ -7,11 +7,13 @@
 class Map {
     _self = null;
     _road_wrapper = null;
+    _agents_wrapper = null;
     _roads = null;
     _intersections = null;
     _grid = null;
     _grab_points = null;
     _snap_points = null;
+    _agents = null;
 
     /**
      * Creates a Map
@@ -26,16 +28,19 @@ class Map {
         this._intersection_wrapper = $(svgElement("svg")); // Create the SVG element
         this._roads = {}; // Create the roads object
         this._intersections = {}; // Create the intersections object
+        this._agents = {}; // Create the agents object
         this._grid = new Grid(50); // Create the grid object
         this._grab_points = $('<div class="grabpoints"></div>');
         this._snap_points = $('<div class="snappoints"></div>');
+        this._agents_wrapper = $('<div class="agents"></div>');
 
         this._self.append(
             this._road_wrapper,
             this._intersection_wrapper,
             this._grab_points,
             this._snap_points,
-            this._grid.getGrid()
+            this._grid.getGrid(),
+            this._agents_wrapper
         ); // Add the SVG element to the map
 
         // Make the grabpoints element draggable
@@ -89,7 +94,7 @@ class Map {
      * @returns {boolean} True if the ID is in use, false if it is not
      */
     idInUse(id) {
-        return id in this._roads || id in this._intersections; // Check if the id is in use
+        return id in this._roads || id in this._intersections || id in this._agents; // Check if the id is in use
     }
 
     /**
@@ -115,29 +120,24 @@ class Map {
     }
 
     /**
-     * Adds a road to the map
-     * @param  {number} start_x The x coordinate of the start of the road
-     * @param  {number} start_y The y coordinate of the start of the road
-     * @param  {number} start_angle The angle of the start of the road
-     * @param  {number} end_x The x coordinate of the end of the road
-     * @param  {number} end_y The y coordinate of the end of the road
-     * @param  {number} end_angle The angle of the end of the road
+     * Creates a road on the map
+     * @param {Point} start
+     * @param {Point} end
      * @return {Road} The road object you created
      */
-    createRoad(start_x = 0, start_y= 0, start_angle = 0, end_x= 0, end_y= 0, end_angle = Math.PI) {
-        let road = new Road(this.generateId(), start_x, start_y, start_angle, end_x, end_y, end_angle); // Create the road
+    createRoad(start, end) {
+        let road = new Road(this.generateId(), start, end); // Create the road
         this.addRoad(road); // Add the road to the map
         return road;
     }
 
     /**
      * Adds an intersection to the map
-     * @param {number} x The x coordinate of the intersection
-     * @param {number} y The y coordinate of the intersection
+     * @param {Point} point The coordinate of the intersection
      * @returns {Intersection} The intersection object you created
      */
-    createIntersection(x, y) {
-        let intersection = new Intersection(this.generateId(), x, y); // Create the intersection
+    createIntersection(point) {
+        let intersection = new Intersection(this.generateId(), point); // Create the intersection
         this.addIntersection(intersection); // Add the intersection to the map
         return intersection;
     }
@@ -176,6 +176,14 @@ class Map {
         return this._intersections[id];
     }
 
+    getAgents() {
+        return this._agents;
+    }
+
+    getAgent(id) {
+        return this._agents[id];
+    }
+
     /**
      * Removes a road from the map
      * @param {string} id The id of the road you would like to remove
@@ -194,6 +202,11 @@ class Map {
         delete this._intersections[id]; // Remove the intersection from the intersections object
     }
 
+    removeAgent(id) {
+        this.getAgent(id).remove(); // Remove the agent from the SVG element
+        delete this._agents[id]; // Remove the agent from the agents object
+    }
+
     /**
      * Exports the map as a object that can be used to recreate or load the map
      * @returns {Object} The map object
@@ -202,6 +215,7 @@ class Map {
         let data = { // Initialize the data object
             roads: {}, // Initialize the roads object
             intersections: {}, // Initialize the intersections object
+            agents: {}, // Initialize the agents object
             peripherals : {} // Initialize the peripherals object
         };
 
@@ -213,16 +227,50 @@ class Map {
             data.intersections[id] = this._intersections[id].exportSaveData(); // Add the intersection to the intersections object
         }
 
-        data.peripherals.saveDate = currentTime(); // Add the save date to the peripherals object
+        for (let id in this._agents) { // Loop through the agents
+            data.agents[id] = this._agents[id].exportSaveData(); // Add the agent to the agents object
+        }
+
+        data.peripherals.date = currentTime(); // Add the save date to the peripherals object
         data.peripherals.type = 'save'; // Add the type of the export
+        return data;
+    }
+
+    exportToBeSimulatedData() {
+        let data = { // Initialize the data object
+            roads: [], // Initialize the roads object
+            intersections: [], // Initialize the intersections object
+            agents: [], // Initialize the agents object
+            peripherals : {} // Initialize the peripherals object
+        };
+
+        for (let id in this._roads) { // Loop through the roads
+            let roads = this._roads[id].exportToBeSimulatedData(); // Add the road to the roads object
+            for (let type in roads) {
+                data.roads.push(roads[type]);
+            }
+        }
+
+        for (let id in this._intersections) { // Loop through the intersections
+            data.intersections.push(this._intersections[id].exportToBeSimulatedData()); // Add the intersection to the intersections object
+        }
+
+        for (let id in this._agents) { // Loop through the agents
+            data.agents.push(this._agents[id].exportSaveData()); // Add the agent to the agents object
+        }
+
+        data.peripherals.date = currentTime(); // Add the save date to the peripherals object
+        data.peripherals.type = 'to_be_simulated'; // Add the type of the export
+        data.peripherals.map = this.exportSaveData(); // Add the map to the peripherals object
         return data;
     }
 
     /**
      * Loads a map from a save object
      * @param data The save object
+     * @param {boolean} with_agents Whether or not to load the agents
      */
-    load(data) {
+    load(data, with_agents = true) {
         if (data.peripherals.type !== 'save') { // Check if the data is a save object
             alert("This is not a valid save!"); // Alert the user that the data is not a save object
             throw new Error('Invalid Save Data');
@@ -230,29 +278,46 @@ class Map {
 
         this.clear(); // Clear the map
 
+        let has_intersections = !isEmpty(data.intersections); // Check if there are intersections in the save object
+
         // Add the intersections first, so that we can add the roads and directly snap them to the intersections
-        for (let id in data.intersections) { // Loop through the intersections
-            let intersection = data.intersections[id]; // Get the intersection
-            let i = new Intersection(id, intersection.position.x, intersection.position.y); // Create the intersection
-            this.addIntersection(i); // Add the intersection to the map
-        }
-
-        for (let id in data.roads) { // Loop through the roads
-            let road = data.roads[id]; // Get the road
-            let r = new Road(id, road.start.x, road.start.y, road.start.angle, road.end.x, road.end.y, road.end.angle); // Create the road
-            this.addRoad(r); // Add the road to the map
-            r.setLanes(road.lanes); // Set the lanes of the road
-            if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
-                let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
-                intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point); // Snap the road to the intersection
-            }
-            if (!isEmpty(road.intersections.end)) { // Check if the road has an intersection at the end
-                let intersection = this.getIntersection(road.intersections.end.id); // Get the intersection
-                intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point); // Snap the road to the intersection
+        if (has_intersections) { // Check if there are intersections
+            for (let id in data.intersections) { // Loop through the intersections
+                let intersection = data.intersections[id]; // Get the intersection
+                let i = new Intersection(id, new Point(intersection.position.x, intersection.position.y)); // Create the intersection
+                this.addIntersection(i); // Add the intersection to the map
             }
         }
 
-        alert('Finished loading save of ' + data.peripherals.saveDate); // Notify the user that the save has been loaded
+        if (!isEmpty(data.roads)) { // Check if there are roads
+            for (let id in data.roads) { // Loop through the roads
+                let road = data.roads[id]; // Get the road
+                let r = new Road(id, new Point(road.start.x, road.start.y, road.start.angle), new Point(road.end.x, road.end.y, road.end.angle)); // Create the road
+                this.addRoad(r); // Add the road to the map
+                r.setLanes(road.lanes); // Set the lanes of the road
+                if (has_intersections) { // Check if there are intersections
+                    if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
+                        let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
+                        intersection.snapRoad(r, r._start, 'start', road.intersections.start.snap_point); // Snap the road to the intersection
+                    }
+                    if (!isEmpty(road.intersections.end)) { // Check if the road has an intersection at the end
+                        let intersection = this.getIntersection(road.intersections.end.id); // Get the intersection
+                        intersection.snapRoad(r, r._end, 'end', road.intersections.end.snap_point); // Snap the road to the intersection
+                    }
+                }
+            }
+        }
+
+        if (with_agents && !isEmpty(data.agents)) { // Check if there are agents
+            for (let id in data.agents) { // Loop through the agents
+                let agent = data.agents[id]; // Get the agent
+                let a = new Agent(id, agent.type, this); // Create the agent
+                this.addAgent(a); // Add the agent to the map
+                a.initialMapPosition(agent.percent_to_end, agent.lane, agent.speed, this.getRoad(agent.road), agent.type); // Set the initial position of the agent
+            }
+        }
+
+        alert('Finished loading save of ' + data.peripherals.date); // Notify the user that the save has been loaded
     }
 
     /**
@@ -260,6 +325,9 @@ class Map {
      * @returns {Map} Self Reference for chaining
      */
     clear() {
+        for (let id in this._agents) { // Loop through the agents
+            this.removeAgent(id); // Remove the agent
+        }
         for (let id in this._roads) { // Loop through the roads
             this.removeRoad(id); // Remove the road
         }
@@ -267,5 +335,28 @@ class Map {
             this.removeIntersection(id); // Remove the intersection
         }
         return this;
+    }
+
+    addAgent(agent) {
+        this._agents[agent.getId()] = agent;
+        this._agents_wrapper.append(agent.getElement());
+        return this;
+    }
+
+    createAgent(type) {
+        let agent;
+        agent = new Agent(this.generateId(), type, this);
+        this.addAgent(agent);
+        return agent;
+    }
+
+    simulationMode(set) {
+        for (let id in this._roads) {
+            this._roads[id].simulationMode(set);
+        }
+        let type = set ? 'none' : 'block';
+        this._snap_points.css('display', type);
+        this._grab_points.css('display', type);
+        this._grid.getGrid().css('display', type);
     }
 }
