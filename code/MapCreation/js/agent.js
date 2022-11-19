@@ -43,70 +43,120 @@ class Agent {
      * @param {Map} map The map the agent is on
      */
     constructor(id, type, map) {
-        this._id = id;
-        this._map = map;
-        this._self = $('<div></div>').addClass('agent').data('link', this);
-        this._model = $('<div></div>');
-        this.updateType(type);
-        this._self.append(this._model);
-        this._lane_width = getConfig('road_lane_width');
-        this._half_lane_width = this._lane_width / 2;
-        this._time_interval = getConfig('simulation_interval');
+        this._id = id; // ID of the agent
+        this._map = map; // Current Map the agent is on
+        this._self = $('<div></div>').addClass('agent').data('link', this); // Self Reference
+        this._model = $('<div></div>'); // Reference to the picture of the agent
+        this.updateType(type); // Update the type of the agent
+        this._self.append(this._model); // Append the model to the self
+        this._lane_width = getConfig('road_lane_width'); // Width of a lane
+        this._half_lane_width = this._lane_width / 2; // Half width of a lane
+        this._time_interval = getConfig('simulation_interval'); // Time interval between two steps
 
-        this.updateWidthAndHeight();
+        this.updateWidthAndHeight(); // Update the width and height of the agent
     }
 
+    /**
+     * Update the position of the agent
+     * @param {Point} position The new position of the agent
+     * @returns {Agent} Self Reference for chaining
+     */
     updatePosition(position) {
-        this._self.css({
+        this._self.css({ // Update the position of the agent
             left: position.x,
             top: position.y,
         });
-        this._model.css({
+        this._model.css({ // Update the rotation of the picture
             transform: 'rotate(' + -position.angle + 'rad)'
         });
+
+        return this;
     }
 
+    /**
+     * Snap a agent to a road
+     * @param {Road} road The road to snap to
+     * @returns {Agent} Self Reference for chaining
+     */
     snapToRoad(road) {
-        this._current_road = road;
+        this._current_road = road; // Current Road the agent is on
+        return this; // Self Reference for chaining
     }
 
-    moveOnRoad(percent, side, flip) {
-        let position = this._current_road.getAgentPosition(percent, side);
-        if (flip) {
-            position.angle = truncateAngle(position.angle + Math.PI, 2 * Math.PI);
+    /**
+     * Move the agent on the road it is snapped to
+     * @param {number} percent The percent to the end of the road
+     * @param {number} distance_to_side The distance to the side of the road
+     * @param {boolean} flip The facing direction of the agent
+     */
+    moveOnRoad(percent, distance_to_side, flip) {
+        let position = this._current_road.getAgentPosition(percent, distance_to_side); // Get the position of the agent
+        if (flip) { // If the agent is facing the other direction
+            position.angle = truncateAngle(position.angle + Math.PI, 2 * Math.PI); // Flip the angle
         }
-        this.updatePosition(position);
+        this.updatePosition(position); // Update the position of the agent
     }
 
+    /**
+     * Returns a reference to the html element of the agent
+     * @return {jQuery} The html element of the agent
+     */
     getElement() {
         return this._self;
     }
 
+    /**
+     * Returns a reference to the html element of the picture of the agent
+     * @return {jQuery} The html element of the picture of the agent
+     */
     getModel() {
         return this._model;
     }
 
+    /**
+     * Returns the id of the agent
+     * @return {string} The id of the agent
+     */
     getId() {
         return this._id;
     }
 
+    /**
+     * Set the initial position of the agent
+     * @param {number} percent_to_end The percent to the end of the road
+     * @param {number} lane The lane the agent is on
+     * @param {number} speed The speed of the agent
+     * @param {Road} road The road the agent is on
+     * @param {string} type The type of the agent
+     * @returns {Agent} Self Reference for chaining
+     */
     initialMapPosition(percent_to_end, lane, speed, road, type) {
-        this._initial_lane = lane;
-        this._initial_speed = speed;
-        this._initial_percent_to_end = percent_to_end;
-        this.updateType(type);
-        this.snapToRoad(road);
-        let facing = road.getLanes()[lane].direction < 0;
-        this._initial_facing = facing;
-        percent_to_end = facing ? 1 - percent_to_end : percent_to_end;
-        let lane_width = getConfig('road_lane_width')
+        this._initial_lane = lane; // Initial Lane the agent is on
+        this._initial_speed = speed; // Initial Speed of the agent
+        this._initial_percent_to_end = percent_to_end; // Initial percent to the end of the road
+        this.updateType(type); // Update the type of the agent
+        this.snapToRoad(road); // Snap the agent to the road
+        let facing = road.getLanes()[lane].direction < 0; // Get the facing direction of the agent
+        this._initial_facing = facing; // Initial Facing direction of the agent
+        percent_to_end = facing ? 1 - percent_to_end : percent_to_end; // If the agent is facing the other direction, reverse the percent
         this.moveOnRoad(percent_to_end, lane * this._lane_width + this._half_lane_width, facing);
+        return this;
     }
 
+    /**
+     * Update the agent position on road move
+     * @returns {Agent} Self Reference for chaining
+     */
     initialMapUpdate() {
         this.moveOnRoad(this._initial_percent_to_end, this._initial_lane * this._lane_width + this._half_lane_width, this._initial_facing);
+        return this;
     }
 
+    /**
+     * Update the type of the agent
+     * @param {string} type The type of the agent
+     * @returns {Agent} Self Reference for chaining
+     */
     updateType(type) {
         this._model.removeClass(this._type);
         switch (type) {

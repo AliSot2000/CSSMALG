@@ -436,4 +436,8 @@ class Point {
     export() {
         return {x: this._x, y: this._y, angle: this._angle};
     }
+
+    equalCoords(point) {
+        return this._x === point.x && this._y === point.y && this._angle === point.angle;
+    }
 }

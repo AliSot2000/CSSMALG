@@ -74,6 +74,7 @@ class Interface {
 
         this._body.append('<h2>Creation</h2><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Add Road</button>');
+        this._body.append('<button class="interface_button">Add THICC Road</button>');
         this._body.append('<button class="interface_button">Add Intersection</button>');
 
         this._body.append($('<button class="interface_button">Edit Roads</button>'));
@@ -204,8 +205,9 @@ class Interface {
 
     /**
      * Adds a new road to the map
+     * @param {boolean} thicc Whether the road is thicc
      */
-    addRoad() {
+    addRoad(thicc = false) {
         let start = getSnappedMiddleOfScreen(); // The middle of the screen
         let end = start.clone();
         start.x -= 50;
@@ -214,13 +216,20 @@ class Interface {
         end.angle = degToRad(90);
         let road = this._map.createRoad(start, end); // Create the road
         // Create a road with default parameters
-        road.setLanes([{
-            type: 'car',
-            direction: 1,
-            left: true,
-            forward: true,
-            right: true
-        }]);
+        if (thicc) {
+            road.setLanes([
+                {type: 'car', direction: 1, left: false, forward: true, right: false},
+                {type: 'car', direction: 1, left: false, forward: true, right: false},
+                {type: 'car', direction: -1, left: false, forward: true, right: false},
+                {type: 'car', direction: -1, left: false, forward: true, right: false}
+            ]);
+        } else {
+            road.setLanes([
+                {type: 'car', direction: 1, left: false, forward: true, right: false},
+                {type: 'car', direction: -1, left: false, forward: true, right: false}
+            ]);
+        }
+
         this.editRoad(road.getId()); // Load the edit view
     }
 
@@ -419,6 +428,9 @@ class Interface {
             case 'Add Road':
                 this.addRoad();
                 break;
+            case 'Add THICC Road':
+                this.addRoad(true);
+                break
             case 'Add Intersection':
                 this.addIntersection();
                 break;
