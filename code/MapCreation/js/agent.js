@@ -141,11 +141,16 @@ class Agent {
 
     nextPosition(step) {
         if (step.road !== this._current_road_id) {
-            this.snapToRoad(this._map.getRoad(step.road));
-            this._current_road_id = step.road;
-            this._current_road_width = this._current_road.getRoadWidth();
             this._current_flip = step.road.charAt(0) === '!';
+            if (this._current_flip) {
+                this._current_road_id = step.road.substr(1);
+            } else {
+                this._current_road_id = step.road;
+            }
+            this.snapToRoad(this._map.getRoad(this._current_road_id));
+            this._current_road_width = this._current_road.getRoadWidth();
         }
+
         let new_position;
         if (this._current_flip) {
             new_position = this._current_road.getAgentPosition(1 - step.percent_to_end, this._current_road_width - step.distance_to_side - this._half_width);
@@ -153,12 +158,12 @@ class Agent {
         } else {
             new_position = this._current_road.getAgentPosition(step.percent_to_end, step.distance_to_side + this._half_lane_width);
         }
-        console.log(new_position); //TODO: remove
         return new_position;
     }
 
     jumpTo(step) {
         this._current_position = this.nextPosition(step);
+        console.log(this._current_position.export());
         this.updatePosition(this._current_position);
     }
 
@@ -171,6 +176,18 @@ class Agent {
     }
 
     exportSaveData() {
+        return {
+            id: this._id,
+            type: this._type,
+            speed: this._initial_speed,
+            lane: this._initial_lane,
+            percent_to_end: this._initial_percent_to_end,
+            road: this._current_road.getId()
+        };
+    }
+
+    exportToBeSimulatedData() {
+        let pixel_to_meter = getConfig('pixels_to_meter');
         return {
             id: this._id,
             type: this._type,
