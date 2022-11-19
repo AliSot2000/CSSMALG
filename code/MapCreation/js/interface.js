@@ -67,7 +67,7 @@ class Interface {
         this._body.append('<button class="interface_button">Save</button>');
         this._body.append('<button class="interface_button">Load</button>');
         this._body.append('<button class="interface_button">Export as Save</button>');
-        //this._body.append('<button class="interface_button">Export for Simulation</button>');
+        this._body.append('<button class="interface_button">Export for Simulation</button>');
         this._body.append('<button class="interface_button">Import Save</button>');
         this._body.append('<button class="interface_button">Import Simulation</button>');
         this._body.append('<button class="interface_button">Clear</button>')
@@ -384,7 +384,7 @@ class Interface {
     runCommand(command, data, target) {
         switch (command) { // Switch on the command
             case 'Export for Simulation':
-                alert('Not Implemented');
+                downloadAsJson(this._map.exportToBeSimulatedData(), currentTime(), 'tsim'); // Export the map as a to be simulated file
                 break;
             case 'Import Save':
                 this.upload();

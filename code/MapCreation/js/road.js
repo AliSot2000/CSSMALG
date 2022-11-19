@@ -540,6 +540,64 @@ class Road {
         return data;
     }
 
+    getLanesInDirection(direction) {
+        let roads = [];
+        for (let i = 0; i < this._lanes.length; i++) {
+            if (this._lanes[i].direction === direction) {
+                roads.push(this._lanes[i]);
+            }
+        }
+        return roads;
+    }
+
+    exportToBeSimulatedData() {
+        let pixels_per_meter = getConfig('pixels_to_meter');
+        let roads = {};
+
+        let forward = this.getLanesInDirection(1);
+        let backward = this.getLanesInDirection(-1);
+
+        let intersections = {}
+
+        if (!isEmpty(this._intersections.start)) { // If the start of the road is connected to an intersection
+            intersections.start = { // Set the start intersection
+                id: this._intersections.start.intersection.getId() // The id of the intersection
+            }
+        }
+
+        if (!isEmpty(this._intersections.end)) { // If the end of the road is connected to an intersection
+            intersections.end = { // Set the end intersection
+                id: this._intersections.end.intersection.getId() // The id of the intersection
+            }
+        }
+
+        if (!isEmpty(forward)) {
+            roads.forward = {
+                id: this._id, // The id of the road
+                lanes: forward, // The lanes of the road
+                intersections: intersections, // The intersections of the road
+                distance: this._distance * pixels_per_meter // The distance of the road
+            };
+        }
+        if (!isEmpty(backward)) {
+            let reverse_intersections = {};
+            if (!isEmpty(intersections.start)) {
+                reverse_intersections.end = intersections.start;
+            }
+            if (!isEmpty(intersections.end)) {
+                reverse_intersections.start = intersections.end;
+            }
+            roads.backward = {
+                id: '!' + this._id, // The id of the road
+                lanes: backward, // The lanes of the road
+                intersections: reverse_intersections, // The intersections of the road
+                distance: this._distance * pixels_per_meter // The distance of the road
+            };
+        }
+
+        return roads;
+    }
+
     getAgentPosition(percent, offset) {
         let point;
         if (this._simulation_mode) {

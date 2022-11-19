@@ -236,6 +236,35 @@ class Map {
         return data;
     }
 
+    exportToBeSimulatedData() {
+        let data = { // Initialize the data object
+            roads: [], // Initialize the roads object
+            intersections: [], // Initialize the intersections object
+            agents: [], // Initialize the agents object
+            peripherals : {} // Initialize the peripherals object
+        };
+
+        for (let id in this._roads) { // Loop through the roads
+            let roads = this._roads[id].exportToBeSimulatedData(); // Add the road to the roads object
+            for (let type in roads) {
+                data.roads.push(roads[type]);
+            }
+        }
+
+        for (let id in this._intersections) { // Loop through the intersections
+            data.intersections.push(this._intersections[id].exportToBeSimulatedData()); // Add the intersection to the intersections object
+        }
+
+        for (let id in this._agents) { // Loop through the agents
+            data.agents.push(this._agents[id].exportSaveData()); // Add the agent to the agents object
+        }
+
+        data.peripherals.date = currentTime(); // Add the save date to the peripherals object
+        data.peripherals.type = 'to_be_simulated'; // Add the type of the export
+        data.peripherals.map = this.exportSaveData(); // Add the map to the peripherals object
+        return data;
+    }
+
     /**
      * Loads a map from a save object
      * @param data The save object

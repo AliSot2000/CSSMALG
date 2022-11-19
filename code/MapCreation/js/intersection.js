@@ -317,4 +317,33 @@ class Intersection {
 
         return data;
     }
+
+    exportToBeSimulatedData() {
+        let data = { // The data to export
+            id: this._id,
+            roads: []
+        };
+
+        for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
+            if (this._snap_points[this._directions[i]].connected) { // Check if the snap point is connected
+                let road = this._snap_points[this._directions[i]].road
+                let forward = road.getLanesInDirection(1);
+                let backward = road.getLanesInDirection(-1);
+
+                if (!isEmpty(forward)) {
+                    data.roads.push({
+                        id: road.getId()
+                    });
+                }
+
+                if (!isEmpty(backward)) {
+                    data.roads.push({
+                        id: '!' + road.getId()
+                    });
+                }
+            }
+        }
+
+        return data;
+    }
 }
