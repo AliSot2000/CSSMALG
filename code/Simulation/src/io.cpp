@@ -24,10 +24,10 @@ void importMap(world_t& world, json& map) {
 
 	int32_t index = 0;
 	std::map<std::string, int32_t> intersectionIdToIndex;
-	for (const auto& [id, data] : map["intersections"].items()) {
-		intersectionIdToIndex[id] = index;
+	for (const auto& [_, data] : map["intersections"].items()) {
+		intersectionIdToIndex[data["id"]] = index;
 		Crossing& crossing = world.crossings[index];
-		crossing.id = id;
+		crossing.id = data["id"];
 		index++;
 	}
 
@@ -35,9 +35,9 @@ void importMap(world_t& world, json& map) {
 	world.streets = std::vector<Street>(map["roads"].size());
 	
 	index = 0;
-	for (const auto& [id, data] : map["roads"].items()) {
+	for (const auto& [_, data] : map["roads"].items()) {
 		Street& street = world.streets[index];
-		street.id = id;
+		street.id = data["id"];
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
 

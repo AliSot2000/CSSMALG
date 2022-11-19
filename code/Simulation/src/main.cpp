@@ -25,21 +25,32 @@ int randint(int min, int max) {
 }
 
 void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& end) {
-	int len = world.crossings.size() - 1;
+	if (world.crossings.size() == 0) {
+		std::cerr << "There are no crossings." << std::endl;
+		return;
+	}
+	int len = (int)world.crossings.size() - 1;
 	SPT::iterator startIter = spt.begin();
 	std::advance(startIter, randint(0, len));
-	while (startIter->second.size() < 2) {
+	int noFinityLoop = 0;
+	while (startIter->second.size() < 2 && noFinityLoop <= world.crossings.size()) {
 		startIter = spt.begin();
 		std::advance(startIter, randint(0, len));
+		noFinityLoop++;
+	}
+
+	if (noFinityLoop > world.crossings.size()) {
+		std::cerr << "There exists no paths. Meaning one can only go from a intersection to the intersection itself." << std::endl;
+		return;
 	}
 
 	auto endIter = startIter->second.begin();
-	std::advance(endIter, randint(0, startIter->second.size() - 1));
+	std::advance(endIter, randint(0, (int)startIter->second.size() - 1));
 	
 	if (endIter->first == startIter->first) {
 		endIter = startIter->second.begin();
 		if (endIter->first == startIter->first) 
-			std::next(endIter);
+			endIter = std::next(endIter);
 	}
 
 	start = startIter->first;
@@ -86,13 +97,13 @@ int main(int argc, char* argv[]) {
 	}
 
 	world_t world;
-	nlohmann::json map;
+	nlohmann::json import;
 	
-	if (!loadFile(argv[1], map)) {
+	if (!loadFile(argv[1], import)) {
 		return -1;
 	}
 
-	importMap(world, map);
+	importMap(world, import);
 	
 	SPT spt = calculateShortestPathTree(&world);
 
@@ -106,7 +117,7 @@ int main(int argc, char* argv[]) {
 	const float runtime = 46.0f;
 	const float deltaTime = 0.25f;
 
-	nlohmann::json output = exportWorld(world, runtime, deltaTime, map);
+	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
 
 	float maxTime = runtime; 
 	while (maxTime > 0.0f) {
