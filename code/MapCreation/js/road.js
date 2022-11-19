@@ -30,19 +30,21 @@ class Road {
     _bike_lanes = [];
     _intersections = null;
     _distance = null;
+    _control_points = null;
+
+    // Simulation
+    _simulation_mode = false;
+    _simulation_points = [];
+    _agents = [];
 
     /**
      * Creates a road
      * @constructor
      * @param {string} id The id of the road
-     * @param  {number} start_x The x coordinate of the start of the road
-     * @param  {number} start_y The y coordinate of the start of the road
-     * @param  {number} start_angle The angle of the start of the road
-     * @param  {number} end_x The x coordinate of the end of the road
-     * @param  {number} end_y The y coordinate of the end of the road
-     * @param  {number} end_angle The angle of the end of the road
+     * @param {Point} start The start point of the road
+     * @param {Point} end The end point of the road
      */
-    constructor(id = '', start_x = 0, start_y = 0, start_angle = 0, end_x = 0, end_y = 0, end_angle = Math.PI) {
+    constructor(id = '', start, end) {
         if (isEmpty(id)) { // Check if the id is empty
             throw new Error("Road ID cannot be empty"); // Throw an error
         }
@@ -50,8 +52,13 @@ class Road {
         // Initialize Private Values
         this._id = id;
         let grid_size = getConfig('grid_size');
-        this._start = {x: snap(start_x, grid_size), y: snap(start_y, grid_size), angle: start_angle};
-        this._end = {x: snap(end_x, grid_size), y: snap(end_y, grid_size), angle: end_angle};
+
+        // Snap Points to grid
+        start.snap();
+        end.snap();
+
+        this._start = start;
+        this._end = end;
         this._lanes = [];
         this._grab_points = {};
         this._intersections = {start: null, end: null};
@@ -134,6 +141,7 @@ class Road {
     updateRoadWidth() {
         let width = this.getRoadWidth(); // Calculate the width of the road
 
+        this._mid = width / 2; // Calculate the middle of the road
         this._asphalt.attr('stroke-width', width); // Set the width of the asphalt
         this._border.attr('stroke-width', width + getConfig('road_border_width') * 2); // Set the width of the border
 
@@ -148,30 +156,29 @@ class Road {
         let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
 
         let c = this.calculateCubicPoints(this._start, this._end); // Calculate the cubic points
-        let control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
+        this._control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
         let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`; // Create the path
 
         for (let i = 0; i < children.length; i++) { // Loop through the children
             $(children[i]).attr('d', path); // Set the path of the child
         }
 
-        let points = []; // Create the points array
+        let points = []; // Clear the points array
 
         points.push(this._start); // Add the start point to the points array
         for (let i = 1; i < 100; i++) { // Loop through the points
-            points.push(deCasteljausAlgorithm(control_points, i / 100)); // Add the point to the points array
+            points.push(deCasteljausAlgorithm(this._control_points, i / 100)); // Add the point to the points array
         }
         points.push(this._end); // Add the end point to the points array
 
         this._distance = approximateDistance(points); // Calculate the distance of the road
 
         children = this._self.find('path.road_line'); // Get the road lines
-        let mid = this.getRoadWidth() / 2; // Calculate the middle of the road
         let mid_lane = getConfig('road_lane_width') / 2; // Calculate the middle of the lane
         let road_lane_width = getConfig('road_lane_width'); // Get the road lane width
 
         for (let i = 0; i < children.length; i++) { // Loop through the road lines
-            path = approximateBezierCurve(points, mid, road_lane_width * (i + 1)); // Calculate the path of the road line
+            path = approximateBezierCurve(points, this._mid, road_lane_width * (i + 1)); // Calculate the path of the road line
             $(children[i]).attr('d', path); // Set the path of the road line
         }
 
@@ -192,47 +199,51 @@ class Road {
             lane = this._lanes[i]; // Get the lane
             offset = road_lane_width * i + mid_lane; // Calculate the offset of the lane
             if (lane.type === 'bike') { // Check if the lane is a bike lane
-                path = approximateBezierCurve(points, mid, offset); // Calculate the path of the bike lane
+                path = approximateBezierCurve(points, this._mid, offset); // Calculate the path of the bike lane
                 $(children[bike_path++]).attr('d', path); // Set the path of the bike lane
             }
             if (lane.direction < 0) { // Check if the lane is going backwards
-                arrow_start = deCasteljausAlgorithm(control_points, arrow_length); // Calculate the start of the arrow
-                arrow_end = deCasteljausAlgorithm(control_points, arrow_length * 2); // Calculate the end of the arrow
-                arrow_head = deCasteljausAlgorithm(control_points, arrow_length * 0.2); // Calculate the head of the arrow
+                arrow_start = deCasteljausAlgorithm(this._control_points, arrow_length); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(this._control_points, arrow_length * 2); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(this._control_points, arrow_length * 0.2); // Calculate the head of the arrow
             } else {
-                arrow_start = deCasteljausAlgorithm(control_points, 1 - arrow_length); // Calculate the start of the arrow
-                arrow_end = deCasteljausAlgorithm(control_points, 1 - arrow_length * 2); // Calculate the end of the arrow
-                arrow_head = deCasteljausAlgorithm(control_points, 1 - arrow_length * 0.2); // Calculate the head of the arrow
+                arrow_start = deCasteljausAlgorithm(this._control_points, 1 - arrow_length); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 2); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 0.2); // Calculate the head of the arrow
             }
 
             // Create the arrow path
-            arrow = 'M ' + calculateOffsetCosCoords(arrow_start.x, mid, offset, arrow_start.angle);
-            arrow += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset, arrow_start.angle);
-            path = ' L ' + calculateOffsetCosCoords(arrow_end.x, mid, offset, arrow_end.angle);
-            path += ',' + calculateOffsetSinCoords(arrow_end.y, mid, offset, arrow_end.angle);
+            arrow = 'M ' + calculateOffsetCosCoords(arrow_start.x, this._mid, offset, arrow_start.angle);
+            arrow += ',' + calculateOffsetSinCoords(arrow_start.y, this._mid, offset, arrow_start.angle);
+            path = ' L ' + calculateOffsetCosCoords(arrow_end.x, this._mid, offset, arrow_end.angle);
+            path += ',' + calculateOffsetSinCoords(arrow_end.y, this._mid, offset, arrow_end.angle);
 
             // Create the arrow line
             this._arrows_container.append($(svgElement("path")).addClass("arrow_line").attr('d', arrow + path));
 
             // Create the arrow head depending on the directions you can go
             if (lane.forward) {
-                path = ' L ' + calculateOffsetCosCoords(arrow_head.x, mid, offset, arrow_head.angle);
-                path += ',' + calculateOffsetSinCoords(arrow_head.y, mid, offset, arrow_head.angle);
+                path = ' L ' + calculateOffsetCosCoords(arrow_head.x, this._mid, offset, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_head.y, this._mid, offset, arrow_head.angle);
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
             if (lane.left) {
-                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, mid, offset + 6 * lane.direction, arrow_head.angle);
-                path += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset + 6 * lane.direction, arrow_head.angle);
+                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, this._mid, offset + 6 * lane.direction, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_start.y, this._mid, offset + 6 * lane.direction, arrow_head.angle);
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
             if (lane.right) {
-                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, mid, offset - 6 * lane.direction, arrow_head.angle);
-                path += ',' + calculateOffsetSinCoords(arrow_start.y, mid, offset - 6 * lane.direction, arrow_head.angle);
+                path = ' L ' + calculateOffsetCosCoords(arrow_start.x, this._mid, offset - 6 * lane.direction, arrow_head.angle);
+                path += ',' + calculateOffsetSinCoords(arrow_start.y, this._mid, offset - 6 * lane.direction, arrow_head.angle);
 
                 this._arrows_container.append(createArrow(arrow + path));
             }
+        }
+
+        for (let i = 0; i < this._agents.length; i++) { // Loop through the agents
+            this._agents[i].initialMapUpdate(); // Update the position of the agent
         }
 
         return this;
@@ -319,22 +330,22 @@ class Road {
 
     /**
      * Calculates the cubic control points
-     * @param {object} p The start point
-     * @param {object} q The end point
-     * @returns {{qm: {x: number, y: number}, pm: {x: number, y: number}}}
+     * @param {Point} p The start point
+     * @param {Point} q The end point
+     * @returns {{qm: Point, pm: Point}}
      */
     calculateCubicPoints(p, q) {
         let offset = distance(p, q) / 2; // Calculate the offset
 
         return {
-            pm: {
-                x: p.x - Math.sin(this._start.angle) * offset, // Calculate the x coordinate of the first control point
-                y: p.y - Math.cos(this._start.angle) * offset // Calculate the y coordinate of the first control point
-            },
-            qm: {
-                x: q.x - Math.sin(this._end.angle) * offset, // Calculate the x coordinate of the second control point
-                y: q.y - Math.cos(this._end.angle) * offset // Calculate the y coordinate of the second control point
-            }
+            pm: new Point(
+                p.x - offset * Math.sin(this._start.angle),
+                p.y - offset * Math.cos(this._start.angle)
+            ),
+            qm: new Point(
+                q.x - offset * Math.sin(this._end.angle),
+                q.y - offset * Math.cos(this._end.angle)
+            )
         }
     }
 
@@ -505,8 +516,8 @@ class Road {
     exportSaveData() {
         let data = {
             id: this._id, // The id of the road
-            start: this._start, // The start point of the road
-            end: this._end, // The end point of the road
+            start: this._start.export(), // The start point of the road
+            end: this._end.export(), // The end point of the road
             lanes: this._lanes, // The lanes of the road
             intersections: {}, // The intersections of the road
             distance: this._distance // The distance of the road
@@ -527,5 +538,112 @@ class Road {
         }
 
         return data;
+    }
+
+    getLanesInDirection(direction) {
+        let roads = [];
+        for (let i = 0; i < this._lanes.length; i++) {
+            if (this._lanes[i].direction === direction) {
+                roads.push(this._lanes[i]);
+            }
+        }
+        return roads;
+    }
+
+    exportToBeSimulatedData() {
+        let pixels_per_meter = getConfig('pixels_to_meter');
+        let roads = {};
+
+        let forward = this.getLanesInDirection(1);
+        let backward = this.getLanesInDirection(-1);
+
+        let intersections = {}
+
+        if (!isEmpty(this._intersections.start)) { // If the start of the road is connected to an intersection
+            intersections.start = { // Set the start intersection
+                id: this._intersections.start.intersection.getId() // The id of the intersection
+            }
+        }
+
+        if (!isEmpty(this._intersections.end)) { // If the end of the road is connected to an intersection
+            intersections.end = { // Set the end intersection
+                id: this._intersections.end.intersection.getId() // The id of the intersection
+            }
+        }
+
+        if (!isEmpty(forward)) {
+            roads.forward = {
+                id: this._id, // The id of the road
+                lanes: forward, // The lanes of the road
+                intersections: intersections, // The intersections of the road
+                distance: this._distance * pixels_per_meter // The distance of the road
+            };
+        }
+        if (!isEmpty(backward)) {
+            let reverse_intersections = {};
+            if (!isEmpty(intersections.start)) {
+                reverse_intersections.end = intersections.start;
+            }
+            if (!isEmpty(intersections.end)) {
+                reverse_intersections.start = intersections.end;
+            }
+            roads.backward = {
+                id: '!' + this._id, // The id of the road
+                lanes: backward, // The lanes of the road
+                intersections: reverse_intersections, // The intersections of the road
+                distance: this._distance * pixels_per_meter // The distance of the road
+            };
+        }
+
+        return roads;
+    }
+
+    getAgentPosition(percent, offset) {
+        let point;
+        if (this._simulation_mode) {
+            percent = Math.round(percent * 1000)
+            if(percent === 0) {
+                percent = 1;
+            }
+            if(percent === 1000) {
+                percent = 999;
+            }
+            point = this._simulation_points[percent].clone();
+        } else {
+            point = deCasteljausAlgorithm(this._control_points, percent);
+        }
+        point.x = calculateOffsetCosCoords(point.x, this._mid, offset, point.angle);
+        point.y = calculateOffsetSinCoords(point.y, this._mid, offset, point.angle);
+        return point;
+    }
+
+    simulationMode(set) {
+        this._simulation_mode = set;
+        if (set) {
+            this._simulation_points.push(this._start); // Add the start point to the points array
+            for (let i = 1; i < 1000; i++) { // Loop through the points
+                this._simulation_points.push(deCasteljausAlgorithm(this._control_points, i / 1000)); // Add the point to the points array
+            }
+            this._simulation_points.push(this._end); // Add the end point to the points array
+        } else {
+            this._simulation_points = [];
+        }
+    }
+
+    getAgents() {
+        return this._agents;
+    }
+
+    addAgent(agent) {
+        this._agents.push(agent);
+        return this;
+    }
+
+    removeAgents(count) {
+        this._agents.splice(-count, count);
+    }
+
+    removeAgent(index) {
+        this._agents.splice(index, 1);
     }
 }

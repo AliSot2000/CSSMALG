@@ -24,13 +24,13 @@ class Intersection {
      * Creates a new intersection
      * @constructor
      * @param {number} id The id of the intersection
-     * @param {number} x The x coordinate of the intersection
-     * @param {number} y The y coordinate of the intersection
+     * @param {Point} point The coordinate of the intersection
      */
-    constructor(id, x, y) {
+    constructor(id, point) {
         this._id = id; // The ID of the intersection
         let grid_size = getConfig('grid_size'); // The size of the grid
-        this._position = {x: snap(x, grid_size), y: snap(y, grid_size)}; // The position of the intersection
+        point.snap(); // Snap the point to the grid
+        this._position = point; // The position of the intersection
         this._snap_points = {}; // The snap points of the intersection
 
         this.createElement().updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
@@ -130,30 +130,18 @@ class Intersection {
      * Gets the offset for a given direction
      * @param {string} side The side to get the offset for. Should be one of the following: north, east, south, west
      * @param {number} offset The offset to add to the position
-     * @returns {Object} The offset position
+     * @returns {Point} The offset position
      */
     getOffsetForDirection (side, offset = 0) {
         switch (side) { // Check the side
             case 'north':
-                return {
-                    x: this._position.x,
-                    y: this._position.y - this._half_size - offset
-                }
+                return new Point(this._position.x, this._position.y - this._half_size - offset);
             case 'east':
-                return {
-                    x: this._position.x + this._half_size + offset,
-                    y: this._position.y
-                }
+                return new Point(this._position.x + this._half_size + offset, this._position.y);
             case 'south':
-                return {
-                    x: this._position.x,
-                    y: this._position.y + this._half_size + offset
-                }
+                return new Point(this._position.x, this._position.y + this._half_size + offset);
             case 'west':
-                return {
-                    x: this._position.x - this._half_size - offset,
-                    y: this._position.y
-                }
+                return new Point(this._position.x - this._half_size - offset, this._position.y);
             default: // Invalid side
                 throw new Error('This direction is not supported');
         }
@@ -314,7 +302,7 @@ class Intersection {
     exportSaveData() {
         let data = { // The data to export
             id: this._id,
-            position: this._position,
+            position: this._position.export(),
             roads: {}
         };
 
@@ -324,6 +312,35 @@ class Intersection {
                     id: this._snap_points[this._directions[i]].road.getId(),
                     point_type: this._snap_points[this._directions[i]].point_type
                 };
+            }
+        }
+
+        return data;
+    }
+
+    exportToBeSimulatedData() {
+        let data = { // The data to export
+            id: this._id,
+            roads: []
+        };
+
+        for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
+            if (this._snap_points[this._directions[i]].connected) { // Check if the snap point is connected
+                let road = this._snap_points[this._directions[i]].road
+                let forward = road.getLanesInDirection(1);
+                let backward = road.getLanesInDirection(-1);
+
+                if (!isEmpty(forward)) {
+                    data.roads.push({
+                        id: road.getId()
+                    });
+                }
+
+                if (!isEmpty(backward)) {
+                    data.roads.push({
+                        id: '!' + road.getId()
+                    });
+                }
             }
         }
 
