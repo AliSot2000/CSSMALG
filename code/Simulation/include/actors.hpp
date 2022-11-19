@@ -39,7 +39,7 @@ typedef struct Street {
 
 	struct Street* opposite = nullptr;
 	StreetTypes type = StreetTypes::Both;
-	float width = 2.0f;
+	size_t width = 2;
 	float length = 100.0f;
 
 	// Ordered by distance to end, must be reordered when actors change position
