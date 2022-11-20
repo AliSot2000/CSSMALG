@@ -352,10 +352,11 @@ class Road {
     /**
      * Makes a road draggable when a user clicks a grab point
      * @param {string} type The type of grab point
+     * @param {Map} map The map the grab point is on
      * @returns {Road} Self reference for chaining
      */
-    startDrag(type) {
-        let data = {road: this, type: type};
+    startDrag(type, map) {
+        let data = {road: this, type: type}; // Create the data object
         switch (type) { // Switch depending on the type of grab point
             case 'start':
                 data.point = this._start;
@@ -365,6 +366,8 @@ class Road {
                 if (isEmpty(data.point)) {
                     data.point = this._end;
                 }
+
+                data.map = map;
 
                 $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
@@ -380,10 +383,11 @@ class Road {
                         return;
                     }
 
-                    let x = snap(event.pageX, getConfig('grid_size')); // Get the x position of the mouse
-                    let y = snap(event.pageY, getConfig('grid_size')); // Get the y position of the mouse
+                    let x = snap(event.pageX + $(document.body).scrollLeft(), getConfig('grid_size')); // Get the x position of the mouse
+                    let y = snap(event.pageY + $(document.body).scrollTop(), getConfig('grid_size')); // Get the y position of the mouse
 
                     if (point.x !== x || point.y !== y) { // If the position has changed
+                        event.data.map.checkNewSize(point);
                         point.x = x; // Set the start x position
                         point.y = y; // Set the start y position
                         road.updatePosition().updateGrabPoints(); // Update the position and grab points
@@ -401,7 +405,7 @@ class Road {
                     let road = event.data.road; // Get the road from the event data
                     let point = event.data.point; // Get the point from the event data
 
-                    point.angle = snapAngle(Math.atan2(event.pageX - point.x, event.pageY - point.y)); // Calculate the angle from the start point to the mouse
+                    point.angle = snapAngle(Math.atan2(event.pageX + $(document.body).scrollLeft() - point.x, event.pageY + $(document.body).scrollTop() - point.y)); // Calculate the angle from the start point to the mouse
 
                     road.updatePosition().updateGrabPoints(); // Update the road position and grab points
                 });
@@ -410,11 +414,11 @@ class Road {
                 throw new Error(`"${type}" is a invalid grabbable type`); // Throw an error if the type is invalid
         }
 
-        $(document).on('mouseup', '', {road: this, type: type}, function (event) { // When the mouse is released
+        $(document).on('mouseup', '', {road: this, type: type, map: map}, function (event) { // When the mouse is released
             event.preventDefault(); // Prevent the default action
             let road = event.data.road; // Get the road from the event data
 
-            road.stopDrag(event.data.type); // Stop dragging the road
+            road.stopDrag(event.data.type, event.data.map); // Stop dragging the road
         });
 
         return this;
@@ -423,12 +427,16 @@ class Road {
     /**
      * Stops dragging a road
      * @param {string} type The type of grab point
+     * @param {Map} map The map the grab point is on
      */
-    stopDrag(type) {
+    stopDrag(type, map) {
         this._grab_points[type].removeClass('grabbed'); // Remove the grabbing class from the grab point
 
         $(document.body).removeClass('grabbing'); // Change the cursor back to the default
         $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+        if (type === 'start' || type === 'end') {
+            map.recheckSize(); // Recheck the size of the map
+        }
     }
 
     /**
@@ -445,7 +453,7 @@ class Road {
 
     /**
      * Gets all the lanes of the road
-     * @returns {Array} The lanes of the road
+     * @returns {Array.<Object>} The lanes of the road
      */
     getLanes() {
         return this._lanes; // Return the lanes
@@ -488,7 +496,7 @@ class Road {
 
     /**
      * Updates the lanes of the road
-     * @param {Array} lanes The new lanes
+     * @param {Array.<Object>} lanes The new lanes
      * @returns {Road} Self reference for chaining
      */
     setLanes(lanes) {

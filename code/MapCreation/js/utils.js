@@ -154,7 +154,7 @@ function snap(value, snap = 50) {
 }
 
 /**
- * Snaps a angle with a given error correction
+ * Snaps an angle with a given error correction
  * @param {number} angle The angle to snap
  * @param {number} snap The maximum snap error to correct
  * @returns {number}
@@ -187,7 +187,7 @@ function angleBetweenPoints(rp, pq, rq) {
 }
 
 /**
- * Approximates a bezier curve using the de Casteljau algorithm. (Read more on [wikipedia](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm))
+ * Approximates a Bézier curve using the de Casteljau algorithm. (Read more on [wikipedia](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm))
  * The algorithm is recursive and will continue to split the lines between the control points until we reach a point on the curve.
  * @param {Array.<Point>} controlPoints Array of points to approximate
  * @param {number} percent The percent along the curve to approximate
@@ -367,7 +367,7 @@ function getSnappedMiddleOfScreen() {
 }
 
 /**
- * Creates a arrow element with a given path
+ * Creates an arrow element with a given path
  * @param {string} path The path of the arrow
  * @returns {jQuery} The arrow element
  */
