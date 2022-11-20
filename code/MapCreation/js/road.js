@@ -36,6 +36,7 @@ class Road {
     _simulation_mode = false;
     _simulation_points = [];
     _agents = [];
+    _speed_limit = 30;
 
     /**
      * Creates a road
@@ -653,5 +654,15 @@ class Road {
 
     removeAgent(index) {
         this._agents.splice(index, 1);
+    }
+
+    getSpeedLimit() {
+        return this._speed_limit;
+    }
+
+    rename(name) {
+        this._id = name;
+        this._self.attr('id', name);
+        return this;
     }
 }

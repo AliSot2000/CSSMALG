@@ -352,4 +352,10 @@ class Intersection {
 
         return data;
     }
+
+    rename(name) {
+        this._id = name;
+        this._self.attr('id', name);
+        return this;
+    }
 }

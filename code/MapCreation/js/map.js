@@ -425,4 +425,18 @@ class Map {
         this._grid.recalculate(size);
         this.updateSize();
     }
+
+    renameRoad (old_id, new_id) {
+        let road = this.getRoad(old_id);
+        this._roads[new_id] = road;
+        delete this._roads[old_id];
+        road.rename(new_id);
+    }
+
+    renameIntersection (old_id, new_id) {
+        let intersection = this.getIntersection(old_id);
+        this._intersections[new_id] = intersection;
+        delete this._intersections[old_id];
+        intersection.rename(new_id);
+    }
 }
