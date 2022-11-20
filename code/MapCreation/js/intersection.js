@@ -229,6 +229,7 @@ class Intersection {
     /**
      * Starts the drag of the intersection
      * @param {string} type The type of the grab point. (Not used for intersections. Only for roads.)
+     * @param {Map} map The map where the intersection is on
      * @returns {Intersection} Self Reference for chaining
      */
     startDrag(type, map) {

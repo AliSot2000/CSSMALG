@@ -52,7 +52,6 @@ class Road {
 
         // Initialize Private Values
         this._id = id;
-        let grid_size = getConfig('grid_size');
 
         // Snap Points to grid
         start.snap();
@@ -414,7 +413,6 @@ class Road {
             default:
                 throw new Error(`"${type}" is a invalid grabbable type`); // Throw an error if the type is invalid
         }
-
         $(document).on('mouseup', '', {road: this, type: type, map: map}, function (event) { // When the mouse is released
             event.preventDefault(); // Prevent the default action
             let road = event.data.road; // Get the road from the event data
@@ -529,7 +527,8 @@ class Road {
             end: this._end.export(), // The end point of the road
             lanes: this._lanes, // The lanes of the road
             intersections: {}, // The intersections of the road
-            distance: this._distance // The distance of the road
+            distance: this._distance, // The distance of the road
+            speed_limit: this._speed_limit // The speed limit of the road
         };
 
         if (!isEmpty(this._intersections.start)) { // If the start of the road is connected to an intersection
@@ -585,7 +584,8 @@ class Road {
                 id: this._id, // The id of the road
                 lanes: forward, // The lanes of the road
                 intersections: intersections, // The intersections of the road
-                distance: this._distance * pixels_per_meter // The distance of the road
+                distance: this._distance * pixels_per_meter, // The distance of the road
+                speed_limit: this._speed_limit // The speed limit of the road
             };
         }
         if (!isEmpty(backward)) {
@@ -600,7 +600,8 @@ class Road {
                 id: '!' + this._id, // The id of the road
                 lanes: backward, // The lanes of the road
                 intersections: reverse_intersections, // The intersections of the road
-                distance: this._distance * pixels_per_meter // The distance of the road
+                distance: this._distance * pixels_per_meter, // The distance of the road
+                speed_limit: this._speed_limit // The speed limit of the road
             };
         }
 
@@ -658,6 +659,11 @@ class Road {
 
     getSpeedLimit() {
         return this._speed_limit;
+    }
+
+    changeSpeedLimit(speed_limit) {
+        this._speed_limit = speed_limit;
+        return this;
     }
 
     rename(name) {

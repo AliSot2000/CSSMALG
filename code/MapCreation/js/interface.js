@@ -355,11 +355,15 @@ class Interface {
         road.setLanes(lanes); // Set the lanes
 
         let newName = this._body.find('input[name="roadName"]').val();
-        if (this._map.idInUse(newName)) {
-            alert('Name already in use');
-        } else {
-            this._map.renameRoad(road_id, newName);
+        if (road_id !== newName) {
+            if (this._map.idInUse(newName)) {
+                alert('Name already in use');
+            } else {
+                this._map.renameRoad(road_id, newName);
+            }
         }
+
+        road.changeSpeedLimit(parseInt(this._body.find('input[name="speedLimit"]').val()));
 
         let agents = road.getAgents(); // The agents of the road
         let agent_html = this._body.find('.ag'); // The agent elements
@@ -398,10 +402,12 @@ class Interface {
 
     saveIntersection (intersection_id) {
         let newName = this._body.find('input[name="intersectionName"]').val();
-        if (this._map.idInUse(newName)) {
-            alert('Name already in use');
-        } else {
-            this._map.renameIntersection(intersection_id, newName);
+        if (intersection_id !== newName) {
+            if (this._map.idInUse(newName)) {
+                alert('Name already in use');
+            } else {
+                this._map.renameIntersection(intersection_id, newName);
+            }
         }
     }
 

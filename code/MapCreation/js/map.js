@@ -310,6 +310,7 @@ class Map {
                 let r = new Road(id, new Point(road.start.x, road.start.y, road.start.angle), new Point(road.end.x, road.end.y, road.end.angle)); // Create the road
                 this.addRoad(r); // Add the road to the map
                 r.setLanes(road.lanes); // Set the lanes of the road
+                r.changeSpeedLimit(road.speed_limit); // Set the speed limit of the road
                 if (has_intersections) { // Check if there are intersections
                     if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
                         let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
