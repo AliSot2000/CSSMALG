@@ -15,6 +15,8 @@ class Map {
     _snap_points = null;
     _agents = null;
 
+    _size = null;
+
     /**
      * Creates a Map
      * @constructor
@@ -34,6 +36,14 @@ class Map {
         this._snap_points = $('<div class="snappoints"></div>');
         this._agents_wrapper = $('<div class="agents"></div>');
 
+        this._size = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        }
+        this._grid.expand(this._size);
+
+        this.updateSize();
+
         this._self.append(
             this._road_wrapper,
             this._intersection_wrapper,
@@ -44,13 +54,18 @@ class Map {
         ); // Add the SVG element to the map
 
         // Make the grabpoints element draggable
-        $('div.grabpoints').on('mousedown', '.grabbable', function(event) {
+        $('div.grabpoints').on('mousedown', '.grabbable', {map: this}, function(event) {
             event.preventDefault(); // Prevent the default action
             let target = $(event.target); // Get the target element
             let link = target.data('link'); // Get the road object
             target.addClass('grabbed'); // Add the grabbed class to the target
             $(document.body).addClass('grabbing'); // Change the cursor to grabbing
-            link.startDrag(target.data('type')); // Start dragging the road
+            link.startDrag(target.data('type'), event.data.map); // Start dragging the road
+        });
+
+        $(window).on('resize', {map: this}, function(event) {
+           let map = event.data.map;
+           map.recheckSize();
         });
 
         // Set the SVG element's attributes
@@ -295,6 +310,7 @@ class Map {
                 let r = new Road(id, new Point(road.start.x, road.start.y, road.start.angle), new Point(road.end.x, road.end.y, road.end.angle)); // Create the road
                 this.addRoad(r); // Add the road to the map
                 r.setLanes(road.lanes); // Set the lanes of the road
+                r.changeSpeedLimit(road.speed_limit); // Set the speed limit of the road
                 if (has_intersections) { // Check if there are intersections
                     if (!isEmpty(road.intersections.start)) { // Check if the road has an intersection at the start
                         let intersection = this.getIntersection(road.intersections.start.id); // Get the intersection
@@ -316,7 +332,7 @@ class Map {
                 a.initialMapPosition(agent.percent_to_end, agent.lane, agent.speed, this.getRoad(agent.road), agent.type); // Set the initial position of the agent
             }
         }
-
+        this.recheckSize(); // Recheck the size of the map
         alert('Finished loading save of ' + data.peripherals.date); // Notify the user that the save has been loaded
     }
 
@@ -358,5 +374,70 @@ class Map {
         this._snap_points.css('display', type);
         this._grab_points.css('display', type);
         this._grid.getGrid().css('display', type);
+    }
+
+    updateSize () {
+        this._self.css({
+            width: `${this._size.width}px`,
+            height: `${this._size.height}px`
+        });
+    }
+
+    checkNewSize(position) {
+        position.x += 200;
+        position.y += 200;
+        let new_size = false;
+
+        if (position.x > this._size.width) {
+            this._size.width = position.x;
+            $(document.body).scrollLeft(this._size.width - window.innerWidth)
+            new_size = true;
+        }
+        if (position.y > this._size.height) {
+            this._size.height = position.y;
+            $(document.body).scrollTop(this._size.height - window.innerHeight)
+            new_size = true;
+        }
+
+        if (new_size) {
+            this.updateSize();
+            this._grid.expand(this._size);
+        }
+    }
+
+    recheckSize() {
+        let size = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+        let grabpoints = this._grab_points.children();
+        for (let i = 0; i < grabpoints.length; i++) {
+            let point = $(grabpoints[i]);
+            let x = parseInt(point.css('left')) + 200;
+            let y = parseInt(point.css('top')) + 200;
+            if (x > size.width) {
+                size.width = x;
+            }
+            if (y > size.height) {
+                size.height = y;
+            }
+        }
+        this._size = size;
+        this._grid.recalculate(size);
+        this.updateSize();
+    }
+
+    renameRoad (old_id, new_id) {
+        let road = this.getRoad(old_id);
+        this._roads[new_id] = road;
+        delete this._roads[old_id];
+        road.rename(new_id);
+    }
+
+    renameIntersection (old_id, new_id) {
+        let intersection = this.getIntersection(old_id);
+        this._intersections[new_id] = intersection;
+        delete this._intersections[old_id];
+        intersection.rename(new_id);
     }
 }

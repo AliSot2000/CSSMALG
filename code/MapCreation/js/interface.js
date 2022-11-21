@@ -104,8 +104,11 @@ class Interface {
         this._body.empty();
 
         this._body.append('<button class="small_button">Back to Roads</button>');
-        this._body.append('<h2>Road: </h2><span>' + road + '</span>');
-        this._body.append('<button class="small_button">Edit Name</button><div class="spacer"></div>');
+        this._body.append('<h2>Road: </h2>');
+        this._body.append('<div class="input"><input name="roadName" type="text" placeholder="Road Name" value="' + road + '"></div>');
+        this._body.append('<div class="spacer"></div>');
+        this._body.append('<h2>Attributes:</h2>');
+        this._body.append('<div class="input">Speed Limit <input name="speedLimit" type="number" min="0" step="10" value="' + r.getSpeedLimit() + '"></div>');
         this._body.append('<h2>Lanes:</h2>');
         this._body.append('<button class="small_button">Add Lane</button>');
         let lane_list = $('<div class="lanes"></div>'); // The list of lanes
@@ -174,9 +177,11 @@ class Interface {
     editIntersection(intersection) {
         this._body.empty();
         this._body.append('<button class="small_button">Back to Intersections</button>');
-        this._body.append('<h2>Intersection: </h2><span>' + intersection + '</span>');
-        this._body.append('<button class="small_button">Edit Name</button><div class="spacer"></div>');
+        this._body.append('<h2>Intersection: </h2>');
+        this._body.append('<div class="input"><input name="intersectionName" type="text" placeholder="Intersection Name" value="' + intersection + '"></div>');
+        this._body.append('<div class="spacer"></div>');
         this._body.append('<h2>Edit Intersection</h2><div class="spacer"></div>');
+        this._body.append($('<button class="interface_button">Save Intersection</button>').data('intersection', intersection));
         this._body.append($('<button class="interface_button">Delete Intersection</button>').data('intersection', intersection));
         this._body.append('<h2>Connected Roads</h2><div class="spacer"></div>');
         let roads = this._map.getIntersection(intersection).getLinkedRoads(); // The roads that are connected to the intersection
@@ -349,6 +354,17 @@ class Interface {
         let road = this._map.getRoad(road_id); // Get the road
         road.setLanes(lanes); // Set the lanes
 
+        let newName = this._body.find('input[name="roadName"]').val();
+        if (road_id !== newName) {
+            if (this._map.idInUse(newName)) {
+                alert('Name already in use');
+            } else {
+                this._map.renameRoad(road_id, newName);
+            }
+        }
+
+        road.changeSpeedLimit(parseInt(this._body.find('input[name="speedLimit"]').val()));
+
         let agents = road.getAgents(); // The agents of the road
         let agent_html = this._body.find('.ag'); // The agent elements
         for (let i = 0; i < Math.min(agent_html.length, agents.length); i++) { // For each agent
@@ -381,6 +397,17 @@ class Interface {
                 this._map.removeAgent(agents[i].getId());
             }
             road.removeAgents(agents.length - agent_html.length);
+        }
+    }
+
+    saveIntersection (intersection_id) {
+        let newName = this._body.find('input[name="intersectionName"]').val();
+        if (intersection_id !== newName) {
+            if (this._map.idInUse(newName)) {
+                alert('Name already in use');
+            } else {
+                this._map.renameIntersection(intersection_id, newName);
+            }
         }
     }
 
@@ -467,6 +494,9 @@ class Interface {
                 break;
             case 'Save Road':
                 this.saveRoad(data.road);
+                break;
+            case 'Save Intersection':
+                this.saveIntersection(data.intersection);
                 break;
             default: // If the command is not recognized
                 if (isEmpty(data.command)) { // If there is no command in the data
