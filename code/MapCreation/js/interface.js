@@ -19,6 +19,7 @@ class Interface {
     constructor(selector = 'div.interface', map = null) {
         this._self = $(selector).data('interface', this); // The interface element
         this._map = map; // The map that is connected to the interface
+        this._simulation_interface = new Simulation('div.simulation', this._map, this); // The simulation interface
 
         this.createElements() // Create the elements for the interface
         this.overview(); // Show the overview
@@ -68,10 +69,12 @@ class Interface {
         this._body.append('<button class="interface_button">Export as Save</button>');
         this._body.append('<button class="interface_button">Export for Simulation</button>');
         this._body.append('<button class="interface_button">Import Save</button>');
+        this._body.append('<button class="interface_button">Import Simulation</button>');
         this._body.append('<button class="interface_button">Clear</button>')
 
         this._body.append('<h2>Creation</h2><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Add Road</button>');
+        this._body.append('<button class="interface_button">Add THICC Road</button>');
         this._body.append('<button class="interface_button">Add Intersection</button>');
 
         this._body.append($('<button class="interface_button">Edit Roads</button>'));
@@ -101,8 +104,11 @@ class Interface {
         this._body.empty();
 
         this._body.append('<button class="small_button">Back to Roads</button>');
-        this._body.append('<h2>Road: </h2><span>' + road + '</span>');
-        this._body.append('<button class="small_button">Edit Name</button><div class="spacer"></div>');
+        this._body.append('<h2>Road: </h2>');
+        this._body.append('<div class="input"><input name="roadName" type="text" placeholder="Road Name" value="' + road + '"></div>');
+        this._body.append('<div class="spacer"></div>');
+        this._body.append('<h2>Attributes:</h2>');
+        this._body.append('<div class="input">Speed Limit <input name="speedLimit" type="number" min="0" step="10" value="' + r.getSpeedLimit() + '"></div>');
         this._body.append('<h2>Lanes:</h2>');
         this._body.append('<button class="small_button">Add Lane</button>');
         let lane_list = $('<div class="lanes"></div>'); // The list of lanes
@@ -118,6 +124,18 @@ class Interface {
         this._body.append('<h2>Edit Road</h2><div class="spacer"></div>');
         this._body.append($('<button class="interface_button">Save Road</button>').data('road', road));
         this._body.append($('<button class="interface_button">Delete Road</button>').data('road', road));
+        this._body.append('<h2>Agents</h2>');
+        this._body.append('<button class="small_button">Add Agent</button>');
+        let agent_list = $('<div class="agent_list"></div>'); // The list of agents
+        let agents = r.getAgents(); // The agents of the road
+        let a; // The current agent
+        let agent; // The current agent element
+        for (let i = 0; i < agents.length; i++) { // Loop through the agents
+            agent = agents[i]; // Get the current agent
+            a = this.generateAgent(i, agent._distance_to_end, agent._lane, agent._speed, agent._type); // Generate the agent element
+            agent_list.append(a); // Add the agent to the list
+        }
+        this._body.append(agent_list);
         this._body.append('<h2>Connected Intersections</h2>');
         let intersections = r.getLinkedIntersections(); // The intersections that are connected to the road
         if (!isEmpty(intersections.start)) { // If there is a start intersection
@@ -126,6 +144,17 @@ class Interface {
         if (!isEmpty(intersections.end)) { // If there is an end intersection
             this._body.append($('<button class="interface_button">' + intersections.end.intersection.getId() + '</button>').data('command', 'editIntersection'));
         }
+    }
+
+    generateAgent(count, start, lane, speed, type) {
+        let html = '<div class="ag"><div class="name">Agent <span>' + count + '</span></div>';
+        html += '<div class="input">Start <input type="number" name="start" min="0" max="1" step="0.01" value="' + start + '"></div>';
+        html += '<div class="input">Lane <input type="number" name="lane" min="0" value="' + lane + '"></div>';
+        html += '<div class="input">Type <select name="type"><option value="car"' + (type === 'car' ? ' selected' : '') + '>Car</option><option value="bike"' + (type === 'bike' ? ' selected' : '') + '>Bike</option></select></div>';
+        html += '<div class="input">Speed <input type="number" name="speed" min="0" step="5" value="' + speed + '"></div>';
+        html += '<button class="delete">Delete</button>';
+        html += '</div>';
+        return html;
     }
 
     /**
@@ -148,9 +177,11 @@ class Interface {
     editIntersection(intersection) {
         this._body.empty();
         this._body.append('<button class="small_button">Back to Intersections</button>');
-        this._body.append('<h2>Intersection: </h2><span>' + intersection + '</span>');
-        this._body.append('<button class="small_button">Edit Name</button><div class="spacer"></div>');
+        this._body.append('<h2>Intersection: </h2>');
+        this._body.append('<div class="input"><input name="intersectionName" type="text" placeholder="Intersection Name" value="' + intersection + '"></div>');
+        this._body.append('<div class="spacer"></div>');
         this._body.append('<h2>Edit Intersection</h2><div class="spacer"></div>');
+        this._body.append($('<button class="interface_button">Save Intersection</button>').data('intersection', intersection));
         this._body.append($('<button class="interface_button">Delete Intersection</button>').data('intersection', intersection));
         this._body.append('<h2>Connected Roads</h2><div class="spacer"></div>');
         let roads = this._map.getIntersection(intersection).getLinkedRoads(); // The roads that are connected to the intersection
@@ -179,18 +210,31 @@ class Interface {
 
     /**
      * Adds a new road to the map
+     * @param {boolean} thicc Whether the road is thicc
      */
-    addRoad() {
-        let mid = getSnappedMiddleOfScreen(); // The middle of the screen
-        let road = this._map.createRoad(mid.x - 50, mid.y, degToRad(270), mid.x + 50, mid.y, degToRad(90));
+    addRoad(thicc = false) {
+        let start = getSnappedMiddleOfScreen(); // The middle of the screen
+        let end = start.clone();
+        start.x -= 50;
+        end.x += 50;
+        start.angle = degToRad(270);
+        end.angle = degToRad(90);
+        let road = this._map.createRoad(start, end); // Create the road
         // Create a road with default parameters
-        road.setLanes([{
-            type: 'car',
-            direction: 1,
-            left: true,
-            forward: true,
-            right: true
-        }]);
+        if (thicc) {
+            road.setLanes([
+                {type: 'car', direction: 1, left: false, forward: true, right: false},
+                {type: 'car', direction: 1, left: false, forward: true, right: false},
+                {type: 'car', direction: -1, left: false, forward: true, right: false},
+                {type: 'car', direction: -1, left: false, forward: true, right: false}
+            ]);
+        } else {
+            road.setLanes([
+                {type: 'car', direction: 1, left: false, forward: true, right: false},
+                {type: 'car', direction: -1, left: false, forward: true, right: false}
+            ]);
+        }
+
         this.editRoad(road.getId()); // Load the edit view
     }
 
@@ -199,7 +243,7 @@ class Interface {
      */
     addIntersection() {
         let mid = getSnappedMiddleOfScreen(); // The middle of the screen
-        let intersection = this._map.createIntersection(mid.x, mid.y); // Create an intersection with default parameters
+        let intersection = this._map.createIntersection(mid); // Create an intersection with default parameters
         this.editIntersection(intersection.getId()); // Load the edit view
     }
 
@@ -210,6 +254,12 @@ class Interface {
         let count = this._body.find('.lane').length; // The number of lanes
         let html = this.generateLane(count); // Generate the lane element
         this._body.find('.lanes').append(html); // Add the lane to the list
+    }
+
+    addAgent() {
+        let count = this._body.find('.ag').length; // The number of agents
+        let html = this.generateAgent(count, 0, 0, 0, 'car'); // Generate the agent element
+        this._body.find('.agent_list').append(html); // Add the agent to the list
     }
 
     /**
@@ -245,6 +295,14 @@ class Interface {
         this._body.append('<button class="interface_button">Upload</button>');
     }
 
+    simulate() {
+        this._body.empty();
+        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<h2>Simulation</h2><div class="spacer"></div>');
+        this._body.append('<input type="file" class="inputfile" accept=".sim"><div class="spacer"></div>');
+        this._body.append('<button class="interface_button">Load Simulation</button>');
+    }
+
     /**
      * Uploads a file and loads the map from that
      */
@@ -263,6 +321,96 @@ class Interface {
         reader.readAsText(files[0]); // Read the file
     }
 
+    loadSimulation() {
+        let files = document.getElementsByClassName('inputfile')[0].files; // The files of the input
+        if (isEmpty(files)) { // If there are no files
+            alert('No file selected'); // Alert the user
+            return;
+        }
+        let reader = new FileReader(); // Create a file reader
+        reader.onload = function(e) { // When the file is loaded
+            let simulation = JSON.parse(e.target.result); // Parse the file
+            this._simulation_interface.loadSimulation(simulation);
+            this.toggle(); // Toggle the interface
+            this.overview(); // Load the overview
+        }.bind(this);
+        reader.readAsText(files[0]); // Read the file
+    }
+
+    saveRoad(road_id) {
+        let lanes = []; // The lanes of the road
+        let lane; // The current lane
+        let lane_html = this._body.find('.lane'); // The lane elements
+        for (let i = 0; i < lane_html.length; i++) { // For each lane
+            lane = $(lane_html[i]); // Get the lane
+            lanes.push({ // Add the lane to the list by getting the inputs
+                type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : 'car',
+                direction: lane.find('input[name="facing"]').is(':checked') ? 1 : -1,
+                left: lane.find('input[name="left"]').is(':checked'),
+                forward: lane.find('input[name="forward"]').is(':checked'),
+                right: lane.find('input[name="right"]').is(':checked')
+            });
+        }
+        let road = this._map.getRoad(road_id); // Get the road
+        road.setLanes(lanes); // Set the lanes
+
+        let newName = this._body.find('input[name="roadName"]').val();
+        if (road_id !== newName) {
+            if (this._map.idInUse(newName)) {
+                alert('Name already in use');
+            } else {
+                this._map.renameRoad(road_id, newName);
+            }
+        }
+
+        road.changeSpeedLimit(parseInt(this._body.find('input[name="speedLimit"]').val()));
+
+        let agents = road.getAgents(); // The agents of the road
+        let agent_html = this._body.find('.ag'); // The agent elements
+        for (let i = 0; i < Math.min(agent_html.length, agents.length); i++) { // For each agent
+            let agent = $(agent_html[i]); // Get the agent
+            agents[i].initialMapPosition(
+                agent.find('input[name="start"]').val(),
+                agent.find('input[name="lane"]').val(),
+                agent.find('input[name="speed"]').val(),
+                road,
+                agent.find('select[name="type"] option:selected').val()
+            );
+        }
+
+        if (agent_html.length > agents.length) {
+            for (let i = agents.length; i < agent_html.length; i++) { // For each agent
+                let agent = $(agent_html[i]); // Get the agent
+                let type = agent.find('select[name="type"] option:selected').val();
+                let ag = this._map.createAgent(type);
+                road.addAgent(ag);
+                ag.initialMapPosition(
+                    agent.find('input[name="start"]').val(),
+                    agent.find('input[name="lane"]').val(),
+                    agent.find('input[name="speed"]').val(),
+                    road,
+                    type
+                );
+            }
+        } else if (agent_html.length < agents.length) {
+            for (let i = agent_html.length; i < agents.length; i++) {
+                this._map.removeAgent(agents[i].getId());
+            }
+            road.removeAgents(agents.length - agent_html.length);
+        }
+    }
+
+    saveIntersection (intersection_id) {
+        let newName = this._body.find('input[name="intersectionName"]').val();
+        if (intersection_id !== newName) {
+            if (this._map.idInUse(newName)) {
+                alert('Name already in use');
+            } else {
+                this._map.renameIntersection(intersection_id, newName);
+            }
+        }
+    }
+
     /**
      * Runs a command based on the button that was clicked
      * @param {string} command The command to run
@@ -272,13 +420,19 @@ class Interface {
     runCommand(command, data, target) {
         switch (command) { // Switch on the command
             case 'Export for Simulation':
-                alert('Not Implemented');
+                downloadAsJson(this._map.exportToBeSimulatedData(), currentTime(), 'tsim'); // Export the map as a to be simulated file
                 break;
             case 'Import Save':
                 this.upload();
                 break;
             case 'Upload':
                 this.uploadSave();
+                break;
+            case 'Load Simulation':
+                this.loadSimulation();
+                break;
+            case 'Import Simulation':
+                this.simulate();
                 break;
             case 'Load':
                 this.loadSave();
@@ -301,8 +455,14 @@ class Interface {
             case 'Add Road':
                 this.addRoad();
                 break;
+            case 'Add THICC Road':
+                this.addRoad(true);
+                break
             case 'Add Intersection':
                 this.addIntersection();
+                break;
+            case 'Add Agent':
+                this.addAgent();
                 break;
             case 'Clear':
                 this._map.clear(); // Clear the map
@@ -311,6 +471,11 @@ class Interface {
                 this.addLane();
                 break;
             case 'Delete':
+                if (target.parent().hasClass('ag')) {
+                    target.closest('.ag').remove();
+                } else {
+                    target.closest('.lane').remove(); // Remove the lane
+                }
                 target.closest('.lane').remove(); // Remove the lane
                 break;
             case 'Delete Road':
@@ -328,21 +493,10 @@ class Interface {
                 setCookie('map', encodeURIComponent(JSON.stringify(this._map.exportSaveData())), 14); // Save the map to a cookie
                 break;
             case 'Save Road':
-                let lanes = []; // The lanes of the road
-                let lane; // The current lane
-                let lane_html = this._body.find('.lane'); // The lane elements
-                for (let i = 0; i < lane_html.length; i++) { // For each lane
-                    lane = $(lane_html[i]); // Get the lane
-                    lanes.push({ // Add the lane to the list by getting the inputs
-                        type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : 'car',
-                        direction: lane.find('input[name="facing"]').is(':checked') ? 1 : -1,
-                        left: lane.find('input[name="left"]').is(':checked'),
-                        forward: lane.find('input[name="forward"]').is(':checked'),
-                        right: lane.find('input[name="right"]').is(':checked')
-                    });
-                }
-                let road = this._map.getRoad(data.road); // Get the road
-                road.setLanes(lanes); // Set the lanes
+                this.saveRoad(data.road);
+                break;
+            case 'Save Intersection':
+                this.saveIntersection(data.intersection);
                 break;
             default: // If the command is not recognized
                 if (isEmpty(data.command)) { // If there is no command in the data
