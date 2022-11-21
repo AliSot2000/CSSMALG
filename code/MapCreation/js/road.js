@@ -36,6 +36,7 @@ class Road {
     _simulation_mode = false;
     _simulation_points = [];
     _agents = [];
+    _speed_limit = 30;
 
     /**
      * Creates a road
@@ -51,7 +52,6 @@ class Road {
 
         // Initialize Private Values
         this._id = id;
-        let grid_size = getConfig('grid_size');
 
         // Snap Points to grid
         start.snap();
@@ -352,10 +352,11 @@ class Road {
     /**
      * Makes a road draggable when a user clicks a grab point
      * @param {string} type The type of grab point
+     * @param {Map} map The map the grab point is on
      * @returns {Road} Self reference for chaining
      */
-    startDrag(type) {
-        let data = {road: this, type: type};
+    startDrag(type, map) {
+        let data = {road: this, type: type}; // Create the data object
         switch (type) { // Switch depending on the type of grab point
             case 'start':
                 data.point = this._start;
@@ -365,6 +366,8 @@ class Road {
                 if (isEmpty(data.point)) {
                     data.point = this._end;
                 }
+
+                data.map = map;
 
                 $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
@@ -380,10 +383,11 @@ class Road {
                         return;
                     }
 
-                    let x = snap(event.pageX, getConfig('grid_size')); // Get the x position of the mouse
-                    let y = snap(event.pageY, getConfig('grid_size')); // Get the y position of the mouse
+                    let x = snap(event.pageX + $(document.body).scrollLeft(), getConfig('grid_size')); // Get the x position of the mouse
+                    let y = snap(event.pageY + $(document.body).scrollTop(), getConfig('grid_size')); // Get the y position of the mouse
 
                     if (point.x !== x || point.y !== y) { // If the position has changed
+                        event.data.map.checkNewSize(point);
                         point.x = x; // Set the start x position
                         point.y = y; // Set the start y position
                         road.updatePosition().updateGrabPoints(); // Update the position and grab points
@@ -401,7 +405,7 @@ class Road {
                     let road = event.data.road; // Get the road from the event data
                     let point = event.data.point; // Get the point from the event data
 
-                    point.angle = snapAngle(Math.atan2(event.pageX - point.x, event.pageY - point.y)); // Calculate the angle from the start point to the mouse
+                    point.angle = snapAngle(Math.atan2(event.pageX + $(document.body).scrollLeft() - point.x, event.pageY + $(document.body).scrollTop() - point.y)); // Calculate the angle from the start point to the mouse
 
                     road.updatePosition().updateGrabPoints(); // Update the road position and grab points
                 });
@@ -409,12 +413,11 @@ class Road {
             default:
                 throw new Error(`"${type}" is a invalid grabbable type`); // Throw an error if the type is invalid
         }
-
-        $(document).on('mouseup', '', {road: this, type: type}, function (event) { // When the mouse is released
+        $(document).on('mouseup', '', {road: this, type: type, map: map}, function (event) { // When the mouse is released
             event.preventDefault(); // Prevent the default action
             let road = event.data.road; // Get the road from the event data
 
-            road.stopDrag(event.data.type); // Stop dragging the road
+            road.stopDrag(event.data.type, event.data.map); // Stop dragging the road
         });
 
         return this;
@@ -423,12 +426,16 @@ class Road {
     /**
      * Stops dragging a road
      * @param {string} type The type of grab point
+     * @param {Map} map The map the grab point is on
      */
-    stopDrag(type) {
+    stopDrag(type, map) {
         this._grab_points[type].removeClass('grabbed'); // Remove the grabbing class from the grab point
 
         $(document.body).removeClass('grabbing'); // Change the cursor back to the default
         $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+        if (type === 'start' || type === 'end') {
+            map.recheckSize(); // Recheck the size of the map
+        }
     }
 
     /**
@@ -445,7 +452,7 @@ class Road {
 
     /**
      * Gets all the lanes of the road
-     * @returns {Array} The lanes of the road
+     * @returns {Array.<Object>} The lanes of the road
      */
     getLanes() {
         return this._lanes; // Return the lanes
@@ -488,7 +495,7 @@ class Road {
 
     /**
      * Updates the lanes of the road
-     * @param {Array} lanes The new lanes
+     * @param {Array.<Object>} lanes The new lanes
      * @returns {Road} Self reference for chaining
      */
     setLanes(lanes) {
@@ -520,7 +527,8 @@ class Road {
             end: this._end.export(), // The end point of the road
             lanes: this._lanes, // The lanes of the road
             intersections: {}, // The intersections of the road
-            distance: this._distance // The distance of the road
+            distance: this._distance, // The distance of the road
+            speed_limit: this._speed_limit // The speed limit of the road
         };
 
         if (!isEmpty(this._intersections.start)) { // If the start of the road is connected to an intersection
@@ -576,7 +584,8 @@ class Road {
                 id: this._id, // The id of the road
                 lanes: forward, // The lanes of the road
                 intersections: intersections, // The intersections of the road
-                distance: this._distance * pixels_per_meter // The distance of the road
+                distance: this._distance * pixels_per_meter, // The distance of the road
+                speed_limit: this._speed_limit // The speed limit of the road
             };
         }
         if (!isEmpty(backward)) {
@@ -591,7 +600,8 @@ class Road {
                 id: '!' + this._id, // The id of the road
                 lanes: backward, // The lanes of the road
                 intersections: reverse_intersections, // The intersections of the road
-                distance: this._distance * pixels_per_meter // The distance of the road
+                distance: this._distance * pixels_per_meter, // The distance of the road
+                speed_limit: this._speed_limit // The speed limit of the road
             };
         }
 
@@ -645,5 +655,20 @@ class Road {
 
     removeAgent(index) {
         this._agents.splice(index, 1);
+    }
+
+    getSpeedLimit() {
+        return this._speed_limit;
+    }
+
+    changeSpeedLimit(speed_limit) {
+        this._speed_limit = speed_limit;
+        return this;
+    }
+
+    rename(name) {
+        this._id = name;
+        this._self.attr('id', name);
+        return this;
     }
 }

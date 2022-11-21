@@ -1,7 +1,8 @@
 # MapCreationInterface TODO
 
 - [ ] Add Traffic Lights and Stop Roads to intersections
-- [ ] Create Exports for Nils
-- [ ] Add Speed Limits to Roads
-- [ ] Clickable roads
-- [ ] Make names of roads editable
+- [X] Create Exports for Nils
+- [X] Add Speed Limits to Roads
+- [ ] (Optional) Clickable roads
+- [X] Make names of roads editable
+- [X] Make Windows Resizable
