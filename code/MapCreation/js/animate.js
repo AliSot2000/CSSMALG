@@ -18,6 +18,10 @@ class Animate {
             this.stop();
         }
 
+        if (start_position.equalCoords(end_position)) {
+            return this;
+        }
+
         this._updates = 0;
         this._interval_time = 1000 / this._fps;
         this._interval_count = Math.floor(time / this._interval_time);
@@ -29,6 +33,7 @@ class Animate {
         this._interval = setInterval(() => {
             this.step();
         }, this._interval_time);
+        return this;
     }
 
     step() {
