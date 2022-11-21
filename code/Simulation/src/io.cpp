@@ -42,8 +42,20 @@ void importMap(world_t& world, json& map) {
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
 
-		// TODO fix
-		// street.type = data["type"];
+		if (data["lanes"].size() == 0) {
+			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
+			street.type = StreetTypes::Both;
+		}
+		else {
+			json& lane = data["lanes"][0];
+			if (lane["type"] == "car") {
+				street.type = StreetTypes::Both;
+			}
+			else {
+				street.type = StreetTypes::OnlyBike;
+			}
+		}
+
 		street.type = StreetTypes::Both;
 
 		street.start = data["intersections"]["start"]["id"];
@@ -73,7 +85,7 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 		output["setup"]["agents"][actor.id] = {};
 		json& obj = output["setup"]["agents"][actor.id];
 		obj["id"] = actor.id;
-		obj["type"] = "car";
+		obj["type"] = actor.type == ActorTypes::Car ? "car" : "bike";
 	}
 
 	return output;
@@ -91,6 +103,7 @@ void addFrame(const world_t& world, json& out) {
 		obj["active"] = active;
 
 		if (!active) {
+			// TODO remove when frames of not active cars can be discarded
 			obj["distance_to_side"] = -10000.0f;
 		}
 	};
@@ -101,9 +114,6 @@ void addFrame(const world_t& world, json& out) {
 			a(actor, &street, percent, true);
 		}
 	}
-
-	// FOR EACH CROSSING ADD WAITING
-	// ADD FINISHED ACTORS TO CROSSING
 
 	for (const auto& crossing : world.crossings) {
 		for (const auto& actor : crossing.waitingToBeInserted) {

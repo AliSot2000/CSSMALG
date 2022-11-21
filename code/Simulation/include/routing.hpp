@@ -50,6 +50,6 @@
 
 typedef std::map<std::string, std::map<std::string, std::string>> SPT;
 
-SPT calculateShortestPathTree(const world_t* world);
+SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes> include);
 
 Path retrievePath(SPT& spt, const std::string start, const std::string end);
