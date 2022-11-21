@@ -29,7 +29,7 @@ class Simulation {
             'min': 0,
             'max': 100,
             'value': 0,
-        }).addClass('slider');
+        }).addClass('simulation_slider');
 
         this._play_button = $('<button>Play</button>').addClass('simulation_input');
 
@@ -59,7 +59,7 @@ class Simulation {
             sim._speed = parseFloat(target.find('option:selected').val());
         });
 
-        this._self.on('input', 'input.slider', function (e) {
+        this._self.on('input', 'input.simulation_slider', function (e) {
             let target = $(e.target);
             target.parent().data('simulation').jumpToStep(target.val());
         });

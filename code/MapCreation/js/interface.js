@@ -36,7 +36,7 @@ class Interface {
         });
 
         // Add the click event for buttons that are clicked in the interface
-        this._body = $('<div></div>').addClass('interface_body').on('click', '.interface_button, .small_button, .delete', {interface: this}, function(event) {
+        this._body = $('<div></div>').addClass('interface_body').on('click', '.interface_button, .interface_small_button, .interface_delete', {interface: this}, function(event) {
             event.data.interface.runCommand($(this).html(), $(this).data(), $(this));
         });
 
@@ -86,7 +86,7 @@ class Interface {
      */
     editRoads() {
         this._body.empty();
-        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<button class="interface_small_button">Back to Menu</button>');
         this._body.append('<h2>Roads</h2><div class="spacer"></div>');
         let roads = Object.keys(this._map.getRoads());
         roads.sort();
@@ -103,15 +103,15 @@ class Interface {
         let r = this._map.getRoad(road);
         this._body.empty();
 
-        this._body.append('<button class="small_button">Back to Roads</button>');
+        this._body.append('<button class="interface_small_button">Back to Roads</button>');
         this._body.append('<h2>Road: </h2>');
         this._body.append('<div class="input"><input name="roadName" type="text" placeholder="Road Name" value="' + road + '"></div>');
         this._body.append('<div class="spacer"></div>');
         this._body.append('<h2>Attributes:</h2>');
         this._body.append('<div class="input">Speed Limit <input name="speedLimit" type="number" min="0" step="10" value="' + r.getSpeedLimit() + '"></div>');
         this._body.append('<h2>Lanes:</h2>');
-        this._body.append('<button class="small_button">Add Lane</button>');
-        let lane_list = $('<div class="lanes"></div>'); // The list of lanes
+        this._body.append('<button class="interface_small_button">Add Lane</button>');
+        let lane_list = $('<div class="interface_lanes"></div>'); // The list of lanes
         let lanes = r.getLanes(); // The lanes of the road
         let l; // The current lane
         let lane; // The current lane element
@@ -125,8 +125,8 @@ class Interface {
         this._body.append($('<button class="interface_button">Save Road</button>').data('road', road));
         this._body.append($('<button class="interface_button">Delete Road</button>').data('road', road));
         this._body.append('<h2>Agents</h2>');
-        this._body.append('<button class="small_button">Add Agent</button>');
-        let agent_list = $('<div class="agent_list"></div>'); // The list of agents
+        this._body.append('<button class="interface_small_button">Add Agent</button>');
+        let agent_list = $('<div class="interface_agent_list"></div>'); // The list of agents
         let agents = r.getAgents(); // The agents of the road
         let a; // The current agent
         let agent; // The current agent element
@@ -147,12 +147,12 @@ class Interface {
     }
 
     generateAgent(count, start, lane, speed, type) {
-        let html = '<div class="ag"><div class="name">Agent <span>' + count + '</span></div>';
+        let html = '<div class="interface_agent"><div class="name">Agent <span>' + count + '</span></div>';
         html += '<div class="input">Start <input type="number" name="start" min="0" max="1" step="0.01" value="' + start + '"></div>';
         html += '<div class="input">Lane <input type="number" name="lane" min="0" value="' + lane + '"></div>';
         html += '<div class="input">Type <select name="type"><option value="car"' + (type === 'car' ? ' selected' : '') + '>Car</option><option value="bike"' + (type === 'bike' ? ' selected' : '') + '>Bike</option></select></div>';
         html += '<div class="input">Speed <input type="number" name="speed" min="0" step="5" value="' + speed + '"></div>';
-        html += '<button class="delete">Delete</button>';
+        html += '<button class="interface_delete">Delete</button>';
         html += '</div>';
         return html;
     }
@@ -162,7 +162,7 @@ class Interface {
      */
     editIntersections() {
         this._body.empty();
-        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<button class="interface_small_button">Back to Menu</button>');
         this._body.append('<h2>Intersections</h2><div class="spacer"></div>');
         let intersections = this._map.getIntersections();
         for (let intersection in intersections) {
@@ -176,7 +176,7 @@ class Interface {
      */
     editIntersection(intersection) {
         this._body.empty();
-        this._body.append('<button class="small_button">Back to Intersections</button>');
+        this._body.append('<button class="interface_small_button">Back to Intersections</button>');
         this._body.append('<h2>Intersection: </h2>');
         this._body.append('<div class="input"><input name="intersectionName" type="text" placeholder="Intersection Name" value="' + intersection + '"></div>');
         this._body.append('<div class="spacer"></div>');
@@ -251,15 +251,15 @@ class Interface {
      * Adds a new lane to the edit road screen
      */
     addLane() {
-        let count = this._body.find('.lane').length; // The number of lanes
+        let count = this._body.find('.interface_lane').length; // The number of lanes
         let html = this.generateLane(count); // Generate the lane element
-        this._body.find('.lanes').append(html); // Add the lane to the list
+        this._body.find('.interface_lanes').append(html); // Add the lane to the list
     }
 
     addAgent() {
-        let count = this._body.find('.ag').length; // The number of agents
+        let count = this._body.find('.interface_agent').length; // The number of agents
         let html = this.generateAgent(count, 0, 0, 0, 'car'); // Generate the agent element
-        this._body.find('.agent_list').append(html); // Add the agent to the list
+        this._body.find('.interface_agent_list').append(html); // Add the agent to the list
     }
 
     /**
@@ -273,10 +273,10 @@ class Interface {
      * @return {string} The html for the lane
      */
     generateLane(count, bike = false, facing = true, left = true, forward = true, right = true) {
-        let html = '<div class="lane"><div class="name">Lane <span>' + count + '</span></div>';
+        let html = '<div class="interface_lane"><div class="name">Lane <span>' + count + '</span></div>';
         html += '<div class="input">Bike Only <input type="checkbox" name="bike"' + (bike ? ' checked' : '') + '></div>';
         html += '<div class="input">Facing <input type="checkbox" name="facing"' + (facing ? ' checked' : '') + '></div>';
-        html += '<button class="delete">Delete</button>';
+        html += '<button class="interface_delete">Delete</button>';
         html += '<div class="input">Left <input type="checkbox" name="left"' + (left ? ' checked' : '') + '></div>';
         html += '<div class="input">Forward <input type="checkbox" name="forward"' + (forward ? ' checked' : '') + '></div>';
         html += '<div class="input">Right <input type="checkbox" name="right"' + (right ? ' checked' : '') + '></div>';
@@ -289,7 +289,7 @@ class Interface {
      */
     upload() {
         this._body.empty();
-        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<button class="interface_small_button">Back to Menu</button>');
         this._body.append('<h2>Upload</h2><div class="spacer"></div>');
         this._body.append('<input type="file" class="inputfile" accept=".map"><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Upload</button>');
@@ -297,7 +297,7 @@ class Interface {
 
     simulate() {
         this._body.empty();
-        this._body.append('<button class="small_button">Back to Menu</button>');
+        this._body.append('<button class="interface_small_button">Back to Menu</button>');
         this._body.append('<h2>Simulation</h2><div class="spacer"></div>');
         this._body.append('<input type="file" class="inputfile" accept=".sim"><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Load Simulation</button>');
@@ -340,7 +340,7 @@ class Interface {
     saveRoad(road_id) {
         let lanes = []; // The lanes of the road
         let lane; // The current lane
-        let lane_html = this._body.find('.lane'); // The lane elements
+        let lane_html = this._body.find('.interface_lane'); // The lane elements
         for (let i = 0; i < lane_html.length; i++) { // For each lane
             lane = $(lane_html[i]); // Get the lane
             lanes.push({ // Add the lane to the list by getting the inputs
@@ -366,7 +366,7 @@ class Interface {
         road.changeSpeedLimit(parseInt(this._body.find('input[name="speedLimit"]').val()));
 
         let agents = road.getAgents(); // The agents of the road
-        let agent_html = this._body.find('.ag'); // The agent elements
+        let agent_html = this._body.find('.interface_agent'); // The agent elements
         for (let i = 0; i < Math.min(agent_html.length, agents.length); i++) { // For each agent
             let agent = $(agent_html[i]); // Get the agent
             agents[i].initialMapPosition(
@@ -471,12 +471,12 @@ class Interface {
                 this.addLane();
                 break;
             case 'Delete':
-                if (target.parent().hasClass('ag')) {
-                    target.closest('.ag').remove();
+                if (target.parent().hasClass('interface_agent')) {
+                    target.closest('.interface_agent').remove();
                 } else {
-                    target.closest('.lane').remove(); // Remove the lane
+                    target.closest('.interface_lane').remove(); // Remove the lane
                 }
-                target.closest('.lane').remove(); // Remove the lane
+                target.closest('.interface_lane').remove(); // Remove the lane
                 break;
             case 'Delete Road':
                 this._map.removeRoad(data.road); // Remove the road
