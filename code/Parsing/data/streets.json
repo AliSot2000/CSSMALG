@@ -1,6 +1,16 @@
 [
     [
         {
+            "id": 1706,
+            "startNodeId": 27487050,
+            "endNodeId": 655246225,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 60,
+            "width": 2
+        },
+        {
             "id": 0,
             "startNodeId": 27487050,
             "endNodeId": 655246225,
@@ -8,7 +18,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 60,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1707,
+            "startNodeId": 30841366,
+            "endNodeId": 27513104,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 112,
+            "width": 6
         },
         {
             "id": 1,
@@ -18,7 +38,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 112,
-            "width": 8
+            "width": 6
         },
         {
             "id": 2,
@@ -191,11 +211,31 @@
             "width": 4
         },
         {
+            "id": 1708,
+            "startNodeId": 4567520441,
+            "endNodeId": 1853461361,
+            "type": "bike",
+            "oppositeStreetId": 20,
+            "maxSpeed": "50",
+            "length": 58,
+            "width": 2
+        },
+        {
             "id": 19,
             "startNodeId": 4567520441,
             "endNodeId": 1853461361,
             "type": "mixed",
             "oppositeStreetId": 20,
+            "maxSpeed": "50",
+            "length": 58,
+            "width": 2
+        },
+        {
+            "id": 1709,
+            "startNodeId": 1853461361,
+            "endNodeId": 4567520441,
+            "type": "bike",
+            "oppositeStreetId": 19,
             "maxSpeed": "50",
             "length": 58,
             "width": 4
@@ -208,7 +248,7 @@
             "oppositeStreetId": 19,
             "maxSpeed": "50",
             "length": 58,
-            "width": 6
+            "width": 4
         },
         {
             "id": 21,
@@ -301,6 +341,16 @@
             "width": 2
         },
         {
+            "id": 1710,
+            "startNodeId": 359625228,
+            "endNodeId": 359625546,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 23,
+            "width": 2
+        },
+        {
             "id": 30,
             "startNodeId": 359625228,
             "endNodeId": 359625546,
@@ -308,7 +358,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 23,
-            "width": 4
+            "width": 2
         },
         {
             "id": 31,
@@ -561,6 +611,16 @@
             "width": 2
         },
         {
+            "id": 1711,
+            "startNodeId": 641815109,
+            "endNodeId": 1287709980,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 27,
+            "width": 2
+        },
+        {
             "id": 56,
             "startNodeId": 641815109,
             "endNodeId": 1287709980,
@@ -568,7 +628,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 27,
-            "width": 4
+            "width": 2
         },
         {
             "id": 57,
@@ -961,6 +1021,16 @@
             "width": 2
         },
         {
+            "id": 1712,
+            "startNodeId": 92581145,
+            "endNodeId": 2171058571,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 106,
+            "width": 4
+        },
+        {
             "id": 96,
             "startNodeId": 92581145,
             "endNodeId": 2171058571,
@@ -968,7 +1038,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 106,
-            "width": 6
+            "width": 4
         },
         {
             "id": 97,
@@ -1141,6 +1211,16 @@
             "width": 2
         },
         {
+            "id": 1713,
+            "startNodeId": 2449072202,
+            "endNodeId": 78206053,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 56,
+            "width": 6
+        },
+        {
             "id": 114,
             "startNodeId": 2449072202,
             "endNodeId": 78206053,
@@ -1148,7 +1228,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 56,
-            "width": 8
+            "width": 6
         },
         {
             "id": 115,
@@ -1211,6 +1291,16 @@
             "width": 6
         },
         {
+            "id": 1714,
+            "startNodeId": 5820114966,
+            "endNodeId": 92594366,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 63,
+            "width": 4
+        },
+        {
             "id": 121,
             "startNodeId": 5820114966,
             "endNodeId": 92594366,
@@ -1218,7 +1308,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 63,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1715,
+            "startNodeId": 92594366,
+            "endNodeId": 7079892960,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 625,
+            "width": 4
         },
         {
             "id": 122,
@@ -1228,7 +1328,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 625,
-            "width": 6
+            "width": 4
         },
         {
             "id": 123,
@@ -1251,6 +1351,16 @@
             "width": 4
         },
         {
+            "id": 1716,
+            "startNodeId": 92993891,
+            "endNodeId": 644660243,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "80",
+            "length": 28,
+            "width": 4
+        },
+        {
             "id": 125,
             "startNodeId": 92993891,
             "endNodeId": 644660243,
@@ -1258,7 +1368,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "80",
             "length": 28,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1717,
+            "startNodeId": 27513454,
+            "endNodeId": 118058506,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 168,
+            "width": 2
         },
         {
             "id": 126,
@@ -1268,6 +1388,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 168,
+            "width": 2
+        },
+        {
+            "id": 1718,
+            "startNodeId": 107141571,
+            "endNodeId": 311350136,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 186,
             "width": 4
         },
         {
@@ -1278,7 +1408,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 186,
-            "width": 6
+            "width": 4
         },
         {
             "id": 128,
@@ -1291,6 +1421,16 @@
             "width": 2
         },
         {
+            "id": 1719,
+            "startNodeId": 93007134,
+            "endNodeId": 93002313,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 248,
+            "width": 2
+        },
+        {
             "id": 129,
             "startNodeId": 93007134,
             "endNodeId": 93002313,
@@ -1298,7 +1438,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 248,
-            "width": 4
+            "width": 2
         },
         {
             "id": 130,
@@ -1311,6 +1451,16 @@
             "width": 2
         },
         {
+            "id": 1720,
+            "startNodeId": 93014521,
+            "endNodeId": 117091599,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 71,
+            "width": 4
+        },
+        {
             "id": 131,
             "startNodeId": 93014521,
             "endNodeId": 117091599,
@@ -1318,7 +1468,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 71,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1721,
+            "startNodeId": 117091599,
+            "endNodeId": 93020580,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 20,
+            "width": 4
         },
         {
             "id": 132,
@@ -1328,7 +1488,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 20,
-            "width": 6
+            "width": 4
         },
         {
             "id": 133,
@@ -1741,6 +1901,16 @@
             "width": 2
         },
         {
+            "id": 1722,
+            "startNodeId": 108187162,
+            "endNodeId": 359625228,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 41,
+            "width": 2
+        },
+        {
             "id": 174,
             "startNodeId": 108187162,
             "endNodeId": 359625228,
@@ -1748,7 +1918,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 41,
-            "width": 4
+            "width": 2
         },
         {
             "id": 175,
@@ -2541,6 +2711,16 @@
             "width": 2
         },
         {
+            "id": 1723,
+            "startNodeId": 1037798804,
+            "endNodeId": 27513099,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 33,
+            "width": 4
+        },
+        {
             "id": 254,
             "startNodeId": 1037798804,
             "endNodeId": 27513099,
@@ -2548,7 +2728,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 33,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1724,
+            "startNodeId": 93001243,
+            "endNodeId": 93001244,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 136,
+            "width": 2
         },
         {
             "id": 255,
@@ -2558,6 +2748,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 136,
+            "width": 2
+        },
+        {
+            "id": 1725,
+            "startNodeId": 93001881,
+            "endNodeId": 118058506,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 103,
             "width": 4
         },
         {
@@ -2568,7 +2768,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 103,
-            "width": 6
+            "width": 4
         },
         {
             "id": 257,
@@ -3041,6 +3241,16 @@
             "width": 2
         },
         {
+            "id": 1726,
+            "startNodeId": 93002313,
+            "endNodeId": 353284727,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 125,
+            "width": 4
+        },
+        {
             "id": 304,
             "startNodeId": 93002313,
             "endNodeId": 353284727,
@@ -3048,7 +3258,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 125,
-            "width": 6
+            "width": 4
         },
         {
             "id": 305,
@@ -3591,6 +3801,16 @@
             "width": 2
         },
         {
+            "id": 1727,
+            "startNodeId": 30841396,
+            "endNodeId": 1511932530,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 289,
+            "width": 2
+        },
+        {
             "id": 359,
             "startNodeId": 30841396,
             "endNodeId": 1511932530,
@@ -3598,7 +3818,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 289,
-            "width": 4
+            "width": 2
         },
         {
             "id": 360,
@@ -3821,6 +4041,16 @@
             "width": 2
         },
         {
+            "id": 1728,
+            "startNodeId": 292142011,
+            "endNodeId": 80028293,
+            "type": "bike",
+            "oppositeStreetId": 383,
+            "maxSpeed": "50",
+            "length": 53,
+            "width": 4
+        },
+        {
             "id": 382,
             "startNodeId": 292142011,
             "endNodeId": 80028293,
@@ -3828,7 +4058,17 @@
             "oppositeStreetId": 383,
             "maxSpeed": "50",
             "length": 53,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1729,
+            "startNodeId": 80028293,
+            "endNodeId": 292142011,
+            "type": "bike",
+            "oppositeStreetId": 382,
+            "maxSpeed": "50",
+            "length": 53,
+            "width": 2
         },
         {
             "id": 383,
@@ -3838,7 +4078,17 @@
             "oppositeStreetId": 382,
             "maxSpeed": "50",
             "length": 53,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1730,
+            "startNodeId": 110271947,
+            "endNodeId": 4949541568,
+            "type": "bike",
+            "oppositeStreetId": 385,
+            "maxSpeed": "50",
+            "length": 101,
+            "width": 2
         },
         {
             "id": 384,
@@ -3846,6 +4096,16 @@
             "endNodeId": 4949541568,
             "type": "mixed",
             "oppositeStreetId": 385,
+            "maxSpeed": "50",
+            "length": 101,
+            "width": 2
+        },
+        {
+            "id": 1731,
+            "startNodeId": 4949541568,
+            "endNodeId": 110271947,
+            "type": "bike",
+            "oppositeStreetId": 384,
             "maxSpeed": "50",
             "length": 101,
             "width": 4
@@ -3858,7 +4118,7 @@
             "oppositeStreetId": 384,
             "maxSpeed": "50",
             "length": 101,
-            "width": 6
+            "width": 4
         },
         {
             "id": 386,
@@ -3891,6 +4151,16 @@
             "width": 2
         },
         {
+            "id": 1732,
+            "startNodeId": 4567520441,
+            "endNodeId": 27493105,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 172,
+            "width": 4
+        },
+        {
             "id": 389,
             "startNodeId": 4567520441,
             "endNodeId": 27493105,
@@ -3898,7 +4168,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 172,
-            "width": 6
+            "width": 4
         },
         {
             "id": 390,
@@ -3921,6 +4191,16 @@
             "width": 2
         },
         {
+            "id": 1733,
+            "startNodeId": 78206053,
+            "endNodeId": 3195889307,
+            "type": "bike",
+            "oppositeStreetId": 393,
+            "maxSpeed": "50",
+            "length": 38,
+            "width": 2
+        },
+        {
             "id": 392,
             "startNodeId": 78206053,
             "endNodeId": 3195889307,
@@ -3928,7 +4208,17 @@
             "oppositeStreetId": 393,
             "maxSpeed": "50",
             "length": 38,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1734,
+            "startNodeId": 3195889307,
+            "endNodeId": 78206053,
+            "type": "bike",
+            "oppositeStreetId": 392,
+            "maxSpeed": "50",
+            "length": 38,
+            "width": 6
         },
         {
             "id": 393,
@@ -3938,7 +4228,17 @@
             "oppositeStreetId": 392,
             "maxSpeed": "50",
             "length": 38,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1735,
+            "startNodeId": 641815104,
+            "endNodeId": 1554237932,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 59,
+            "width": 4
         },
         {
             "id": 394,
@@ -3948,7 +4248,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 59,
-            "width": 6
+            "width": 4
         },
         {
             "id": 395,
@@ -3961,6 +4261,16 @@
             "width": 6
         },
         {
+            "id": 1736,
+            "startNodeId": 30841991,
+            "endNodeId": 30841995,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 183,
+            "width": 2
+        },
+        {
             "id": 396,
             "startNodeId": 30841991,
             "endNodeId": 30841995,
@@ -3968,7 +4278,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 183,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1737,
+            "startNodeId": 311350136,
+            "endNodeId": 30841991,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 63,
+            "width": 2
         },
         {
             "id": 397,
@@ -3978,6 +4298,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 63,
+            "width": 2
+        },
+        {
+            "id": 1738,
+            "startNodeId": 30841413,
+            "endNodeId": 448036965,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 90,
             "width": 4
         },
         {
@@ -3988,7 +4318,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 90,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1739,
+            "startNodeId": 311350190,
+            "endNodeId": 30841413,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 64,
+            "width": 4
         },
         {
             "id": 399,
@@ -3998,7 +4338,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 64,
-            "width": 6
+            "width": 4
         },
         {
             "id": 400,
@@ -4021,6 +4361,16 @@
             "width": 2
         },
         {
+            "id": 1740,
+            "startNodeId": 5456937741,
+            "endNodeId": 27513127,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 116,
+            "width": 2
+        },
+        {
             "id": 402,
             "startNodeId": 5456937741,
             "endNodeId": 27513127,
@@ -4028,7 +4378,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 116,
-            "width": 4
+            "width": 2
         },
         {
             "id": 403,
@@ -4051,6 +4401,16 @@
             "width": 2
         },
         {
+            "id": 1741,
+            "startNodeId": 107155714,
+            "endNodeId": 1023051461,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 51,
+            "width": 4
+        },
+        {
             "id": 405,
             "startNodeId": 107155714,
             "endNodeId": 1023051461,
@@ -4058,7 +4418,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 51,
-            "width": 6
+            "width": 4
         },
         {
             "id": 406,
@@ -4111,6 +4471,16 @@
             "width": 4
         },
         {
+            "id": 1742,
+            "startNodeId": 73543570,
+            "endNodeId": 292203510,
+            "type": "bike",
+            "oppositeStreetId": 412,
+            "maxSpeed": "50",
+            "length": 55,
+            "width": 2
+        },
+        {
             "id": 411,
             "startNodeId": 73543570,
             "endNodeId": 292203510,
@@ -4118,7 +4488,17 @@
             "oppositeStreetId": 412,
             "maxSpeed": "50",
             "length": 55,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1743,
+            "startNodeId": 292203510,
+            "endNodeId": 73543570,
+            "type": "bike",
+            "oppositeStreetId": 411,
+            "maxSpeed": "50",
+            "length": 55,
+            "width": 6
         },
         {
             "id": 412,
@@ -4128,7 +4508,7 @@
             "oppositeStreetId": 411,
             "maxSpeed": "50",
             "length": 55,
-            "width": 8
+            "width": 6
         },
         {
             "id": 413,
@@ -4191,6 +4571,16 @@
             "width": 2
         },
         {
+            "id": 1744,
+            "startNodeId": 5030582285,
+            "endNodeId": 292142040,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "30",
+            "length": 34,
+            "width": 2
+        },
+        {
             "id": 419,
             "startNodeId": 5030582285,
             "endNodeId": 292142040,
@@ -4198,7 +4588,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "30",
             "length": 34,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1745,
+            "startNodeId": 27493105,
+            "endNodeId": 135646567,
+            "type": "bike",
+            "oppositeStreetId": 421,
+            "maxSpeed": "50",
+            "length": 124,
+            "width": 2
         },
         {
             "id": 420,
@@ -4206,6 +4606,16 @@
             "endNodeId": 135646567,
             "type": "mixed",
             "oppositeStreetId": 421,
+            "maxSpeed": "50",
+            "length": 124,
+            "width": 2
+        },
+        {
+            "id": 1746,
+            "startNodeId": 135646567,
+            "endNodeId": 27493105,
+            "type": "bike",
+            "oppositeStreetId": 420,
             "maxSpeed": "50",
             "length": 124,
             "width": 4
@@ -4218,7 +4628,7 @@
             "oppositeStreetId": 420,
             "maxSpeed": "50",
             "length": 124,
-            "width": 6
+            "width": 4
         },
         {
             "id": 422,
@@ -4231,6 +4641,16 @@
             "width": 6
         },
         {
+            "id": 1747,
+            "startNodeId": 27513202,
+            "endNodeId": 27513197,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 36,
+            "width": 2
+        },
+        {
             "id": 423,
             "startNodeId": 27513202,
             "endNodeId": 27513197,
@@ -4238,7 +4658,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 36,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1748,
+            "startNodeId": 27513197,
+            "endNodeId": 130228520,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 51,
+            "width": 2
         },
         {
             "id": 424,
@@ -4248,7 +4678,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 51,
-            "width": 4
+            "width": 2
         },
         {
             "id": 425,
@@ -4271,6 +4701,16 @@
             "width": 6
         },
         {
+            "id": 1749,
+            "startNodeId": 27513302,
+            "endNodeId": 1333939466,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 23,
+            "width": 4
+        },
+        {
             "id": 427,
             "startNodeId": 27513302,
             "endNodeId": 1333939466,
@@ -4278,7 +4718,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 23,
-            "width": 6
+            "width": 4
         },
         {
             "id": 428,
@@ -4301,6 +4741,16 @@
             "width": 6
         },
         {
+            "id": 1750,
+            "startNodeId": 292141997,
+            "endNodeId": 92577128,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 109,
+            "width": 2
+        },
+        {
             "id": 430,
             "startNodeId": 292141997,
             "endNodeId": 92577128,
@@ -4308,7 +4758,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 109,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1751,
+            "startNodeId": 92577128,
+            "endNodeId": 92572022,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 75,
+            "width": 2
         },
         {
             "id": 431,
@@ -4318,7 +4778,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 75,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1752,
+            "startNodeId": 92572022,
+            "endNodeId": 92575897,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 77,
+            "width": 2
         },
         {
             "id": 432,
@@ -4328,7 +4798,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 77,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1753,
+            "startNodeId": 92575897,
+            "endNodeId": 92572026,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 124,
+            "width": 2
         },
         {
             "id": 433,
@@ -4338,7 +4818,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 124,
-            "width": 4
+            "width": 2
         },
         {
             "id": 434,
@@ -4371,6 +4851,16 @@
             "width": 2
         },
         {
+            "id": 1754,
+            "startNodeId": 318317472,
+            "endNodeId": 100028221,
+            "type": "bike",
+            "oppositeStreetId": 438,
+            "maxSpeed": "50",
+            "length": 9,
+            "width": 2
+        },
+        {
             "id": 437,
             "startNodeId": 318317472,
             "endNodeId": 100028221,
@@ -4378,7 +4868,17 @@
             "oppositeStreetId": 438,
             "maxSpeed": "50",
             "length": 9,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1755,
+            "startNodeId": 100028221,
+            "endNodeId": 318317472,
+            "type": "bike",
+            "oppositeStreetId": 437,
+            "maxSpeed": "50",
+            "length": 9,
+            "width": 2
         },
         {
             "id": 438,
@@ -4388,7 +4888,17 @@
             "oppositeStreetId": 437,
             "maxSpeed": "50",
             "length": 9,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1756,
+            "startNodeId": 100028221,
+            "endNodeId": 292142011,
+            "type": "bike",
+            "oppositeStreetId": 440,
+            "maxSpeed": "50",
+            "length": 16,
+            "width": 2
         },
         {
             "id": 439,
@@ -4398,7 +4908,17 @@
             "oppositeStreetId": 440,
             "maxSpeed": "50",
             "length": 16,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1757,
+            "startNodeId": 292142011,
+            "endNodeId": 100028221,
+            "type": "bike",
+            "oppositeStreetId": 439,
+            "maxSpeed": "50",
+            "length": 16,
+            "width": 2
         },
         {
             "id": 440,
@@ -4408,7 +4928,7 @@
             "oppositeStreetId": 439,
             "maxSpeed": "50",
             "length": 16,
-            "width": 4
+            "width": 2
         },
         {
             "id": 441,
@@ -4431,6 +4951,16 @@
             "width": 2
         },
         {
+            "id": 1758,
+            "startNodeId": 5030582269,
+            "endNodeId": 292141997,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 53,
+            "width": 4
+        },
+        {
             "id": 443,
             "startNodeId": 5030582269,
             "endNodeId": 292141997,
@@ -4438,7 +4968,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 53,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1759,
+            "startNodeId": 336338500,
+            "endNodeId": 336338502,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 26,
+            "width": 2
         },
         {
             "id": 444,
@@ -4448,7 +4988,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 26,
-            "width": 4
+            "width": 2
         },
         {
             "id": 445,
@@ -4531,6 +5071,16 @@
             "width": 2
         },
         {
+            "id": 1760,
+            "startNodeId": 94913630,
+            "endNodeId": 5705189444,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 27,
+            "width": 4
+        },
+        {
             "id": 453,
             "startNodeId": 94913630,
             "endNodeId": 5705189444,
@@ -4538,7 +5088,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 27,
-            "width": 6
+            "width": 4
         },
         {
             "id": 454,
@@ -4571,6 +5121,16 @@
             "width": 2
         },
         {
+            "id": 1761,
+            "startNodeId": 27513102,
+            "endNodeId": 27513097,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 209,
+            "width": 4
+        },
+        {
             "id": 457,
             "startNodeId": 27513102,
             "endNodeId": 27513097,
@@ -4578,7 +5138,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 209,
-            "width": 6
+            "width": 4
         },
         {
             "id": 458,
@@ -4831,6 +5391,16 @@
             "width": 2
         },
         {
+            "id": 1762,
+            "startNodeId": 92990395,
+            "endNodeId": 93004156,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "80",
+            "length": 1425,
+            "width": 2
+        },
+        {
             "id": 483,
             "startNodeId": 92990395,
             "endNodeId": 93004156,
@@ -4838,7 +5408,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "80",
             "length": 1425,
-            "width": 4
+            "width": 2
         },
         {
             "id": 484,
@@ -4921,6 +5491,16 @@
             "width": 2
         },
         {
+            "id": 1763,
+            "startNodeId": 292142101,
+            "endNodeId": 292142093,
+            "type": "bike",
+            "oppositeStreetId": 493,
+            "maxSpeed": "50",
+            "length": 88,
+            "width": 4
+        },
+        {
             "id": 492,
             "startNodeId": 292142101,
             "endNodeId": 292142093,
@@ -4928,7 +5508,17 @@
             "oppositeStreetId": 493,
             "maxSpeed": "50",
             "length": 88,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1764,
+            "startNodeId": 292142093,
+            "endNodeId": 292142101,
+            "type": "bike",
+            "oppositeStreetId": 492,
+            "maxSpeed": "50",
+            "length": 88,
+            "width": 2
         },
         {
             "id": 493,
@@ -4938,6 +5528,16 @@
             "oppositeStreetId": 492,
             "maxSpeed": "50",
             "length": 88,
+            "width": 2
+        },
+        {
+            "id": 1765,
+            "startNodeId": 78206053,
+            "endNodeId": 110262688,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 136,
             "width": 4
         },
         {
@@ -4948,7 +5548,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 136,
-            "width": 6
+            "width": 4
         },
         {
             "id": 495,
@@ -4971,6 +5571,16 @@
             "width": 2
         },
         {
+            "id": 1766,
+            "startNodeId": 27493175,
+            "endNodeId": 4567520441,
+            "type": "bike",
+            "oppositeStreetId": 498,
+            "maxSpeed": "50",
+            "length": 91,
+            "width": 4
+        },
+        {
             "id": 497,
             "startNodeId": 27493175,
             "endNodeId": 4567520441,
@@ -4978,7 +5588,17 @@
             "oppositeStreetId": 498,
             "maxSpeed": "50",
             "length": 91,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1767,
+            "startNodeId": 4567520441,
+            "endNodeId": 27493175,
+            "type": "bike",
+            "oppositeStreetId": 497,
+            "maxSpeed": "50",
+            "length": 91,
+            "width": 4
         },
         {
             "id": 498,
@@ -4988,7 +5608,7 @@
             "oppositeStreetId": 497,
             "maxSpeed": "50",
             "length": 91,
-            "width": 6
+            "width": 4
         },
         {
             "id": 499,
@@ -5261,11 +5881,31 @@
             "width": 2
         },
         {
+            "id": 1768,
+            "startNodeId": 60029730,
+            "endNodeId": 76799642,
+            "type": "bike",
+            "oppositeStreetId": 527,
+            "maxSpeed": "50",
+            "length": 54,
+            "width": 2
+        },
+        {
             "id": 526,
             "startNodeId": 60029730,
             "endNodeId": 76799642,
             "type": "mixed",
             "oppositeStreetId": 527,
+            "maxSpeed": "50",
+            "length": 54,
+            "width": 2
+        },
+        {
+            "id": 1769,
+            "startNodeId": 76799642,
+            "endNodeId": 60029730,
+            "type": "bike",
+            "oppositeStreetId": 526,
             "maxSpeed": "50",
             "length": 54,
             "width": 4
@@ -5278,7 +5918,7 @@
             "oppositeStreetId": 526,
             "maxSpeed": "50",
             "length": 54,
-            "width": 6
+            "width": 4
         },
         {
             "id": 528,
@@ -5471,6 +6111,16 @@
             "width": 2
         },
         {
+            "id": 1770,
+            "startNodeId": 448036957,
+            "endNodeId": 5898719285,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 44,
+            "width": 6
+        },
+        {
             "id": 547,
             "startNodeId": 448036957,
             "endNodeId": 5898719285,
@@ -5478,7 +6128,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 44,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1771,
+            "startNodeId": 93007132,
+            "endNodeId": 93007134,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 22,
+            "width": 2
         },
         {
             "id": 548,
@@ -5488,7 +6148,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 22,
-            "width": 4
+            "width": 2
         },
         {
             "id": 549,
@@ -5501,6 +6161,16 @@
             "width": 2
         },
         {
+            "id": 1772,
+            "startNodeId": 93007134,
+            "endNodeId": 448036957,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": 50,
+            "length": 15,
+            "width": 6
+        },
+        {
             "id": 550,
             "startNodeId": 93007134,
             "endNodeId": 448036957,
@@ -5508,7 +6178,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": 50,
             "length": 15,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1773,
+            "startNodeId": 448036965,
+            "endNodeId": 93007125,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 88,
+            "width": 2
         },
         {
             "id": 551,
@@ -5518,7 +6198,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 88,
-            "width": 4
+            "width": 2
         },
         {
             "id": 552,
@@ -5541,6 +6221,16 @@
             "width": 4
         },
         {
+            "id": 1774,
+            "startNodeId": 448078186,
+            "endNodeId": 93001243,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 76,
+            "width": 2
+        },
+        {
             "id": 554,
             "startNodeId": 448078186,
             "endNodeId": 93001243,
@@ -5548,7 +6238,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 76,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1775,
+            "startNodeId": 27493150,
+            "endNodeId": 448165813,
+            "type": "bike",
+            "oppositeStreetId": 556,
+            "maxSpeed": "50",
+            "length": 15,
+            "width": 2
         },
         {
             "id": 555,
@@ -5558,7 +6258,17 @@
             "oppositeStreetId": 556,
             "maxSpeed": "50",
             "length": 15,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1776,
+            "startNodeId": 448165813,
+            "endNodeId": 27493150,
+            "type": "bike",
+            "oppositeStreetId": 555,
+            "maxSpeed": "50",
+            "length": 15,
+            "width": 2
         },
         {
             "id": 556,
@@ -5568,7 +6278,17 @@
             "oppositeStreetId": 555,
             "maxSpeed": "50",
             "length": 15,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1777,
+            "startNodeId": 1850813814,
+            "endNodeId": 1850813797,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 57,
+            "width": 2
         },
         {
             "id": 557,
@@ -5578,6 +6298,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 57,
+            "width": 2
+        },
+        {
+            "id": 1778,
+            "startNodeId": 448165813,
+            "endNodeId": 135641342,
+            "type": "bike",
+            "oppositeStreetId": 559,
+            "maxSpeed": "50",
+            "length": 81,
             "width": 4
         },
         {
@@ -5588,7 +6318,17 @@
             "oppositeStreetId": 559,
             "maxSpeed": "50",
             "length": 81,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1779,
+            "startNodeId": 135641342,
+            "endNodeId": 448165813,
+            "type": "bike",
+            "oppositeStreetId": 558,
+            "maxSpeed": "50",
+            "length": 81,
+            "width": 2
         },
         {
             "id": 559,
@@ -5598,6 +6338,16 @@
             "oppositeStreetId": 558,
             "maxSpeed": "50",
             "length": 81,
+            "width": 2
+        },
+        {
+            "id": 1780,
+            "startNodeId": 135641342,
+            "endNodeId": 4087698177,
+            "type": "bike",
+            "oppositeStreetId": 561,
+            "maxSpeed": "50",
+            "length": 112,
             "width": 4
         },
         {
@@ -5608,7 +6358,17 @@
             "oppositeStreetId": 561,
             "maxSpeed": "50",
             "length": 112,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1781,
+            "startNodeId": 4087698177,
+            "endNodeId": 135641342,
+            "type": "bike",
+            "oppositeStreetId": 560,
+            "maxSpeed": "50",
+            "length": 112,
+            "width": 2
         },
         {
             "id": 561,
@@ -5618,7 +6378,17 @@
             "oppositeStreetId": 560,
             "maxSpeed": "50",
             "length": 112,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1782,
+            "startNodeId": 448165821,
+            "endNodeId": 1850813818,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 141,
+            "width": 2
         },
         {
             "id": 562,
@@ -5628,7 +6398,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 141,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1783,
+            "startNodeId": 27513454,
+            "endNodeId": 1970060412,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 58,
+            "width": 2
         },
         {
             "id": 563,
@@ -5638,7 +6418,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 58,
-            "width": 4
+            "width": 2
         },
         {
             "id": 564,
@@ -6011,11 +6791,31 @@
             "width": 2
         },
         {
+            "id": 1784,
+            "startNodeId": 107122127,
+            "endNodeId": 27487050,
+            "type": "bike",
+            "oppositeStreetId": 602,
+            "maxSpeed": "50",
+            "length": 61,
+            "width": 2
+        },
+        {
             "id": 601,
             "startNodeId": 107122127,
             "endNodeId": 27487050,
             "type": "mixed",
             "oppositeStreetId": 602,
+            "maxSpeed": "50",
+            "length": 61,
+            "width": 2
+        },
+        {
+            "id": 1785,
+            "startNodeId": 27487050,
+            "endNodeId": 107122127,
+            "type": "bike",
+            "oppositeStreetId": 601,
             "maxSpeed": "50",
             "length": 61,
             "width": 4
@@ -6028,7 +6828,7 @@
             "oppositeStreetId": 601,
             "maxSpeed": "50",
             "length": 61,
-            "width": 6
+            "width": 4
         },
         {
             "id": 603,
@@ -6161,6 +6961,16 @@
             "width": 2
         },
         {
+            "id": 1786,
+            "startNodeId": 292142093,
+            "endNodeId": 292142091,
+            "type": "bike",
+            "oppositeStreetId": 617,
+            "maxSpeed": "50",
+            "length": 8,
+            "width": 2
+        },
+        {
             "id": 616,
             "startNodeId": 292142093,
             "endNodeId": 292142091,
@@ -6168,7 +6978,17 @@
             "oppositeStreetId": 617,
             "maxSpeed": "50",
             "length": 8,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1787,
+            "startNodeId": 292142091,
+            "endNodeId": 292142093,
+            "type": "bike",
+            "oppositeStreetId": 616,
+            "maxSpeed": "50",
+            "length": 8,
+            "width": 2
         },
         {
             "id": 617,
@@ -6178,7 +6998,17 @@
             "oppositeStreetId": 616,
             "maxSpeed": "50",
             "length": 8,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1788,
+            "startNodeId": 5109499510,
+            "endNodeId": 318317472,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 90,
+            "width": 2
         },
         {
             "id": 618,
@@ -6188,7 +7018,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 90,
-            "width": 4
+            "width": 2
         },
         {
             "id": 619,
@@ -6211,6 +7041,16 @@
             "width": 2
         },
         {
+            "id": 1789,
+            "startNodeId": 524736771,
+            "endNodeId": 27513095,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 15,
+            "width": 2
+        },
+        {
             "id": 621,
             "startNodeId": 524736771,
             "endNodeId": 27513095,
@@ -6218,6 +7058,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 15,
+            "width": 2
+        },
+        {
+            "id": 1790,
+            "startNodeId": 359625228,
+            "endNodeId": 130231431,
+            "type": "bike",
+            "oppositeStreetId": 623,
+            "maxSpeed": "50",
+            "length": 115,
             "width": 4
         },
         {
@@ -6228,7 +7078,17 @@
             "oppositeStreetId": 623,
             "maxSpeed": "50",
             "length": 115,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1791,
+            "startNodeId": 130231431,
+            "endNodeId": 359625228,
+            "type": "bike",
+            "oppositeStreetId": 622,
+            "maxSpeed": "50",
+            "length": 115,
+            "width": 4
         },
         {
             "id": 623,
@@ -6238,7 +7098,7 @@
             "oppositeStreetId": 622,
             "maxSpeed": "50",
             "length": 115,
-            "width": 6
+            "width": 4
         },
         {
             "id": 624,
@@ -6281,6 +7141,16 @@
             "width": 2
         },
         {
+            "id": 1792,
+            "startNodeId": 92998316,
+            "endNodeId": 92993762,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 78,
+            "width": 2
+        },
+        {
             "id": 628,
             "startNodeId": 92998316,
             "endNodeId": 92993762,
@@ -6288,7 +7158,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 78,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1793,
+            "startNodeId": 448157747,
+            "endNodeId": 655151829,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 41,
+            "width": 2
         },
         {
             "id": 629,
@@ -6298,7 +7178,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 41,
-            "width": 4
+            "width": 2
         },
         {
             "id": 630,
@@ -6391,6 +7271,16 @@
             "width": 2
         },
         {
+            "id": 1794,
+            "startNodeId": 30841368,
+            "endNodeId": 30841366,
+            "type": "bike",
+            "oppositeStreetId": 640,
+            "maxSpeed": "50",
+            "length": 81,
+            "width": 8
+        },
+        {
             "id": 639,
             "startNodeId": 30841368,
             "endNodeId": 30841366,
@@ -6398,7 +7288,17 @@
             "oppositeStreetId": 640,
             "maxSpeed": "50",
             "length": 81,
-            "width": 10
+            "width": 8
+        },
+        {
+            "id": 1795,
+            "startNodeId": 30841366,
+            "endNodeId": 30841368,
+            "type": "bike",
+            "oppositeStreetId": 639,
+            "maxSpeed": "50",
+            "length": 81,
+            "width": 2
         },
         {
             "id": 640,
@@ -6408,7 +7308,7 @@
             "oppositeStreetId": 639,
             "maxSpeed": "50",
             "length": 81,
-            "width": 4
+            "width": 2
         },
         {
             "id": 641,
@@ -6661,6 +7561,16 @@
             "width": 2
         },
         {
+            "id": 1796,
+            "startNodeId": 336338502,
+            "endNodeId": 5030606701,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 52,
+            "width": 2
+        },
+        {
             "id": 666,
             "startNodeId": 336338502,
             "endNodeId": 5030606701,
@@ -6668,7 +7578,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 52,
-            "width": 4
+            "width": 2
         },
         {
             "id": 667,
@@ -7091,6 +8001,16 @@
             "width": 2
         },
         {
+            "id": 1797,
+            "startNodeId": 5100507530,
+            "endNodeId": 94913760,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 28,
+            "width": 2
+        },
+        {
             "id": 709,
             "startNodeId": 5100507530,
             "endNodeId": 94913760,
@@ -7098,7 +8018,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 28,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1798,
+            "startNodeId": 94913760,
+            "endNodeId": 107155714,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 176,
+            "width": 2
         },
         {
             "id": 710,
@@ -7108,7 +8038,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 176,
-            "width": 4
+            "width": 2
         },
         {
             "id": 711,
@@ -7121,6 +8051,16 @@
             "width": 2
         },
         {
+            "id": 1799,
+            "startNodeId": 655246235,
+            "endNodeId": 655246229,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 68,
+            "width": 4
+        },
+        {
             "id": 712,
             "startNodeId": 655246235,
             "endNodeId": 655246229,
@@ -7128,7 +8068,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 68,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1800,
+            "startNodeId": 130231431,
+            "endNodeId": 130231438,
+            "type": "bike",
+            "oppositeStreetId": 714,
+            "maxSpeed": "50",
+            "length": 55,
+            "width": 4
         },
         {
             "id": 713,
@@ -7138,7 +8088,17 @@
             "oppositeStreetId": 714,
             "maxSpeed": "50",
             "length": 55,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1801,
+            "startNodeId": 130231438,
+            "endNodeId": 130231431,
+            "type": "bike",
+            "oppositeStreetId": 713,
+            "maxSpeed": "50",
+            "length": 55,
+            "width": 4
         },
         {
             "id": 714,
@@ -7148,7 +8108,17 @@
             "oppositeStreetId": 713,
             "maxSpeed": "50",
             "length": 55,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1802,
+            "startNodeId": 5898719420,
+            "endNodeId": 448157747,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 75,
+            "width": 2
         },
         {
             "id": 715,
@@ -7158,7 +8128,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 75,
-            "width": 4
+            "width": 2
         },
         {
             "id": 716,
@@ -7311,6 +8281,16 @@
             "width": 2
         },
         {
+            "id": 1803,
+            "startNodeId": 316660299,
+            "endNodeId": 316660567,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 123,
+            "width": 4
+        },
+        {
             "id": 731,
             "startNodeId": 316660299,
             "endNodeId": 316660567,
@@ -7318,7 +8298,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 123,
-            "width": 6
+            "width": 4
         },
         {
             "id": 732,
@@ -7541,6 +8521,16 @@
             "width": 2
         },
         {
+            "id": 1804,
+            "startNodeId": 130231965,
+            "endNodeId": 641815109,
+            "type": "bike",
+            "oppositeStreetId": 755,
+            "maxSpeed": "50",
+            "length": 90,
+            "width": 4
+        },
+        {
             "id": 754,
             "startNodeId": 130231965,
             "endNodeId": 641815109,
@@ -7548,7 +8538,17 @@
             "oppositeStreetId": 755,
             "maxSpeed": "50",
             "length": 90,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1805,
+            "startNodeId": 641815109,
+            "endNodeId": 130231965,
+            "type": "bike",
+            "oppositeStreetId": 754,
+            "maxSpeed": "50",
+            "length": 90,
+            "width": 4
         },
         {
             "id": 755,
@@ -7558,7 +8558,7 @@
             "oppositeStreetId": 754,
             "maxSpeed": "50",
             "length": 90,
-            "width": 6
+            "width": 4
         },
         {
             "id": 756,
@@ -7601,6 +8601,16 @@
             "width": 2
         },
         {
+            "id": 1806,
+            "startNodeId": 1333939291,
+            "endNodeId": 27513244,
+            "type": "bike",
+            "oppositeStreetId": 761,
+            "maxSpeed": "50",
+            "length": 96,
+            "width": 6
+        },
+        {
             "id": 760,
             "startNodeId": 1333939291,
             "endNodeId": 27513244,
@@ -7608,7 +8618,17 @@
             "oppositeStreetId": 761,
             "maxSpeed": "50",
             "length": 96,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1807,
+            "startNodeId": 27513244,
+            "endNodeId": 1333939291,
+            "type": "bike",
+            "oppositeStreetId": 760,
+            "maxSpeed": "50",
+            "length": 96,
+            "width": 6
         },
         {
             "id": 761,
@@ -7618,7 +8638,17 @@
             "oppositeStreetId": 760,
             "maxSpeed": "50",
             "length": 96,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1808,
+            "startNodeId": 2171917796,
+            "endNodeId": 1333939398,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 38,
+            "width": 2
         },
         {
             "id": 762,
@@ -7628,6 +8658,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 38,
+            "width": 2
+        },
+        {
+            "id": 1809,
+            "startNodeId": 316660442,
+            "endNodeId": 1148676953,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 19,
             "width": 4
         },
         {
@@ -7638,7 +8678,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 19,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1810,
+            "startNodeId": 5100507012,
+            "endNodeId": 5198912086,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 142,
+            "width": 4
         },
         {
             "id": 764,
@@ -7648,7 +8698,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 142,
-            "width": 6
+            "width": 4
         },
         {
             "id": 765,
@@ -7671,6 +8721,16 @@
             "width": 2
         },
         {
+            "id": 1811,
+            "startNodeId": 27513244,
+            "endNodeId": 9246568041,
+            "type": "bike",
+            "oppositeStreetId": 768,
+            "maxSpeed": "50",
+            "length": 46,
+            "width": 4
+        },
+        {
             "id": 767,
             "startNodeId": 27513244,
             "endNodeId": 9246568041,
@@ -7678,7 +8738,17 @@
             "oppositeStreetId": 768,
             "maxSpeed": "50",
             "length": 46,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1812,
+            "startNodeId": 9246568041,
+            "endNodeId": 27513244,
+            "type": "bike",
+            "oppositeStreetId": 767,
+            "maxSpeed": "50",
+            "length": 46,
+            "width": 4
         },
         {
             "id": 768,
@@ -7688,6 +8758,16 @@
             "oppositeStreetId": 767,
             "maxSpeed": "50",
             "length": 46,
+            "width": 4
+        },
+        {
+            "id": 1813,
+            "startNodeId": 5100506946,
+            "endNodeId": 78206050,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 30,
             "width": 6
         },
         {
@@ -7698,7 +8778,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 30,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1814,
+            "startNodeId": 524847716,
+            "endNodeId": 316661933,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 284,
+            "width": 4
         },
         {
             "id": 770,
@@ -7708,7 +8798,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 284,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1815,
+            "startNodeId": 316661933,
+            "endNodeId": 5100506948,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 35,
+            "width": 4
         },
         {
             "id": 771,
@@ -7718,7 +8818,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 35,
-            "width": 6
+            "width": 4
         },
         {
             "id": 772,
@@ -7791,6 +8891,16 @@
             "width": 2
         },
         {
+            "id": 1816,
+            "startNodeId": 27493175,
+            "endNodeId": 101372968,
+            "type": "bike",
+            "oppositeStreetId": 780,
+            "maxSpeed": "50",
+            "length": 63,
+            "width": 2
+        },
+        {
             "id": 779,
             "startNodeId": 27493175,
             "endNodeId": 101372968,
@@ -7798,7 +8908,17 @@
             "oppositeStreetId": 780,
             "maxSpeed": "50",
             "length": 63,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1817,
+            "startNodeId": 101372968,
+            "endNodeId": 27493175,
+            "type": "bike",
+            "oppositeStreetId": 779,
+            "maxSpeed": "50",
+            "length": 63,
+            "width": 2
         },
         {
             "id": 780,
@@ -7808,7 +8928,17 @@
             "oppositeStreetId": 779,
             "maxSpeed": "50",
             "length": 63,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1818,
+            "startNodeId": 101372968,
+            "endNodeId": 101370222,
+            "type": "bike",
+            "oppositeStreetId": 782,
+            "maxSpeed": "50",
+            "length": 344,
+            "width": 2
         },
         {
             "id": 781,
@@ -7818,7 +8948,17 @@
             "oppositeStreetId": 782,
             "maxSpeed": "50",
             "length": 344,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1819,
+            "startNodeId": 101370222,
+            "endNodeId": 101372968,
+            "type": "bike",
+            "oppositeStreetId": 781,
+            "maxSpeed": "50",
+            "length": 344,
+            "width": 2
         },
         {
             "id": 782,
@@ -7828,7 +8968,17 @@
             "oppositeStreetId": 781,
             "maxSpeed": "50",
             "length": 344,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1820,
+            "startNodeId": 101370222,
+            "endNodeId": 192116175,
+            "type": "bike",
+            "oppositeStreetId": 784,
+            "maxSpeed": "50",
+            "length": 427,
+            "width": 2
         },
         {
             "id": 783,
@@ -7838,7 +8988,17 @@
             "oppositeStreetId": 784,
             "maxSpeed": "50",
             "length": 427,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1821,
+            "startNodeId": 192116175,
+            "endNodeId": 101370222,
+            "type": "bike",
+            "oppositeStreetId": 783,
+            "maxSpeed": "50",
+            "length": 427,
+            "width": 2
         },
         {
             "id": 784,
@@ -7848,7 +9008,17 @@
             "oppositeStreetId": 783,
             "maxSpeed": "50",
             "length": 427,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1822,
+            "startNodeId": 135646567,
+            "endNodeId": 1447856215,
+            "type": "bike",
+            "oppositeStreetId": 786,
+            "maxSpeed": "50",
+            "length": 94,
+            "width": 2
         },
         {
             "id": 785,
@@ -7858,7 +9028,17 @@
             "oppositeStreetId": 786,
             "maxSpeed": "50",
             "length": 94,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1823,
+            "startNodeId": 1447856215,
+            "endNodeId": 135646567,
+            "type": "bike",
+            "oppositeStreetId": 785,
+            "maxSpeed": "50",
+            "length": 94,
+            "width": 2
         },
         {
             "id": 786,
@@ -7868,6 +9048,16 @@
             "oppositeStreetId": 785,
             "maxSpeed": "50",
             "length": 94,
+            "width": 2
+        },
+        {
+            "id": 1824,
+            "startNodeId": 5277479180,
+            "endNodeId": 8956973294,
+            "type": "bike",
+            "oppositeStreetId": 788,
+            "maxSpeed": "50",
+            "length": 40,
             "width": 4
         },
         {
@@ -7878,7 +9068,17 @@
             "oppositeStreetId": 788,
             "maxSpeed": "50",
             "length": 40,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1825,
+            "startNodeId": 8956973294,
+            "endNodeId": 5277479180,
+            "type": "bike",
+            "oppositeStreetId": 787,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 2
         },
         {
             "id": 788,
@@ -7888,7 +9088,7 @@
             "oppositeStreetId": 787,
             "maxSpeed": "50",
             "length": 40,
-            "width": 4
+            "width": 2
         },
         {
             "id": 789,
@@ -7981,6 +9181,16 @@
             "width": 2
         },
         {
+            "id": 1826,
+            "startNodeId": 27513095,
+            "endNodeId": 27513088,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 152,
+            "width": 4
+        },
+        {
             "id": 798,
             "startNodeId": 27513095,
             "endNodeId": 27513088,
@@ -7988,7 +9198,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 152,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1827,
+            "startNodeId": 92572026,
+            "endNodeId": 110271947,
+            "type": "bike",
+            "oppositeStreetId": 800,
+            "maxSpeed": "50",
+            "length": 92,
+            "width": 4
         },
         {
             "id": 799,
@@ -7998,7 +9218,17 @@
             "oppositeStreetId": 800,
             "maxSpeed": "50",
             "length": 92,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1828,
+            "startNodeId": 110271947,
+            "endNodeId": 92572026,
+            "type": "bike",
+            "oppositeStreetId": 799,
+            "maxSpeed": "50",
+            "length": 92,
+            "width": 4
         },
         {
             "id": 800,
@@ -8008,7 +9238,17 @@
             "oppositeStreetId": 799,
             "maxSpeed": "50",
             "length": 92,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1829,
+            "startNodeId": 316660567,
+            "endNodeId": 1333939291,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 55,
+            "width": 2
         },
         {
             "id": 801,
@@ -8018,7 +9258,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 55,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1830,
+            "startNodeId": 336354263,
+            "endNodeId": 292142095,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 97,
+            "width": 2
         },
         {
             "id": 802,
@@ -8028,7 +9278,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 97,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1831,
+            "startNodeId": 655246225,
+            "endNodeId": 5475454423,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 203,
+            "width": 2
         },
         {
             "id": 803,
@@ -8038,6 +9298,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 203,
+            "width": 2
+        },
+        {
+            "id": 1832,
+            "startNodeId": 1333939466,
+            "endNodeId": 316660442,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 120,
             "width": 4
         },
         {
@@ -8048,6 +9318,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 120,
+            "width": 4
+        },
+        {
+            "id": 1833,
+            "startNodeId": 655246229,
+            "endNodeId": 27487050,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 60,
             "width": 6
         },
         {
@@ -8058,7 +9338,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 60,
-            "width": 8
+            "width": 6
         },
         {
             "id": 806,
@@ -8081,6 +9361,16 @@
             "width": 2
         },
         {
+            "id": 1834,
+            "startNodeId": 448165819,
+            "endNodeId": 27513454,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 19,
+            "width": 4
+        },
+        {
             "id": 808,
             "startNodeId": 448165819,
             "endNodeId": 27513454,
@@ -8088,7 +9378,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 19,
-            "width": 6
+            "width": 4
         },
         {
             "id": 809,
@@ -8321,6 +9611,16 @@
             "width": 2
         },
         {
+            "id": 1835,
+            "startNodeId": 1554237932,
+            "endNodeId": 448165821,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 54,
+            "width": 2
+        },
+        {
             "id": 832,
             "startNodeId": 1554237932,
             "endNodeId": 448165821,
@@ -8328,7 +9628,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 54,
-            "width": 4
+            "width": 2
         },
         {
             "id": 833,
@@ -8371,6 +9671,16 @@
             "width": 2
         },
         {
+            "id": 1836,
+            "startNodeId": 448165813,
+            "endNodeId": 1850813794,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 13,
+            "width": 4
+        },
+        {
             "id": 837,
             "startNodeId": 448165813,
             "endNodeId": 1850813794,
@@ -8378,7 +9688,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 13,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1837,
+            "startNodeId": 411061025,
+            "endNodeId": 448165819,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 18,
+            "width": 4
         },
         {
             "id": 838,
@@ -8388,7 +9708,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 18,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1838,
+            "startNodeId": 1850813794,
+            "endNodeId": 8956973302,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 74,
+            "width": 4
         },
         {
             "id": 839,
@@ -8398,7 +9728,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 74,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1839,
+            "startNodeId": 8956973302,
+            "endNodeId": 411061025,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 128,
+            "width": 4
         },
         {
             "id": 840,
@@ -8408,7 +9748,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 128,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1840,
+            "startNodeId": 27513104,
+            "endNodeId": 27513103,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 44,
+            "width": 4
         },
         {
             "id": 841,
@@ -8418,6 +9768,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 44,
+            "width": 4
+        },
+        {
+            "id": 1841,
+            "startNodeId": 118058506,
+            "endNodeId": 448078186,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 285,
             "width": 6
         },
         {
@@ -8428,7 +9788,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 285,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1842,
+            "startNodeId": 60122773,
+            "endNodeId": 60029730,
+            "type": "bike",
+            "oppositeStreetId": 844,
+            "maxSpeed": "50",
+            "length": 95,
+            "width": 2
         },
         {
             "id": 843,
@@ -8436,6 +9806,16 @@
             "endNodeId": 60029730,
             "type": "mixed",
             "oppositeStreetId": 844,
+            "maxSpeed": "50",
+            "length": 95,
+            "width": 2
+        },
+        {
+            "id": 1843,
+            "startNodeId": 60029730,
+            "endNodeId": 60122773,
+            "type": "bike",
+            "oppositeStreetId": 843,
             "maxSpeed": "50",
             "length": 95,
             "width": 4
@@ -8448,7 +9828,17 @@
             "oppositeStreetId": 843,
             "maxSpeed": "50",
             "length": 95,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1844,
+            "startNodeId": 1853451757,
+            "endNodeId": 60122773,
+            "type": "bike",
+            "oppositeStreetId": 846,
+            "maxSpeed": "50",
+            "length": 95,
+            "width": 4
         },
         {
             "id": 845,
@@ -8458,7 +9848,17 @@
             "oppositeStreetId": 846,
             "maxSpeed": "50",
             "length": 95,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1845,
+            "startNodeId": 60122773,
+            "endNodeId": 1853451757,
+            "type": "bike",
+            "oppositeStreetId": 845,
+            "maxSpeed": "50",
+            "length": 95,
+            "width": 2
         },
         {
             "id": 846,
@@ -8468,7 +9868,7 @@
             "oppositeStreetId": 845,
             "maxSpeed": "50",
             "length": 95,
-            "width": 4
+            "width": 2
         },
         {
             "id": 847,
@@ -8491,6 +9891,16 @@
             "width": 2
         },
         {
+            "id": 1846,
+            "startNodeId": 1853461361,
+            "endNodeId": 74958497,
+            "type": "bike",
+            "oppositeStreetId": 850,
+            "maxSpeed": "50",
+            "length": 79,
+            "width": 2
+        },
+        {
             "id": 849,
             "startNodeId": 1853461361,
             "endNodeId": 74958497,
@@ -8498,7 +9908,17 @@
             "oppositeStreetId": 850,
             "maxSpeed": "50",
             "length": 79,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1847,
+            "startNodeId": 74958497,
+            "endNodeId": 1853461361,
+            "type": "bike",
+            "oppositeStreetId": 849,
+            "maxSpeed": "50",
+            "length": 79,
+            "width": 2
         },
         {
             "id": 850,
@@ -8508,7 +9928,17 @@
             "oppositeStreetId": 849,
             "maxSpeed": "50",
             "length": 79,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1848,
+            "startNodeId": 74958497,
+            "endNodeId": 5412544593,
+            "type": "bike",
+            "oppositeStreetId": 852,
+            "maxSpeed": "50",
+            "length": 233,
+            "width": 2
         },
         {
             "id": 851,
@@ -8518,7 +9948,17 @@
             "oppositeStreetId": 852,
             "maxSpeed": "50",
             "length": 233,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1849,
+            "startNodeId": 5412544593,
+            "endNodeId": 74958497,
+            "type": "bike",
+            "oppositeStreetId": 851,
+            "maxSpeed": "50",
+            "length": 233,
+            "width": 2
         },
         {
             "id": 852,
@@ -8528,7 +9968,17 @@
             "oppositeStreetId": 851,
             "maxSpeed": "50",
             "length": 233,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1850,
+            "startNodeId": 5412544593,
+            "endNodeId": 109498031,
+            "type": "bike",
+            "oppositeStreetId": 854,
+            "maxSpeed": "50",
+            "length": 166,
+            "width": 2
         },
         {
             "id": 853,
@@ -8538,7 +9988,17 @@
             "oppositeStreetId": 854,
             "maxSpeed": "50",
             "length": 166,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1851,
+            "startNodeId": 109498031,
+            "endNodeId": 5412544593,
+            "type": "bike",
+            "oppositeStreetId": 853,
+            "maxSpeed": "50",
+            "length": 166,
+            "width": 2
         },
         {
             "id": 854,
@@ -8548,7 +10008,17 @@
             "oppositeStreetId": 853,
             "maxSpeed": "50",
             "length": 166,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1852,
+            "startNodeId": 109498031,
+            "endNodeId": 1853451757,
+            "type": "bike",
+            "oppositeStreetId": 856,
+            "maxSpeed": "50",
+            "length": 64,
+            "width": 2
         },
         {
             "id": 855,
@@ -8558,7 +10028,17 @@
             "oppositeStreetId": 856,
             "maxSpeed": "50",
             "length": 64,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1853,
+            "startNodeId": 1853451757,
+            "endNodeId": 109498031,
+            "type": "bike",
+            "oppositeStreetId": 855,
+            "maxSpeed": "50",
+            "length": 64,
+            "width": 2
         },
         {
             "id": 856,
@@ -8568,7 +10048,7 @@
             "oppositeStreetId": 855,
             "maxSpeed": "50",
             "length": 64,
-            "width": 4
+            "width": 2
         },
         {
             "id": 857,
@@ -8621,6 +10101,16 @@
             "width": 2
         },
         {
+            "id": 1854,
+            "startNodeId": 1148676953,
+            "endNodeId": 5100507002,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 64,
+            "width": 4
+        },
+        {
             "id": 862,
             "startNodeId": 1148676953,
             "endNodeId": 5100507002,
@@ -8628,7 +10118,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 64,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1855,
+            "startNodeId": 1970060412,
+            "endNodeId": 1554237932,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 20,
+            "width": 2
         },
         {
             "id": 863,
@@ -8638,7 +10138,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 20,
-            "width": 4
+            "width": 2
         },
         {
             "id": 864,
@@ -8931,6 +10431,16 @@
             "width": 2
         },
         {
+            "id": 1856,
+            "startNodeId": 5497666235,
+            "endNodeId": 5497666229,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 52,
+            "width": 2
+        },
+        {
             "id": 893,
             "startNodeId": 5497666235,
             "endNodeId": 5497666229,
@@ -8938,7 +10448,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 52,
-            "width": 4
+            "width": 2
         },
         {
             "id": 894,
@@ -8951,6 +10461,16 @@
             "width": 2
         },
         {
+            "id": 1857,
+            "startNodeId": 2013653867,
+            "endNodeId": 93002313,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 78,
+            "width": 2
+        },
+        {
             "id": 895,
             "startNodeId": 2013653867,
             "endNodeId": 93002313,
@@ -8958,6 +10478,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 78,
+            "width": 2
+        },
+        {
+            "id": 1858,
+            "startNodeId": 353284727,
+            "endNodeId": 1970060412,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 45,
             "width": 4
         },
         {
@@ -8968,7 +10498,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 45,
-            "width": 6
+            "width": 4
         },
         {
             "id": 897,
@@ -9251,6 +10781,16 @@
             "width": 2
         },
         {
+            "id": 1859,
+            "startNodeId": 354611229,
+            "endNodeId": 107122127,
+            "type": "bike",
+            "oppositeStreetId": 926,
+            "maxSpeed": "50",
+            "length": 305,
+            "width": 2
+        },
+        {
             "id": 925,
             "startNodeId": 354611229,
             "endNodeId": 107122127,
@@ -9258,7 +10798,17 @@
             "oppositeStreetId": 926,
             "maxSpeed": "50",
             "length": 305,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1860,
+            "startNodeId": 107122127,
+            "endNodeId": 354611229,
+            "type": "bike",
+            "oppositeStreetId": 925,
+            "maxSpeed": "50",
+            "length": 305,
+            "width": 2
         },
         {
             "id": 926,
@@ -9268,7 +10818,7 @@
             "oppositeStreetId": 925,
             "maxSpeed": "50",
             "length": 305,
-            "width": 4
+            "width": 2
         },
         {
             "id": 927,
@@ -9351,6 +10901,16 @@
             "width": 4
         },
         {
+            "id": 1861,
+            "startNodeId": 5100506955,
+            "endNodeId": 110267054,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 103,
+            "width": 4
+        },
+        {
             "id": 935,
             "startNodeId": 5100506955,
             "endNodeId": 110267054,
@@ -9358,7 +10918,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 103,
-            "width": 6
+            "width": 4
         },
         {
             "id": 936,
@@ -9401,6 +10961,16 @@
             "width": 2
         },
         {
+            "id": 1862,
+            "startNodeId": 292142040,
+            "endNodeId": 3931072676,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "30",
+            "length": 17,
+            "width": 2
+        },
+        {
             "id": 940,
             "startNodeId": 292142040,
             "endNodeId": 3931072676,
@@ -9408,7 +10978,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "30",
             "length": 17,
-            "width": 4
+            "width": 2
         },
         {
             "id": 941,
@@ -9461,6 +11031,16 @@
             "width": 2
         },
         {
+            "id": 1863,
+            "startNodeId": 110262688,
+            "endNodeId": 5380840427,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 4
+        },
+        {
             "id": 946,
             "startNodeId": 110262688,
             "endNodeId": 5380840427,
@@ -9468,7 +11048,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 40,
-            "width": 6
+            "width": 4
         },
         {
             "id": 947,
@@ -9531,6 +11111,16 @@
             "width": 2
         },
         {
+            "id": 1864,
+            "startNodeId": 93004156,
+            "endNodeId": 92993891,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "80",
+            "length": 248,
+            "width": 4
+        },
+        {
             "id": 953,
             "startNodeId": 93004156,
             "endNodeId": 92993891,
@@ -9538,7 +11128,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "80",
             "length": 248,
-            "width": 6
+            "width": 4
         },
         {
             "id": 954,
@@ -9601,6 +11191,16 @@
             "width": 2
         },
         {
+            "id": 1865,
+            "startNodeId": 506652077,
+            "endNodeId": 311350190,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 145,
+            "width": 4
+        },
+        {
             "id": 960,
             "startNodeId": 506652077,
             "endNodeId": 311350190,
@@ -9608,7 +11208,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 145,
-            "width": 6
+            "width": 4
         },
         {
             "id": 961,
@@ -9691,6 +11291,16 @@
             "width": 2
         },
         {
+            "id": 1866,
+            "startNodeId": 1970060412,
+            "endNodeId": 5497666235,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 18,
+            "width": 2
+        },
+        {
             "id": 969,
             "startNodeId": 1970060412,
             "endNodeId": 5497666235,
@@ -9698,7 +11308,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 18,
-            "width": 4
+            "width": 2
         },
         {
             "id": 970,
@@ -10511,6 +12121,16 @@
             "width": 2
         },
         {
+            "id": 1867,
+            "startNodeId": 3364638962,
+            "endNodeId": 60029742,
+            "type": "bike",
+            "oppositeStreetId": 1052,
+            "maxSpeed": "50",
+            "length": 33,
+            "width": 4
+        },
+        {
             "id": 1051,
             "startNodeId": 3364638962,
             "endNodeId": 60029742,
@@ -10518,7 +12138,17 @@
             "oppositeStreetId": 1052,
             "maxSpeed": "50",
             "length": 33,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1868,
+            "startNodeId": 60029742,
+            "endNodeId": 3364638962,
+            "type": "bike",
+            "oppositeStreetId": 1051,
+            "maxSpeed": "50",
+            "length": 33,
+            "width": 2
         },
         {
             "id": 1052,
@@ -10528,6 +12158,16 @@
             "oppositeStreetId": 1051,
             "maxSpeed": "50",
             "length": 33,
+            "width": 2
+        },
+        {
+            "id": 1869,
+            "startNodeId": 4172887120,
+            "endNodeId": 1625059620,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 187,
             "width": 4
         },
         {
@@ -10538,7 +12178,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 187,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1870,
+            "startNodeId": 1625059620,
+            "endNodeId": 902513551,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 196,
+            "width": 4
         },
         {
             "id": 1054,
@@ -10548,7 +12198,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 196,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1871,
+            "startNodeId": 902513551,
+            "endNodeId": 5730142756,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 158,
+            "width": 4
         },
         {
             "id": 1055,
@@ -10558,7 +12218,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 158,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1872,
+            "startNodeId": 1950132765,
+            "endNodeId": 94910431,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 11,
+            "width": 4
         },
         {
             "id": 1056,
@@ -10568,7 +12238,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 11,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1873,
+            "startNodeId": 94910431,
+            "endNodeId": 316660299,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 183,
+            "width": 4
         },
         {
             "id": 1057,
@@ -10578,7 +12258,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 183,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1058,
@@ -10611,6 +12291,16 @@
             "width": 2
         },
         {
+            "id": 1874,
+            "startNodeId": 110267054,
+            "endNodeId": 1950132765,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 87,
+            "width": 4
+        },
+        {
             "id": 1061,
             "startNodeId": 110267054,
             "endNodeId": 1950132765,
@@ -10618,7 +12308,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 87,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1062,
@@ -10711,6 +12401,16 @@
             "width": 2
         },
         {
+            "id": 1875,
+            "startNodeId": 1511932530,
+            "endNodeId": 9912821240,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 61,
+            "width": 4
+        },
+        {
             "id": 1071,
             "startNodeId": 1511932530,
             "endNodeId": 9912821240,
@@ -10718,7 +12418,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 61,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1876,
+            "startNodeId": 9912821240,
+            "endNodeId": 656314200,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 9,
+            "width": 4
         },
         {
             "id": 1072,
@@ -10728,7 +12438,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 9,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1073,
@@ -10751,6 +12461,16 @@
             "width": 2
         },
         {
+            "id": 1877,
+            "startNodeId": 1599105679,
+            "endNodeId": 101724124,
+            "type": "bike",
+            "oppositeStreetId": 1076,
+            "maxSpeed": "50",
+            "length": 133,
+            "width": 4
+        },
+        {
             "id": 1075,
             "startNodeId": 1599105679,
             "endNodeId": 101724124,
@@ -10758,7 +12478,17 @@
             "oppositeStreetId": 1076,
             "maxSpeed": "50",
             "length": 133,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1878,
+            "startNodeId": 101724124,
+            "endNodeId": 1599105679,
+            "type": "bike",
+            "oppositeStreetId": 1075,
+            "maxSpeed": "50",
+            "length": 133,
+            "width": 2
         },
         {
             "id": 1076,
@@ -10768,6 +12498,16 @@
             "oppositeStreetId": 1075,
             "maxSpeed": "50",
             "length": 133,
+            "width": 2
+        },
+        {
+            "id": 1879,
+            "startNodeId": 101724124,
+            "endNodeId": 5520455432,
+            "type": "bike",
+            "oppositeStreetId": 1078,
+            "maxSpeed": "50",
+            "length": 61,
             "width": 4
         },
         {
@@ -10778,7 +12518,17 @@
             "oppositeStreetId": 1078,
             "maxSpeed": "50",
             "length": 61,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1880,
+            "startNodeId": 5520455432,
+            "endNodeId": 101724124,
+            "type": "bike",
+            "oppositeStreetId": 1077,
+            "maxSpeed": "50",
+            "length": 61,
+            "width": 2
         },
         {
             "id": 1078,
@@ -10788,7 +12538,7 @@
             "oppositeStreetId": 1077,
             "maxSpeed": "50",
             "length": 61,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1079,
@@ -10911,6 +12661,16 @@
             "width": 4
         },
         {
+            "id": 1881,
+            "startNodeId": 27493105,
+            "endNodeId": 4567520441,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 172,
+            "width": 4
+        },
+        {
             "id": 1091,
             "startNodeId": 27493105,
             "endNodeId": 4567520441,
@@ -10918,7 +12678,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 172,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1882,
+            "startNodeId": 385184791,
+            "endNodeId": 92572026,
+            "type": "bike",
+            "oppositeStreetId": 1093,
+            "maxSpeed": "50",
+            "length": 10,
+            "width": 2
         },
         {
             "id": 1092,
@@ -10928,7 +12698,17 @@
             "oppositeStreetId": 1093,
             "maxSpeed": "50",
             "length": 10,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1883,
+            "startNodeId": 92572026,
+            "endNodeId": 385184791,
+            "type": "bike",
+            "oppositeStreetId": 1092,
+            "maxSpeed": "50",
+            "length": 10,
+            "width": 2
         },
         {
             "id": 1093,
@@ -10938,7 +12718,17 @@
             "oppositeStreetId": 1092,
             "maxSpeed": "50",
             "length": 10,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1884,
+            "startNodeId": 292142095,
+            "endNodeId": 4927009097,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 112,
+            "width": 2
         },
         {
             "id": 1094,
@@ -10948,7 +12738,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 112,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1095,
@@ -11031,6 +12821,16 @@
             "width": 2
         },
         {
+            "id": 1885,
+            "startNodeId": 93001244,
+            "endNodeId": 130238561,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 126,
+            "width": 4
+        },
+        {
             "id": 1103,
             "startNodeId": 93001244,
             "endNodeId": 130238561,
@@ -11038,7 +12838,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 126,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1886,
+            "startNodeId": 5109501326,
+            "endNodeId": 5030606651,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 59,
+            "width": 2
         },
         {
             "id": 1104,
@@ -11048,7 +12858,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 59,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1887,
+            "startNodeId": 5030606701,
+            "endNodeId": 5030582269,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 19,
+            "width": 2
         },
         {
             "id": 1105,
@@ -11058,6 +12878,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 19,
+            "width": 2
+        },
+        {
+            "id": 1888,
+            "startNodeId": 5030582278,
+            "endNodeId": 5030582277,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "30",
+            "length": 24,
             "width": 4
         },
         {
@@ -11068,7 +12898,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "30",
             "length": 24,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1107,
@@ -11281,6 +13111,16 @@
             "width": 2
         },
         {
+            "id": 1889,
+            "startNodeId": 5100506948,
+            "endNodeId": 5602105393,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 48,
+            "width": 8
+        },
+        {
             "id": 1128,
             "startNodeId": 5100506948,
             "endNodeId": 5602105393,
@@ -11288,7 +13128,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 48,
-            "width": 10
+            "width": 8
+        },
+        {
+            "id": 1890,
+            "startNodeId": 5100506951,
+            "endNodeId": 661039979,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 56,
+            "width": 4
         },
         {
             "id": 1129,
@@ -11298,7 +13148,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 56,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1891,
+            "startNodeId": 78206050,
+            "endNodeId": 5100506955,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 27,
+            "width": 4
         },
         {
             "id": 1130,
@@ -11308,7 +13168,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 27,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1892,
+            "startNodeId": 1950132732,
+            "endNodeId": 316660443,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 17,
+            "width": 4
         },
         {
             "id": 1131,
@@ -11318,7 +13188,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 17,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1893,
+            "startNodeId": 316660443,
+            "endNodeId": 5100507012,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 9,
+            "width": 4
         },
         {
             "id": 1132,
@@ -11328,7 +13208,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 9,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1894,
+            "startNodeId": 5100507002,
+            "endNodeId": 1950132732,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 81,
+            "width": 4
         },
         {
             "id": 1133,
@@ -11338,7 +13228,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 81,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1134,
@@ -11381,6 +13271,16 @@
             "width": 2
         },
         {
+            "id": 1895,
+            "startNodeId": 318317472,
+            "endNodeId": 5030582292,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 43,
+            "width": 2
+        },
+        {
             "id": 1138,
             "startNodeId": 318317472,
             "endNodeId": 5030582292,
@@ -11388,7 +13288,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 43,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1139,
@@ -11421,6 +13321,16 @@
             "width": 2
         },
         {
+            "id": 1896,
+            "startNodeId": 5030606704,
+            "endNodeId": 5030582285,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "30",
+            "length": 23,
+            "width": 2
+        },
+        {
             "id": 1142,
             "startNodeId": 5030606704,
             "endNodeId": 5030582285,
@@ -11428,7 +13338,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "30",
             "length": 23,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1897,
+            "startNodeId": 5030606707,
+            "endNodeId": 5030582278,
+            "type": "bike",
+            "oppositeStreetId": 1144,
+            "maxSpeed": "30",
+            "length": 8,
+            "width": 2
         },
         {
             "id": 1143,
@@ -11438,7 +13358,17 @@
             "oppositeStreetId": 1144,
             "maxSpeed": "30",
             "length": 8,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1898,
+            "startNodeId": 5030582278,
+            "endNodeId": 5030606707,
+            "type": "bike",
+            "oppositeStreetId": 1143,
+            "maxSpeed": "30",
+            "length": 8,
+            "width": 2
         },
         {
             "id": 1144,
@@ -11448,7 +13378,17 @@
             "oppositeStreetId": 1143,
             "maxSpeed": "30",
             "length": 8,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1899,
+            "startNodeId": 292142040,
+            "endNodeId": 5030606707,
+            "type": "bike",
+            "oppositeStreetId": 1146,
+            "maxSpeed": "30",
+            "length": 6,
+            "width": 2
         },
         {
             "id": 1145,
@@ -11458,7 +13398,17 @@
             "oppositeStreetId": 1146,
             "maxSpeed": "30",
             "length": 6,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1900,
+            "startNodeId": 5030606707,
+            "endNodeId": 292142040,
+            "type": "bike",
+            "oppositeStreetId": 1145,
+            "maxSpeed": "30",
+            "length": 6,
+            "width": 2
         },
         {
             "id": 1146,
@@ -11468,7 +13418,7 @@
             "oppositeStreetId": 1145,
             "maxSpeed": "30",
             "length": 6,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1147,
@@ -11531,6 +13481,16 @@
             "width": 2
         },
         {
+            "id": 1901,
+            "startNodeId": 27513302,
+            "endNodeId": 316660567,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 22,
+            "width": 2
+        },
+        {
             "id": 1153,
             "startNodeId": 27513302,
             "endNodeId": 316660567,
@@ -11538,7 +13498,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 22,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1902,
+            "startNodeId": 130228520,
+            "endNodeId": 107156891,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 127,
+            "width": 2
         },
         {
             "id": 1154,
@@ -11548,7 +13518,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 127,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1903,
+            "startNodeId": 107156891,
+            "endNodeId": 5456937741,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 112,
+            "width": 2
         },
         {
             "id": 1155,
@@ -11558,7 +13538,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 112,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1904,
+            "startNodeId": 5705189445,
+            "endNodeId": 5100507530,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 57,
+            "width": 2
         },
         {
             "id": 1156,
@@ -11568,6 +13558,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 57,
+            "width": 2
+        },
+        {
+            "id": 1905,
+            "startNodeId": 1023051461,
+            "endNodeId": 27513202,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 32,
             "width": 4
         },
         {
@@ -11578,7 +13578,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 32,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1158,
@@ -11621,6 +13621,16 @@
             "width": 2
         },
         {
+            "id": 1906,
+            "startNodeId": 1850813797,
+            "endNodeId": 27493150,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 15,
+            "width": 2
+        },
+        {
             "id": 1162,
             "startNodeId": 1850813797,
             "endNodeId": 27493150,
@@ -11628,7 +13638,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 15,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1163,
@@ -11721,6 +13731,16 @@
             "width": 2
         },
         {
+            "id": 1907,
+            "startNodeId": 656314200,
+            "endNodeId": 655246235,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 189,
+            "width": 4
+        },
+        {
             "id": 1172,
             "startNodeId": 656314200,
             "endNodeId": 655246235,
@@ -11728,7 +13748,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 189,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1173,
@@ -11771,6 +13791,16 @@
             "width": 6
         },
         {
+            "id": 1908,
+            "startNodeId": 5100506952,
+            "endNodeId": 7079892972,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 19,
+            "width": 6
+        },
+        {
             "id": 1177,
             "startNodeId": 5100506952,
             "endNodeId": 7079892972,
@@ -11778,7 +13808,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 19,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1909,
+            "startNodeId": 7079892980,
+            "endNodeId": 5100506951,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 17,
+            "width": 4
         },
         {
             "id": 1178,
@@ -11788,7 +13828,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 17,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1179,
@@ -11831,6 +13871,16 @@
             "width": 4
         },
         {
+            "id": 1910,
+            "startNodeId": 4949541568,
+            "endNodeId": 73543570,
+            "type": "bike",
+            "oppositeStreetId": 1184,
+            "maxSpeed": "50",
+            "length": 102,
+            "width": 4
+        },
+        {
             "id": 1183,
             "startNodeId": 4949541568,
             "endNodeId": 73543570,
@@ -11838,7 +13888,17 @@
             "oppositeStreetId": 1184,
             "maxSpeed": "50",
             "length": 102,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1911,
+            "startNodeId": 73543570,
+            "endNodeId": 4949541568,
+            "type": "bike",
+            "oppositeStreetId": 1183,
+            "maxSpeed": "50",
+            "length": 102,
+            "width": 4
         },
         {
             "id": 1184,
@@ -11848,7 +13908,17 @@
             "oppositeStreetId": 1183,
             "maxSpeed": "50",
             "length": 102,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1912,
+            "startNodeId": 292203510,
+            "endNodeId": 4087711127,
+            "type": "bike",
+            "oppositeStreetId": 1186,
+            "maxSpeed": "50",
+            "length": 183,
+            "width": 2
         },
         {
             "id": 1185,
@@ -11858,7 +13928,17 @@
             "oppositeStreetId": 1186,
             "maxSpeed": "50",
             "length": 183,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1913,
+            "startNodeId": 4087711127,
+            "endNodeId": 292203510,
+            "type": "bike",
+            "oppositeStreetId": 1185,
+            "maxSpeed": "50",
+            "length": 183,
+            "width": 2
         },
         {
             "id": 1186,
@@ -11868,7 +13948,7 @@
             "oppositeStreetId": 1185,
             "maxSpeed": "50",
             "length": 183,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1187,
@@ -11971,6 +14051,16 @@
             "width": 2
         },
         {
+            "id": 1914,
+            "startNodeId": 5199532612,
+            "endNodeId": 60029742,
+            "type": "bike",
+            "oppositeStreetId": 1198,
+            "maxSpeed": "50",
+            "length": 72,
+            "width": 6
+        },
+        {
             "id": 1197,
             "startNodeId": 5199532612,
             "endNodeId": 60029742,
@@ -11978,7 +14068,17 @@
             "oppositeStreetId": 1198,
             "maxSpeed": "50",
             "length": 72,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1915,
+            "startNodeId": 60029742,
+            "endNodeId": 5199532612,
+            "type": "bike",
+            "oppositeStreetId": 1197,
+            "maxSpeed": "50",
+            "length": 72,
+            "width": 2
         },
         {
             "id": 1198,
@@ -11988,7 +14088,17 @@
             "oppositeStreetId": 1197,
             "maxSpeed": "50",
             "length": 72,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1916,
+            "startNodeId": 60121168,
+            "endNodeId": 5199532612,
+            "type": "bike",
+            "oppositeStreetId": 1200,
+            "maxSpeed": "50",
+            "length": 46,
+            "width": 2
         },
         {
             "id": 1199,
@@ -11996,6 +14106,16 @@
             "endNodeId": 5199532612,
             "type": "mixed",
             "oppositeStreetId": 1200,
+            "maxSpeed": "50",
+            "length": 46,
+            "width": 2
+        },
+        {
+            "id": 1917,
+            "startNodeId": 5199532612,
+            "endNodeId": 60121168,
+            "type": "bike",
+            "oppositeStreetId": 1199,
             "maxSpeed": "50",
             "length": 46,
             "width": 4
@@ -12008,7 +14128,17 @@
             "oppositeStreetId": 1199,
             "maxSpeed": "50",
             "length": 46,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1918,
+            "startNodeId": 76799642,
+            "endNodeId": 60121168,
+            "type": "bike",
+            "oppositeStreetId": 1202,
+            "maxSpeed": "50",
+            "length": 115,
+            "width": 2
         },
         {
             "id": 1201,
@@ -12018,7 +14148,17 @@
             "oppositeStreetId": 1202,
             "maxSpeed": "50",
             "length": 115,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1919,
+            "startNodeId": 60121168,
+            "endNodeId": 76799642,
+            "type": "bike",
+            "oppositeStreetId": 1201,
+            "maxSpeed": "50",
+            "length": 115,
+            "width": 2
         },
         {
             "id": 1202,
@@ -12028,7 +14168,7 @@
             "oppositeStreetId": 1201,
             "maxSpeed": "50",
             "length": 115,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1203,
@@ -12071,6 +14211,16 @@
             "width": 2
         },
         {
+            "id": 1920,
+            "startNodeId": 27513127,
+            "endNodeId": 107157148,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 29,
+            "width": 2
+        },
+        {
             "id": 1207,
             "startNodeId": 27513127,
             "endNodeId": 107157148,
@@ -12078,7 +14228,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 29,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1208,
@@ -12121,6 +14271,16 @@
             "width": 2
         },
         {
+            "id": 1921,
+            "startNodeId": 107157148,
+            "endNodeId": 108187162,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 130,
+            "width": 2
+        },
+        {
             "id": 1212,
             "startNodeId": 107157148,
             "endNodeId": 108187162,
@@ -12128,7 +14288,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 130,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1213,
@@ -12311,6 +14471,16 @@
             "width": 4
         },
         {
+            "id": 1922,
+            "startNodeId": 1447856215,
+            "endNodeId": 103034540,
+            "type": "bike",
+            "oppositeStreetId": 1232,
+            "maxSpeed": "50",
+            "length": 12,
+            "width": 2
+        },
+        {
             "id": 1231,
             "startNodeId": 1447856215,
             "endNodeId": 103034540,
@@ -12318,7 +14488,17 @@
             "oppositeStreetId": 1232,
             "maxSpeed": "50",
             "length": 12,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1923,
+            "startNodeId": 103034540,
+            "endNodeId": 1447856215,
+            "type": "bike",
+            "oppositeStreetId": 1231,
+            "maxSpeed": "50",
+            "length": 12,
+            "width": 2
         },
         {
             "id": 1232,
@@ -12328,7 +14508,17 @@
             "oppositeStreetId": 1231,
             "maxSpeed": "50",
             "length": 12,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1924,
+            "startNodeId": 103034540,
+            "endNodeId": 102283214,
+            "type": "bike",
+            "oppositeStreetId": 1234,
+            "maxSpeed": "50",
+            "length": 31,
+            "width": 2
         },
         {
             "id": 1233,
@@ -12338,7 +14528,17 @@
             "oppositeStreetId": 1234,
             "maxSpeed": "50",
             "length": 31,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1925,
+            "startNodeId": 102283214,
+            "endNodeId": 103034540,
+            "type": "bike",
+            "oppositeStreetId": 1233,
+            "maxSpeed": "50",
+            "length": 31,
+            "width": 2
         },
         {
             "id": 1234,
@@ -12348,7 +14548,17 @@
             "oppositeStreetId": 1233,
             "maxSpeed": "50",
             "length": 31,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1926,
+            "startNodeId": 102283214,
+            "endNodeId": 5277479180,
+            "type": "bike",
+            "oppositeStreetId": 1236,
+            "maxSpeed": "50",
+            "length": 178,
+            "width": 2
         },
         {
             "id": 1235,
@@ -12358,7 +14568,17 @@
             "oppositeStreetId": 1236,
             "maxSpeed": "50",
             "length": 178,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1927,
+            "startNodeId": 5277479180,
+            "endNodeId": 102283214,
+            "type": "bike",
+            "oppositeStreetId": 1235,
+            "maxSpeed": "50",
+            "length": 178,
+            "width": 2
         },
         {
             "id": 1236,
@@ -12368,7 +14588,7 @@
             "oppositeStreetId": 1235,
             "maxSpeed": "50",
             "length": 178,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1237,
@@ -12431,6 +14651,16 @@
             "width": 2
         },
         {
+            "id": 1928,
+            "startNodeId": 92572026,
+            "endNodeId": 336354263,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 99,
+            "width": 2
+        },
+        {
             "id": 1243,
             "startNodeId": 92572026,
             "endNodeId": 336354263,
@@ -12438,6 +14668,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 99,
+            "width": 2
+        },
+        {
+            "id": 1929,
+            "startNodeId": 3195889308,
+            "endNodeId": 385184791,
+            "type": "bike",
+            "oppositeStreetId": 1245,
+            "maxSpeed": "50",
+            "length": 26,
             "width": 4
         },
         {
@@ -12446,6 +14686,16 @@
             "endNodeId": 385184791,
             "type": "mixed",
             "oppositeStreetId": 1245,
+            "maxSpeed": "50",
+            "length": 26,
+            "width": 4
+        },
+        {
+            "id": 1930,
+            "startNodeId": 385184791,
+            "endNodeId": 3195889308,
+            "type": "bike",
+            "oppositeStreetId": 1244,
             "maxSpeed": "50",
             "length": 26,
             "width": 6
@@ -12458,7 +14708,17 @@
             "oppositeStreetId": 1244,
             "maxSpeed": "50",
             "length": 26,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1931,
+            "startNodeId": 4927009097,
+            "endNodeId": 2449072202,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 9,
+            "width": 6
         },
         {
             "id": 1246,
@@ -12468,7 +14728,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 9,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1932,
+            "startNodeId": 130231438,
+            "endNodeId": 27513449,
+            "type": "bike",
+            "oppositeStreetId": 1248,
+            "maxSpeed": "50",
+            "length": 87,
+            "width": 4
         },
         {
             "id": 1247,
@@ -12478,7 +14748,17 @@
             "oppositeStreetId": 1248,
             "maxSpeed": "50",
             "length": 87,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1933,
+            "startNodeId": 27513449,
+            "endNodeId": 130231438,
+            "type": "bike",
+            "oppositeStreetId": 1247,
+            "maxSpeed": "50",
+            "length": 87,
+            "width": 4
         },
         {
             "id": 1248,
@@ -12488,7 +14768,7 @@
             "oppositeStreetId": 1247,
             "maxSpeed": "50",
             "length": 87,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1249,
@@ -12571,6 +14851,16 @@
             "width": 2
         },
         {
+            "id": 1934,
+            "startNodeId": 661039979,
+            "endNodeId": 524847716,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 320,
+            "width": 4
+        },
+        {
             "id": 1257,
             "startNodeId": 661039979,
             "endNodeId": 524847716,
@@ -12578,7 +14868,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 320,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1258,
@@ -12621,6 +14911,16 @@
             "width": 2
         },
         {
+            "id": 1935,
+            "startNodeId": 5380840427,
+            "endNodeId": 92569650,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 115,
+            "width": 2
+        },
+        {
             "id": 1262,
             "startNodeId": 5380840427,
             "endNodeId": 92569650,
@@ -12628,7 +14928,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 115,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1936,
+            "startNodeId": 92569650,
+            "endNodeId": 823353519,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 11,
+            "width": 2
         },
         {
             "id": 1263,
@@ -12638,6 +14948,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 11,
+            "width": 2
+        },
+        {
+            "id": 1937,
+            "startNodeId": 823353519,
+            "endNodeId": 1563023901,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 54,
             "width": 4
         },
         {
@@ -12648,7 +14968,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 54,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1265,
@@ -12731,6 +15051,16 @@
             "width": 2
         },
         {
+            "id": 1938,
+            "startNodeId": 5030582277,
+            "endNodeId": 5030606704,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "30",
+            "length": 36,
+            "width": 2
+        },
+        {
             "id": 1273,
             "startNodeId": 5030582277,
             "endNodeId": 5030606704,
@@ -12738,6 +15068,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "30",
             "length": 36,
+            "width": 2
+        },
+        {
+            "id": 1939,
+            "startNodeId": 5030606701,
+            "endNodeId": 5030606703,
+            "type": "bike",
+            "oppositeStreetId": 1275,
+            "maxSpeed": "50",
+            "length": 120,
             "width": 4
         },
         {
@@ -12748,7 +15088,17 @@
             "oppositeStreetId": 1275,
             "maxSpeed": "50",
             "length": 120,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1940,
+            "startNodeId": 5030606703,
+            "endNodeId": 5030606701,
+            "type": "bike",
+            "oppositeStreetId": 1274,
+            "maxSpeed": "50",
+            "length": 120,
+            "width": 4
         },
         {
             "id": 1275,
@@ -12758,7 +15108,7 @@
             "oppositeStreetId": 1274,
             "maxSpeed": "50",
             "length": 120,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1276,
@@ -12991,6 +15341,16 @@
             "width": 2
         },
         {
+            "id": 1941,
+            "startNodeId": 4087711127,
+            "endNodeId": 3364638962,
+            "type": "bike",
+            "oppositeStreetId": 1300,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 4
+        },
+        {
             "id": 1299,
             "startNodeId": 4087711127,
             "endNodeId": 3364638962,
@@ -12998,7 +15358,17 @@
             "oppositeStreetId": 1300,
             "maxSpeed": "50",
             "length": 40,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1942,
+            "startNodeId": 3364638962,
+            "endNodeId": 4087711127,
+            "type": "bike",
+            "oppositeStreetId": 1299,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 2
         },
         {
             "id": 1300,
@@ -13008,7 +15378,7 @@
             "oppositeStreetId": 1299,
             "maxSpeed": "50",
             "length": 40,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1301,
@@ -13791,11 +16161,31 @@
             "width": 2
         },
         {
+            "id": 1943,
+            "startNodeId": 27513449,
+            "endNodeId": 130231965,
+            "type": "bike",
+            "oppositeStreetId": 1380,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 4
+        },
+        {
             "id": 1379,
             "startNodeId": 27513449,
             "endNodeId": 130231965,
             "type": "mixed",
             "oppositeStreetId": 1380,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 4
+        },
+        {
+            "id": 1944,
+            "startNodeId": 130231965,
+            "endNodeId": 27513449,
+            "type": "bike",
+            "oppositeStreetId": 1379,
             "maxSpeed": "50",
             "length": 40,
             "width": 6
@@ -13808,7 +16198,7 @@
             "oppositeStreetId": 1379,
             "maxSpeed": "50",
             "length": 40,
-            "width": 8
+            "width": 6
         },
         {
             "id": 1381,
@@ -13891,6 +16281,16 @@
             "width": 2
         },
         {
+            "id": 1945,
+            "startNodeId": 5452266652,
+            "endNodeId": 108184579,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 35,
+            "width": 6
+        },
+        {
             "id": 1389,
             "startNodeId": 5452266652,
             "endNodeId": 108184579,
@@ -13898,7 +16298,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 35,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1946,
+            "startNodeId": 27513173,
+            "endNodeId": 107136367,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 39,
+            "width": 4
         },
         {
             "id": 1390,
@@ -13908,7 +16318,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 39,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1947,
+            "startNodeId": 107136367,
+            "endNodeId": 5456938041,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 73,
+            "width": 4
         },
         {
             "id": 1391,
@@ -13918,7 +16338,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 73,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1392,
@@ -13941,6 +16361,16 @@
             "width": 2
         },
         {
+            "id": 1948,
+            "startNodeId": 27513099,
+            "endNodeId": 109413689,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 30,
+            "width": 4
+        },
+        {
             "id": 1394,
             "startNodeId": 27513099,
             "endNodeId": 109413689,
@@ -13948,7 +16378,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 30,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1949,
+            "startNodeId": 109413689,
+            "endNodeId": 93007134,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 12,
+            "width": 4
         },
         {
             "id": 1395,
@@ -13958,7 +16398,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 12,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1950,
+            "startNodeId": 93000923,
+            "endNodeId": 1037798804,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 88,
+            "width": 4
         },
         {
             "id": 1396,
@@ -13968,6 +16418,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 88,
+            "width": 4
+        },
+        {
+            "id": 1951,
+            "startNodeId": 27513103,
+            "endNodeId": 27513102,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 17,
             "width": 6
         },
         {
@@ -13978,7 +16438,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 17,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1952,
+            "startNodeId": 130238561,
+            "endNodeId": 30841396,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 201,
+            "width": 4
         },
         {
             "id": 1398,
@@ -13988,7 +16458,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 201,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1399,
@@ -14091,6 +16561,16 @@
             "width": 2
         },
         {
+            "id": 1953,
+            "startNodeId": 27513088,
+            "endNodeId": 5452266652,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 74,
+            "width": 4
+        },
+        {
             "id": 1409,
             "startNodeId": 27513088,
             "endNodeId": 5452266652,
@@ -14098,6 +16578,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 74,
+            "width": 4
+        },
+        {
+            "id": 1954,
+            "startNodeId": 108185099,
+            "endNodeId": 27513173,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 40,
             "width": 6
         },
         {
@@ -14108,7 +16598,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 40,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1955,
+            "startNodeId": 108184579,
+            "endNodeId": 108185099,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 110,
+            "width": 4
         },
         {
             "id": 1411,
@@ -14118,7 +16618,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 110,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1412,
@@ -14531,6 +17031,16 @@
             "width": 2
         },
         {
+            "id": 1956,
+            "startNodeId": 5030606703,
+            "endNodeId": 5030606704,
+            "type": "bike",
+            "oppositeStreetId": 1454,
+            "maxSpeed": "50",
+            "length": 78,
+            "width": 4
+        },
+        {
             "id": 1453,
             "startNodeId": 5030606703,
             "endNodeId": 5030606704,
@@ -14538,7 +17048,17 @@
             "oppositeStreetId": 1454,
             "maxSpeed": "50",
             "length": 78,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1957,
+            "startNodeId": 5030606704,
+            "endNodeId": 5030606703,
+            "type": "bike",
+            "oppositeStreetId": 1453,
+            "maxSpeed": "50",
+            "length": 78,
+            "width": 4
         },
         {
             "id": 1454,
@@ -14548,7 +17068,7 @@
             "oppositeStreetId": 1453,
             "maxSpeed": "50",
             "length": 78,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1455,
@@ -14811,6 +17331,16 @@
             "width": 2
         },
         {
+            "id": 1958,
+            "startNodeId": 5030582292,
+            "endNodeId": 5109499510,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 48,
+            "width": 2
+        },
+        {
             "id": 1481,
             "startNodeId": 5030582292,
             "endNodeId": 5109499510,
@@ -14818,6 +17348,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 48,
+            "width": 2
+        },
+        {
+            "id": 1959,
+            "startNodeId": 5109501326,
+            "endNodeId": 5109499510,
+            "type": "bike",
+            "oppositeStreetId": 1483,
+            "maxSpeed": "50",
+            "length": 136,
             "width": 4
         },
         {
@@ -14828,7 +17368,17 @@
             "oppositeStreetId": 1483,
             "maxSpeed": "50",
             "length": 136,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1960,
+            "startNodeId": 5109499510,
+            "endNodeId": 5109501326,
+            "type": "bike",
+            "oppositeStreetId": 1482,
+            "maxSpeed": "50",
+            "length": 136,
+            "width": 4
         },
         {
             "id": 1483,
@@ -14838,7 +17388,7 @@
             "oppositeStreetId": 1482,
             "maxSpeed": "50",
             "length": 136,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1484,
@@ -14971,6 +17521,16 @@
             "width": 2
         },
         {
+            "id": 1961,
+            "startNodeId": 5475454423,
+            "endNodeId": 30841368,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 91,
+            "width": 4
+        },
+        {
             "id": 1497,
             "startNodeId": 5475454423,
             "endNodeId": 30841368,
@@ -14978,7 +17538,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 91,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1498,
@@ -15001,6 +17561,16 @@
             "width": 2
         },
         {
+            "id": 1962,
+            "startNodeId": 1287709980,
+            "endNodeId": 641815104,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 76,
+            "width": 2
+        },
+        {
             "id": 1500,
             "startNodeId": 1287709980,
             "endNodeId": 641815104,
@@ -15008,7 +17578,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 76,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 1963,
+            "startNodeId": 5497666229,
+            "endNodeId": 641815109,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 71,
+            "width": 2
         },
         {
             "id": 1501,
@@ -15018,7 +17598,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 71,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1502,
@@ -15041,6 +17621,16 @@
             "width": 2
         },
         {
+            "id": 1964,
+            "startNodeId": 101724973,
+            "endNodeId": 1804780626,
+            "type": "bike",
+            "oppositeStreetId": 1505,
+            "maxSpeed": "50",
+            "length": 73,
+            "width": 4
+        },
+        {
             "id": 1504,
             "startNodeId": 101724973,
             "endNodeId": 1804780626,
@@ -15048,7 +17638,17 @@
             "oppositeStreetId": 1505,
             "maxSpeed": "50",
             "length": 73,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1965,
+            "startNodeId": 1804780626,
+            "endNodeId": 101724973,
+            "type": "bike",
+            "oppositeStreetId": 1504,
+            "maxSpeed": "50",
+            "length": 73,
+            "width": 2
         },
         {
             "id": 1505,
@@ -15058,6 +17658,16 @@
             "oppositeStreetId": 1504,
             "maxSpeed": "50",
             "length": 73,
+            "width": 2
+        },
+        {
+            "id": 1966,
+            "startNodeId": 5520455432,
+            "endNodeId": 109458983,
+            "type": "bike",
+            "oppositeStreetId": 1507,
+            "maxSpeed": "50",
+            "length": 29,
             "width": 4
         },
         {
@@ -15068,7 +17678,17 @@
             "oppositeStreetId": 1507,
             "maxSpeed": "50",
             "length": 29,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1967,
+            "startNodeId": 109458983,
+            "endNodeId": 5520455432,
+            "type": "bike",
+            "oppositeStreetId": 1506,
+            "maxSpeed": "50",
+            "length": 29,
+            "width": 2
         },
         {
             "id": 1507,
@@ -15078,6 +17698,16 @@
             "oppositeStreetId": 1506,
             "maxSpeed": "50",
             "length": 29,
+            "width": 2
+        },
+        {
+            "id": 1968,
+            "startNodeId": 109458983,
+            "endNodeId": 80028293,
+            "type": "bike",
+            "oppositeStreetId": 1509,
+            "maxSpeed": "50",
+            "length": 37,
             "width": 4
         },
         {
@@ -15088,7 +17718,17 @@
             "oppositeStreetId": 1509,
             "maxSpeed": "50",
             "length": 37,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1969,
+            "startNodeId": 80028293,
+            "endNodeId": 109458983,
+            "type": "bike",
+            "oppositeStreetId": 1508,
+            "maxSpeed": "50",
+            "length": 37,
+            "width": 2
         },
         {
             "id": 1509,
@@ -15098,7 +17738,7 @@
             "oppositeStreetId": 1508,
             "maxSpeed": "50",
             "length": 37,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1510,
@@ -15601,6 +18241,16 @@
             "width": 2
         },
         {
+            "id": 1970,
+            "startNodeId": 5456938041,
+            "endNodeId": 94913630,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 83,
+            "width": 4
+        },
+        {
             "id": 1560,
             "startNodeId": 5456938041,
             "endNodeId": 94913630,
@@ -15608,7 +18258,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 83,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1971,
+            "startNodeId": 1333939398,
+            "endNodeId": 5705189445,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 19,
+            "width": 4
         },
         {
             "id": 1561,
@@ -15618,6 +18278,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 19,
+            "width": 4
+        },
+        {
+            "id": 1972,
+            "startNodeId": 5705189444,
+            "endNodeId": 27513302,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 62,
             "width": 6
         },
         {
@@ -15628,7 +18298,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 62,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1973,
+            "startNodeId": 1333939366,
+            "endNodeId": 2171917796,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 69,
+            "width": 4
         },
         {
             "id": 1563,
@@ -15638,7 +18318,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 69,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1974,
+            "startNodeId": 1333939291,
+            "endNodeId": 1333939366,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 50,
+            "width": 4
         },
         {
             "id": 1564,
@@ -15648,7 +18338,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 50,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1975,
+            "startNodeId": 2171058571,
+            "endNodeId": 4172887120,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 7,
+            "width": 4
         },
         {
             "id": 1565,
@@ -15658,7 +18358,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 7,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1976,
+            "startNodeId": 2171455771,
+            "endNodeId": 5730142750,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 41,
+            "width": 4
         },
         {
             "id": 1566,
@@ -15668,6 +18378,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 41,
+            "width": 4
+        },
+        {
+            "id": 1977,
+            "startNodeId": 5730142751,
+            "endNodeId": 2171455771,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 45,
             "width": 6
         },
         {
@@ -15678,7 +18398,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 45,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1978,
+            "startNodeId": 5130512994,
+            "endNodeId": 292156236,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 37,
+            "width": 6
         },
         {
             "id": 1568,
@@ -15688,7 +18418,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 37,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1979,
+            "startNodeId": 92581716,
+            "endNodeId": 416006615,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 216,
+            "width": 4
         },
         {
             "id": 1569,
@@ -15698,7 +18438,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 216,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1980,
+            "startNodeId": 416006615,
+            "endNodeId": 5730142751,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 32,
+            "width": 4
         },
         {
             "id": 1570,
@@ -15708,7 +18458,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 32,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1571,
@@ -15761,6 +18511,16 @@
             "width": 2
         },
         {
+            "id": 1981,
+            "startNodeId": 5730142750,
+            "endNodeId": 5130512994,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 56,
+            "width": 6
+        },
+        {
             "id": 1576,
             "startNodeId": 5730142750,
             "endNodeId": 5130512994,
@@ -15768,7 +18528,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 56,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1982,
+            "startNodeId": 292156236,
+            "endNodeId": 318317706,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 16,
+            "width": 4
         },
         {
             "id": 1577,
@@ -15778,7 +18548,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 16,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1983,
+            "startNodeId": 27513098,
+            "endNodeId": 93000923,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 40,
+            "width": 4
         },
         {
             "id": 1578,
@@ -15788,7 +18568,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 40,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1984,
+            "startNodeId": 655151829,
+            "endNodeId": 93007132,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 29,
+            "width": 2
         },
         {
             "id": 1579,
@@ -15798,6 +18588,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 29,
+            "width": 2
+        },
+        {
+            "id": 1985,
+            "startNodeId": 27513097,
+            "endNodeId": 347331572,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 59,
             "width": 4
         },
         {
@@ -15808,7 +18608,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 59,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 1986,
+            "startNodeId": 347331572,
+            "endNodeId": 27513098,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 180,
+            "width": 4
         },
         {
             "id": 1581,
@@ -15818,6 +18628,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 180,
+            "width": 4
+        },
+        {
+            "id": 1987,
+            "startNodeId": 5898719285,
+            "endNodeId": 107141571,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 53,
             "width": 6
         },
         {
@@ -15828,7 +18648,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 53,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1988,
+            "startNodeId": 93007125,
+            "endNodeId": 5898719420,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 5,
+            "width": 2
         },
         {
             "id": 1583,
@@ -15838,7 +18668,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 5,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1584,
@@ -15921,6 +18751,16 @@
             "width": 2
         },
         {
+            "id": 1989,
+            "startNodeId": 1804780626,
+            "endNodeId": 80028293,
+            "type": "bike",
+            "oppositeStreetId": 1593,
+            "maxSpeed": "50",
+            "length": 50,
+            "width": 6
+        },
+        {
             "id": 1592,
             "startNodeId": 1804780626,
             "endNodeId": 80028293,
@@ -15928,7 +18768,17 @@
             "oppositeStreetId": 1593,
             "maxSpeed": "50",
             "length": 50,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1990,
+            "startNodeId": 80028293,
+            "endNodeId": 1804780626,
+            "type": "bike",
+            "oppositeStreetId": 1592,
+            "maxSpeed": "50",
+            "length": 50,
+            "width": 2
         },
         {
             "id": 1593,
@@ -15938,6 +18788,16 @@
             "oppositeStreetId": 1592,
             "maxSpeed": "50",
             "length": 50,
+            "width": 2
+        },
+        {
+            "id": 1991,
+            "startNodeId": 318317706,
+            "endNodeId": 5820114966,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "60",
+            "length": 10,
             "width": 4
         },
         {
@@ -15948,6 +18808,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "60",
             "length": 10,
+            "width": 4
+        },
+        {
+            "id": 1992,
+            "startNodeId": 5602105393,
+            "endNodeId": 92581145,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 11,
             "width": 6
         },
         {
@@ -15958,7 +18828,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 11,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1993,
+            "startNodeId": 3931072676,
+            "endNodeId": 5109501326,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 59,
+            "width": 2
         },
         {
             "id": 1596,
@@ -15968,6 +18848,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 59,
+            "width": 2
+        },
+        {
+            "id": 1994,
+            "startNodeId": 1563023901,
+            "endNodeId": 336338500,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 15,
             "width": 4
         },
         {
@@ -15978,7 +18868,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 15,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1598,
@@ -16001,6 +18891,16 @@
             "width": 4
         },
         {
+            "id": 1995,
+            "startNodeId": 7079892972,
+            "endNodeId": 7079892980,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 21,
+            "width": 4
+        },
+        {
             "id": 1600,
             "startNodeId": 7079892972,
             "endNodeId": 7079892980,
@@ -16008,6 +18908,16 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 21,
+            "width": 4
+        },
+        {
+            "id": 1996,
+            "startNodeId": 7079892960,
+            "endNodeId": 110276889,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 17,
             "width": 6
         },
         {
@@ -16018,7 +18928,17 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 17,
-            "width": 8
+            "width": 6
+        },
+        {
+            "id": 1997,
+            "startNodeId": 110276889,
+            "endNodeId": 5100506946,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 30,
+            "width": 6
         },
         {
             "id": 1602,
@@ -16028,7 +18948,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 30,
-            "width": 8
+            "width": 6
         },
         {
             "id": 1603,
@@ -16061,6 +18981,16 @@
             "width": 2
         },
         {
+            "id": 1998,
+            "startNodeId": 5198912086,
+            "endNodeId": 5100506952,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 52,
+            "width": 6
+        },
+        {
             "id": 1606,
             "startNodeId": 5198912086,
             "endNodeId": 5100506952,
@@ -16068,7 +18998,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 52,
-            "width": 8
+            "width": 6
         },
         {
             "id": 1607,
@@ -16191,11 +19121,31 @@
             "width": 2
         },
         {
+            "id": 1999,
+            "startNodeId": 3195889307,
+            "endNodeId": 3195889308,
+            "type": "bike",
+            "oppositeStreetId": 1620,
+            "maxSpeed": "50",
+            "length": 18,
+            "width": 4
+        },
+        {
             "id": 1619,
             "startNodeId": 3195889307,
             "endNodeId": 3195889308,
             "type": "mixed",
             "oppositeStreetId": 1620,
+            "maxSpeed": "50",
+            "length": 18,
+            "width": 4
+        },
+        {
+            "id": 2000,
+            "startNodeId": 3195889308,
+            "endNodeId": 3195889307,
+            "type": "bike",
+            "oppositeStreetId": 1619,
             "maxSpeed": "50",
             "length": 18,
             "width": 6
@@ -16208,7 +19158,7 @@
             "oppositeStreetId": 1619,
             "maxSpeed": "50",
             "length": 18,
-            "width": 8
+            "width": 6
         },
         {
             "id": 1621,
@@ -16261,6 +19211,16 @@
             "width": 2
         },
         {
+            "id": 2001,
+            "startNodeId": 5030606651,
+            "endNodeId": 5030582278,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "30",
+            "length": 16,
+            "width": 2
+        },
+        {
             "id": 1626,
             "startNodeId": 5030606651,
             "endNodeId": 5030582278,
@@ -16268,7 +19228,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "30",
             "length": 16,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1627,
@@ -16341,6 +19301,16 @@
             "width": 2
         },
         {
+            "id": 2002,
+            "startNodeId": 8205271344,
+            "endNodeId": 292142091,
+            "type": "bike",
+            "oppositeStreetId": 1635,
+            "maxSpeed": "50",
+            "length": 52,
+            "width": 4
+        },
+        {
             "id": 1634,
             "startNodeId": 8205271344,
             "endNodeId": 292142091,
@@ -16348,7 +19318,17 @@
             "oppositeStreetId": 1635,
             "maxSpeed": "50",
             "length": 52,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 2003,
+            "startNodeId": 292142091,
+            "endNodeId": 8205271344,
+            "type": "bike",
+            "oppositeStreetId": 1634,
+            "maxSpeed": "50",
+            "length": 52,
+            "width": 4
         },
         {
             "id": 1635,
@@ -16358,7 +19338,7 @@
             "oppositeStreetId": 1634,
             "maxSpeed": "50",
             "length": 52,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1636,
@@ -16501,6 +19481,16 @@
             "width": 2
         },
         {
+            "id": 2004,
+            "startNodeId": 359625546,
+            "endNodeId": 524736771,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 44,
+            "width": 2
+        },
+        {
             "id": 1650,
             "startNodeId": 359625546,
             "endNodeId": 524736771,
@@ -16508,7 +19498,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 44,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1651,
@@ -16571,6 +19561,16 @@
             "width": 4
         },
         {
+            "id": 2005,
+            "startNodeId": 8956973294,
+            "endNodeId": 27493150,
+            "type": "bike",
+            "oppositeStreetId": 1658,
+            "maxSpeed": "50",
+            "length": 24,
+            "width": 4
+        },
+        {
             "id": 1657,
             "startNodeId": 8956973294,
             "endNodeId": 27493150,
@@ -16578,7 +19578,17 @@
             "oppositeStreetId": 1658,
             "maxSpeed": "50",
             "length": 24,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 2006,
+            "startNodeId": 27493150,
+            "endNodeId": 8956973294,
+            "type": "bike",
+            "oppositeStreetId": 1657,
+            "maxSpeed": "50",
+            "length": 24,
+            "width": 2
         },
         {
             "id": 1658,
@@ -16588,7 +19598,17 @@
             "oppositeStreetId": 1657,
             "maxSpeed": "50",
             "length": 24,
-            "width": 4
+            "width": 2
+        },
+        {
+            "id": 2007,
+            "startNodeId": 1850813818,
+            "endNodeId": 1850813814,
+            "type": "bike",
+            "oppositeStreetId": -1,
+            "maxSpeed": "50",
+            "length": 19,
+            "width": 2
         },
         {
             "id": 1659,
@@ -16598,7 +19618,7 @@
             "oppositeStreetId": -1,
             "maxSpeed": "50",
             "length": 19,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1660,
@@ -16781,6 +19801,16 @@
             "width": 2
         },
         {
+            "id": 2008,
+            "startNodeId": 9246568041,
+            "endNodeId": 94912689,
+            "type": "bike",
+            "oppositeStreetId": 1679,
+            "maxSpeed": "50",
+            "length": 28,
+            "width": 4
+        },
+        {
             "id": 1678,
             "startNodeId": 9246568041,
             "endNodeId": 94912689,
@@ -16788,7 +19818,17 @@
             "oppositeStreetId": 1679,
             "maxSpeed": "50",
             "length": 28,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 2009,
+            "startNodeId": 94912689,
+            "endNodeId": 9246568041,
+            "type": "bike",
+            "oppositeStreetId": 1678,
+            "maxSpeed": "50",
+            "length": 28,
+            "width": 4
         },
         {
             "id": 1679,
@@ -16798,7 +19838,17 @@
             "oppositeStreetId": 1678,
             "maxSpeed": "50",
             "length": 28,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 2010,
+            "startNodeId": 94912689,
+            "endNodeId": 8205271344,
+            "type": "bike",
+            "oppositeStreetId": 1681,
+            "maxSpeed": "50",
+            "length": 13,
+            "width": 4
         },
         {
             "id": 1680,
@@ -16808,7 +19858,17 @@
             "oppositeStreetId": 1681,
             "maxSpeed": "50",
             "length": 13,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 2011,
+            "startNodeId": 8205271344,
+            "endNodeId": 94912689,
+            "type": "bike",
+            "oppositeStreetId": 1680,
+            "maxSpeed": "50",
+            "length": 13,
+            "width": 4
         },
         {
             "id": 1681,
@@ -16818,7 +19878,7 @@
             "oppositeStreetId": 1680,
             "maxSpeed": "50",
             "length": 13,
-            "width": 6
+            "width": 4
         },
         {
             "id": 1682,
@@ -16961,6 +20021,16 @@
             "width": 2
         },
         {
+            "id": 2012,
+            "startNodeId": 292142095,
+            "endNodeId": 292142101,
+            "type": "bike",
+            "oppositeStreetId": 1697,
+            "maxSpeed": "50",
+            "length": 24,
+            "width": 4
+        },
+        {
             "id": 1696,
             "startNodeId": 292142095,
             "endNodeId": 292142101,
@@ -16968,7 +20038,17 @@
             "oppositeStreetId": 1697,
             "maxSpeed": "50",
             "length": 24,
-            "width": 6
+            "width": 4
+        },
+        {
+            "id": 2013,
+            "startNodeId": 292142101,
+            "endNodeId": 292142095,
+            "type": "bike",
+            "oppositeStreetId": 1696,
+            "maxSpeed": "50",
+            "length": 24,
+            "width": 2
         },
         {
             "id": 1697,
@@ -16978,7 +20058,7 @@
             "oppositeStreetId": 1696,
             "maxSpeed": "50",
             "length": 24,
-            "width": 4
+            "width": 2
         },
         {
             "id": 1698,
