@@ -229,24 +229,30 @@ class Intersection {
     /**
      * Starts the drag of the intersection
      * @param {string} type The type of the grab point. (Not used for intersections. Only for roads.)
+     * @param {Map} map The map where the intersection is on
      * @returns {Intersection} Self Reference for chaining
      */
-    startDrag(type) {
-        $(document).on('mousemove', '', {intersection: this}, function (event) { // When the mouse moves
+    startDrag(type, map) {
+        let data = { // The data to pass to the drag function
+            intersection: this,
+            map: map
+        };
+        $(document).on('mousemove', '', data, function (event) { // When the mouse moves
             event.preventDefault(); // Prevent the default action
             let intersection = event.data.intersection; // Get the intersection from the event data
 
-            let x = snap(event.pageX, getConfig('grid_size')); // Get the x position of the mouse
-            let y = snap(event.pageY, getConfig('grid_size')); // Get the y position of the mouse
+            let x = snap(event.pageX + $(document.body).scrollLeft(), getConfig('grid_size')); // Get the x position of the mouse
+            let y = snap(event.pageY + $(document.body).scrollTop(), getConfig('grid_size')); // Get the y position of the mouse
 
             if (intersection._position.x !== x || intersection._position.y !== y) { // If the position has changed
+                event.data.map.checkNewSize(intersection._position); // Update the size of the map
                 intersection._position.x = x; // Set the start x position
                 intersection._position.y = y; // Set the start y position
                 intersection.updatePosition().updateGrabPointAndSnapPoints(); // Update the position and grab points
             }
         });
 
-        $(document).on('mouseup', '', {intersection: this}, function (event) { // When the mouse is released
+        $(document).on('mouseup', '', data, function (event) { // When the mouse is released
             event.preventDefault(); // Prevent the default action
             let intersection = event.data.intersection; // Get the intersection from the event data
 
@@ -254,6 +260,7 @@ class Intersection {
 
             $(document.body).removeClass('grabbing'); // Change the cursor back to the default
             $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+            map.recheckSize(); // Recheck the size of the map
         });
 
         return this;
@@ -261,7 +268,7 @@ class Intersection {
 
     /**
      * Gets all the connected roads in an array
-     * @returns {Array} The connected roads
+     * @returns {Array.<Road>} The connected roads
      */
     getLinkedRoads() {
         let roads = []; // The array of roads
@@ -345,5 +352,11 @@ class Intersection {
         }
 
         return data;
+    }
+
+    rename(name) {
+        this._id = name;
+        this._self.attr('id', name);
+        return this;
     }
 }
