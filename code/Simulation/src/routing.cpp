@@ -2,13 +2,14 @@
 #include "routing.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 // Idea: If a road has multiple turning lanes, split a crossing into sets of identical turn options and split the single
 // Crossing vertex into multiple vertecies representing the crossing with each new vertex only containing roads with
 // identical turning sets.
 
 // Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
-SPT calculateShortestPathTree(const world_t* world) {
+SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes> include) {
 	const size_t n = world->crossings.size();
 
 	std::map<std::string, std::map<std::string, float>> minimumDistance;
@@ -19,8 +20,10 @@ SPT calculateShortestPathTree(const world_t* world) {
 	}
 
 	for (const auto& street : world->streets) {
-		minimumDistance[street.start][street.end] = street.length;
-		spt[street.start][street.end] = street.end;
+		if (std::find(include.begin(), include.end(), street.type) != include.end()) {
+			minimumDistance[street.start][street.end] = street.length;
+			spt[street.start][street.end] = street.end;
+		}
 	}
 
 	for (const auto& crossing : world->crossings) {

@@ -1,12 +1,18 @@
 /*
-
-	TODO missing: Path planning must be able to differentiate between the different types of edges. (Simply do multiple SPT)
-	TODO missing: input and output is hard coded for only street types of car / both
+	TODO missing: speed limit
+	TODO rework: Cars should be input into crossings faster at the beggining
+	TODO bug: Intersections dont check if street has cars, but will still do a normal countdown for the green phase
+	TODO bug: Bikes are somehow overtaking, even though I thought i made them not...
 	TODO feature: Overtaking if opposite street is free
 	TODO inconsitest: change street width to integer
 
 	TODO rename crossings to intersections
 	TODO test if crossings switch inbound streets
+
+
+	CONSTRAINTS:
+
+
 */
 
 #include <iostream>
@@ -58,15 +64,14 @@ void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& 
 	end = endIter->first;
 }
 
-void createRandomActors(world_t& world, SPT& spt, Street& street, const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
-	float offset = street.length / (end - start);
+void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed, const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
 	int index = 1;
 	for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
 		Actor actor = {
-				.type = ActorTypes::Car,
-				.distanceToCrossing = index * offset,
+				.type = type,
+				.distanceToCrossing = 0.0f,
 				.distanceToRight = 0,
-				.speed = randint(10, 50) * 0.277778f, // 30km/h to 80km/h
+				.speed = randint(minSpeed, maxSpeed) * 0.277778f, // 30km/h to 80km/h
 				.length = 4.5f,
 				.width = 1.5f,
 				.id = std::to_string(std::rand())
@@ -85,7 +90,6 @@ void createRandomActors(world_t& world, SPT& spt, Street& street, const std::vec
 			}
 		}
 		*iter = actor;
-		// street.traffic.push_back(&(*iter));
 		index++;
 	}
 }
@@ -104,15 +108,16 @@ void stopMeasureTime() {
 int main(int argc, char* argv[]) {
 
 	if (argc < 6) {
-		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-actors> <runtime> <runtime-step-time>" << std::endl;
+		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time>" << std::endl;
 		return -1;
 	}
 
 	const char* importFile = argv[1];
 	const char* outputFile = argv[2];
-	const int randomActors = std::atoi(argv[3]);
-	const float runtime = (float)std::atof(argv[4]); // 60.0f;
-	const float deltaTime = (float)std::atof(argv[5]); // 0.25f;
+	const int randomCars = std::atoi(argv[3]);
+	const int randomBikes = std::atoi(argv[4]);
+	const float runtime = (float)std::atof(argv[5]); // 60.0f;
+	const float deltaTime = (float)std::atof(argv[6]); // 0.25f;
 
 	world_t world;
 	nlohmann::json import;
@@ -126,16 +131,18 @@ int main(int argc, char* argv[]) {
 	stopMeasureTime();
 	
 	startMeasureTime("calculating shortest path tree with floyd warshall");
-	SPT spt = calculateShortestPathTree(&world);
+	SPT carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both });
+	SPT bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
 	stopMeasureTime();
 
 
 	startMeasureTime("creating random actors");
 
-	if (randomActors > 0) {
-		world.actors = std::vector<Actor>(randomActors);
-		createRandomActors(world, spt, world.streets[0], world.actors.begin(), world.actors.end());
-	}
+	world.actors = std::vector<Actor>(randomCars + randomBikes);
+
+	createRandomActors(world, carsSPT, ActorTypes::Car, 30, 50, world.actors.begin(), world.actors.begin() + randomCars);
+	createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end());
+
 	stopMeasureTime();
 
 
