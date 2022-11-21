@@ -14,11 +14,16 @@
     --interface-hover: rgba(220, 220, 220, 1);
     --interface_width: 20rem;
     --interface-border-width: 2px;
+    --simulation-slider-background: rgba(0, 0, 0, 1);
+    --simulation-slider-thumb: rgba(200, 0, 0, 1);
+    --simulation-input-background: rgba(255, 255, 255, 1);
+    --simulation-input-border: rgba(180, 180, 180, 1);
+    --simulation-input-hover: rgba(220, 220, 220, 1);
 }
 
 html, body {
-    height: 100%;
     width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow: scroll;
@@ -36,8 +41,8 @@ body.grabbing * {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     z-index: 3;
 }
 
@@ -45,8 +50,8 @@ body.grabbing * {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     z-index: 4;
 }
 
@@ -117,8 +122,8 @@ body.grabbing * {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     z-index: 2;
 }
 
@@ -140,16 +145,16 @@ body.grabbing * {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
 }
 
 .snappoints {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
 
 }
 
@@ -162,7 +167,7 @@ body.grabbing * {
     position: absolute;
     transform: translate(-5px, -5px);
     cursor: grab;
-    z-index: 5;
+    z-index: 9;
 }
 
 .grabbed {
@@ -177,8 +182,7 @@ body.grabbing * {
     height: 50px;
     position: absolute;
     transform: translate(-25px, -25px);
-    cursor: grab;
-    z-index: 6;
+    z-index: 10;
 }
 
 .interface {
@@ -306,6 +310,24 @@ body.grabbing * {
     border-bottom: none;
 }
 
+.ag {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--interface-border);
+}
+
+.ag:last-child {
+    border-bottom: none;
+}
+
+.ag input[type="number"] {
+    width: 3rem;
+    text-align: center;
+}
+
 .name {
     font-weight: bold;
 }
@@ -318,4 +340,95 @@ body.grabbing * {
     background-color: #ff3333;
     border-radius: 5px;
     color: white;
+}
+
+.agent {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.car {
+    background-image: url("../car.png");
+}
+
+.bike {
+    background-image: url("../bike.png");
+}
+
+.agents {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    z-index: 7;
+}
+
+.simulation {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 15;
+    display: flex;
+    width: 50%;
+    height: 3rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--simulation-slider-background);
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    opacity: 1;
+}
+
+.slider:disabled {
+    opacity: 0.5;
+    transition-duration: 0.2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 6px;
+    height: 20px;
+    border-radius: 3px;
+    background: var(--simulation-slider-thumb);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 6px;
+    height: 20px;
+    border-radius: 3px;
+    background: var(--simulation-slider-thumb);
+    cursor: pointer;
+}
+
+.simulation_input {
+    appearance: none;
+    opacity: 1;
+    font-size: 1rem;
+    background-color: var(--simulation-input-background);
+    border: 2px solid var(--simulation-input-border);
+    border-radius: 5px;
+    padding: 0.25rem 0.75rem;
+    margin: 0 0.5rem;
+}
+
+.simulation_input:hover {
+    background-color: var(--simulation-input-hover);
+    transition-duration: 0.2s;
+}
+
+.simulation_input:disabled {
+    opacity: 0.5;
+    transition-duration: 0.2s;
 }

@@ -24,13 +24,13 @@ class Intersection {
      * Creates a new intersection
      * @constructor
      * @param {number} id The id of the intersection
-     * @param {number} x The x coordinate of the intersection
-     * @param {number} y The y coordinate of the intersection
+     * @param {Point} point The coordinate of the intersection
      */
-    constructor(id, x, y) {
+    constructor(id, point) {
         this._id = id; // The ID of the intersection
         let grid_size = getConfig('grid_size'); // The size of the grid
-        this._position = {x: snap(x, grid_size), y: snap(y, grid_size)}; // The position of the intersection
+        point.snap(); // Snap the point to the grid
+        this._position = point; // The position of the intersection
         this._snap_points = {}; // The snap points of the intersection
 
         this.createElement().updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints();
@@ -130,30 +130,18 @@ class Intersection {
      * Gets the offset for a given direction
      * @param {string} side The side to get the offset for. Should be one of the following: north, east, south, west
      * @param {number} offset The offset to add to the position
-     * @returns {Object} The offset position
+     * @returns {Point} The offset position
      */
     getOffsetForDirection (side, offset = 0) {
         switch (side) { // Check the side
             case 'north':
-                return {
-                    x: this._position.x,
-                    y: this._position.y - this._half_size - offset
-                }
+                return new Point(this._position.x, this._position.y - this._half_size - offset);
             case 'east':
-                return {
-                    x: this._position.x + this._half_size + offset,
-                    y: this._position.y
-                }
+                return new Point(this._position.x + this._half_size + offset, this._position.y);
             case 'south':
-                return {
-                    x: this._position.x,
-                    y: this._position.y + this._half_size + offset
-                }
+                return new Point(this._position.x, this._position.y + this._half_size + offset);
             case 'west':
-                return {
-                    x: this._position.x - this._half_size - offset,
-                    y: this._position.y
-                }
+                return new Point(this._position.x - this._half_size - offset, this._position.y);
             default: // Invalid side
                 throw new Error('This direction is not supported');
         }
@@ -241,24 +229,30 @@ class Intersection {
     /**
      * Starts the drag of the intersection
      * @param {string} type The type of the grab point. (Not used for intersections. Only for roads.)
+     * @param {Map} map The map where the intersection is on
      * @returns {Intersection} Self Reference for chaining
      */
-    startDrag(type) {
-        $(document).on('mousemove', '', {intersection: this}, function (event) { // When the mouse moves
+    startDrag(type, map) {
+        let data = { // The data to pass to the drag function
+            intersection: this,
+            map: map
+        };
+        $(document).on('mousemove', '', data, function (event) { // When the mouse moves
             event.preventDefault(); // Prevent the default action
             let intersection = event.data.intersection; // Get the intersection from the event data
 
-            let x = snap(event.pageX, getConfig('grid_size')); // Get the x position of the mouse
-            let y = snap(event.pageY, getConfig('grid_size')); // Get the y position of the mouse
+            let x = snap(event.pageX + $(document.body).scrollLeft(), getConfig('grid_size')); // Get the x position of the mouse
+            let y = snap(event.pageY + $(document.body).scrollTop(), getConfig('grid_size')); // Get the y position of the mouse
 
             if (intersection._position.x !== x || intersection._position.y !== y) { // If the position has changed
+                event.data.map.checkNewSize(intersection._position); // Update the size of the map
                 intersection._position.x = x; // Set the start x position
                 intersection._position.y = y; // Set the start y position
                 intersection.updatePosition().updateGrabPointAndSnapPoints(); // Update the position and grab points
             }
         });
 
-        $(document).on('mouseup', '', {intersection: this}, function (event) { // When the mouse is released
+        $(document).on('mouseup', '', data, function (event) { // When the mouse is released
             event.preventDefault(); // Prevent the default action
             let intersection = event.data.intersection; // Get the intersection from the event data
 
@@ -266,6 +260,7 @@ class Intersection {
 
             $(document.body).removeClass('grabbing'); // Change the cursor back to the default
             $(document).off('mousemove').off('mouseup'); // Remove the mouse move and mouse up events
+            map.recheckSize(); // Recheck the size of the map
         });
 
         return this;
@@ -273,7 +268,7 @@ class Intersection {
 
     /**
      * Gets all the connected roads in an array
-     * @returns {Array} The connected roads
+     * @returns {Array.<Road>} The connected roads
      */
     getLinkedRoads() {
         let roads = []; // The array of roads
@@ -314,7 +309,7 @@ class Intersection {
     exportSaveData() {
         let data = { // The data to export
             id: this._id,
-            position: this._position,
+            position: this._position.export(),
             roads: {}
         };
 
@@ -328,5 +323,40 @@ class Intersection {
         }
 
         return data;
+    }
+
+    exportToBeSimulatedData() {
+        let data = { // The data to export
+            id: this._id,
+            roads: []
+        };
+
+        for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
+            if (this._snap_points[this._directions[i]].connected) { // Check if the snap point is connected
+                let road = this._snap_points[this._directions[i]].road
+                let forward = road.getLanesInDirection(1);
+                let backward = road.getLanesInDirection(-1);
+
+                if (!isEmpty(forward)) {
+                    data.roads.push({
+                        id: road.getId()
+                    });
+                }
+
+                if (!isEmpty(backward)) {
+                    data.roads.push({
+                        id: '!' + road.getId()
+                    });
+                }
+            }
+        }
+
+        return data;
+    }
+
+    rename(name) {
+        this._id = name;
+        this._self.attr('id', name);
+        return this;
     }
 }
