@@ -29,6 +29,7 @@ typedef struct Actor {
 
 enum StreetTypes {
 	OnlyBike,
+	OnlyCar,
 	Both
 };
 
