@@ -3,6 +3,11 @@
 
 #include <iostream>
 
+// Idea: If a road has multiple turning lanes, split a crossing into sets of identical turn options and split the single
+// Crossing vertex into multiple vertecies representing the crossing with each new vertex only containing roads with
+// identical turning sets.
+
+// Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
 SPT calculateShortestPathTree(const world_t* world) {
 	const size_t n = world->crossings.size();
 
