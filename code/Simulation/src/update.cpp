@@ -191,6 +191,7 @@ void updateCrossings(world_t* world, const float timeDelta) {
 			if (actor->path.empty()) {
 				// Actor has arrived at its target
 				street->traffic.erase(iter);
+				crossing.arrivedFrom.push_back({actor, street});
 				break;
 			}
 

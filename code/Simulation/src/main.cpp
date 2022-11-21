@@ -14,6 +14,7 @@
 #include <vector>
 #include <cstdlib>
 #include <string>
+#include <chrono>
 
 #include "actors.hpp"
 #include "routing.hpp"
@@ -65,7 +66,7 @@ void createRandomActors(world_t& world, SPT& spt, Street& street, const std::vec
 				.type = ActorTypes::Car,
 				.distanceToCrossing = index * offset,
 				.distanceToRight = 0,
-				.speed = randint(80, 220) / 10.0f, // 30km/h to 80km/h
+				.speed = randint(10, 50) * 0.277778f, // 30km/h to 80km/h
 				.length = 4.5f,
 				.width = 1.5f,
 				.id = std::to_string(std::rand())
@@ -89,35 +90,65 @@ void createRandomActors(world_t& world, SPT& spt, Street& street, const std::vec
 	}
 }
 
+std::chrono::steady_clock::time_point start;
+
+void startMeasureTime(std::string task) {
+	std::cout << "Starting task: " << task << std::endl;
+	start = std::chrono::high_resolution_clock::now();
+}
+
+void stopMeasureTime() {
+	std::cout << "Last task took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() / 1000.f << " seconds.\n\n" << std::endl;
+}
+
 int main(int argc, char* argv[]) {
 
-	if (argc < 3) {
-		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-actors>" << std::endl;
+	if (argc < 6) {
+		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-actors> <runtime> <runtime-step-time>" << std::endl;
 		return -1;
 	}
+
+	const char* importFile = argv[1];
+	const char* outputFile = argv[2];
+	const int randomActors = std::atoi(argv[3]);
+	const float runtime = (float)std::atof(argv[4]); // 60.0f;
+	const float deltaTime = (float)std::atof(argv[5]); // 0.25f;
 
 	world_t world;
 	nlohmann::json import;
 	
-	if (!loadFile(argv[1], import)) {
+	if (!loadFile(importFile, import)) {
 		return -1;
 	}
 
+	startMeasureTime("importing map");
 	importMap(world, import);
+	stopMeasureTime();
 	
+	startMeasureTime("calculating shortest path tree with floyd warshall");
 	SPT spt = calculateShortestPathTree(&world);
+	stopMeasureTime();
 
-	const int randomActors = argc >= 4 ? std::atoi(argv[3]) : 0;
+
+	startMeasureTime("creating random actors");
 
 	if (randomActors > 0) {
 		world.actors = std::vector<Actor>(randomActors);
 		createRandomActors(world, spt, world.streets[0], world.actors.begin(), world.actors.end());
 	}
+	stopMeasureTime();
 
-	const float runtime = 46.0f;
-	const float deltaTime = 0.25f;
 
 	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+
+	startMeasureTime(
+		"running simulation with\n\t" +
+		std::to_string(world.crossings.size()) + " intersections\n\t" +
+		std::to_string(world.streets.size()) + " streets\n\t" +
+		std::to_string(world.actors.size()) + " actors\n\t" +
+		std::to_string(runtime) + " seconds of runtime\n\t" +
+		std::to_string(deltaTime) + " seconds precision time step"
+	);
 
 	float maxTime = runtime; 
 	while (maxTime > 0.0f) {
@@ -126,22 +157,14 @@ int main(int argc, char* argv[]) {
 		maxTime -= deltaTime;
 
 		addFrame(world, output);
-
-		/*
-		std::cout << std::setprecision(3) << "FRAME " << runtime - maxTime << "s" << std::endl;
-		for (const auto& street : world.streets) {
-			std::cout << "Street " << street.id << std::endl;
-			for (const auto& actor : street.traffic) {
-				std::cout << std::setprecision(4) << "\tS" << actor->speed << "\tL" << actor->distanceToRight / LANE_WIDTH << "\tD" << actor->distanceToCrossing << std::endl;
-			}
-			std::cout << std::endl;
-		}
-		*/
-
 	}
+	stopMeasureTime();
 
-	save(argv[2], output);
+	startMeasureTime("saving simulation");
 
+	save(outputFile, output);
+
+	stopMeasureTime();
 
 	return 0;
 }

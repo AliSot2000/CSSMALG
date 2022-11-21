@@ -55,11 +55,12 @@ typedef struct Crossing {
 	std::string id;
 	std::vector<Street*> inbound;
 	std::map<std::string, Street*> outbound;
-	float greenPhaseDuration = 30.0f;
-	float currentPhase = 30.0f;
+	float greenPhaseDuration = 5.0f;
+	float currentPhase = 5.0f;
 	int32_t green = 0;
 
 	std::vector<Actor*> waitingToBeInserted;
+	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
 } crossing_t;
 
 typedef struct World {
