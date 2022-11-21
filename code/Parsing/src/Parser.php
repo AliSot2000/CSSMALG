@@ -6,6 +6,7 @@ class Parser
     private array $rawStreets = array();
     private array $parsedNodes = array();
     private array $parsedStreets = array();
+    private int $streetCount = 0;
 
     public function execute(): void {
         $this->readData();
@@ -56,7 +57,6 @@ class Parser
     }
 
     private function parseStreets(): void {
-        $idCounter = 0;
         $splittedRoads = array();
 
         foreach ($this->rawStreets AS $arrayId => $streetData) {
@@ -76,14 +76,14 @@ class Parser
 
             if (isset($streetData["tags"]["oneway"]) && $streetData["tags"]["oneway"] == "yes") {
                 foreach ($segments AS $segment) {
-                    $splittedRoads[$idCounter] = array("id" => $idCounter, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => -1);
-                    $idCounter++;
+                    $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => -1);
+                    $this->streetCount++;
                 }
             } else {
                 foreach ($segments as $segment) {
-                    $splittedRoads[$idCounter] = array("id" => $idCounter, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => $idCounter + 1);
-                    $splittedRoads[$idCounter + 1] = array("id" => $idCounter + 1, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["end"], "endNodeId" => $segment["start"], "oppositeStreetId" => $idCounter);
-                    $idCounter += 2;
+                    $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => $this->streetCount + 1);
+                    $splittedRoads[$this->streetCount + 1] = array("id" => $this->streetCount + 1, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["end"], "endNodeId" => $segment["start"], "oppositeStreetId" => $this->streetCount);
+                    $this->streetCount += 2;
                 }
             }
         }
@@ -116,7 +116,8 @@ class Parser
 
             // with these road types we assume wide enough roads to always overtake so we add a seperate lane for bicycles
             if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
-                $lanes += 1;
+                $this->parsedStreets[$this->streetCount] = array("id" => $this->streetCount, "startNodeId" => $data["startNodeId"], "endNodeId" => $data["endNodeId"], "type" => "bike", "oppositeStreetId" => $data["oppositeStreetId"], "maxSpeed" => $maxSpeed, "length" => $length, "width" => $lanes * 2);
+                $this->streetCount++;
             }
 
             $type = "mixed";
