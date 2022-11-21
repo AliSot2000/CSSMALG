@@ -159,7 +159,7 @@ class Simulation {
     }
 
     close() {
-        clearInterval(this._interval);
+        this.stopSimulation();
         this._self.css('display', 'none');
         this._map.simulationMode(false);
         this._map.clear();
