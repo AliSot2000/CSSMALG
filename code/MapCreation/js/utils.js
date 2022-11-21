@@ -441,3 +441,7 @@ class Point {
         return this._x === point.x && this._y === point.y && this._angle === point.angle;
     }
 }
+
+function calculatePercent(value, total) {
+    return (value / total) * 100;
+}

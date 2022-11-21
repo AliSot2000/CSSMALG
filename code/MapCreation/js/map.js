@@ -11,6 +11,7 @@ class Map {
     _roads = null;
     _intersections = null;
     _grid = null;
+    _loading = null;
     _grab_points = null;
     _snap_points = null;
     _agents = null;
@@ -32,6 +33,8 @@ class Map {
         this._intersections = {}; // Create the intersections object
         this._agents = {}; // Create the agents object
         this._grid = new Grid(50); // Create the grid object
+        this._loading = new Loading(); // Create the loading object
+
         this._grab_points = $('<div class="grabpoints"></div>');
         this._snap_points = $('<div class="snappoints"></div>');
         this._agents_wrapper = $('<div class="agents"></div>');
@@ -291,6 +294,10 @@ class Map {
             throw new Error('Invalid Save Data');
         }
 
+        let count = 0; // Initialize the count variable
+        let total = data.intersections.length + data.roads.length + (with_agents ? data.agents.length : 0); // Calculate the total amount of elements to load
+        this._loading.show().setMainHeader('Loading Map').setSubHeader('Clearing Old Map').setPercent(0); // Show the loading screen
+
         this.clear(); // Clear the map
 
         let has_intersections = !isEmpty(data.intersections); // Check if there are intersections in the save object
@@ -298,6 +305,7 @@ class Map {
         // Add the intersections first, so that we can add the roads and directly snap them to the intersections
         if (has_intersections) { // Check if there are intersections
             for (let id in data.intersections) { // Loop through the intersections
+                this._loading.setSubHeader('Loading Intersection ' + id).setPercent(calculatePercent(count++, total)); // Update the loading screen
                 let intersection = data.intersections[id]; // Get the intersection
                 let i = new Intersection(id, new Point(intersection.position.x, intersection.position.y)); // Create the intersection
                 this.addIntersection(i); // Add the intersection to the map
@@ -306,6 +314,7 @@ class Map {
 
         if (!isEmpty(data.roads)) { // Check if there are roads
             for (let id in data.roads) { // Loop through the roads
+                this._loading.setSubHeader('Loading Road ' + id).setPercent(calculatePercent(count++, total)); // Update the loading screen
                 let road = data.roads[id]; // Get the road
                 let r = new Road(id, new Point(road.start.x, road.start.y, road.start.angle), new Point(road.end.x, road.end.y, road.end.angle)); // Create the road
                 this.addRoad(r); // Add the road to the map
@@ -326,6 +335,7 @@ class Map {
 
         if (with_agents && !isEmpty(data.agents)) { // Check if there are agents
             for (let id in data.agents) { // Loop through the agents
+                this._loading.setSubHeader('Loading Agent ' + id).setPercent(calculatePercent(count++, total)); // Update the loading screen
                 let agent = data.agents[id]; // Get the agent
                 let a = new Agent(id, agent.type, this); // Create the agent
                 this.addAgent(a); // Add the agent to the map
@@ -333,6 +343,7 @@ class Map {
             }
         }
         this.recheckSize(); // Recheck the size of the map
+        this._loading.hide(); // Hide the loading screen
         alert('Finished loading save of ' + data.peripherals.date); // Notify the user that the save has been loaded
     }
 

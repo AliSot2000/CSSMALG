@@ -1,12 +1,12 @@
 :root {
-    --background: rgba(150, 255, 150, 1);
+    --background: rgba(107, 207, 141, 1);
     --road_border: rgba(200, 200, 200, 1);
     --road_asphalt: rgba(120, 120, 120, 1);
     --road_line: rgba(255, 255, 255, 1);
     --bike_line: rgba(255, 255, 0, 1);
     --bike_lane: rgba(255, 0, 0, 0.3);
     --arrow_line: rgba(255, 255, 255, 1);
-    --grid: rgba(0, 150, 150, 1);
+    --grid: rgba(26, 146, 134, 1);
     --grabbable: rgba(255, 255, 255, 1);
     --interface-background: rgba(255, 255, 255, 1);
     --interface-back: rgba(80, 80, 80, 1);
@@ -19,6 +19,8 @@
     --simulation-input-background: rgba(255, 255, 255, 1);
     --simulation-input-border: rgba(180, 180, 180, 1);
     --simulation-input-hover: rgba(220, 220, 220, 1);
+    --loading-background: rgba(33, 182, 168, 1);
+    --loading-front: rgba(255, 255, 255, 1);
 }
 
 html, body {
@@ -427,4 +429,51 @@ body.grabbing * {
 .simulation_input:disabled {
     opacity: 0.5;
     transition-duration: 0.2s;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--loading-background);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    display: none;
+    cursor: wait;
+}
+
+.loading_bar_wrapper {
+    position: relative;
+    max-width: 30%;
+    width: 40rem;
+    height: 1rem;
+    border: 2px solid var(--loading-front);
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.loading_bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--loading-front);
+}
+
+.loading_main_header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    color: var(--loading-front);
+}
+
+.loading_sub_header {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--loading-front);
 }

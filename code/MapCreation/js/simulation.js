@@ -5,9 +5,8 @@ class Simulation {
     _interface = null;
     _step = 1;
     _agents = null;
-    _simulation = null;
+    _pre_simulation = null;
     _sim_map = null;
-    _a = null;
     _speed = 1;
     _interval = null;
     _time_interval = 1000;
@@ -18,7 +17,6 @@ class Simulation {
         this._self = $(selector).data('simulation', this).css('display', 'none'); // The interface element
         this._map = map; // The map that is connected to the interface
         this._interface = gui; // The interface that is connected to the map
-        this._time_interval = getConfig('simulation_interval');
         this.createElements();
     }
 
@@ -69,7 +67,8 @@ class Simulation {
         this._self.css('display', 'flex');
         this._interface._self.css('display', 'none');
         this._agents = sim.setup.agents;
-        this._simulation = sim.simulation;
+        this._time_interval = sim.peripherals.time_step;
+        this._pre_simulation = sim.simulation;
         this._sim_map = sim.setup.map;
         this._slider.attr('max', this._simulation.length - 1);
         this._slider.val(0);
@@ -87,9 +86,76 @@ class Simulation {
             this._map.addAgent(a);
         }
 
-        this._a = this._map.getAgents();
-        this.jumpToStep(0);
+        this._agents = this._map.getAgents();
+
         return this;
+    }
+
+    precalculateSimulation() {
+        this._simulation = [];
+        let frames_per_step = Math.floor(1000/30 * this._time_interval);
+        let last_update = {};
+        if (this._pre_simulation.length > 0) {
+            let step = this._pre_simulation[0];
+            let new_step = {
+                changed: {}
+            }
+            for (let id in this._agents) {
+                last_update[id] = 0;
+                if (id in step) {
+                    new_step.changed[id] = step[id];
+                } else {
+                    new_step.changed[id] = {
+                        active: false
+                    };
+                }
+            }
+        } else {
+            alert('Simulation is too short to be precalculated');
+            return this;
+        }
+        for (let i = 1; i < this._pre_simulation.length; i++) {
+            let step = this._pre_simulation[i];
+            let new_steps = [];
+            for (let i = 0; i < frames_per_step; i++) {
+                new_steps.push({same: {}, changed: {}});
+            }
+            for (let id in this._agents) {
+                if (id in step) {
+                    let next_position = step[id];
+                    let current_position = this._pre_simulation[i - 1][id];
+                    if (current_position.equalCoords(next_position)) {
+                        for (let i = 0; i < new_steps.length; i++) {
+                            new_steps[i].same[id] = last_update[id];
+                        }
+                        break;
+                    } else {
+                        last_update[id] = i;
+                        if (current_position.angle < next_position.angle && next_position.angle - current_position.angle > Math.PI) {
+                            current_position.angle += 2 * Math.PI;
+                        }
+                        for (let i = 0; i < new_steps.length; i++) {
+                            new_steps[i].changed[id] = this.calculateStep(i / new_steps.length, current_position, next_position);
+                            new_steps[i].changed[id].active = next_position.active;
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < new_steps.length; i++) {
+                        new_steps[i].same[id] = last_update[id];
+                    }
+                    break;
+                }
+            }
+        }
+
+    }
+
+    calculateStep(percent, start, end) {
+        return {
+            x: lerp(start.x, end.x, percent),
+            y: lerp(start.y, end.y, percent),
+            angle: truncateAngle(lerp(start.angle, end.angle, percent), 2 * Math.PI)
+        }
     }
 
     runCommand(command, target) {
@@ -122,7 +188,7 @@ class Simulation {
         this._step = index;
         let step = this._simulation[index];
         for (let agent in step) {
-            this._a[agent].jumpTo(step[agent]);
+            this._agents[agent].jumpTo(step[agent]);
         }
         return this;
     }
@@ -143,7 +209,7 @@ class Simulation {
 
         let step = this._simulation[this._step];
         for (let agent in step) {
-            this._a[agent].simulate(step[agent], this._speed);
+            this._agents[agent].simulate(step[agent], this._speed);
         }
 
         this._step++;
