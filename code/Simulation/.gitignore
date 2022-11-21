@@ -4,3 +4,4 @@ CMakePresets.json
 third_party/*
 *.tsim
 *.sim
+*.map

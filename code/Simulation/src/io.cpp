@@ -1,4 +1,5 @@
 
+#include <string>
 #include <iostream>
 
 #include "update.hpp"
@@ -81,13 +82,38 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 void addFrame(const world_t& world, json& out) {
 	json frame;
 
+	auto a = [&frame](const Actor* actor, const Street* street, const float percent, bool active) {
+		frame[actor->id] = {};
+		json& obj = frame[actor->id];
+		obj["road"] = street->id;
+		obj["percent_to_end"] = percent; 
+		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
+		obj["active"] = active;
+
+		if (!active) {
+			obj["distance_to_side"] = -10000.0f;
+		}
+	};
+
 	for (const auto& street : world.streets) {
 		for (const auto& actor : street.traffic) {
-			frame[actor->id] = {};
-			json& obj = frame[actor->id];
-			obj["road"] = street.id;
-			obj["percent_to_end"] = 1.0f - (1.0f / street.length * actor->distanceToCrossing);
-			obj["distance_to_side"] = actor->distanceToRight * 10.0f;
+			const float percent = 1.0f - (1.0f / street.length * actor->distanceToCrossing);
+			a(actor, &street, percent, true);
+		}
+	}
+
+	// FOR EACH CROSSING ADD WAITING
+	// ADD FINISHED ACTORS TO CROSSING
+
+	for (const auto& crossing : world.crossings) {
+		for (const auto& actor : crossing.waitingToBeInserted) {
+			std::string first = actor->path.front();
+			Street* street = crossing.outbound.find(first)->second;
+			a(actor, street, 0.0f, false);
+		}
+
+		for (const auto& pair : crossing.arrivedFrom) {
+			a(pair.first, pair.second, 1.0f, false);
 		}
 	}
 
