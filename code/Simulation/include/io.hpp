@@ -42,7 +42,7 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 /*
  * Adds a frame to the output json.
  *
- * @param world world to export
+ * @param world, world to export
  * @param out output json
  * @returns void
  *
