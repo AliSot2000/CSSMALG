@@ -40,7 +40,8 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 				std::string js = world->crossings[j].id;
 
 				bool hasEdge = spt[is].contains(ks) && spt[ks].contains(js);
-
+                // Check if the two edges is-ks, ks-js are valid.
+                // If the nodes is, js are not connected, connect them, else update the value if the connections is shorter.
 				if (hasEdge && (!spt[is].contains(js) || minimumDistance[is][js] > minimumDistance[is][ks] + minimumDistance[ks][js])) {
 					minimumDistance[is][js] = minimumDistance[is][ks] + minimumDistance[ks][js];
 					spt[is][js] = spt[is][ks];
