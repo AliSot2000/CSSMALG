@@ -1,11 +1,12 @@
 <?php
-
+//ToDo: change json format to file like jannick wants them
 class Parser
 {
     private array $rawNodes = array();
     private array $rawStreets = array();
     private array $parsedNodes = array();
     private array $parsedStreets = array();
+    private array $agents = array();
     private int $streetCount = 0;
 
     public function execute(): void {
@@ -16,7 +17,7 @@ class Parser
     }
 
     private function readData(): void {
-        $rawData = json_decode(file_get_contents("../data/import.json"), true);
+        $rawData = json_decode(file_get_contents("../data/importMapData.json"), true);
 
         foreach ($rawData["elements"] AS $element) {
             if ($element["type"] == "node") {
@@ -51,7 +52,8 @@ class Parser
         foreach ($this->rawNodes AS $nodeData) {
             if (isset($nodeCounter[$nodeData["id"]]) &&  $nodeCounter[$nodeData["id"]] > 1) {
                 $this->parsedNodes[$nodeData["id"]]["id"] = $nodeData["id"];
-                $this->parsedNodes[$nodeData["id"]]["coordinates"] = array("lon" => $nodeData["lon"], "lat" => $nodeData["lat"]);
+                $this->parsedNodes[$nodeData["id"]]["coordinates"] = array("lon" => $nodeData["lon"], "lat" => $nodeData["lat"], "angle" => 0.0);
+                $this->parsedNodes[$nodeData["id"]]["roads"] = array();
             }
         }
     }
@@ -74,17 +76,14 @@ class Parser
                 }
             }
 
+            $oneway = false;
             if (isset($streetData["tags"]["oneway"]) && $streetData["tags"]["oneway"] == "yes") {
-                foreach ($segments AS $segment) {
-                    $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => -1);
-                    $this->streetCount++;
-                }
-            } else {
-                foreach ($segments as $segment) {
-                    $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => $this->streetCount + 1);
-                    $splittedRoads[$this->streetCount + 1] = array("id" => $this->streetCount + 1, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["end"], "endNodeId" => $segment["start"], "oppositeStreetId" => $this->streetCount);
-                    $this->streetCount += 2;
-                }
+                $oneway = true;
+            }
+
+            foreach ($segments AS $segment) {
+                $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oneway" => $oneway);
+                $this->streetCount++;
             }
         }
 
@@ -96,48 +95,86 @@ class Parser
             // standard speed of 50 km/h
             $maxSpeed = $rawData["tags"]["maxspeed"] ?? 50;
 
-            if (isset($rawData["tags"]["lanes"])) {
-                if (isset($rawData["tags"]["oneway"]) && $rawData["tags"]["oneway"] == "yes") {
-                    $lanes = $rawData["tags"]["lanes"];
-                } else {
-                    if (isset($rawData["tags"]["lanes:forward"])) {
-                        if ($data["oppositeStreetId"] > $id) {
-                            $lanes = $rawData["tags"]["lanes:forward"];
-                        } else {
-                            $lanes = $rawData["tags"]["lanes"] - $rawData["tags"]["lanes:forward"];
-                        }
-                    } else {
-                        $lanes = $rawData["tags"]["lanes"];
-                    }
-                }
+            if ($data["oneway"]) {
+                $lanes = $rawData["tags"]["lanes"] ?? 1;
             } else {
-                $lanes = 1;
-            }
-
-            // with these road types we assume wide enough roads to always overtake so we add a seperate lane for bicycles
-            if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
-                $this->parsedStreets[$this->streetCount] = array("id" => $this->streetCount, "startNodeId" => $data["startNodeId"], "endNodeId" => $data["endNodeId"], "type" => "bike", "oppositeStreetId" => $data["oppositeStreetId"], "maxSpeed" => $maxSpeed, "length" => $length, "width" => $lanes * 2);
-                $this->streetCount++;
+                if (isset($rawData["tags"]["lanes"])) {
+                    if (isset($rawData["tags"]["lanes:forward"])) {
+                        $lanes = array($rawData["tags"]["lanes:forward"], $rawData["tags"]["lanes"] - $rawData["tags"]["lanes:forward"]);
+                    } else {
+                        $lanes = array($rawData["tags"]["lanes"], $rawData["tags"]["lanes"]);
+                    }
+                } else {
+                    $lanes = array(1, 1);
+                }
             }
 
             $type = "mixed";
             if (isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no") {
                 $type = "car";
             }
+            //ToDo: think about lanes
+            $last = $rawData["nodes"][count($rawData["nodes"]) - 1] == $data["endNodeId"];
+            $first = $rawData["nodes"][0] == $data["startNodeId"];
+            $laneArray = array();
+            if ($data["oneway"]) {
+                if (!$last) {
+                    for ($i = 0; $i < $lanes; $i++) {
+                        $laneArray[] = array("type" => $type, "direction" => 1, "left" => false, "forward" => true, "right" => false);
+                    }
+                } else {
+                    for ($i = 0; $i < $lanes; $i++) {
+                        $laneArray[] = array("type" => $type, "direction" => 1, "left" => true, "forward" => true, "right" => true);
+                    }
+                }
+            } else {
+                if (!$last) {
+                    for ($i = 0; $i < $lanes[0]; $i++) {
+                        $laneArray[] = array("type" => $type, "direction" => 1, "left" => false, "forward" => true, "right" => false);
+                    }
+                } else {
+                    for ($i = 0; $i < $lanes[0]; $i++) {
+                        $laneArray[] = array("type" => $type, "direction" => 1, "left" => true, "forward" => true, "right" => true);
+                    }
+                }
 
+                if (!$first) {
+                    for ($i = 0; $i < $lanes[1]; $i++) {
+                        $laneArray[] = array("type" => $type, "direction" => -1, "left" => false, "forward" => true, "right" => false);
+                    }
+                } else {
+                    for ($i = 0; $i < $lanes[1]; $i++) {
+                        $laneArray[] = array("type" => $type, "direction" => -1, "left" => true, "forward" => true, "right" => true);
+                    }
+                }
+            }
 
-            $this->parsedStreets[$id] = array("id" => $id, "startNodeId" => $data["startNodeId"], "endNodeId" => $data["endNodeId"], "type" => $type, "oppositeStreetId" => $data["oppositeStreetId"], "maxSpeed" => $maxSpeed, "length" => $length, "width" => $lanes * 2);
+            // with these road types we assume wide enough roads to always overtake so we add a seperate lane for bicycles
+            if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
+                //ToDo: check if just seperate lane is okay or seperate street
+                if (!$last) {
+                    $laneArray[] = array("type" => "bike", "direction" => 1, "left" => false, "forward" => true, "right" => false);
+                } else {
+                    $laneArray[] = array("type" => "bike", "direction" => 1, "left" => true, "forward" => true, "right" => true);
+                }
+                if (!$data["oneway"]) {
+                    if (!$first) {
+                        $laneArray[] = array("type" => "bike", "direction" => -1, "left" => false, "forward" => true, "right" => false);
+                    } else {
+                        $laneArray[] = array("type" => "bike", "direction" => -1, "left" => true, "forward" => true, "right" => true);
+                    }
+                }
+                $this->streetCount++;
+            }
+
+            $this->parsedStreets[$id] = array("id" => $id, "intersections" => array("start" => $data["startNodeId"], "lanes" => array_values($laneArray), "end" => $data["endNodeId"]), "speed_limit" => $maxSpeed, "distance" => $length);
         }
     }
 
     private function writeJSON(): void {
 
-        $handle = fopen("../data/nodes.json", 'w+');
-        fwrite($handle, json_encode(array(array_values($this->parsedNodes)), JSON_PRETTY_PRINT));
-        fclose($handle);
-
-        $handle = fopen("../data/streets.json", 'w+');
-        fwrite($handle, json_encode(array(array_values($this->parsedStreets)), JSON_PRETTY_PRINT));
+        $handle = fopen("../data/export.json", 'w+');
+        fwrite($handle, json_encode(array("agents" => $this->agents, "intersections" => $this->parsedNodes, "roads" => $this->parsedStreets), JSON_PRETTY_PRINT));
         fclose($handle);
     }
 
