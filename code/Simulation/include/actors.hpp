@@ -22,6 +22,8 @@ typedef struct Actor {
 	float length = 4.5f; // m
 	float width = 1.5f; // m
 
+    // Emergency break is 0.7g
+
 	// Only used for visualization
 	std::string id = "empty";
 	Path path;
