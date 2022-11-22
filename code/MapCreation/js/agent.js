@@ -189,40 +189,13 @@ class Agent {
         this._half_height = this._height / 2;
     }
 
-    nextPosition(step) {
-        if (step.road !== this._current_road_id) {
-            this._current_flip = step.road.charAt(0) === '!';
-            if (this._current_flip) {
-                this._current_road_id = step.road.substr(1);
-            } else {
-                this._current_road_id = step.road;
-            }
-            this.snapToRoad(this._map.getRoad(this._current_road_id));
-            this._current_road_width = this._current_road.getRoadWidth();
-        }
-
-        let new_position;
-        if (this._current_flip) {
-            new_position = this._current_road.getAgentPosition(1 - step.percent_to_end, this._current_road_width - step.distance_to_side - this._half_width);
-            new_position.angle = truncateAngle(new_position.angle + Math.PI, 2 * Math.PI);
+    simulate(x, y, angle, active = true) {
+        if (active) {
+            this._self.css('display', 'block');
+            this.updatePosition(new Point(x, y, angle));
         } else {
-            new_position = this._current_road.getAgentPosition(step.percent_to_end, step.distance_to_side + this._half_lane_width);
+            this._self.css('display', 'none');
         }
-        return new_position;
-    }
-
-    jumpTo(step) {
-        this._current_position = this.nextPosition(step);
-        console.log(this._current_position.export());
-        this.updatePosition(this._current_position);
-    }
-
-    simulate(step, speed) {
-        let new_position = this.nextPosition(step);
-
-        this._animation.start(this._current_position, new_position, this._time_interval / speed);
-
-        this._current_position = new_position;
     }
 
     exportSaveData() {
