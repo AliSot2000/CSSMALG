@@ -74,7 +74,8 @@ void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& 
 	end = endIter->first;
 }
 
-void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed, const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
+void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
+                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
 	int index = 1;
 	for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
 		Actor actor = {
@@ -104,15 +105,15 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
 	}
 }
 
-std::chrono::steady_clock::time_point start;
+std::chrono::high_resolution_clock::time_point start_time;
 
-void startMeasureTime(std::string task) {
+void startMeasureTime(const std::string &task) {
 	std::cout << "Starting task: " << task << std::endl;
-	start = std::chrono::high_resolution_clock::now();
+    start_time = std::chrono::high_resolution_clock::now();
 }
 
 void stopMeasureTime() {
-	std::cout << "Last task took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() / 1000.f << " seconds.\n\n" << std::endl;
+	std::cout << "Last task took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count() / 1000.f << " seconds.\n\n" << std::endl;
 }
 
 int main(int argc, char* argv[]) {
