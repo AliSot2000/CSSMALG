@@ -56,8 +56,6 @@ void importMap(world_t& world, json& map) {
 			}
 		}
 
-		street.type = StreetTypes::Both;
-
 		street.start = data["intersections"]["start"]["id"];
 		street.end = data["intersections"]["end"]["id"];
 
