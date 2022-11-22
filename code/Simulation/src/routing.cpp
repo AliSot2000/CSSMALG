@@ -9,12 +9,13 @@
 // identical turning sets.
 
 // Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
-SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes> include) {
+SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include) {
 	const size_t n = world->crossings.size();
 
 	std::map<std::string, std::map<std::string, float>> minimumDistance;
 	SPT spt;
 
+    // initialize the value of the map with empty maps.
 	for (const auto& crossing : world->crossings) {
 		minimumDistance[crossing.id] = std::map<std::string, float>();
 	}
@@ -51,7 +52,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 	return spt;
 }
 
-Path retrievePath(SPT& spt, const std::string start, const std::string end) {
+Path retrievePath(SPT& spt, const std::string &start, const std::string &end) {
 	if (!spt[start].contains(end)) {
 		return Path();
 	}
