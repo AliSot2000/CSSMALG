@@ -59,7 +59,7 @@ class Simulation {
 
         this._self.on('input', 'input.simulation_slider', function (e) {
             let target = $(e.target);
-            target.parent().data('simulation').stopSimulation().jumpToStep(target.val());
+            target.parent().data('simulation').stopSimulation().jumpToStep(parseInt(target.val()));
         });
     }
 
@@ -170,7 +170,7 @@ class Simulation {
                         current_position.angle += 2 * Math.PI;
                     }
                     for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
-                        new_steps[frame].changed[id] = this.calculateStep(frame / new_steps.length, current_position, new_position); // Calculate the position of the agent in the frame
+                        new_steps[frame].changed[id] = this.calculateStep((frame + 1) / (new_steps.length + 1), current_position, new_position); // Calculate the position of the agent in the frame
                     }
                 } else { // If the agent is not in the pre-simulation
                     for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
@@ -265,7 +265,7 @@ class Simulation {
         this.simulate();
         this._interval = setInterval(() => {
             this.simulate();
-        }, 1000/30);
+        }, 1000/(30 * (this._speed < 1 ? this._speed : 1)));
         return this;
     }
 
@@ -280,7 +280,7 @@ class Simulation {
             this._agents[id].simulate(step.changed[id].x, step.changed[id].y, step.changed[id].angle, step.changed[id].active);
         }
 
-        this._step++;
+        this._step += this._speed > 1 ? this._speed : 1;
         return this;
     }
 
