@@ -130,7 +130,7 @@ void addFrame(const world_t& world, json& out) {
 	out["simulation"].push_back(frame);
 }
 
-void save(const std::string file, const json& out) {
+void save(const std::string& file, const json& out) {
 	std::ofstream f(file);
 
 	if (f.is_open()) {
