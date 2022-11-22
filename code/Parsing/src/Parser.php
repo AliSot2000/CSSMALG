@@ -83,6 +83,10 @@ class Parser
 
             foreach ($segments AS $segment) {
                 $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oneway" => $oneway);
+
+                $this->parsedNodes[$segment["start"]]["roads"][] = array("id" => $this->streetCount, "point_type" => "start");
+                $this->parsedNodes[$segment["end"]]["roads"][] = array("id" => $this->streetCount, "point_type" => "end");
+
                 $this->streetCount++;
             }
         }
@@ -168,6 +172,8 @@ class Parser
             }
 
             $this->parsedStreets[$id] = array("id" => $id, "intersections" => array("start" => $data["startNodeId"], "lanes" => array_values($laneArray), "end" => $data["endNodeId"]), "speed_limit" => $maxSpeed, "distance" => $length);
+
+            //ToDo: add roads to node
         }
     }
 
