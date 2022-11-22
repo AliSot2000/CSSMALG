@@ -7,8 +7,55 @@
 
 using nlohmann::json;
 
-bool loadFile(std::string file, json& input);
+/*
+ * Loads a file with json format into a json buffer TODO NILS! What happens here
+ *
+ * @param file, path to file
+ * @param input json obj or sth to write the content into
+ *
+ * @returns True <=> the loading was successful.
+*/
+bool loadFile(const std::string& file, json& input);
+
+/*
+ * Imports a json file into the c++ data structure.
+ *
+ * @param world (world) of current simulation
+ * @param map the map loaded from the json file
+ *
+ * @returns void
+ */
 void importMap(world_t& world, nlohmann::json& map);
+
+/*
+ * Docs in progress...
+ *
+ * @param world world to export
+ * @param time elapsed time
+ * @param timeDelta increment steps takein in simulation
+ * @param originMap originally imported map
+ *
+ * @returns json marshalling.
+ */
 json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap);
+
+/*
+ * Adds a frame to the output json.
+ *
+ * @param world world to export
+ * @param out output json
+ * @returns void
+ *
+ */
 void addFrame(const world_t& world, nlohmann::json& out);
-void save(const std::string file, const nlohmann::json& out);
+
+/*
+ * Imports a json file into the c++ data structure.
+ *
+ * @param world (world) of current simulation
+ * @param map the map loaded from the json file
+ *
+ * @returns void
+ */
+
+void save(const std::string& file, const nlohmann::json& out);
