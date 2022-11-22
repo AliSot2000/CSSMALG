@@ -1,5 +1,5 @@
 <?php
-//ToDo: change json format to file like jannick wants them
+
 class Parser
 {
     private array $rawNodes = array();
