@@ -300,9 +300,19 @@ class Map {
      * @param {boolean} with_agents Whether or not to load the agents
      */
     load(data, with_agents = true) {
-        if (data.peripherals.type !== 'save') { // Check if the data is a save object
-            alert("This is not a valid save!"); // Alert the user that the data is not a save object
-            throw new Error('Invalid Save Data');
+        switch (data.peripherals.type) {
+            case 'save':
+                break;
+            case 'to_be_simulated':
+                data = data.peripherals.map;
+                break;
+            case 'simulation':
+                data = data.setup.map;
+                break;
+            default:
+                alert("This is not a valid save!"); // Alert the user that the data is not a save object
+                throw new Error('Invalid Save Data');
+                break;
         }
 
         let count = 0; // Initialize the count variable
