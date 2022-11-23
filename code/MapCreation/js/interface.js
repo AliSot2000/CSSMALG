@@ -62,6 +62,18 @@ class Interface {
     }
 
     /**
+     * Shows the interface
+     * @returns {Interface} Self reference for chaining
+     */
+    show() {
+        if (this._self.hasClass('interface_hidden')) {
+            this._self.removeClass('interface_hidden');
+            this._toggle_button.html('&#9654;');
+        }
+        return this;
+    }
+
+    /**
      * Shows the overview screen
      * @returns {Interface} Self reference for chaining
      */
@@ -476,6 +488,26 @@ class Interface {
     }
 
     /**
+     * Saves the map to a file
+     * @returns {Interface} Self reference for chaining
+     */
+    exportAsSave() {
+        downloadAsJson(this._map.exportSaveData(), currentTime(), 'map'); // Export the map as a save
+        return this;
+    }
+
+    /**
+     * Saves the simulation to a file
+     * @returns {Interface} Self reference for chaining
+     */
+    exportForSimulation() {
+        downloadAsJson(this._map.exportToBeSimulatedData(), currentTime(), 'tsim'); // Export the map as a 'to be simulated file'
+        return this;
+    }
+
+
+
+    /**
      * Runs a command based on the button that was clicked
      * @param {string} command The command to run
      * @param {Object} data The extra data for the command
@@ -484,7 +516,7 @@ class Interface {
     runCommand(command, data, target) {
         switch (command) { // Switch on the command
             case 'Export for Simulation':
-                downloadAsJson(this._map.exportToBeSimulatedData(), currentTime(), 'tsim'); // Export the map as a to be simulated file
+                this.exportForSimulation();
                 break;
             case 'Import Save':
                 this.upload();
@@ -551,7 +583,7 @@ class Interface {
                 this.editIntersections(); // Load the edit intersections screen
                 break;
             case 'Export as Save':
-                downloadAsJson(this._map.exportSaveData(), currentTime(), 'map'); // Export the map as a save
+                this.exportAsSave();
                 break;
             case 'Save':
                 setCookie('map', encodeURIComponent(JSON.stringify(this._map.exportSaveData())), 14); // Save the map to a cookie
