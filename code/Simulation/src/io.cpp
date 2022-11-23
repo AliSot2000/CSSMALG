@@ -119,15 +119,23 @@ void addFrame(const world_t& world, json& out) {
 		for (const auto& actor : crossing.waitingToBeInserted) {
 			std::string first = actor->path.front();
 			Street* street = crossing.outbound.find(first)->second;
-			a(actor, street, 0.0f, false);
+			if (!actor->outputFlag) {
+				a(actor, street, 0.0f, false);
+				actor->outputFlag = true;
+			}
 		}
 
 		for (const auto& pair : crossing.arrivedFrom) {
-			a(pair.first, pair.second, 1.0f, false);
+			if (!pair.first->outputFlag) {
+				a(pair.first, pair.second, 1.0f, false);
+				pair.first->outputFlag = true;
+			}
 		}
 	}
 
-	out["simulation"].push_back(frame);
+	if (frame.size() > 0) {
+		out["simulation"].push_back(frame);
+	}
 }
 
 void save(const std::string& file, const json& out) {
