@@ -44,6 +44,7 @@ typedef struct Street {
 	StreetTypes type = StreetTypes::Both;
 	size_t width = 2;
 	float length = 100.0f;
+    float speedlimit = 50.0f; // km/h
 
 	// Ordered by distance to end, must be reordered when actors change position
 	// Furthermore, when vehicles swap position, their position to the left of the road side must be swapped aswell

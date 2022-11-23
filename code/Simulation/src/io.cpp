@@ -42,6 +42,7 @@ void importMap(world_t& world, json& map) {
 		street.id = data["id"];
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
+        street.speedlimit = data["speed_limit"];
 
 		if (data["lanes"].empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
