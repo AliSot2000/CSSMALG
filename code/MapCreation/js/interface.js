@@ -117,7 +117,7 @@ class Interface {
         let lane; // The current lane element
         for (let i = 0; i < lanes.length; i++) { // Loop through the lanes
             lane = lanes[i]; // Get the current lane
-            l = this.generateLane(i, lane.type === 'bike', lane.direction > 0, lane.left, lane.forward, lane.right); // Generate the lane element
+            l = this.generateLane(i, lane.type === 'bike', lane.type === 'car', lane.direction > 0, lane.left, lane.forward, lane.right); // Generate the lane element
             lane_list.append(l); // Add the lane to the list
         }
         this._body.append(lane_list);
@@ -223,15 +223,15 @@ class Interface {
         // Create a road with default parameters
         if (thicc) {
             road.setLanes([
-                {type: 'car', direction: 1, left: false, forward: true, right: false},
-                {type: 'car', direction: 1, left: false, forward: true, right: false},
-                {type: 'car', direction: -1, left: false, forward: true, right: false},
-                {type: 'car', direction: -1, left: false, forward: true, right: false}
+                {type: 'both', direction: 1, left: false, forward: true, right: false},
+                {type: 'both', direction: 1, left: false, forward: true, right: false},
+                {type: 'both', direction: -1, left: false, forward: true, right: false},
+                {type: 'both', direction: -1, left: false, forward: true, right: false}
             ]);
         } else {
             road.setLanes([
-                {type: 'car', direction: 1, left: false, forward: true, right: false},
-                {type: 'car', direction: -1, left: false, forward: true, right: false}
+                {type: 'both', direction: 1, left: false, forward: true, right: false},
+                {type: 'both', direction: -1, left: false, forward: true, right: false}
             ]);
         }
 
@@ -265,21 +265,23 @@ class Interface {
     /**
      * Generates a lane element for the edit road screen
      * @param {number} count The number of the lane
-     * @param {boolean} bike Whether the lane is for bikes
+     * @param {boolean} bike Whether the lane is for bikes only
+     * @param {boolean} car Whether the lane is for cars only
      * @param {boolean} facing What direction the lane is facing
      * @param {boolean} left Whether the lane has a left turn
      * @param {boolean} forward Whether the lane has a forward turn
      * @param {boolean} right Whether the lane has a right turn
      * @return {string} The html for the lane
      */
-    generateLane(count, bike = false, facing = true, left = true, forward = true, right = true) {
+    generateLane(count, bike = false, car = false, facing = true, left = true, forward = true, right = true) {
         let html = '<div class="interface_lane"><div class="name">Lane <span>' + count + '</span></div>';
-        html += '<div class="input">Bike Only <input type="checkbox" name="bike"' + (bike ? ' checked' : '') + '></div>';
         html += '<div class="input">Facing <input type="checkbox" name="facing"' + (facing ? ' checked' : '') + '></div>';
-        html += '<button class="interface_delete">Delete</button>';
+        html += '<div class="input">Bike Only <input type="checkbox" name="bike" onchange="toggle_only(this)"' + (bike ? ' checked' : '') + '></div>';
+        html += '<div class="input">Car Only <input type="checkbox" name="car" onchange="toggle_only(this)"' + (car ? ' checked' : '') + '></div>';
         html += '<div class="input">Left <input type="checkbox" name="left"' + (left ? ' checked' : '') + '></div>';
         html += '<div class="input">Forward <input type="checkbox" name="forward"' + (forward ? ' checked' : '') + '></div>';
         html += '<div class="input">Right <input type="checkbox" name="right"' + (right ? ' checked' : '') + '></div>';
+        html += '<button class="interface_delete">Delete</button>';
         html += '</div>';
         return html;
     }
@@ -344,7 +346,7 @@ class Interface {
         for (let i = 0; i < lane_html.length; i++) { // For each lane
             lane = $(lane_html[i]); // Get the lane
             lanes.push({ // Add the lane to the list by getting the inputs
-                type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : 'car',
+                type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : (lane.find('input[name="car"]').is(':checked') ? 'car' : 'both'),
                 direction: lane.find('input[name="facing"]').is(':checked') ? 1 : -1,
                 left: lane.find('input[name="left"]').is(':checked'),
                 forward: lane.find('input[name="forward"]').is(':checked'),
@@ -511,5 +513,15 @@ class Interface {
                 break;
         }
         }
+    }
+}
+
+function toggle_only (element) {
+    element = $(element);
+
+    if (element.is(':checked')) {
+        let name = element.attr('name');
+        let other = name === 'car' ? 'bike' : 'car';
+        element.closest('div.interface_lane').find(`input[name="${other}"]`).prop('checked', false);
     }
 }
