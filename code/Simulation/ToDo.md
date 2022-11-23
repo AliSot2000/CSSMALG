@@ -7,6 +7,7 @@
 
 	TODO rename crossings to intersections
 	TODO test if crossings switch inbound streets
+    TODO Negative forward distance for bikes resulting in error. (Requires more bikes than cars, and single and double lane streets on the map
 
 	CONSTRAINTS:
 		If a street has following lanes:
