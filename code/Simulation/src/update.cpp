@@ -148,11 +148,15 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 
 void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 	std::sort(start, end, [](const Actor* a, const Actor* b) {
-		// this if statement make sure that no vehicles have the same ordering
+        // Lexicographical order, starting with distanceToCrossing and then distanceToRight
 		if (a->distanceToCrossing == b->distanceToCrossing) {
-			return a < b;
+            // this if statement make sure that no vehicles have the same ordering
+            if (a->distanceToRight == b->distanceToRight) {
+                throw std::runtime_error("Two Vehicles with identical position");
+            }
+            return a->distanceToRight < b->distanceToRight;
 		}
-		return a->distanceToCrossing <= b->distanceToCrossing;
+		return a->distanceToCrossing < b->distanceToCrossing;
 	});
 }
 
