@@ -79,6 +79,13 @@ function calculateOffsetSinCoords(coordinate, mid, offset, angle) {
     return coordinate - target; // Return the new coordinates
 }
 
+/**
+ * Calculates the offset coordinates of a point on the road
+ * @param {Point} point The point to calculate the offset of
+ * @param {number} mid Half the road width
+ * @param {number} offset Offset from the edge of the road
+ * @returns {Point} The offset point
+ */
 function calculateOffsetCoords(point, mid, offset) {
     point.x = calculateOffsetCosCoords(point.x, mid, offset, point.angle); // Calculate the x offset
     point.y = calculateOffsetSinCoords(point.y, mid, offset, point.angle); // Calculate the y offset
@@ -379,69 +386,144 @@ function createArrow(path) {
     });
 }
 
+/**
+ * Linearly interpolates between two numbers
+ * @param {number} start The start value
+ * @param {number} end The end value
+ * @param {number} percent The percentage to interpolate
+ * @returns {number} The interpolated value
+ */
 function lerp(start, end, percent) {
     return start + (end - start) * percent;
 }
 
+/**
+ * Point Class to store a point on the screen
+ * @class Point
+ * @param {number} x The x coordinate
+ * @param {number} y The y coordinate
+ * @param {number} angle The angle of the point
+ */
 class Point {
-    _x;
-    _y;
-    _angle;
+    _x; // Set the x coordinate
+    _y; // Set the y coordinate
+    _angle; // Set the angle
 
+    /**
+     * Initializes the point
+     * @constructor
+     * @param {number} x The x coordinate
+     * @param {number} y The y coordinate
+     * @param {number} angle The angle of the point
+     */
     constructor(x = 0, y = 0, angle = 0) {
         this._x = x;
         this._y = y;
         this._angle = angle;
     }
 
+    /**
+     * Gets the x coordinate
+     * @returns {number} The x coordinate
+     */
     get x() {
         return this._x;
     }
 
+    /**
+     * Gets the y coordinate
+     * @returns {number} The y coordinate
+     */
     get y() {
         return this._y;
     }
 
+    /**
+     * Gets the angle
+     * @returns {number} The angle
+     */
     get angle() {
         return this._angle;
     }
 
+    /**
+     * Sets the x coordinate
+     * @param {number} x The x coordinate
+     */
     set x(x) {
         this._x = x;
     }
 
+    /**
+     * Sets the y coordinate
+     * @param {number} y The y coordinate
+     */
     set y(y) {
         this._y = y;
     }
 
+    /**
+     * Sets the angle
+     * @param {number} angle The angle
+     */
     set angle(angle) {
         this._angle = angle;
     }
 
+    /**
+     * Sets the x, y coordinates and the angle
+     * @param {number} x The x coordinate
+     * @param {number} y The y coordinate
+     * @param {number} angle The angle of the point
+     */
     set(x, y, angle) {
-        this._x = x;
-        this._y = y;
-        this._angle = angle;
+        this._x = x; // Set the x coordinate
+        this._y = y; // Set the y coordinate
+        this._angle = angle; // Set the angle
     }
 
+    /**
+     * Clone the point
+     * @returns {Point} The cloned point
+     */
     clone() {
-        return new Point(this._x, this._y, this._angle);
+        return new Point(this._x, this._y, this._angle); // Return a new point with the same values
     }
 
+    /**
+     * Snaps the point to the grid
+     * @returns {Point} Self Reference for chaining
+     */
     snap() {
-        this._x = snap(this._x);
-        this._y = snap(this._y);
+        this._x = snap(this._x); // Snap the x coordinate
+        this._y = snap(this._y); // Snap the y coordinate
+        return this;
     }
 
+    /**
+     * Exports the object to a object
+     * @returns {{x: number, y: number, angle: number}}
+     */
     export() {
         return {x: this._x, y: this._y, angle: this._angle};
     }
 
+    /**
+     * Checks if two points are equal in their x and y coordinates
+     * @param {Point} point The point to check
+     * @returns {boolean} If the points are equal
+     */
     equalCoords(point) {
         return this._x === point.x && this._y === point.y && this._angle === point.angle;
     }
 }
 
+/**
+ * Calculates the percentage of a number
+ * @param {number} value The value
+ * @param {number} total The total
+ * @returns {number} The percentage
+ */
 function calculatePercent(value, total) {
-    return (value / total) * 100;
+    return (value / total) * 100; // Return the percentage
 }
