@@ -47,6 +47,7 @@ class Interface {
 
     /**
      * Toggles the interface
+     * @returns {Interface} Self reference for chaining
      */
     toggle() {
         if (this._self.hasClass('interface_hidden')) {
@@ -56,10 +57,13 @@ class Interface {
             this._self.addClass('interface_hidden');
             this._toggle_button.html('&#9664;');
         }
+
+        return this;
     }
 
     /**
      * Shows the overview screen
+     * @returns {Interface} Self reference for chaining
      */
     overview() {
         this._body.empty();
@@ -74,15 +78,18 @@ class Interface {
 
         this._body.append('<h2>Creation</h2><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Add Road</button>');
-        this._body.append('<button class="interface_button">Add THICC Road</button>');
+        this._body.append('<button class="interface_button">Add Wide Road</button>');
         this._body.append('<button class="interface_button">Add Intersection</button>');
 
         this._body.append($('<button class="interface_button">Edit Roads</button>'));
         this._body.append('<button class="interface_button">Edit Intersections</button>');
+
+        return this;
     }
 
     /**
      * Shows the roads list screen
+     * @returns {Interface} Self reference for chaining
      */
     editRoads() {
         this._body.empty();
@@ -93,11 +100,14 @@ class Interface {
         for (let road of roads) {
             this._body.append($('<button class="interface_button">' + road + '</button>').data('command', 'editRoad'));
         }
+
+        return this;
     }
 
     /**
      * Shows the road edit screen
      * @param {string} road The id of the road
+     * @returns {Interface} Self reference for chaining
      */
     editRoad(road) {
         let r = this._map.getRoad(road);
@@ -144,8 +154,19 @@ class Interface {
         if (!isEmpty(intersections.end)) { // If there is an end intersection
             this._body.append($('<button class="interface_button">' + intersections.end.intersection.getId() + '</button>').data('command', 'editIntersection'));
         }
+
+        return this;
     }
 
+    /**
+     * Generates a agent element
+     * @param {number} count The number of the agent
+     * @param {number} start Percentage of the road the agent is at
+     * @param {number} lane Lane number
+     * @param {number} speed Speed of the agent
+     * @param {string} type Type of agent
+     * @returns {string} The agent element
+     */
     generateAgent(count, start, lane, speed, type) {
         let html = '<div class="interface_agent"><div class="name">Agent <span>' + count + '</span></div>';
         html += '<div class="input">Start <input type="number" name="start" min="0" max="1" step="0.01" value="' + start + '"></div>';
@@ -159,6 +180,7 @@ class Interface {
 
     /**
      * Shows the intersections list screen
+     * @returns {Interface} Self reference for chaining
      */
     editIntersections() {
         this._body.empty();
@@ -168,11 +190,13 @@ class Interface {
         for (let intersection in intersections) {
             this._body.append($('<button class="interface_button">' + intersection + '</button>').data('command', 'editIntersection'));
         }
+        return this;
     }
 
     /**
      * Shows the intersection edit screen
      * @param {string} intersection The id of the intersection
+     * @returns {Interface} Self reference for chaining
      */
     editIntersection(intersection) {
         this._body.empty();
@@ -188,10 +212,13 @@ class Interface {
         for (let i = 0; i < roads.length; i++) { // Loop through the roads
             this._body.append($('<button class="interface_button">' + roads[i].getId() + '</button>').data('command', 'editRoad')); // Add the road to the list
         }
+
+        return this;
     }
 
     /**
      * Loads the map from a cookie
+     * @returns {Interface} Self reference for chaining
      */
     loadSave() {
         let save; // The save data
@@ -206,60 +233,73 @@ class Interface {
             throw new Error('Error loading save'); // Throw an error
         }
         this._map.load(save); // Load the map
+        return this;
     }
 
     /**
      * Adds a new road to the map
-     * @param {boolean} thicc Whether the road is thicc
+     * @param {boolean} wide Whether the road is wide
+     * @returns {Interface} Self reference for chaining
      */
-    addRoad(thicc = false) {
+    addRoad(wide = false) {
         let start = getSnappedMiddleOfScreen(); // The middle of the screen
-        let end = start.clone();
-        start.x -= 50;
-        end.x += 50;
-        start.angle = degToRad(270);
-        end.angle = degToRad(90);
+        let end = start.clone(); // The end of the road
+        start.x -= 50; // Move the start to the left
+        end.x += 50; // Move the end to the right
+        start.angle = degToRad(270); // Set the start angle
+        end.angle = degToRad(90); // Set the end angle
         let road = this._map.createRoad(start, end); // Create the road
         // Create a road with default parameters
-        if (thicc) {
-            road.setLanes([
+        if (wide) { // If the road is wide
+            road.setLanes([ // Set the lanes to 4 lanes. 2 in each direction
                 {type: 'both', direction: 1, left: false, forward: true, right: false},
                 {type: 'both', direction: 1, left: false, forward: true, right: false},
                 {type: 'both', direction: -1, left: false, forward: true, right: false},
                 {type: 'both', direction: -1, left: false, forward: true, right: false}
             ]);
         } else {
-            road.setLanes([
+            road.setLanes([ // Set the lanes to 2 lanes. 1 in each direction
                 {type: 'both', direction: 1, left: false, forward: true, right: false},
                 {type: 'both', direction: -1, left: false, forward: true, right: false}
             ]);
         }
 
         this.editRoad(road.getId()); // Load the edit view
+
+        return this;
     }
 
     /**
      * Adds a new intersection to the map
+     * @returns {Interface} Self reference for chaining
      */
     addIntersection() {
         let mid = getSnappedMiddleOfScreen(); // The middle of the screen
         let intersection = this._map.createIntersection(mid); // Create an intersection with default parameters
         this.editIntersection(intersection.getId()); // Load the edit view
+        return this;
     }
 
     /**
      * Adds a new lane to the edit road screen
+     * @returns {Interface} Self reference for chaining
      */
     addLane() {
         let count = this._body.find('.interface_lane').length; // The number of lanes
         let html = this.generateLane(count); // Generate the lane element
         this._body.find('.interface_lanes').append(html); // Add the lane to the list
+        return this;
     }
 
+    /**
+     * Adds a agent to the edit road screen
+     * @returns {Interface} Self reference for chaining
+     */
     addAgent() {
         let count = this._body.find('.interface_agent').length; // The number of agents
         let html = this.generateAgent(count, 0, 0, 0, 'car'); // Generate the agent element
         this._body.find('.interface_agent_list').append(html); // Add the agent to the list
+        return this;
     }
 
     /**
@@ -288,6 +328,7 @@ class Interface {
 
     /**
      * The upload screen
+     * @returns {Interface} Self reference for chaining
      */
     upload() {
         this._body.empty();
@@ -295,18 +336,24 @@ class Interface {
         this._body.append('<h2>Upload</h2><div class="spacer"></div>');
         this._body.append('<input type="file" class="inputfile" accept=".map"><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Upload</button>');
+        return this;
     }
 
+    /**
+     * The simulation upload screen
+     * @returns {Interface} Self reference for chaining
+     */
     simulate() {
         this._body.empty();
         this._body.append('<button class="interface_small_button">Back to Menu</button>');
         this._body.append('<h2>Simulation</h2><div class="spacer"></div>');
         this._body.append('<input type="file" class="inputfile" accept=".sim"><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Load Simulation</button>');
+        return this;
     }
 
     /**
-     * Uploads a file and loads the map from that
+     * Uploads a file and loads the map
      */
     uploadSave() {
         let files = document.getElementsByClassName('inputfile')[0].files; // The files of the input
@@ -321,8 +368,12 @@ class Interface {
             this.overview(); // Load the overview
         }.bind(this);
         reader.readAsText(files[0]); // Read the file
+        return this;
     }
 
+    /**
+     * Uploads a file and loads the simulation
+     */
     loadSimulation() {
         let files = document.getElementsByClassName('inputfile')[0].files; // The files of the input
         if (isEmpty(files)) { // If there are no files
@@ -333,12 +384,15 @@ class Interface {
         reader.onload = function(e) { // When the file is loaded
             let simulation = JSON.parse(e.target.result); // Parse the file
             this._simulation_interface.loadSimulation(simulation);
-            this.toggle(); // Toggle the interface
-            this.overview(); // Load the overview
+            this.toggle().overview(); // Toggle the interface and load the overview
         }.bind(this);
         reader.readAsText(files[0]); // Read the file
     }
 
+    /**
+     * Saves a road including all its parameters
+     * @param {string} road_id The id of the road
+     */
     saveRoad(road_id) {
         let lanes = []; // The lanes of the road
         let lane; // The current lane
@@ -356,22 +410,22 @@ class Interface {
         let road = this._map.getRoad(road_id); // Get the road
         road.setLanes(lanes); // Set the lanes
 
-        let newName = this._body.find('input[name="roadName"]').val();
-        if (road_id !== newName) {
-            if (this._map.idInUse(newName)) {
-                alert('Name already in use');
+        let newName = this._body.find('input[name="roadName"]').val(); // Get the new name
+        if (road_id !== newName) { // If the name has changed
+            if (this._map.idInUse(newName)) { // If the name is already in use
+                alert('Name already in use'); // Alert the user
             } else {
-                this._map.renameRoad(road_id, newName);
+                this._map.renameRoad(road_id, newName); // Rename the road
             }
         }
 
-        road.changeSpeedLimit(parseInt(this._body.find('input[name="speedLimit"]').val()));
+        road.changeSpeedLimit(parseInt(this._body.find('input[name="speedLimit"]').val())); // Change the speed limit
 
         let agents = road.getAgents(); // The agents of the road
         let agent_html = this._body.find('.interface_agent'); // The agent elements
         for (let i = 0; i < Math.min(agent_html.length, agents.length); i++) { // For each agent
             let agent = $(agent_html[i]); // Get the agent
-            agents[i].initialMapPosition(
+            agents[i].initialMapPosition( // Set the initial position
                 agent.find('input[name="start"]').val(),
                 agent.find('input[name="lane"]').val(),
                 agent.find('input[name="speed"]').val(),
@@ -380,12 +434,12 @@ class Interface {
             );
         }
 
-        if (agent_html.length > agents.length) {
+        if (agent_html.length > agents.length) { // If there are more agents in the interface than in the road
             for (let i = agents.length; i < agent_html.length; i++) { // For each agent
                 let agent = $(agent_html[i]); // Get the agent
                 let type = agent.find('select[name="type"] option:selected').val();
-                let ag = this._map.createAgent(type);
-                road.addAgent(ag);
+                let ag = this._map.createAgent(type); // Create the agent
+                road.addAgent(ag); // Add the agent to the road
                 ag.initialMapPosition(
                     agent.find('input[name="start"]').val(),
                     agent.find('input[name="lane"]').val(),
@@ -394,23 +448,31 @@ class Interface {
                     type
                 );
             }
-        } else if (agent_html.length < agents.length) {
-            for (let i = agent_html.length; i < agents.length; i++) {
-                this._map.removeAgent(agents[i].getId());
+        } else if (agent_html.length < agents.length) { // If there are more agents in the road than in the interface
+            for (let i = agent_html.length; i < agents.length; i++) { // For each agent
+                this._map.removeAgent(agents[i].getId()); // Remove the agent
             }
-            road.removeAgents(agents.length - agent_html.length);
+            road.removeAgents(agents.length - agent_html.length); // Remove the agents from the road
         }
+
+        return this;
     }
 
+    /**
+     * Saves an intersection including all its parameters
+     * @param {string} intersection_id The id of the intersection
+     * @returns {Interface} Self reference for chaining
+     */
     saveIntersection (intersection_id) {
-        let newName = this._body.find('input[name="intersectionName"]').val();
-        if (intersection_id !== newName) {
-            if (this._map.idInUse(newName)) {
-                alert('Name already in use');
-            } else {
-                this._map.renameIntersection(intersection_id, newName);
+        let newName = this._body.find('input[name="intersectionName"]').val(); // Get the new name
+        if (intersection_id !== newName) { // If the name has changed
+            if (this._map.idInUse(newName)) { // If the name is already in use
+                alert('Name already in use'); // Alert the user
+            } else { // If the name is not in use
+                this._map.renameIntersection(intersection_id, newName); // Rename the intersection
             }
         }
+        return this;
     }
 
     /**
@@ -457,7 +519,7 @@ class Interface {
             case 'Add Road':
                 this.addRoad();
                 break;
-            case 'Add THICC Road':
+            case 'Add Wide Road':
                 this.addRoad(true);
                 break
             case 'Add Intersection':
@@ -511,17 +573,23 @@ class Interface {
             case 'editIntersection':
                 this.editIntersection(command); // Edit the intersection
                 break;
+            default: // If the command is not recognized
+                throw new Error('Invalid Command');
         }
         }
     }
 }
 
+/**
+ * Checks that you have car only and bike only lanes at the same time
+ * @param {Element} element The element to check
+ */
 function toggle_only (element) {
-    element = $(element);
+    element = $(element); // Get the element
 
-    if (element.is(':checked')) {
-        let name = element.attr('name');
-        let other = name === 'car' ? 'bike' : 'car';
-        element.closest('div.interface_lane').find(`input[name="${other}"]`).prop('checked', false);
+    if (element.is(':checked')) { // If the element is checked
+        let name = element.attr('name'); // Get the name
+        let other = name === 'car' ? 'bike' : 'car'; // Get name of the other element
+        element.closest('div.interface_lane').find(`input[name="${other}"]`).prop('checked', false); // Uncheck the other element
     }
 }

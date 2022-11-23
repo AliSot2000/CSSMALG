@@ -2,10 +2,8 @@
  * Road Class
  * @class Road
  * @param {string} id The id of the road
- * @param {number} start_x The x coordinate of the start of the road
- * @param {number} start_y The y coordinate of the start of the road
- * @param {number} end_x The x coordinate of the end of the road
- * @param {number} end_y The y coordinate of the end of the road
+ * @param {Point} start The start point of the road
+ * @param {Point} end The end point of the road
  */
 class Road {
     _id = null;
@@ -487,6 +485,7 @@ class Road {
         this.checkAndDissconnectFromIntersection('start'); // Check and disconnect from the start intersection
         this.checkAndDissconnectFromIntersection('end'); // Check and disconnect from the end intersection
         this._self.remove(); // Remove the road from the DOM
+        this.removeAgents(this._agents.length); // Remove all agents
         let points = ['start', 'end', 'start_angle', 'end_angle'];
         for (let i = 0; i < points.length; i++) { // Loop through the grab points
             this._grab_points[points[i]].remove(); // Remove the grab point from the DOM
