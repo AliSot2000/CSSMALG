@@ -37,6 +37,8 @@ class Simulation {
         speed += '<option value="1" selected>1x</option>';
         speed += '<option value="2">2x</option>';
         speed += '<option value="4">4x</option>';
+        speed += '<option value="8">8x</option>';
+        speed += '<option value="16">16x</option>';
         speed += '</select>';
         this._speed_dial = $(speed);
         this._self.append(
@@ -77,8 +79,10 @@ class Simulation {
     setupSimulation() {
         this._map.clear();
         this._map.load(this._sim_map, false);
+        this._map._loading.show().setMainHeader('Precalculating Simulation').setSubHeader('Precalculating Simulation Points').setPercent(0); // Show the loading screen
         this._map.simulationMode(true);
 
+        this._map._loading.setSubHeader('Creating Agents');
         for (let id in this._agents) {
             let a = new Agent(id, this._agents[id].type, this._map);
             this._map.addAgent(a);
@@ -86,6 +90,7 @@ class Simulation {
 
         this._agents = this._map.getAgents();
 
+        this._map._loading.setSubHeader('Precalculating Simulation');
         this.precalculateSimulation()
 
         this._slider.attr('max', this._simulation.length);
@@ -93,12 +98,14 @@ class Simulation {
 
         this._step = 0;
         this.jumpToStep(0);
+        this._map._loading.setSubHeader('Simulation Ready').setPercent(100).hide();
 
         return this;
     }
 
     precalculateSimulation() {
         this._simulation = []; // The simulation data
+        let total_steps = this._pre_simulation.length;
         let frames_per_step = Math.floor(1000/30 * this._time_interval); // The number of frames per step
         let last_update = {}; // The last update for each agent in the simulation
         if (this._pre_simulation.length > 0) { // If there is a pre-simulation
@@ -124,7 +131,8 @@ class Simulation {
             return this; // Return
         }
 
-        for (let step_num = 1; step_num < this._pre_simulation.length; step_num++) { // For each step in the pre-simulation
+        for (let step_num = 1; step_num < total_steps; step_num++) { // For each step in the pre-simulation
+            this._map._loading.setPercent(Math.floor((step_num / total_steps) * 100)); // Update the loading screen
             let pre_calculated_step = this._pre_simulation[step_num]; // The current step
 
             let new_steps = []; // The new steps that will be added to the simulation
