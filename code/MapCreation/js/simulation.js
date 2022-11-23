@@ -143,21 +143,20 @@ class Simulation {
             for (let id in this._agents) { // For each agent
                 if (id in pre_calculated_step) { // If the agent is in the pre-simulation
                     let new_position = this.calculatePosition(this._agents[id], pre_calculated_step[id]); // Calculate the new position of the agent
-                    let current_position = this._simulation[last_update[id]].changed[id];
-
+                    let current_position = this._simulation[last_update[id]].changed[id]; // Get the current position of the agent
                     if (new_position.active && !current_position.active) { // If a agent is getting turned active
                         for (let frame = 0; frame < new_steps.length - 1; frame++) { // For each frame in the step
                             new_steps[frame].same[id] = last_update[id]; // Set the agent to the same as the last update
                         }
 
                         new_steps[new_steps.length - 1].changed[id] = new_position; // Set the last frame to the new position
-                        last_update[id] = (step_num - 1) * new_steps.length + new_steps.length - 1; // Set the last update to the last frame of the step
+                        last_update[id] = (step_num - 1) * new_steps.length + new_steps.length; // Set the last update to the last frame of the step
                         continue;
                     }
 
                     if (!new_position.active && current_position.active) { // If the agent is getting turned inactive
                         new_steps[0].changed[id] = new_position; // Set the first frame to the new position
-                        last_update[id] = (step_num - 1) * new_steps.length; // Set the last update to the first frame of the step
+                        last_update[id] = (step_num - 1) * new_steps.length + 1; // Set the last update to the first frame of the step
 
                         for (let frame = 1; frame < new_steps.length; frame++) {
                             new_steps[frame].same[id] = last_update[id];
@@ -173,9 +172,11 @@ class Simulation {
                         continue;
                     }
 
-                    last_update[id] = (step_num - 1) * new_steps.length + new_steps.length - 1; // Set the last update to the last frame of the step
+                    last_update[id] = (step_num - 1) * new_steps.length + new_steps.length; // Set the last update to the last frame of the step
                     if (current_position.angle < new_position.angle && new_position.angle - current_position.angle > Math.PI) { // Make sure the angle is the shortest path
                         current_position.angle += 2 * Math.PI;
+                    } else if (current_position.angle - new_position.angle > Math.PI) { // Make sure the angle is the shortest path
+                        new_position.angle += 2 * Math.PI;
                     }
                     for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
                         new_steps[frame].changed[id] = this.calculateStep((frame + 1) / (new_steps.length + 1), current_position, new_position); // Calculate the position of the agent in the frame
@@ -184,7 +185,7 @@ class Simulation {
                     for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
                         new_steps[frame].same[id] = last_update[id]; // Set the agent to the same as the last update
                     }
-                    break;
+                    continue;
                 }
             }
             this._simulation = this._simulation.concat(new_steps); // Add the new steps to the simulation
