@@ -9,3 +9,4 @@
 - [X] Precompute Simulation
 - [X] Make names of roads editable
 - [X] Make Windows Resizable
+- [ ] Split Only Bike Roads and Only Car Roads

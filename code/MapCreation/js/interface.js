@@ -334,7 +334,7 @@ class Interface {
         this._body.empty();
         this._body.append('<button class="interface_small_button">Back to Menu</button>');
         this._body.append('<h2>Upload</h2><div class="spacer"></div>');
-        this._body.append('<input type="file" class="inputfile" accept=".map"><div class="spacer"></div>');
+        this._body.append('<input type="file" class="inputfile" accept=".map,.tsim,.sim"><div class="spacer"></div>');
         this._body.append('<button class="interface_button">Upload</button>');
         return this;
     }
