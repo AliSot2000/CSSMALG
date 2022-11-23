@@ -27,6 +27,7 @@ typedef struct Actor {
 	// Only used for visualization
 	std::string id = "empty";
 	Path path;
+	bool outputFlag = false; // this flag is needed for exporter to know if non-active actors status has been outputted once
 } actor_t;
 
 enum StreetTypes {
