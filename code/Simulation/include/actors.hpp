@@ -20,7 +20,7 @@ typedef struct Actor {
 	int distanceToRight = 0;
 	float speed = 8.7f; // m/s
 	float length = 4.5f; // m
-	float width = 1.5f; // m
+	// float width = 1.5f; // m
 
     // Emergency break is 0.7g
 
