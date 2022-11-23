@@ -261,10 +261,10 @@ class Simulation {
         let step = this._simulation[index];
         for (let id in this._agents) {
             if (id in step.changed) {
-                this._agents[id].simulate(step.changed[id].x, step.changed[id].y, step.changed[id].angle, step.changed[id].active);
+                this._agents[id].simulate(step.changed[id]);
             } else {
                 let last_step = this._simulation[step.same[id]].changed[id];
-                this._agents[id].simulate(last_step.x, last_step.y, last_step.angle, last_step.active);
+                this._agents[id].simulate(last_step);
             }
         }
         return this;
@@ -286,7 +286,7 @@ class Simulation {
 
         let step = this._simulation[this._step];
         for (let id in step.changed) {
-            this._agents[id].simulate(step.changed[id].x, step.changed[id].y, step.changed[id].angle, step.changed[id].active);
+            this._agents[id].simulate(step.changed);
         }
 
         this._step += this._speed > 1 ? this._speed : 1;

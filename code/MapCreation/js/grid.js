@@ -78,63 +78,75 @@ class Grid {
     }
 
     /**
-     * Creates the grid svg lines
-     * @return {Grid} Self reference for chaining
+     * Expands the grid to a set size
+     * @param {{height: number, width: number}} newSize The new size of the grid
+     * @returns {Grid} Self reference for chaining
      */
     expand(newSize) {
         let horizontal = this._horizontalLines.children(); // Get the horizontal lines
         let vertical = this._verticalLines.children(); // Get the vertical lines
 
-        for (let i = 0; i < vertical.length; i++) { // For each horizontal line
+        for (let i = 0; i < vertical.length; i++) { // For each horizontal line that already exists
             $(vertical[i]).attr("y2", newSize.height); // Set the line's new height
         }
 
-        for (let i = 0; i < horizontal.length; i++) { // For each vertical line
+        for (let i = 0; i < horizontal.length; i++) { // For each vertical line that already exists
             $(horizontal[i]).attr("x2", newSize.width); // Set the line's new width
         }
 
 
         for (let i = this._currentSize.width; i < newSize.width; i += this._cellSize) { // Loop through the width of the window in cellSize increments
-            let line = $(svgElement("line"));
-            line.attr("x1", i);
-            line.attr("y1", 0);
-            line.attr("x2", i);
-            line.attr("y2", newSize.height);
+            let line = $(svgElement("line")); // Create a line element
+            line.attr({
+                "x1": i, // Set the line's x1 attribute
+                "y1": 0, // Set the line's y1 attribute
+                "x2": i, // Set the line's x2 attribute
+                "y2": newSize.height // Set the line's y2 attribute
+            });
             this._verticalLines.append(line); // Adding a vertical line to the grid element every loop
         }
 
         for (let i = this._currentSize.height; i < newSize.height; i += this._cellSize) { // Loop through the height of the window in cellSize increments
-            let line = $(svgElement("line"));
-            line.attr("x1", 0);
-            line.attr("y1", i);
-            line.attr("x2", newSize.width);
-            line.attr("y2", i);
+            let line = $(svgElement("line")); // Create a line element
+            line.attr({
+                "x1": 0, // Set the line's x1 attribute
+                "y1": i, // Set the line's y1 attribute
+                "x2": newSize.width, // Set the line's x2 attribute
+                "y2": i // Set the line's y2 attribute
+            });
             this._horizontalLines.append(line); // Adding a horizontal line to the grid element every loop
         }
 
         return this;
     }
 
+    /**
+     * Recalculate the size of the grid and updates it
+     * @param {{height: number, width: number}} newSize The new size of the grid
+     * @returns {Grid} Self reference for chaining
+     */
     recalculate(newSize) {
-        if (this._currentSize.width < newSize.width || this._currentSize.height < newSize.height) {
-            this.expand(newSize);
+        if (this._currentSize.width < newSize.width || this._currentSize.height < newSize.height) { // If the new size is larger than the current size
+            this.expand(newSize); // Expand the grid
         }
 
-        if (this._currentSize.width > newSize.width) {
-            this._verticalLines.children().each(function () {
-                if ($(this).attr("x1") > newSize.width) {
-                    $(this).remove();
+        if (this._currentSize.width > newSize.width) { // If the new width is smaller than the current width
+            this._verticalLines.children().each(function () { // For each vertical line
+                if ($(this).attr("x1") > newSize.width) { // If the line is outside the new width
+                    $(this).remove(); // Remove the line
                 }
             });
         }
 
-        if (this._currentSize.height > newSize.height) {
-            this._horizontalLines.children().each(function () {
-                if ($(this).attr("y1") > newSize.height) {
-                    $(this).remove();
+        if (this._currentSize.height > newSize.height) { // If the new height is smaller than the current height
+            this._horizontalLines.children().each(function () { // For each horizontal line
+                if ($(this).attr("y1") > newSize.height) { // If the line is outside the new height
+                    $(this).remove(); // Remove the line
                 }
             });
         }
+
+        return this;
     }
 
     /**

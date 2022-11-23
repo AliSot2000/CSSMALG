@@ -6,6 +6,6 @@
 - [ ] (Optional) Clickable roads
 - [ ] (Optional) Shortcuts
 - [ ] (Optional) Fix the border bug of roads crossing intersections
-- [ ] Precompute Simulation
+- [X] Precompute Simulation
 - [X] Make names of roads editable
 - [X] Make Windows Resizable

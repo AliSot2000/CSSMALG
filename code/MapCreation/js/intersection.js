@@ -2,8 +2,7 @@
  * The Intersection class
  * @class Intersection
  * @param {number} id The id of the intersection
- * @param {number} x The x coordinate of the intersection
- * @param {number} y The y coordinate of the intersection
+ * @param {Point} point The coordinate of the intersection
  */
 class Intersection {
     _id = null;
@@ -325,6 +324,10 @@ class Intersection {
         return data;
     }
 
+    /**
+     * Exports the intersection for the simulation
+     * @returns {Object} The exported intersection
+     */
     exportToBeSimulatedData() {
         let data = { // The data to export
             id: this._id,
@@ -333,19 +336,19 @@ class Intersection {
 
         for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
             if (this._snap_points[this._directions[i]].connected) { // Check if the snap point is connected
-                let road = this._snap_points[this._directions[i]].road
-                let forward = road.getLanesInDirection(1);
-                let backward = road.getLanesInDirection(-1);
+                let road = this._snap_points[this._directions[i]].road // Get the road
+                let forward = road.getLanesInDirection(1); // Get the forward lanes
+                let backward = road.getLanesInDirection(-1); // Get the backward lanes
 
-                if (!isEmpty(forward)) {
-                    data.roads.push({
-                        id: road.getId()
+                if (!isEmpty(forward)) { // Check if there are forward lanes
+                    data.roads.push({ // Add the forward lanes to the data
+                        id: road.getId() // The id of the road
                     });
                 }
 
-                if (!isEmpty(backward)) {
-                    data.roads.push({
-                        id: '!' + road.getId()
+                if (!isEmpty(backward)) { // Check if there are backward lanes
+                    data.roads.push({ // Add the backward lanes to the data
+                        id: '!' + road.getId() // The id of the road
                     });
                 }
             }
@@ -354,9 +357,14 @@ class Intersection {
         return data;
     }
 
+    /**
+     * Renames the intersection. The id has to be already checked for uniqueness
+     * @param {string} name The new id of the intersection
+     * @returns {Intersection} Self Reference for chaining
+     */
     rename(name) {
-        this._id = name;
-        this._self.attr('id', name);
+        this._id = name; // Set the id
+        this._self.attr('id', name); // Set the id of the intersection
         return this;
     }
 }

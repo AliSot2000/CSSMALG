@@ -33,8 +33,6 @@ class Agent {
     _current_road_width = 0; // Current Road Width
     _time_interval = 1000; // Time interval between two steps
 
-    _animation = new Animate(this);
-
     /**
      * Initialize the agent
      * @constructor
@@ -158,66 +156,91 @@ class Agent {
      * @returns {Agent} Self Reference for chaining
      */
     updateType(type) {
-        this._model.removeClass(this._type);
-        switch (type) {
-            case 'car':
-                this._width = 16;
-                this._height = 32;
+        this._model.removeClass(this._type); // Remove the old type
+        switch (type) { // Switch the type
+            case 'car': // If the type is car
+                this._width = 16; // Width of the agent
+                this._height = 32; // Height of the agent
                 break;
-            case 'bike':
-                this._width = 7;
-                this._height = 16;
+            case 'bike':  // If the type is bike
+                this._width = 7; // Width of the agent
+                this._height = 16; // Height of the agent
                 break;
             default:
-                throw new Error('Unknown agent type: ' + type);
+                throw new Error('Unknown agent type: ' + type); // Throw an error if the type is unknown
         }
-        this._type = type;
-        this.updateWidthAndHeight();
-        this._model.addClass(type);
+        this._type = type; // Set the type
+        this.updateWidthAndHeight(); // Update the width and height of the agent
+        this._model.addClass(type); // Add the new type
+        return this;
     }
 
+    /**
+     * Removes deletes the agent
+     * @returns {Agent} Self Reference for chaining
+     */
     remove() {
         this._self.remove();
+        return this;
     }
 
+    /**
+     * Update the width and height of the agent
+     * @return {Agent} Self Reference for chaining
+     */
     updateWidthAndHeight() {
-        this._model.css({
+        this._model.css({ // Update the width and height of the agent
             'width': this._width,
             'height': this._height
         });
-        this._half_width = this._width / 2;
-        this._half_height = this._height / 2;
+        this._half_width = this._width / 2; // Half width of the agent
+        this._half_height = this._height / 2; // Half height of the agent
+        return this;
     }
 
-    simulate(x, y, angle, active = true) {
-        if (active) {
-            this._self.css('display', 'block');
-            this.updatePosition(new Point(x, y, angle));
+    /**
+     * positions a current timestep
+     * @param {{x: number, y: number, angle: number, active: boolean}} step The current timestep
+     * @returns {Agent} Self Reference for chaining
+     */
+    simulate(step) {
+        if (step.active) { // If the agent is active
+            this._self.css('display', 'block'); // Show the agent
+            this.updatePosition(new Point(step.x, step.y, step.angle)); // Update the position of the agent
         } else {
-            this._self.css('display', 'none');
+            this._self.css('display', 'none'); // Hide the agent
         }
+        return this;
     }
 
+    /**
+     * Exports the agent for a save
+     * @returns {Object} The exported agent
+     */
     exportSaveData() {
         return {
-            id: this._id,
-            type: this._type,
-            speed: this._initial_speed,
-            lane: this._initial_lane,
-            percent_to_end: this._initial_percent_to_end,
-            road: this._current_road.getId()
+            id: this._id, // ID of the agent
+            type: this._type, // Type of the agent
+            speed: this._initial_speed, // Initial Speed of the agent
+            lane: this._initial_lane, // Initial Lane of the agent
+            percent_to_end: this._initial_percent_to_end, // Initial percent to the end of the road
+            road: this._current_road.getId() // ID of the road the agent is on
         };
     }
 
+    /**
+     * Exports the agent for a simulation
+     * @returns {Object} The exported agent
+     */
     exportToBeSimulatedData() {
-        let pixel_to_meter = getConfig('pixels_to_meter');
+        // let pixel_to_meter = getConfig('pixels_to_meter'); // Get the pixels to meter ratio
         return {
-            id: this._id,
-            type: this._type,
-            speed: this._initial_speed,
-            lane: this._initial_lane,
-            percent_to_end: this._initial_percent_to_end,
-            road: this._current_road.getId()
+            id: this._id, // ID of the agent
+            type: this._type, // Type of the agent
+            speed: this._initial_speed, // Initial Speed of the agent
+            lane: this._initial_lane, // Initial Lane of the agent
+            percent_to_end: this._initial_percent_to_end, // Initial percent to the end of the road
+            road: this._current_road.getId() // ID of the road the agent is on
         };
     }
 }

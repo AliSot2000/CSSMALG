@@ -1,3 +1,8 @@
+/**
+ * Loading screen class
+ * @class Loading
+ * @param {string} selector - The selector of the loading screen
+ */
 class Loading {
     _self = null;
     _bar_wrapper = null;
@@ -5,9 +10,14 @@ class Loading {
     _main_header = null;
     _sub_header = null;
 
+    /**
+     * Initialize the loading screen
+     * @constructor
+     * @param selector
+     */
     constructor(selector = 'div.loading') {
-        this._self = $(selector);
-        this.createElements();
+        this._self = $(selector); // Get the loading screen
+        this.createElements(); // Create the elements
     }
 
     createElements() {
