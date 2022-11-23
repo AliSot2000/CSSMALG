@@ -19,7 +19,7 @@ bool loadFile(const std::string& file, json& input) {
 
 void importMap(world_t& world, json& map) {
 
-	assert(!world.streets.empty() && "Streets is not empty");
+	assert(world.streets.size() == 0 && "Streets is not empty");
 
     // Data will be packed more neatly when first creating array with given size
     world.crossings = std::vector<Crossing>(map["intersections"].size());
@@ -51,12 +51,14 @@ void importMap(world_t& world, json& map) {
 		else {
             // TODO What happens if we have multiple lanes.
 			json& lane = data["lanes"][0];
-			if (lane["type"] == "car") {
+			if (lane["type"] == "both") {
 				street.type = StreetTypes::Both;
 			}
-			else {
+			else if (lane["type"] == "bike") {
 				street.type = StreetTypes::OnlyBike;
-			}
+			} else {
+                street.type = StreetTypes::OnlyCar;
+            }
 		}
 
 		street.start = data["intersections"]["start"]["id"];
