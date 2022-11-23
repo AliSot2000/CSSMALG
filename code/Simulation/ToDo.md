@@ -1,5 +1,4 @@
 # TODOS, Alex puts them here.
-    TODO missing: speed limit
     TODO rework: Cars should be input into crossings faster at the beggining
     TODO bug: Intersections dont check if street has cars, but will still do a normal countdown for the green phase
     TODO bug: Bikes are somehow overtaking, even though I thought i made them not...
