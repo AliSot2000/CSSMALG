@@ -64,7 +64,6 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 				(actorRearEnd >= other->distanceToCrossing && actor->distanceToCrossing <= other->distanceToCrossing)) {
 				maxForwardDistance = 0.0f;
                 maxFwdDst.push_back(0.0f);
-                std::cout << "Colision detected" << std::endl;
 				continue;
 			}
 
@@ -76,7 +75,7 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
             }*/
             // Calculates maximum distance vehicle is allowed to move forward
             maxForwardDistance = std::min(maxForwardDistance, actor->distanceToCrossing - otherRearEnd);
-            maxFwdDst.push_back(NAN);
+            maxFwdDst.push_back(actor->distanceToCrossing - otherRearEnd);
 		}
 	}
 
@@ -85,6 +84,13 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
         for (auto i : maxFwdDst){
             std::cout << i << ", ";
         }
+        std::cout << std::endl;
+
+        for (auto i: street.traffic){
+            std::cout << i->distanceToCrossing << ", " << i->distanceToRight << std::endl;
+        }
+        std::cout << std::endl;
+
         std::cout << maxForwardDistance << std::endl;
     }
 
