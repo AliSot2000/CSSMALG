@@ -58,7 +58,7 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
 				.distanceToRight = 0,
 				.speed = randint(minSpeed, maxSpeed) * 0.277778f, // 30km/h to 80km/h
 				.length = length,
-				.width = 1.5f,
+				//.width = 1.5f,
 				.id = std::to_string(std::rand())
 		};
 
