@@ -6,35 +6,35 @@
  * @param {Point} end The end point of the road
  */
 class Road {
-    _id = null;
+    _id = null; // ID of the road
 
     // Positions and Angles
-    _start = null;
-    _end = null;
+    _start = null; // Start Point
+    _end = null; // End Point
 
     // jQuery Elements
-    _self = null;
-    _border = null;
-    _asphalt = null;
-    _bike_lane_container = null;
-    _lines_container = null;
-    _arrows_container = null;
-    _grab_points = null;
+    _self = null; // Element of the road
+    _border = null; // Element of the border
+    _asphalt = null; // Element of the road
+    _bike_lane_container = null; // Wrapper for all the bike lanes
+    _lines_container = null; // Wrapper for all the lines
+    _arrows_container = null; // Wrapper for all the arrows
+    _grab_points = null; // All the Grab Points
 
 
     // Stored Values
-    _lanes = null;
-    _lines = [];
-    _bike_lanes = [];
-    _intersections = null;
-    _distance = null;
-    _control_points = null;
+    _lanes = null; // Array of all the lanes
+    _lines = []; // Lines
+    _bike_lanes = []; // Bike Lanes
+    _intersections = null; // Connected Intersections
+    _distance = null; // Approximated Distance between the start and end point
+    _control_points = null; // Control Points of the bezier curve
 
     // Simulation
-    _simulation_mode = false;
-    _simulation_points = [];
-    _agents = [];
-    _speed_limit = 30;
+    _simulation_mode = false; // If the road is in simulation mode
+    _simulation_points = []; // Array of all the precalculated points on the curve
+    _agents = []; // Array of all the agents on the road
+    _speed_limit = 30; // Set the speed limit of the road
 
     /**
      * Creates a road
@@ -48,20 +48,16 @@ class Road {
             throw new Error("Road ID cannot be empty"); // Throw an error
         }
 
-        // Initialize Private Values
-        this._id = id;
+        this._id = id; // Set the id
 
-        // Snap Points to grid
-        start.snap();
-        end.snap();
+        start.snap(); // Snap the start point to the grid
+        end.snap(); // Snap the end point to the grid
 
-        this._start = start;
-        this._end = end;
-        this._lanes = [];
-        this._grab_points = {};
-        this._intersections = {start: null, end: null};
-
-
+        this._start = start; // Set the start point
+        this._end = end; // Set the end point
+        this._lanes = []; // Initialize the lanes array
+        this._grab_points = {}; // Initialize the grab points array
+        this._intersections = {start: null, end: null}; // Initialize the intersections array
 
         this.createElement().updatePosition().updateGrabPoints(); // Create the SVG elements, update the position, and update the grab points position
     }
@@ -72,25 +68,22 @@ class Road {
      */
     createElement() {
         // Create the SVG element
-        this._self = $(svgElement("g"));
-        this._self.attr("id", this._id).data("road", this);
+        this._self = $(svgElement("g")).attr("id", this._id).data("road", this).addClass("road");
 
-        // Set the SVG element's attributes
-        this._self.addClass("road");
-        this._border = $(svgElement("path")).addClass("road_border");
-        this._asphalt = $(svgElement("path")).addClass("road_asphalt");
-        this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container");
-        this._lines_container = $(svgElement("g")).addClass("lines_container");
-        this._arrows_container = $(svgElement("g")).addClass("arrows_container");
-        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container);
+        this._border = $(svgElement("path")).addClass("road_border"); // Create the border
+        this._asphalt = $(svgElement("path")).addClass("road_asphalt"); // Create the asphalt
+        this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container"); // Create the bike lane container
+        this._lines_container = $(svgElement("g")).addClass("lines_container"); // Create the lines container
+        this._arrows_container = $(svgElement("g")).addClass("arrows_container"); // Create the arrows container
+        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container); // Append the elements to the SVG element
 
         // Create the grab points
-        let points = ['start', 'end', 'start_angle', 'end_angle'];
-        for (let i = 0; i < points.length; i++) {
-            let point = $('<div class="grabbable ' + points[i] + '"></div>');
-            point.data('link', this).data('type', points[i]);
-            this._grab_points[points[i]] = point;
-            $('div.grabpoints').append(point);
+        let points = ['start', 'end', 'start_angle', 'end_angle']; // Array of all the grab points
+        for (let i = 0; i < points.length; i++) { // Loop through all the grab points
+            let point = $('<div class="grabbable ' + points[i] + '"></div>'); // Create the grab point
+            point.data('link', this).data('type', points[i]); // Set the data
+            this._grab_points[points[i]] = point; // Add the grab point to the grab points array
+            $('div.grabpoints').append(point); // Append the grab point to the grab points container
         }
 
         return this;
@@ -252,23 +245,23 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updateGrabPoints() {
-        this._grab_points.start.css({
+        this._grab_points.start.css({ // Set the start grab point
             left: this._start.x,
             top: this._start.y
         });
 
-        this._grab_points.end.css({
+        this._grab_points.end.css({ // Set the end grab point
             left: this._end.x,
             top: this._end.y
         });
 
-        let start_angle = this._start.angle + Math.PI / 2;
-        this._grab_points.start_angle.css({
+        let start_angle = this._start.angle + Math.PI / 2; // Calculate the start angle, we need to add PI/2 because the angle is the angle of the line and not a position on the road.
+        this._grab_points.start_angle.css({ // Set the start angle grab point
             left: calculateOffsetCosCoords(this._start.x, 0, 20, start_angle),
             top: calculateOffsetSinCoords(this._start.y, 0, 20, start_angle)
         });
 
-        let end_angle = this._end.angle + Math.PI / 2;
+        let end_angle = this._end.angle + Math.PI / 2; // Calculate the end angle, we need to add PI/2 because the angle is the angle of the line and not a position on the road.
         this._grab_points.end_angle.css({
             left: calculateOffsetCosCoords(this._end.x, 0, 20, end_angle),
             top: calculateOffsetSinCoords(this._end.y, 0, 20, end_angle)
@@ -282,8 +275,8 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updateLineTypes() {
-        let lane_type;
-        let line;
+        let lane_type; // Create a variable for the lane type
+        let line; // Create a variable for the line
 
         for (let i = 0; i < this._lines.length; i++) { // Loop through the lines
             line = this._lines[i].removeClass('car_direction bike_direction bike car'); // Remove all the line types
@@ -322,6 +315,10 @@ class Road {
         return this._id;
     }
 
+    /**
+     * Returns the width of the road
+     * @returns {number} The width of the road
+     */
     getRoadWidth() {
         return getConfig('road_lane_width') * this._lanes.length;
     }
@@ -356,28 +353,28 @@ class Road {
     startDrag(type, map) {
         let data = {road: this, type: type}; // Create the data object
         switch (type) { // Switch depending on the type of grab point
-            case 'start':
-                data.point = this._start;
-            case 'end':
-                this.checkAndDissconnectFromIntersection(type);
+            case 'start': // If the start grab point is clicked
+                data.point = this._start; // Set the point to the start point
+            case 'end': // If the end grab point is clicked, or if the start grab point is clicked
+                this.checkAndDissconnectFromIntersection(type); // Check if the road is connected to an intersection and disconnect it
 
-                if (isEmpty(data.point)) {
-                    data.point = this._end;
+                if (isEmpty(data.point)) { // Check if the point is empty, which is the case if the end grab point is clicked
+                    data.point = this._end; // Set the point to the end point
                 }
 
-                data.map = map;
+                data.map = map; // Set the map
 
                 $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
-                    let target = $(event.target);
+                    let target = $(event.target); // Get the target
 
                     let road = event.data.road; // Get the road from the event data
                     let point = event.data.point; // Get the point from the event data
 
-                    if (target.hasClass('snap_point')) {
-                        let intersection = target.data('link');
-                        intersection.snapRoad(road, point, event.data.type, target.data('type'));
-                        road.stopDrag(type);
+                    if (target.hasClass('snap_point')) { // Check if the target has the snap point class
+                        let intersection = target.data('link'); // Get the intersection from the target
+                        intersection.snapRoad(road, point, event.data.type, target.data('type')); // Snap the road to the intersection
+                        road.stopDrag(type); // Stop dragging the road
                         return;
                     }
 
@@ -385,18 +382,18 @@ class Road {
                     let y = snap(event.pageY + $(document.body).scrollTop(), getConfig('grid_size')); // Get the y position of the mouse
 
                     if (point.x !== x || point.y !== y) { // If the position has changed
-                        event.data.map.checkNewSize(point);
+                        event.data.map.checkNewSize(point); // Check if the map needs to be resized
                         point.x = x; // Set the start x position
                         point.y = y; // Set the start y position
                         road.updatePosition().updateGrabPoints(); // Update the position and grab points
                     }
                 });
                 break;
-            case 'start_angle':
-                data.point = this._start;
-            case 'end_angle':
-                if (isEmpty(data.point)) {
-                    data.point = this._end;
+            case 'start_angle': // If the start angle grab point is clicked
+                data.point = this._start; // Set the point to the start point
+            case 'end_angle': // If the end angle grab point is clicked, or if the start angle grab point is clicked
+                if (isEmpty(data.point)) { // Check if the point is empty, which is the case if the end angle grab point is clicked
+                    data.point = this._end; // Set the point to the end point
                 }
                 $(document).on('mousemove', '', data, function (event) { // When the mouse moves
                     event.preventDefault(); // Prevent the default action
@@ -547,24 +544,33 @@ class Road {
         return data;
     }
 
+    /**
+     * Gets all the lanes that are facing the given direction
+     * @param {number} direction The direction to check
+     * @returns {Array.<Object>} The lanes that are facing the given direction
+     */
     getLanesInDirection(direction) {
-        let roads = [];
-        for (let i = 0; i < this._lanes.length; i++) {
-            if (this._lanes[i].direction === direction) {
-                roads.push(this._lanes[i]);
+        let lanes = []; // The lanes that are facing the given direction
+        for (let i = 0; i < this._lanes.length; i++) { // Loop through the lanes
+            if (this._lanes[i].direction === direction) { // If the lane is facing the given direction
+                lanes.push(this._lanes[i]); // Add the lane to the lanes array
             }
         }
-        return roads;
+        return lanes;
     }
 
+    /**
+     * Exports the road for the simulation
+     * @returns {Object} The exported road
+     */
     exportToBeSimulatedData() {
-        let pixels_per_meter = getConfig('pixels_to_meter');
-        let roads = {};
+        let pixels_per_meter = getConfig('pixels_to_meter'); // The pixels per meter
+        let roads = {}; // The roads
 
-        let forward = this.getLanesInDirection(1);
-        let backward = this.getLanesInDirection(-1);
+        let forward = this.getLanesInDirection(1); // Get the forward lanes
+        let backward = this.getLanesInDirection(-1); // Get the backward lanes
 
-        let intersections = {}
+        let intersections = {} // The intersections
 
         if (!isEmpty(this._intersections.start)) { // If the start of the road is connected to an intersection
             intersections.start = { // Set the start intersection
@@ -579,7 +585,7 @@ class Road {
         }
 
         if (!isEmpty(forward)) {
-            roads.forward = {
+            roads.forward = { // Set the forward road
                 id: this._id, // The id of the road
                 lanes: forward, // The lanes of the road
                 intersections: intersections, // The intersections of the road
@@ -588,15 +594,15 @@ class Road {
             };
         }
         if (!isEmpty(backward)) {
-            let reverse_intersections = {};
-            if (!isEmpty(intersections.start)) {
-                reverse_intersections.end = intersections.start;
+            let reverse_intersections = {}; // The reverse intersections
+            if (!isEmpty(intersections.start)) { // If the start of the road is connected to an intersection
+                reverse_intersections.end = intersections.start; // Set the end intersection
             }
-            if (!isEmpty(intersections.end)) {
-                reverse_intersections.start = intersections.end;
+            if (!isEmpty(intersections.end)) { // If the end of the road is connected to an intersection
+                reverse_intersections.start = intersections.end; // Set the start intersection
             }
-            roads.backward = {
-                id: '!' + this._id, // The id of the road
+            roads.backward = { // Set the backward road
+                id: '!' + this._id, // The id of the road. The id is prefixed with a '!' to indicate that it is a reverse road
                 lanes: backward, // The lanes of the road
                 intersections: reverse_intersections, // The intersections of the road
                 distance: this._distance * pixels_per_meter, // The distance of the road
@@ -607,67 +613,115 @@ class Road {
         return roads;
     }
 
+    /**
+     * Calculates where to position an agent, depending on the percent to the end and the offset to the right side
+     * @param {number} percent The percent to the end
+     * @param {number} offset The offset to the right side
+     * @returns {Point} The position of the agent
+     */
     getAgentPosition(percent, offset) {
-        let point;
-        if (this._simulation_mode) {
-            percent = Math.round(percent * 1000)
-            if(percent === 0) {
-                percent = 1;
+        let point; // The position of the agent
+        if (this._simulation_mode) { // If the road is in simulation mode
+            percent = Math.round(percent * 1000) // Round the percent to 3 decimals and convert it to an integer by multiplying it by 1000 and rounding it
+            // This gives us a number between 0 and 1000 which should be in the precalculated points
+            if(percent === 0) { // If the percent is 0
+                percent = 1; // Set the percent to 1 as the angle of the first point cannot be calculated
             }
-            if(percent === 1000) {
-                percent = 999;
+            if(percent === 1000) { // If the percent is 1000
+                percent = 999; // Set the percent to 999 as the angle of the last point cannot be calculated
             }
-            point = this._simulation_points[percent].clone();
+            point = this._simulation_points[percent].clone(); // Get the point from the precalculated points
         } else {
-            point = deCasteljausAlgorithm(this._control_points, percent);
+            point = deCasteljausAlgorithm(this._control_points, percent); // Calculate the point using de Casteljau's algorithm
         }
-        point.x = calculateOffsetCosCoords(point.x, this._mid, offset, point.angle);
-        point.y = calculateOffsetSinCoords(point.y, this._mid, offset, point.angle);
-        return point;
+        point.x = calculateOffsetCosCoords(point.x, this._mid, offset, point.angle); // Calculate the x coordinate of the point
+        point.y = calculateOffsetSinCoords(point.y, this._mid, offset, point.angle); // Calculate the y coordinate of the point
+        return point; // Return the point
     }
 
-    simulationMode(set) {
-        this._simulation_mode = set;
-        if (set) {
+    /**
+     * Switches a road into or out of simulation mode
+     * @param {boolean} set Whether to set the road into simulation mode or not
+     * @returns {Road} Self Reference for chaining
+     */
+    simulationMode(set = false) {
+        this._simulation_mode = set; // Set the simulation mode
+        if (set) { // If the road is switched into simulation mode
             this._simulation_points.push(this._start); // Add the start point to the points array
             for (let i = 1; i < 1000; i++) { // Loop through the points
                 this._simulation_points.push(deCasteljausAlgorithm(this._control_points, i / 1000)); // Add the point to the points array
             }
             this._simulation_points.push(this._end); // Add the end point to the points array
         } else {
-            this._simulation_points = [];
+            this._simulation_points = []; // Reset the points array
         }
+        return this;
     }
 
+    /**
+     * Returns all the agents on a road
+     * @returns {Array.<Agent>} The agents on the road
+     */
     getAgents() {
         return this._agents;
     }
 
+    /**
+     * Adds a agent to the road
+     * @param {Agent} agent The agent to add
+     * @returns {Road} Self Reference for chaining
+     */
     addAgent(agent) {
-        this._agents.push(agent);
+        this._agents.push(agent); // Add the agent to the agents array
         return this;
     }
 
+    /**
+     * Removes multiple agents from the road. These will be the last agents of a given count.
+     * @param {number} count The amount of agents to remove
+     * @returns {Road} Self Reference for chaining
+     */
     removeAgents(count) {
-        this._agents.splice(-count, count);
-    }
-
-    removeAgent(index) {
-        this._agents.splice(index, 1);
-    }
-
-    getSpeedLimit() {
-        return this._speed_limit;
-    }
-
-    changeSpeedLimit(speed_limit) {
-        this._speed_limit = speed_limit;
+        this._agents.splice(-count, count); // Remove the agents from the agents array
         return this;
     }
 
+    /**
+     * Removes a single agent from the road
+     * @param {number} index The index of the agent to remove
+     * @returns {Road} Self Reference for chaining
+     */
+    removeAgent(index) {
+        this._agents.splice(index, 1); // Remove the agent from the agents array
+        return this;
+    }
+
+    /**
+     * Gets the current speed limit of the road
+     * @returns {number} The speed limit of the road
+     */
+    getSpeedLimit() {
+        return this._speed_limit; // Return the speed limit
+    }
+
+    /**
+     * Sets the speed limit of the road
+     * @param {number} speed_limit The speed limit to set
+     * @returns {Road} Self Reference for chaining
+     */
+    changeSpeedLimit(speed_limit= 30) {
+        this._speed_limit = speed_limit; // Set the speed limit
+        return this;
+    }
+
+    /**
+     * Renames the road to a new id
+     * @param {string} name The new id of the road
+     * @returns {Road} Self Reference for chaining
+     */
     rename(name) {
-        this._id = name;
-        this._self.attr('id', name);
+        this._id = name; // Set the id
+        this._self.attr('id', name); // Set the id of the svg element
         return this;
     }
 }
