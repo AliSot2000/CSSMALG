@@ -154,7 +154,10 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 			target->traffic.push_back(actor);
 			return true;
 		}
-		dummy.distanceToRight += LANE_WIDTH;
+        if (actor->type == ActorTypes::Bike) { // Bikes are never allowed to overtake on another lane!
+            break;
+        }
+        dummy.distanceToRight += LANE_WIDTH;
 	}
 	return false;
 }
