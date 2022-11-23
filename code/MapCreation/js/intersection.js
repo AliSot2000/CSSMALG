@@ -5,19 +5,19 @@
  * @param {Point} point The coordinate of the intersection
  */
 class Intersection {
-    _id = null;
+    _id = null; // The position of the intersection
 
-    _position = null;
-    _size = 0;
-    _half_size = 0;
+    _position = null; // The position of the intersection
+    _size = 0; // The size of the intersection
+    _half_size = 0; // Half of the size of the intersection
 
-    _self = null;
+    _self = null; // The DOM element of the intersection
 
-    _directions = ['north', 'east', 'south', 'west'];
+    _directions = ['north', 'east', 'south', 'west']; // The directions
 
-    _grab_point = null;
+    _grab_point = null; // The grab point of the intersection
 
-    _snap_points = null;
+    _snap_points = null; // The snap points of the intersection
 
     /**
      * Creates a new intersection
@@ -27,7 +27,6 @@ class Intersection {
      */
     constructor(id, point) {
         this._id = id; // The ID of the intersection
-        let grid_size = getConfig('grid_size'); // The size of the grid
         point.snap(); // Snap the point to the grid
         this._position = point; // The position of the intersection
         this._snap_points = {}; // The snap points of the intersection
