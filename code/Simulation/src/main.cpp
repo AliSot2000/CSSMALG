@@ -49,15 +49,15 @@ void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& 
 }
 
 void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
-                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end) {
+                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length) {
 	int index = 1;
 	for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
-		Actor actor = {
+        Actor actor = {
 				.type = type,
 				.distanceToCrossing = 0.0f,
 				.distanceToRight = 0,
 				.speed = randint(minSpeed, maxSpeed) * 0.277778f, // 30km/h to 80km/h
-				.length = 4.5f,
+				.length = length,
 				.width = 1.5f,
 				.id = std::to_string(std::rand())
 		};
@@ -101,8 +101,8 @@ int main(int argc, char* argv[]) {
 	const char* outputFile = argv[2];
 	const int randomCars = std::atoi(argv[3]);
 	const int randomBikes = std::atoi(argv[4]);
-	const float runtime = (float)std::atof(argv[5]); // 60.0f;
-	const float deltaTime = (float)std::atof(argv[6]); // 0.25f;
+	const auto runtime = (float)std::atof(argv[5]); // 60.0f;
+	const auto deltaTime = (float)std::atof(argv[6]); // 0.25f;
 
 	world_t world;
 	nlohmann::json import;
@@ -125,8 +125,8 @@ int main(int argc, char* argv[]) {
 
 	world.actors = std::vector<Actor>(randomCars + randomBikes);
 
-	createRandomActors(world, carsSPT, ActorTypes::Car, 30, 50, world.actors.begin(), world.actors.begin() + randomCars);
-	createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end());
+	createRandomActors(world, carsSPT, ActorTypes::Car, 30, 50, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
+	createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
 
 	stopMeasureTime();
 
