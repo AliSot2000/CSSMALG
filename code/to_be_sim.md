@@ -33,7 +33,8 @@
                 }
             },
             "distance": 31.260921205813606,
-            "speed_limit": 30
+            "speed_limit": 30,
+            "oppositeStreetId": <ID_Of_Opposite_Road>
         }
     ],
     "intersections": [
@@ -52,7 +53,8 @@
                 {
                     "id": "road_4"
                 }
-            ]
+            ],
+            "trafficSignal": true
         }
     ],
     "agents": [
