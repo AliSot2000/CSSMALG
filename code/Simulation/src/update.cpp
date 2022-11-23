@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
+#include <stdexcept>
 
 #include "update.hpp"
 
@@ -13,24 +14,14 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 	// Find all elements infront of vehicle which are in range of a collision if the vehicle would move forward
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
-		[](const Actor* a, const float& b) { 
+		[](const Actor* a, const float& b) {
 			return a->distanceToCrossing + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
 	});
 
-	*end = std::lower_bound(traffic.begin(), traffic.end(), maxDistance,
-		[](const Actor* a, const float& b) { 
-			return a->distanceToCrossing < b;
-	});
-		
-	/*
-	// This code somehow does not compile, even though it has exactly the same data as lower bound
-
 	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
-		// TODO check if correct, could be that a must be of type Actor** a!!!
-		[](const Actor* a, const float& b) { 
+		[](const float& b, const Actor* a) {
 			return a->distanceToCrossing > b;
 	});
-	*/
 }
 
 float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
