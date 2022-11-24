@@ -34,6 +34,15 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 	@param trafficEnd Iterator to last vehicle which is in driving distance
 
 	@returns Returns a float containing the maximum distance a car is allowed to drive forward.
+
+    ----------------------------------------------------------------------------------------------
+
+    --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+    std::vector{[A5]              [A4]     [A2]     [A1]              [A0]}
+    ----------------------------------------------------------------------------------------------
+                                  | Max Distance
+                                  ---------------------------> | Min Distance = actor->distanceToCrossing - distance_traveled
+                                  IT-END            IT-START
 */
 float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
 
