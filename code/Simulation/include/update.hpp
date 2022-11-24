@@ -82,4 +82,16 @@ void updateStreets(world_t* world, const float timeDelta);
 
 
 bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta);
+
+
 void updateCrossings(world_t* world, const float timeDelta);
+/*
+    Compute the desired distance between the vehicle and the border of the next vehicle.
+
+    @param actor The actor for which the desired distance is computed.
+    @param delta_velocity The difference in velocity between the actor and the next vehicle.
+
+    @returns The desired distance between the actor and the border of the next vehicle.
+
+*/
+float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity);

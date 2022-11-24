@@ -208,7 +208,7 @@ void updateStreets(world_t* world, const float timeDelta) {
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
 			Actor* actor = street.traffic[i];
-			const float distance = actor->speed * timeDelta;
+			const float distance = actor->current_velocity * timeDelta;
 			const float wantedDistanceToCrossing = std::max(0.0f, actor->distanceToCrossing - (distance));
 			const float maxDistance = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
@@ -219,10 +219,27 @@ void updateStreets(world_t* world, const float timeDelta) {
 			trafficInDrivingDistance(street, wantedDistanceToCrossing, maxDistance, &start, &end);
 
 			float maxDrivingDistance = choseLaneGetMaxDrivingDistance(street, actor, timeDelta, start, end);
-			actor->distanceToCrossing -= maxDrivingDistance;
-			
-			// Will make sure traffic is still sorted
+            Actor* frontVehicle = nullptr;
+
+            // Compute updated stuff
+            actor->distanceToCrossing -= maxDrivingDistance; //TODO needs to be inspected
+            actor->current_velocity += std::max(actor->current_acceleration * timeDelta, actor->max_velocity);
+            actor->current_acceleration = (frontVehicle == nullptr) ?
+                    actor->acceleration *
+                        (1
+                        - std::pow(actor->current_velocity / actor->target_velocity, actor->acceleration_exp)
+                        - (dynamicBrakingDistance(actor, -1*actor->current_velocity) / maxDrivingDistance)) : // Case when the actor is in the front of the queue.
+                    actor->acceleration *
+                        (1
+                        - std::pow(actor->current_velocity / actor->target_velocity, actor->acceleration_exp)
+                        - (dynamicBrakingDistance(actor, frontVehicle->current_velocity - actor->current_velocity) / maxDrivingDistance));       // Case when the actor is in the back of the queue. TODO delta might need to be inverted
+
+            // Will make sure traffic is still sorted
 			sortStreet(start, end);
 		}
 	}
+}
+
+float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
+    return MIN_DISTANCE_BETWEEN_VEHICLES + actor->current_velocity * SAFETY_TIME_HEADWAY + (delta_velocity * actor->current_velocity) / (2 * std::sqrt(actor->acceleration * actor->deceleration));
 }
