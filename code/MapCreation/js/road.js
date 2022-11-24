@@ -194,13 +194,13 @@ class Road {
                 $(children[bike_path++]).attr('d', path); // Set the path of the bike lane
             }
             if (lane.direction < 0) { // Check if the lane is going backwards
-                arrow_start = deCasteljausAlgorithm(this._control_points, arrow_length); // Calculate the start of the arrow
-                arrow_end = deCasteljausAlgorithm(this._control_points, arrow_length * 2); // Calculate the end of the arrow
-                arrow_head = deCasteljausAlgorithm(this._control_points, arrow_length * 0.2); // Calculate the head of the arrow
+                arrow_start = deCasteljausAlgorithm(this._control_points, arrow_length * 2); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(this._control_points, arrow_length * 3); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(this._control_points, arrow_length * 1.2); // Calculate the head of the arrow
             } else {
-                arrow_start = deCasteljausAlgorithm(this._control_points, 1 - arrow_length); // Calculate the start of the arrow
-                arrow_end = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 2); // Calculate the end of the arrow
-                arrow_head = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 0.2); // Calculate the head of the arrow
+                arrow_start = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 2); // Calculate the start of the arrow
+                arrow_end = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 3); // Calculate the end of the arrow
+                arrow_head = deCasteljausAlgorithm(this._control_points, 1 - arrow_length * 1.2); // Calculate the head of the arrow
             }
 
             // Create the arrow path
@@ -502,10 +502,10 @@ class Road {
         this.updateRoadWidth().updateLineTypes().updatePosition().updateGrabPoints(); // Update the road width, line types, position and grab points
 
         if (!isEmpty(this._intersections.start)) { // If the road is connected to an intersection
-            this._intersections.start.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints(); // Update the intersection width, height, position, grab point and snap points
+            this._intersections.start.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints().updateTrafficControllers(); // Update the intersection width, height, position, grab point and snap points
         }
         if (!isEmpty(this._intersections.end)) { // If the road is connected to an intersection
-            this._intersections.end.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints(); // Update the intersection width, height, position, grab point and snap points
+            this._intersections.end.intersection.updateWidthAndHeight().updatePosition().updateGrabPointAndSnapPoints().updateTrafficControllers(); // Update the intersection width, height, position, grab point and snap points
         }
 
         return this;
