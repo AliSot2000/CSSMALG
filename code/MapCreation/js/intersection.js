@@ -21,6 +21,7 @@ class Intersection {
 
     _traffic_controllers = null; // The traffic controllers of the intersection
     _traffic_controllers_wrapper = null; // The wrapper of the traffic controllers
+    _roundabout = null; // The roundabout of the intersection
 
     /**
      * Creates a new intersection
@@ -98,6 +99,14 @@ class Intersection {
             width: this._size + (this.isConnected('west') ? 0 : border_size) + (this.isConnected('east') ? 0 : border_size), // Set the width
             height: this._size + (this.isConnected('north') ? 0 : border_size) + (this.isConnected('south') ? 0 : border_size) // Set the height
         });
+
+        if (this.isRoundAbout()) { // Check if the intersection is a roundabout
+            this._roundabout.attr({
+                cx: this._position.x, // Set the x coordinate
+                cy: this._position.y, // Set the y coordinate
+                r: this._half_size / 3 // Set the radius
+            });
+        }
         return this;
     }
 
@@ -512,5 +521,23 @@ class Intersection {
             this._traffic_controllers[direction].type = type; // Set the traffic controller type
             this.updateTrafficControllers(direction); // Update the traffic controller
         }
+    }
+
+    setRoundAbout(value = false) {
+        if (value) { // Check if the traffic controller is a roundabout
+            this._roundabout = $(svgElement('circle')).addClass('roundabout').attr({
+                cx: this._position.x,
+                cy: this._position.y,
+                r: this._half_size / 3
+            }); // Create a circle
+            this._self.append(this._roundabout); // Append the roundabout to the intersection
+        } else {
+            this._roundabout.delete(); // Delete the roundabout
+            this._roundabout = null; // Set the roundabout to null
+        }
+    }
+
+    isRoundAbout() {
+        return !isEmpty(this._roundabout); // Return if the traffic controller is a roundabout
     }
 }

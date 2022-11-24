@@ -512,3 +512,9 @@ body.grabbing * {
 .traffic_light {
     animation: traffic_light_colors 10s infinite;
 }
+
+.roundabout {
+    stroke: var(--road_border);
+    stroke-width: 2;
+    fill: var(--background);
+}
