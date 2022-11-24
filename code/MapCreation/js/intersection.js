@@ -307,7 +307,14 @@ class Intersection {
         let data = { // The data to export
             id: this._id,
             position: this._position.export(),
-            roads: {}
+            roads: {},
+            isRoundAbout: this.isRoundAbout(),
+            traffic_controllers: {
+                north: this._traffic_controllers.north.type,
+                east: this._traffic_controllers.east.type,
+                south: this._traffic_controllers.south.type,
+                west: this._traffic_controllers.west.type
+            }
         };
 
         for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
@@ -532,7 +539,7 @@ class Intersection {
             }); // Create a circle
             this._self.append(this._roundabout); // Append the roundabout to the intersection
         } else {
-            this._roundabout.delete(); // Delete the roundabout
+            this._roundabout.remove(); // Delete the roundabout
             this._roundabout = null; // Set the roundabout to null
         }
     }
