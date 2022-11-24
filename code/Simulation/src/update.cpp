@@ -29,19 +29,16 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 	if (actor->distanceToCrossing <= 0.0f) 
 		return 0.0f;
 
-	const float distance = actor->speed * timeDelta;
+	const float distance = actor->current_velocity * timeDelta;
 
 	float maxForwardDistance = std::min(distance, actor->distanceToCrossing); // don't overshoot crossing (go beyond the road)
 	const float actorRearEnd = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES; // TODO rear end doesn't need min distance
-
-    std::vector<float> maxFwdDst;
 
     for (TrafficIterator iter = trafficStart; iter != trafficEnd; iter++) {
         // If space is less than MIN_DISTANCE_BETWEEN_VEHICLES then there is no space to drive forward
 		Actor* other = *iter; // Get pointer to actor of iterator (with *)
 
 		if (actor == other) {
-            maxFwdDst.push_back(NAN);
             continue;
         }
 
@@ -54,36 +51,13 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 			if ((otherRearEnd >= actor->distanceToCrossing && other->distanceToCrossing <= actor->distanceToCrossing) ||
 				(actorRearEnd >= other->distanceToCrossing && actor->distanceToCrossing <= other->distanceToCrossing)) {
 				maxForwardDistance = 0.0f;
-                maxFwdDst.push_back(0.0f);
 				continue;
 			}
 
-            // TODO This fixes the bug however this should not happend since the traffic in driving distance shouldn't return elements behind the car...
-            /*
-            if (other->distanceToCrossing > actorRearEnd) {
-                maxFwdDst.push_back(-0.001f);
-                continue;
-            }*/
             // Calculates maximum distance vehicle is allowed to move forward
             maxForwardDistance = std::min(maxForwardDistance, actor->distanceToCrossing - otherRearEnd);
-            maxFwdDst.push_back(actor->distanceToCrossing - otherRearEnd);
 		}
 	}
-
-    if (maxForwardDistance < 0.0f){
-        std::cout << "Error Incomming " << maxForwardDistance <<  std::endl;
-        for (auto i : maxFwdDst){
-            std::cout << i << ", ";
-        }
-        std::cout << std::endl;
-
-        for (auto i: street.traffic){
-            std::cout << i->distanceToCrossing << ", " << i->distanceToRight << std::endl;
-        }
-        std::cout << std::endl;
-
-        std::cout << maxForwardDistance << std::endl;
-    }
 
 	assert(maxForwardDistance >= 0.0f && "Vehicle can not drive backwards.");
 	return maxForwardDistance;
