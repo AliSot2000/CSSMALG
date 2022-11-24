@@ -423,7 +423,7 @@ class Road {
      * @param {string} type The type of grab point
      * @param {Map} map The map the grab point is on
      */
-    stopDrag(type, map) {
+    stopDrag(type, map = null) {
         this._grab_points[type].removeClass('grabbed'); // Remove the grabbing class from the grab point
 
         $(document.body).removeClass('grabbing'); // Change the cursor back to the default
