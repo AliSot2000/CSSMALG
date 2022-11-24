@@ -271,22 +271,6 @@ class Intersection {
     }
 
     /**
-     * Gets all the connected roads in an array
-     * @returns {Array.<Road>} The connected roads
-     */
-    getLinkedRoads() {
-        let roads = []; // The array of roads
-
-        for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
-            if (this._snap_points[this._directions[i]].connected) { // Check if the snap point is connected
-                roads.push(this._snap_points[this._directions[i]].road); // Add the road to the array
-            }
-        }
-
-        return roads;
-    }
-
-    /**
      * Deletes the intersection
      */
     remove() {
@@ -513,5 +497,20 @@ class Intersection {
             return lanes.length * getConfig('road_lane_width'); // Return the width of the incoming road
         }
         return 0;
+    }
+
+    getRoadInDirection(direction) {
+        return this._snap_points[direction].road; // Return the road in the direction
+    }
+
+    getTrafficControllerInDirection(direction) {
+        return this._traffic_controllers[direction].type; // Return the traffic controller in the direction
+    }
+
+    setTrafficControllerInDirection(direction = 'north', type = 'right_of_way') {
+        if (this._traffic_controllers[direction].type !== type) { // Check if the traffic controller type is different
+            this._traffic_controllers[direction].type = type; // Set the traffic controller type
+            this.updateTrafficControllers(direction); // Update the traffic controller
+        }
     }
 }

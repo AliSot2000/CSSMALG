@@ -374,7 +374,7 @@ class Road {
                     if (target.hasClass('snap_point')) { // Check if the target has the snap point class
                         let intersection = target.data('link'); // Get the intersection from the target
                         intersection.snapRoad(road, point, event.data.type, target.data('type')); // Snap the road to the intersection
-                        road.stopDrag(type); // Stop dragging the road
+                        road.stopDrag(type, event.data.map); // Stop dragging the road
                         return;
                     }
 
