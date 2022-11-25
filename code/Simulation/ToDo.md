@@ -1,10 +1,10 @@
 # TODOS, Alex puts them here.
     TODO rework: Cars should be input into crossings faster at the beggining
     TODO bug: Intersections dont check if street has cars, but will still do a normal countdown for the green phase
-    TODO bug: Bikes are somehow overtaking, even though I thought i made them not...
 
 	TODO feature: Overtaking if opposite street is free
-
+    
+    TODO Somehow the actors can have an identical position...
 	TODO rename crossings to intersections
 	TODO test if crossings switch inbound streets
     TODO Negative forward distance for bikes resulting in error. (Requires more bikes than cars, and single and double lane streets on the map
