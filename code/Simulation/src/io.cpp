@@ -42,7 +42,7 @@ void importMap(world_t& world, json& map) {
 		street.id = data["id"];
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
-        street.speedlimit = data["speed_limit"];
+        street.speedlimit = static_cast<float>(data["speed_limit"]) / 3.6f;
 
 		if (data["lanes"].empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
@@ -97,6 +97,7 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 void addFrame(const world_t& world, json& out) {
 	json frame;
 
+    // Lambda function to create json object to add to output.
 	auto a = [&frame](const Actor* actor, const Street* street, const float percent, bool active) {
 		frame[actor->id] = {};
 		json& obj = frame[actor->id];
@@ -111,9 +112,10 @@ void addFrame(const world_t& world, json& out) {
 		}
 	};
 
+    // Iterate through the actors on the street and update its distance.
 	for (const auto& street : world.streets) {
 		for (const auto& actor : street.traffic) {
-			const float percent = 1.0f - (1.0f / street.length * actor->distanceToCrossing);
+			const float percent = 1.0f - (actor->distanceToCrossing / street.length);
 			a(actor, &street, percent, true);
 		}
 	}
