@@ -28,9 +28,9 @@ typedef struct Actor {
 
     // Acceleration
     float current_acceleration = 0; // m/s^2
-    float acceleration = 0.73f; // m/s^2
-    float deceleration = 1.67f; // m/s^2
-    float acceleration_exp = 4.0f; // unitless
+    float acceleration = 2*0.73f; // m/s^2
+    float deceleration = 2*1.67f; // m/s^2
+    float acceleration_exp = 10.0f; // unitless
 
 	// Only used for visualization
 	std::string id = "empty";
