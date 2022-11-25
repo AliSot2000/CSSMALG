@@ -295,7 +295,7 @@ void updateStreets(world_t* world, const float timeDelta) {
 
 			Actor* actor = street.traffic[i];
 			const float distance = actor->current_velocity * timeDelta;
-			const float wantedDistanceToCrossing = std::max(0.0f, actor->distanceToCrossing - (distance));
+			const float wantedDistanceToCrossing = std::max(0.0f, actor->distanceToCrossing - distance);
 			const float maxDistance = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
 			TrafficIterator start;
@@ -303,25 +303,53 @@ void updateStreets(world_t* world, const float timeDelta) {
 
 			// Find all traffic which could be colliding with vehicle
 			trafficInDrivingDistance(street, wantedDistanceToCrossing, maxDistance, &start, &end);
+//			float maxDrivableDistance = choseLaneGetMaxDrivingDistance(street, actor, timeDelta, start, end);
+            Actor* frontVehicle = moveToOptimalLane(street, actor);
 
-			float maxDrivingDistance = choseLaneGetMaxDrivingDistance(street, actor, timeDelta, start, end);
-            Actor* frontVehicle = nullptr;
+
+            float maxDrivableDistance = actor->distanceToCrossing;
+            float movment_distance = std::min(distance, actor->distanceToCrossing);
 
             // Compute updated stuff
-            actor->distanceToCrossing -= maxDrivingDistance; //TODO needs to be inspected
-            actor->current_velocity += std::max(actor->current_acceleration * timeDelta, actor->max_velocity);
-            actor->current_acceleration = (frontVehicle == nullptr) ?
-                    actor->acceleration *
-                        (1
-                        - std::pow(actor->current_velocity / actor->target_velocity, actor->acceleration_exp)
-                        - (dynamicBrakingDistance(actor, -1*actor->current_velocity) / maxDrivingDistance)) : // Case when the actor is in the front of the queue.
-                    actor->acceleration *
-                        (1
-                        - std::pow(actor->current_velocity / actor->target_velocity, actor->acceleration_exp)
-                        - (dynamicBrakingDistance(actor, frontVehicle->current_velocity - actor->current_velocity) / maxDrivingDistance));       // Case when the actor is in the back of the queue. TODO delta might need to be inverted
+            if (frontVehicle != nullptr) {
+                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing));
+                movment_distance = std::min(distance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing));
+                assert(frontVehicle->distanceToCrossing  + frontVehicle->length < actor->distanceToCrossing - movment_distance);
+            }
 
+            if (actor->distanceToCrossing < 2.0f){
+                std::cout << "close " << std::endl;
+            }
+
+            actor->distanceToCrossing -= movment_distance;
+            actor->current_velocity = std::min(actor->current_acceleration * timeDelta + actor->current_velocity,
+                                               actor->max_velocity);
+            // Only update the speed with formula if the vehicle is not at the end of the street (div by zero error)
+            if (maxDrivableDistance > 0.0f) {
+                actor->current_acceleration = (frontVehicle == nullptr) ?
+                                              actor->acceleration *
+                                              (1
+                                               - std::pow(actor->current_velocity / actor->target_velocity,
+                                                          actor->acceleration_exp)
+                                               - std::pow(dynamicBrakingDistance(actor, -1 * actor->current_velocity) /
+                                                          maxDrivableDistance, 2.0f))
+                                                                        : // Case when the actor is in the front of the queue.
+                                              actor->acceleration *
+                                              (1
+                                               - std::pow(actor->current_velocity / actor->target_velocity,
+                                                          actor->acceleration_exp)
+                                               - std::pow(dynamicBrakingDistance(actor, actor->current_velocity - frontVehicle->current_velocity) /
+                                                          maxDrivableDistance,
+                                                          2.0f));       // Case when the actor is in the back of the queue.
+            } else {
+                actor->current_acceleration = 0.0f;
+            }
             // Will make sure traffic is still sorted
 			sortStreet(start, end);
+            assert(std::is_sorted(street.traffic.begin(), street.traffic.end()) && "Street is sorted");
+            assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
+            assert(std::isnan(actor->current_velocity) == false && "Acceleration is not nan");
+            assert(std::isnan(actor->distanceToCrossing) == false && "Acceleration is not nan");
 		}
 	}
 }
