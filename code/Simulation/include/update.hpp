@@ -5,6 +5,13 @@
 #define MIN_DISTANCE_BETWEEN_VEHICLES 1.0f // There should be atleast half a meter distance between vehicles
 #define LANE_WIDTH 2 // A lane is per default 2 meters
 #define DISTANCE_TO_CROSSING_FOR_TELEPORT 0.5f
+#define SAFETY_TIME_HEADWAY 1.6f // 1.6 seconds headway
+
+typedef struct FrontVehicles{
+    Actor* frontVehicle = nullptr;
+    Actor* frontVehicleLeft = nullptr;
+    Actor* frontVehicleRight = nullptr;
+} frontVehicles_t;
 
 typedef std::vector<Actor*>::iterator TrafficIterator;
 
@@ -47,6 +54,28 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
 
 /*
+    Locates the vehicle in front, in front and to the immediate right and in front and to the immediate left
+    of the selected actor.
+
+    @param street Selected street in which vehicle is stored
+    @param vehicle Pointer to vehicle in street->traffic
+
+    @returns Returns a FrontVehicle struct containing the front vehicle, the front vehicle to the left and the front vehicle to the right.
+
+*/
+FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor);
+/*
+    Finds the optimal Lane to drive for the vehicle and moves it to said lane. It then returns the
+    vehicle in front if there is one.
+
+    @param street Selected street in which vehicle is stored
+    @param actor Pointer to vehicle in street->traffic
+
+    @returns Pointer to Vehicle in Front
+
+ */
+Actor* moveToOptimalLane(Street& street, Actor* actor);
+/*
 	Choses the optimal lane for a car and returns the maximal distance it is allowed to drive forward.
 	Bikes will not switch  lanes, cars will go left and right
 
@@ -73,7 +102,7 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end);
 /*
 	Updates all vehicles in all streets
 
-	@param world World instance to update
+	@param world, World instance to update
 	@param timeDelta Time past since last frame
 
 	@returns Void
