@@ -336,25 +336,40 @@ class Intersection {
     exportToBeSimulatedData() {
         let data = { // The data to export
             id: this._id,
-            roads: []
+            roads: [],
+            roundabout: this.isRoundAbout(),
+            trafficSignal: this.hasTrafficLight()
         };
 
         for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
             if (this._snap_points[this._directions[i]].connected) { // Check if the snap point is connected
                 let road = this._snap_points[this._directions[i]].road // Get the road
+                let point_type = this._snap_points[this._directions[i]].point_type; // Get the point type
                 let forward = road.getLanesInDirection(1); // Get the forward lanes
                 let backward = road.getLanesInDirection(-1); // Get the backward lanes
 
                 if (!isEmpty(forward)) { // Check if there are forward lanes
-                    data.roads.push({ // Add the forward lanes to the data
-                        id: road.getId() // The id of the road
-                    });
+                    let r = {
+                        id: road.getId()
+                    }
+                    if (point_type === 'end') { // Check if the point type is start
+                        r.traffic_controller = this._traffic_controllers[this._directions[i]].type; // Set the traffic controller
+                    } else {
+                        r.traffic_controller = 'outgoing'; // Set the traffic controller
+                    }
+                    data.roads.push(r);
                 }
 
                 if (!isEmpty(backward)) { // Check if there are backward lanes
-                    data.roads.push({ // Add the backward lanes to the data
-                        id: '!' + road.getId() // The id of the road
-                    });
+                    let r = {
+                        id: '!' + road.getId()
+                    }
+                    if (point_type === 'start') { // Check if the point type is start
+                        r.traffic_controller = this._traffic_controllers[this._directions[i]].type; // Set the traffic controller
+                    } else {
+                        r.traffic_controller = 'outgoing'; // Set the traffic controller
+                    }
+                    data.roads.push(r);
                 }
             }
         }
@@ -600,5 +615,18 @@ class Intersection {
      */
     isRoundAbout() {
         return !isEmpty(this._roundabout); // Return if the traffic controller is a roundabout
+    }
+
+    /**
+     * Checks if the intersection has at least one traffic light
+     * @returns {boolean} Whether the intersection has at least one traffic light or not
+     */
+    hasTrafficLight () {
+        for (let direction in this._traffic_controllers) {
+            if (this._traffic_controllers[direction].type === 'traffic_light') {
+                return true;
+            }
+        }
+        return false;
     }
 }
