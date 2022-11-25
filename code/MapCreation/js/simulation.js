@@ -352,7 +352,7 @@ class Simulation {
 
         let step = this._simulation[this._step]; // The step
         for (let id in step.changed) { // For each agent that changed in the step
-            this._agents[id].simulate(step.changed); // Set the position of the agent to the position in the step
+            this._agents[id].simulate(step.changed[id]); // Set the position of the agent to the position in the step
         }
 
         this._step += this._speed > 1 ? this._speed : 1; // Increase the step. This will skip steps if the speed is bigger than 1
