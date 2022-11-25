@@ -152,51 +152,52 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 	assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
 	assert((street.type != StreetTypes::OnlyBike || actor->type != ActorTypes::Car) && "Car is not allowed on this street!");
 
-	if(actor->type == ActorTypes::Bike) // Bikes are never allowed to overtake on another lane!
-		return maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
+	if(actor->type == ActorTypes::Bike) { // Bikes are never allowed to overtake on another lane!
+        return maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
+    }
 
-	const float distance = actor->speed * timeDelta;
+	const float distance = actor->current_velocity * timeDelta;
 	float allowedDistance = maxSpaceInFrontOfVehicle(street,  actor, timeDelta, trafficStart, trafficEnd);
 
-			// Try if there are open lanes
-		const int originLane = actor->distanceToRight;
-		int maxDistanceLane = actor->distanceToRight;
+    // Try if there are open lanes
+    const int originLane = actor->distanceToRight;
+    int maxDistanceLane = actor->distanceToRight;
 
-		// Swaps maxDistanceLane if allowed distance to drive in other lane is higher
-		auto checkNewDistance = [&]() {
-			float newAllowedDistance = maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
-			if (newAllowedDistance > allowedDistance || (newAllowedDistance == allowedDistance && actor->distanceToRight < maxDistanceLane)) {
-				maxDistanceLane = actor->distanceToRight;
-				allowedDistance = newAllowedDistance;
-			}
-		};
+    // Swaps maxDistanceLane if allowed distance to drive in other lane is higher
+    auto checkNewDistance = [&]() {
+        float newAllowedDistance = maxSpaceInFrontOfVehicle(street, actor, timeDelta, trafficStart, trafficEnd);
+        if (newAllowedDistance > allowedDistance || (newAllowedDistance == allowedDistance && actor->distanceToRight < maxDistanceLane)) {
+            maxDistanceLane = actor->distanceToRight;
+            allowedDistance = newAllowedDistance;
+        }
+    };
 
-		// Car could go faster but is not able to
-		if (allowedDistance < distance) {
+    // Car could go faster but is not able to
+    if (allowedDistance < distance) {
 
-			// This while loop is efficient because the traffic in front has been cached, hence no new lookups will appear
-			// Furthermore there are at most c * #Lanes many vehicles in front, which could be in driving range
-			while (actor->distanceToRight + LANE_WIDTH < street.width) {
-				// there is still space to go left
-				actor->distanceToRight += LANE_WIDTH;
-				checkNewDistance();
-			}
-		}
+        // This while loop is efficient because the traffic in front has been cached, hence no new lookups will appear
+        // Furthermore there are at most c * #Lanes many vehicles in front, which could be in driving range
+        while (actor->distanceToRight + LANE_WIDTH < street.width) {
+            // there is still space to go left
+            actor->distanceToRight += LANE_WIDTH;
+            checkNewDistance();
+        }
+    }
 
-		// Same as above, but checks for free lanes on the left.
-		actor->distanceToRight = originLane;
-		while (actor->distanceToRight > 0.0f) {
-			actor->distanceToRight -= LANE_WIDTH;
-			checkNewDistance();
-		}
+    // Same as above, but checks for free lanes on the left.
+    actor->distanceToRight = originLane;
+    while (actor->distanceToRight > 0.0f) {
+        actor->distanceToRight -= LANE_WIDTH;
+        checkNewDistance();
+    }
 
-		// This distinction removes vehicles trying to switch to lanes more to the right when standing still at the crossing.
-		if (allowedDistance > 0.0f) {
-			actor->distanceToRight = maxDistanceLane;
-		}
-		else {
-			actor->distanceToRight = originLane;
-		}
+    // This distinction removes vehicles trying to switch to lanes more to the right when standing still at the crossing.
+    if (allowedDistance > 0.0f) {
+        actor->distanceToRight = maxDistanceLane;
+    }
+    else {
+        actor->distanceToRight = originLane;
+    }
 
 	return allowedDistance;
 }
