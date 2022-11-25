@@ -218,7 +218,6 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 }
 
 bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) {
-	bool spaceInTargetStreet = false;
 	Street* target = crossing.outbound[actor->path.front()];
 	TrafficIterator targetStart;
 	TrafficIterator targetEnd;
@@ -228,6 +227,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 	dummy.distanceToRight = 0;
 	dummy.distanceToCrossing = target->length - dummy.length;
 	while (dummy.distanceToRight + LANE_WIDTH <= target->width) {
+        // TODO Since Velocity is 0, insert fails. use rbegin() and find the first vehicles like that.
 		if (maxSpaceInFrontOfVehicle(*target, &dummy, timeDelta, targetStart, targetEnd) > 0.0f) {
 			actor->distanceToCrossing = dummy.distanceToCrossing;
 			actor->distanceToRight = dummy.distanceToRight;
