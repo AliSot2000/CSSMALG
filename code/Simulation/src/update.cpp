@@ -11,7 +11,7 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 
 	auto& traffic = street.traffic;
 	
-	// Find all elements infront of vehicle which are in range of a collision if the vehicle would move forward
+	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
 		[](const Actor* a, const float& b) {
@@ -281,6 +281,7 @@ void updateCrossings(world_t* world, const float timeDelta) {
 			}
 
 			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
+                actor->target_velocity = street->speedlimit;
 				street->traffic.erase(iter);
 				break; // I dont know if removing an element from a vector during iteration would lead to good code, hence break
 			}
@@ -312,18 +313,24 @@ void updateStreets(world_t* world, const float timeDelta) {
 
             // Compute updated stuff
             if (frontVehicle != nullptr) {
-                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing));
-                movment_distance = std::min(distance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing));
-                assert(frontVehicle->distanceToCrossing  + frontVehicle->length < actor->distanceToCrossing - movment_distance);
-            }
-
-            if (actor->distanceToCrossing < 2.0f){
-                std::cout << "close " << std::endl;
+                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing + MIN_DISTANCE_BETWEEN_VEHICLES));
+                movment_distance = std::min(distance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing + MIN_DISTANCE_BETWEEN_VEHICLES));
+                assert(frontVehicle->distanceToCrossing  + frontVehicle->length < actor->distanceToCrossing - movment_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
 
             actor->distanceToCrossing -= movment_distance;
-            actor->current_velocity = std::min(actor->current_acceleration * timeDelta + actor->current_velocity,
+
+           //  assert(std::isnan(actor->distanceToCrossing) == false && "Distance to Crossing is nan");
+           //  assert(std::isinf(actor->distanceToCrossing) == false && "Distance to Crossing is inf");
+            // assert(actor->distanceToCrossing >= -10.0f && "Distance to crossing needs to be >= -10.0f");
+
+            // TODO Rethink, having a maximum with velocity and velocity computed from acceleration
+            actor->current_velocity = std::min(std::max(actor->current_acceleration * timeDelta + actor->current_velocity, 0.0f),
                                                actor->max_velocity);
+            // assert(std::isnan(actor->current_velocity) == false && "Current Velocity is not nan");
+            // assert(std::isinf(actor->current_velocity) == false && "Current Velocity is not inf");
+
+
             // Only update the speed with formula if the vehicle is not at the end of the street (div by zero error)
             if (maxDrivableDistance > 0.0f) {
                 actor->current_acceleration = (frontVehicle == nullptr) ?
@@ -346,10 +353,22 @@ void updateStreets(world_t* world, const float timeDelta) {
             }
             // Will make sure traffic is still sorted
 			sortStreet(start, end);
-            assert(std::is_sorted(street.traffic.begin(), street.traffic.end()) && "Street is sorted");
-            assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
-            assert(std::isnan(actor->current_velocity) == false && "Acceleration is not nan");
-            assert(std::isnan(actor->distanceToCrossing) == false && "Acceleration is not nan");
+            /*
+            assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
+                // Lexicographical order, starting with distanceToCrossing and then distanceToRight
+                if (a->distanceToCrossing == b->distanceToCrossing) {
+                    // this if statement make sure that no vehicles have the same ordering
+                    if (a->distanceToRight == b->distanceToRight) {
+                        //throw std::runtime_error("Two Vehicles with identical position");
+                        a < b;Crossing
+                    }
+                    return a->distanceToRight < b->distanceToRight;
+                }
+                return a->distanceToCrossing < b->distanceToCrossing;
+            }) && "Street is sorted");
+             */
+            // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
+            // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
 		}
 	}
 }
