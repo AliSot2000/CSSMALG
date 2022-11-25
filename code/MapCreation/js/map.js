@@ -5,18 +5,19 @@
  * @param {string} selector The selector of the element you would like to be the map
  */
 class Map {
-    _self = null;
-    _road_wrapper = null;
-    _agents_wrapper = null;
-    _roads = null;
-    _intersections = null;
-    _grid = null;
-    _loading = null;
-    _grab_points = null;
-    _snap_points = null;
-    _agents = null;
+    _self = null; // Map element
+    _road_wrapper = null; // Road Wrapper Element
+    _intersection_wrapper = null; // Intersection Wrapper Element
+    _agents_wrapper = null; // Agent Wrapper Element
+    _roads = null; // Object with all the roads
+    _intersections = null; // Object with all the intersections
+    _grid = null; // Grid Element
+    _loading = null; // Loading Screen
+    _grab_points = null; // Grab Points Wrapper
+    _snap_points = null; // Snap Points Wrapper
+    _agents = null; // Object with all the agents on the map
 
-    _size = null;
+    _size = null; // Current size of the window
 
     /**
      * Creates a Map
@@ -25,36 +26,35 @@ class Map {
      */
     constructor(selector = 'div.drawing_area') {
         // Initialize Private Values
-        this._self = $(selector);
-        this._self.data('map', this);
-        this._road_wrapper = $(svgElement("svg")); // Create the SVG element
-        this._intersection_wrapper = $(svgElement("svg")); // Create the SVG element
+        this._self = $(selector); // Set the map element
+        this._self.data('map', this); // Set the map data
+        this._road_wrapper = $(svgElement("svg")).addClass("roads"); // Create the SVG element
+        this._intersection_wrapper = $(svgElement("svg")).addClass("intersections"); // Create the SVG element
         this._roads = {}; // Create the roads object
         this._intersections = {}; // Create the intersections object
         this._agents = {}; // Create the agents object
         this._grid = new Grid(50); // Create the grid object
         this._loading = new Loading(); // Create the loading object
 
-        this._grab_points = $('<div class="grabpoints"></div>');
-        this._snap_points = $('<div class="snappoints"></div>');
-        this._agents_wrapper = $('<div class="agents"></div>');
+        this._grab_points = $('<div class="grabpoints"></div>'); // Create the grab points wrapper
+        this._snap_points = $('<div class="snappoints"></div>'); // Create the snap points wrapper
+        this._agents_wrapper = $('<div class="agents"></div>'); // Create the agents wrapper
 
-        this._size = {
-            width: window.innerWidth,
-            height: window.innerHeight
+        this._size = { // Set the size of the window
+            width: window.innerWidth, // Set the width
+            height: window.innerHeight // Set the height
         }
-        this._grid.expand(this._size);
+        this._grid.expand(this._size); // Expand the grid to the size of the window
+        this.updateSize(); // Update the size of the map
 
-        this.updateSize();
-
-        this._self.append(
-            this._road_wrapper,
-            this._intersection_wrapper,
-            this._grab_points,
-            this._snap_points,
-            this._grid.getGrid(),
-            this._agents_wrapper
-        ); // Add the SVG element to the map
+        this._self.append( // Add the elements to the map
+            this._road_wrapper, // Add the road wrapper
+            this._intersection_wrapper, // Add the intersection wrapper
+            this._grab_points, // Add the grab points wrapper
+            this._snap_points, // Add the snap points wrapper
+            this._grid.getGrid(), // Add the grid
+            this._agents_wrapper // Add the agents wrapper
+        );
 
         // Make the grabpoints element draggable
         $('div.grabpoints').on('mousedown', '.grabbable', {map: this}, function(event) {
@@ -66,14 +66,11 @@ class Map {
             link.startDrag(target.data('type'), event.data.map); // Start dragging the road
         });
 
+        // On a resize of the window update the size of the map and grid
         $(window).on('resize', {map: this}, function(event) {
-           let map = event.data.map;
-           map.recheckSize();
+           let map = event.data.map; // Get the map object
+           map.recheckSize(); // Recheck the size of the map
         });
-
-        // Set the SVG element's attributes
-        this._road_wrapper.addClass("roads");
-        this._intersection_wrapper.addClass("intersections");
 
         let def = $(svgElement("defs")); // Create the defs element
         let arrow = $(svgElement("marker")); // Create the arrow element
@@ -117,7 +114,7 @@ class Map {
 
     /**
      * Adds a road to the map
-     * @param  {Road} road The road you would like to add
+     * @param {Road} road The road you would like to add
      * @return {Map} Self reference for chaining
      */
     addRoad(road) {
@@ -139,8 +136,8 @@ class Map {
 
     /**
      * Creates a road on the map
-     * @param {Point} start
-     * @param {Point} end
+     * @param {Point} start The start point of the road
+     * @param {Point} end The end point of the road
      * @return {Road} The road object you created
      */
     createRoad(start, end) {
@@ -194,10 +191,19 @@ class Map {
         return this._intersections[id];
     }
 
+    /**
+     * Gets all the agents on this map
+     * @returns {Object} The agents on this road
+     */
     getAgents() {
         return this._agents;
     }
 
+    /**
+     * Gets an agent with a certain id
+     * @param {string} id The id of the agent you would like to get
+     * @returns {Agent} The agent object
+     */
     getAgent(id) {
         return this._agents[id];
     }
@@ -254,6 +260,11 @@ class Map {
         return data;
     }
 
+    /**
+     * Exports the map as an object to be used in the simulation. This is a stripped down version of the save data.
+     * However, it is includes a full save data under peripherals.map
+     * @returns {Object} The map object
+     */
     exportToBeSimulatedData() {
         let data = { // Initialize the data object
             roads: [], // Initialize the roads object
@@ -264,8 +275,8 @@ class Map {
 
         for (let id in this._roads) { // Loop through the roads
             let roads = this._roads[id].exportToBeSimulatedData(); // Add the road to the roads object
-            for (let type in roads) {
-                data.roads.push(roads[type]);
+            for (let type in roads) { // Loop through the roads
+                data.roads.push(roads[type]); // Add the road to the roads array
             }
         }
 
@@ -289,9 +300,19 @@ class Map {
      * @param {boolean} with_agents Whether or not to load the agents
      */
     load(data, with_agents = true) {
-        if (data.peripherals.type !== 'save') { // Check if the data is a save object
-            alert("This is not a valid save!"); // Alert the user that the data is not a save object
-            throw new Error('Invalid Save Data');
+        switch (data.peripherals.type) {
+            case 'save':
+                break;
+            case 'to_be_simulated':
+                data = data.peripherals.map;
+                break;
+            case 'simulation':
+                data = data.setup.map;
+                break;
+            default:
+                alert("This is not a valid save!"); // Alert the user that the data is not a save object
+                throw new Error('Invalid Save Data');
+                break;
         }
 
         let count = 0; // Initialize the count variable
@@ -308,6 +329,14 @@ class Map {
                 this._loading.setSubHeader('Loading Intersection ' + id).setPercent(calculatePercent(count++, total)); // Update the loading screen
                 let intersection = data.intersections[id]; // Get the intersection
                 let i = new Intersection(id, new Point(intersection.position.x, intersection.position.y)); // Create the intersection
+                if (!isEmpty(intersection.isRoundAbout)) { // Check if the intersection is a roundabout, and make old save files compatible
+                    i.setRoundAbout(true); // Set the roundabout property
+                }
+                if (!isEmpty(intersection.traffic_controllers)) { // Check if the intersection has traffic controllers, and make old save files compatible
+                    for (let direction in intersection.traffic_controllers) { // Loop through the traffic controllers
+                        i.setTrafficControllerInDirection(direction, intersection.traffic_controllers[direction]); // Set the traffic controller
+                    }
+                }
                 this.addIntersection(i); // Add the intersection to the map
             }
         }
@@ -364,91 +393,132 @@ class Map {
         return this;
     }
 
+    /**
+     * Adds an agent to the map
+     * @param {Agent} agent The agent to add
+     * @returns {Map} Self Reference for chaining
+     */
     addAgent(agent) {
-        this._agents[agent.getId()] = agent;
-        this._agents_wrapper.append(agent.getElement());
+        this._agents[agent.getId()] = agent; // Add the agent to the agents object
+        this._agents_wrapper.append(agent.getElement()); // Add the agent to the agents wrapper
         return this;
     }
 
+    /**
+     * Creates an agent and adds it to the map
+     * @param {string} type Type of the agent. Either 'car' or 'bike'
+     * @returns {Agent} The created agent
+     */
     createAgent(type) {
-        let agent;
-        agent = new Agent(this.generateId(), type, this);
-        this.addAgent(agent);
+        let agent = new Agent(this.generateId(), type, this); // Create the agent
+        this.addAgent(agent); // Add the agent to the map
         return agent;
     }
 
+    /**
+     * Sets all the roads, the grid wrapper, snap points and grab points in or out of simulation mode
+     * @param {boolean} set Whether or not to set the roads in simulation mode
+     */
     simulationMode(set) {
-        for (let id in this._roads) {
-            this._roads[id].simulationMode(set);
+        for (let id in this._roads) { // Loop through the roads
+            this._roads[id].simulationMode(set); // Set the road in simulation mode
         }
-        let type = set ? 'none' : 'block';
-        this._snap_points.css('display', type);
-        this._grab_points.css('display', type);
-        this._grid.getGrid().css('display', type);
+        let type = set ? 'none' : 'block'; // Get if wrappers should be set to block or none
+        this._snap_points.css('display', type); // Set the display of the snap points
+        this._grab_points.css('display', type); // Set the display of the grab points
+        this._grid.getGrid().css('display', type); // Set the display of the grid
     }
 
+    /**
+     * Updates the size of the map
+     * @returns {Map} Self Reference for chaining
+     */
     updateSize () {
-        this._self.css({
-            width: `${this._size.width}px`,
-            height: `${this._size.height}px`
+        this._self.css({ // Set the size of the map
+            width: `${this._size.width}px`, // Set the width of the map
+            height: `${this._size.height}px` // Set the height of the map
         });
+        return this;
     }
 
+    /**
+     * Checks if the map needs to be extended and scrolls if a road is placed to close to the edge
+     * @param {Point} position Position of the road end point
+     * @returns {Map} Self Reference for chaining
+     */
     checkNewSize(position) {
-        position.x += 200;
-        position.y += 200;
-        let new_size = false;
+        position.x += 200; // Add 200 to the x position
+        position.y += 200; // Add 200 to the y position
+        let new_size = false; // Whether the size needs to be changed
 
-        if (position.x > this._size.width) {
-            this._size.width = position.x;
-            $(document.body).scrollLeft(this._size.width - window.innerWidth)
-            new_size = true;
-        }
-        if (position.y > this._size.height) {
-            this._size.height = position.y;
-            $(document.body).scrollTop(this._size.height - window.innerHeight)
-            new_size = true;
+        if (position.x > this._size.width) { // Check if the x position is larger than the width
+            this._size.width = position.x; // Set the width to the x position
+            $(document.body).scrollLeft(this._size.width - window.innerWidth) // Scroll to the right
+            new_size = true; // Set the size to be changed
         }
 
-        if (new_size) {
-            this.updateSize();
-            this._grid.expand(this._size);
+        if (position.y > this._size.height) { // Check if the y position is larger than the height
+            this._size.height = position.y; // Set the height to the y position
+            $(document.body).scrollTop(this._size.height - window.innerHeight) // Scroll to the bottom
+            new_size = true; // Set the size to be changed
         }
+
+        if (new_size) { // Check if the size needs to be changed
+            this.updateSize(); // Update the size of the map
+            this._grid.expand(this._size); // Expand the grid
+        }
+
+        return this;
     }
 
+    /**
+     * Rechecks the size of the map. This might also make a map smaller. It is not used as much as checkNewSize as it is more expensive.
+     * @returns {Map} Self Reference for chaining
+     */
     recheckSize() {
-        let size = {
-            width: window.innerWidth,
-            height: window.innerHeight
+        let size = { // Create a new size object
+            width: window.innerWidth, // Set the width to the window width
+            height: window.innerHeight // Set the height to the window height
         };
-        let grabpoints = this._grab_points.children();
-        for (let i = 0; i < grabpoints.length; i++) {
-            let point = $(grabpoints[i]);
-            let x = parseInt(point.css('left')) + 200;
-            let y = parseInt(point.css('top')) + 200;
-            if (x > size.width) {
-                size.width = x;
+        let grabpoints = this._grab_points.children(); // Get the grab points
+        for (let i = 0; i < grabpoints.length; i++) { // Loop through the grab points
+            let point = $(grabpoints[i]); // Get the grab point
+            let x = parseInt(point.css('left')) + 200; // Get the x position of the grab point
+            let y = parseInt(point.css('top')) + 200; // Get the y position of the grab point
+            if (x > size.width) { // Check if the x position is larger than the width
+                size.width = x; // Set the width to the x position
             }
-            if (y > size.height) {
-                size.height = y;
+            if (y > size.height) { // Check if the y position is larger than the height
+                size.height = y; // Set the height to the y position
             }
         }
-        this._size = size;
-        this._grid.recalculate(size);
-        this.updateSize();
+        this._size = size; // Set the size of the map
+        this._grid.recalculate(size); // Recalculate the grid
+        this.updateSize(); // Update the size of the map
+        return this;
     }
 
+    /**
+     * Renames a road
+     * @param {string} old_id The old id of the road
+     * @param {string} new_id The new id of the road
+     */
     renameRoad (old_id, new_id) {
-        let road = this.getRoad(old_id);
-        this._roads[new_id] = road;
-        delete this._roads[old_id];
-        road.rename(new_id);
+        let road = this.getRoad(old_id); // Get the road
+        this._roads[new_id] = road; // Add the road to the roads object with the new id
+        delete this._roads[old_id]; // Remove the road from the roads object with the old id
+        road.rename(new_id); // Rename the road
     }
 
+    /**
+     * Renames an intersection
+     * @param {string} old_id The old id of the intersection
+     * @param {string} new_id The new id of the intersection
+     */
     renameIntersection (old_id, new_id) {
-        let intersection = this.getIntersection(old_id);
-        this._intersections[new_id] = intersection;
-        delete this._intersections[old_id];
-        intersection.rename(new_id);
+        let intersection = this.getIntersection(old_id); // Get the intersection
+        this._intersections[new_id] = intersection; // Add the intersection to the intersections object with the new id
+        delete this._intersections[old_id]; // Remove the intersection from the intersections object with the old id
+        intersection.rename(new_id); // Rename the intersection
     }
 }

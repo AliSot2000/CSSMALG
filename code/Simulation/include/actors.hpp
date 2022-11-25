@@ -16,13 +16,21 @@ enum ActorTypes {
 typedef struct Actor {
 	ActorTypes type = ActorTypes::Car;
 
+    // Position of the actor.
 	float distanceToCrossing = 50.0f;
-	int distanceToRight = 0;
-	float speed = 8.7f; // m/s
-	float length = 4.5f; // m
-	float width = 1.5f; // m
+    int distanceToRight = 0;
+    float length = 4.5f; //
 
-    // Emergency break is 0.7g
+    // Velocity
+    float current_velocity = 0.1f; // m/s
+    float max_velocity = 8.7f; // m/s
+    float target_velocity = 8.7f; // m/s
+
+    // Acceleration
+    float current_acceleration = 0; // m/s^2
+    float acceleration = 0.73f; // m/s^2
+    float deceleration = 1.67f; // m/s^2
+    float acceleration_exp = 4.0f; // unitless
 
 	// Only used for visualization
 	std::string id = "empty";
