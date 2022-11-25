@@ -477,3 +477,44 @@ body.grabbing * {
     margin: 0;
     color: var(--loading-front);
 }
+
+.stop_sign {
+    fill: white;
+}
+
+.yield_sign {
+    stroke-width: 4;
+    stroke: white;
+    stroke-dasharray: 4,4;
+}
+
+@keyframes traffic_light_colors {
+    0% {
+        fill: red;
+    }
+    32% {
+        fill: red;
+    }
+    33% {
+        fill: orange;
+    }
+    65% {
+        fill: orange;
+    }
+    66% {
+        fill: green;
+    }
+    100% {
+        fill: green;
+    }
+}
+
+.traffic_light {
+    animation: traffic_light_colors 10s infinite;
+}
+
+.roundabout {
+    stroke: var(--road_border);
+    stroke-width: 2;
+    fill: var(--background);
+}
