@@ -54,7 +54,7 @@
                     "id": "road_4"
                 }
             ],
-            "trafficSignal": true
+            "trafficSignal": true,
         }
     ],
     "agents": [

@@ -61,7 +61,7 @@ class Intersection {
 
         // Create the snap points
         for (let i = 0; i < this._directions.length; i++) {
-            this._traffic_controllers[this._directions[i]] = {type: 'right_of_way', element: null};
+            this._traffic_controllers[this._directions[i]] = {type: 'traffic_light', element: null};
             let point = $('<div class="snap_point ' + this._directions[i] + '"></div>'); // Create the snap point
             point.data('link', this).data('type', this._directions[i]); // Set the data
             this._snap_points[this._directions[i]] = {snap_point: point, connected: false}; // Add the snap point to the snap points
@@ -373,12 +373,19 @@ class Intersection {
         return this;
     }
 
+    /**
+     * Updates all the traffic controllers of the intersection
+     * @returns {Intersection} Self Reference for chaining
+     */
     updateTrafficControllers() {
         this._traffic_controllers_wrapper.empty(); // Empty the traffic controllers wrapper
+
         for (let i = 0; i < this._directions.length; i++) {
             let direction = this._directions[i]; // Get the direction
             this._traffic_controllers[direction].element = null; // Reset the traffic controller element
+
             let element;
+
             if (this._snap_points[direction].connected) { // Check if the snap point is connected
                 switch (this._traffic_controllers[direction].type) { // Check the type of the traffic controller
                     case 'stop_sign': // If the traffic controller is a stop sign
@@ -398,113 +405,135 @@ class Intersection {
                         this._traffic_controllers[direction].element = element; // Set the traffic controller element
                         break;
                     case 'right_of_way': // If the traffic controller is a right of way
-                    default:
+                    default: // If the traffic controller is not set
+                        // Do nothing as the traffic controller is a right of way
                         break;
                 }
             }
         }
+        return this;
     }
 
+    /**
+     * Generates a stop sign for the intersection in the given direction
+     * @param {string} direction The direction the road is connected to the intersection
+     * @returns {jQuery} The stop sign
+     */
     generateStopSign(direction) {
         let element = $(svgElement('rect')).addClass('stop_sign'); // Create a rectangle
-        let attributes = {};
-        let position = this.getOffsetForDirection(direction);
-        let half_road_width = this._snap_points[direction].road.getRoadWidth() / 2;
-        let incoming_road_width = this.getWidthOfIncomingRoad(direction);
-        let offset = (direction === 'east' || direction === 'north') ? -half_road_width : (half_road_width - incoming_road_width);
-        switch (direction) {
-            case 'east':
-                position.x -= 4;
-            case 'west':
-                position.y += offset;
-                attributes = {
-                    height: incoming_road_width,
-                    width: 4
+        let attributes = {}; // The attributes of the rectangle
+        let position = this.getOffsetForDirection(direction); // Get the position of the traffic controller
+        let half_road_width = this._snap_points[direction].road.getRoadWidth() / 2; // Get the half of the road width
+        let incoming_road_width = this.getWidthOfIncomingRoad(direction); // Get the width of the incoming road
+        let offset = (direction === 'east' || direction === 'north') ? -half_road_width : (half_road_width - incoming_road_width); // Get the offset of the traffic controller
+        switch (direction) { // Check the direction
+            case 'east': // If the direction is east
+                position.x -= 4; // Offset the x position as the stop sign has a width of 4 units.
+            case 'west': // If the direction is west or falls through because it was east
+                position.y += offset; // Offset the y position
+                attributes = { // Set the attributes
+                    height: incoming_road_width, // The height of the rectangle
+                    width: 4 // The width of the rectangle
                 }
                 break;
-            case 'south':
-                position.y -= 4;
-            case 'north':
-                position.x += offset;
-                attributes = {
-                    height: 4,
-                    width: incoming_road_width
+            case 'south': // If the direction is south
+                position.y -= 4; // Offset the y position as the stop sign has a width of 4 units.
+            case 'north': // If the direction is north or falls through because it was south
+                position.x += offset; // Offset the x position
+                attributes = { // Set the attributes
+                    height: 4, // The height of the rectangle
+                    width: incoming_road_width // The width of the rectangle
                 }
         }
-        attributes.x = position.x;
-        attributes.y = position.y;
-        element.attr(attributes);
-        return element;
+        attributes.x = position.x; // Set the x position
+        attributes.y = position.y; // Set the y position
+        element.attr(attributes); // Set the attributes of the rectangle
+        return element; // Return the rectangle
     }
 
+    /**
+     * Generates a yield sign for the intersection in the given direction
+     * @param {string} direction The direction the road is connected to the intersection
+     * @returns {jQuery} The yield sign
+     */
     generateYieldSign(direction) {
         let element = $(svgElement('line')).addClass('yield_sign'); // Create a line
-        let attributes = {};
-        let position = this.getOffsetForDirection(direction);
-        let half_road_width = this._snap_points[direction].road.getRoadWidth() / 2;
-        let incoming_road_width = this.getWidthOfIncomingRoad(direction);
-        let offset = (direction === 'east' || direction === 'north') ? -half_road_width : (half_road_width - incoming_road_width);
-        switch (direction) {
-            case 'east':
-            case 'west':
-                position.y += offset;
-                attributes = {
-                    x1: position.x,
-                    y1: position.y,
-                    x2: position.x,
-                    y2: position.y + incoming_road_width
+        let attributes = {}; // The attributes of the line
+        let position = this.getOffsetForDirection(direction); // Get the position of the traffic controller
+        let half_road_width = this._snap_points[direction].road.getRoadWidth() / 2; // Get the half of the road width
+        let incoming_road_width = this.getWidthOfIncomingRoad(direction); // Get the width of the incoming road
+        let offset = (direction === 'east' || direction === 'north') ? -half_road_width : (half_road_width - incoming_road_width); // Get the offset of the traffic controller
+        switch (direction) { // Check the direction
+            case 'east': // If the direction is east
+            case 'west': // If the direction is west
+                position.y += offset; // Offset the y position
+                attributes = { // Set the attributes
+                    x1: position.x, // The x position of the first point
+                    y1: position.y, // The y position of the first point
+                    x2: position.x, // The x position of the second point
+                    y2: position.y + incoming_road_width // The y position of the second point
                 }
                 break;
-            case 'south':
-            case 'north':
-                position.x += offset;
-                attributes = {
-                    x1: position.x,
-                    y1: position.y,
-                    x2: position.x + incoming_road_width,
-                    y2: position.y
+            case 'south': // If the direction is south
+            case 'north': // If the direction is north
+                position.x += offset; // Offset the x position
+                attributes = { // Set the attributes
+                    x1: position.x, // The x position of the first point
+                    y1: position.y, // The y position of the first point
+                    x2: position.x + incoming_road_width, // The x position of the second point
+                    y2: position.y // The y position of the second point
                 }
 
         }
-        element.attr(attributes);
-        return element;
+        element.attr(attributes); // Set the attributes of the line
+        return element; // Return the line
     }
 
+    /**
+     * Generates a traffic light for the intersection in the given direction
+     * @param {string} direction The direction the road is connected to the intersection
+     * @returns {jQuery} The traffic light
+     */
     generateTrafficLight(direction) {
         let traffic_light_wrapper = $(svgElement('g')).addClass('traffic_light_wrapper'); // Create a group
-        let position = this.getOffsetForDirection(direction);
-        let half_road_width = this._snap_points[direction].road.getRoadWidth() / 2;
+        let position = this.getOffsetForDirection(direction); // Get the position of the traffic controller
+        let half_road_width = this._snap_points[direction].road.getRoadWidth() / 2; // Get the half of the road width
         let road = this._snap_points[direction].road; // Get the road
         let point_type = this._snap_points[direction].point_type; // Get the point type
         let lane_width = getConfig('road_lane_width'); // Get the lane width\
-        let half_lane_width = lane_width / 2;
+        let half_lane_width = lane_width / 2; // Get the half of the lane width
         let lanes = road.getLanesInDirection(point_type === 'start' ? -1 : 1); // Get the lanes in the direction of the road
         let incoming_road_width = lanes.length * lane_width; // Calculate the lane width
 
-        let base_offset = (direction === 'east' || direction === 'north') ? -half_road_width : (half_road_width - incoming_road_width);
+        let base_offset = (direction === 'east' || direction === 'north') ? -half_road_width : (half_road_width - incoming_road_width); // Get the base offset of the traffic controller
 
-        for (let i = 0; i < lanes.length; i++) {
-            let offset = base_offset + (i * lane_width) + half_lane_width;
-            let attributes = {
-                r: 3
+        for (let i = 0; i < lanes.length; i++) { // Loop through the lanes
+            let offset = base_offset + (i * lane_width) + half_lane_width; // Calculate the offset of the traffic light
+            let attributes = { // The attributes of the traffic light
+                r: 3 // The radius of the traffic light
             };
-            switch (direction) {
-                case 'east':
-                case 'west':
-                    attributes.cx = position.x;
-                    attributes.cy = position.y + offset;
+            switch (direction) { // Check the direction
+                case 'east': // If the direction is east
+                case 'west': // If the direction is west
+                    attributes.cx = position.x; // Set the x position
+                    attributes.cy = position.y + offset; // Set the y position
                     break;
-                case 'south':
-                case 'north':
-                    attributes.cx = position.x + offset;
-                    attributes.cy = position.y;
+                case 'south': // If the direction is south
+                case 'north': // If the direction is north
+                    attributes.cx = position.x + offset; // Set the x position
+                    attributes.cy = position.y; // Set the y position
             }
-            let traffic_light = $(svgElement('circle')).addClass('traffic_light').attr(attributes);
-            traffic_light_wrapper.append(traffic_light);
+            let traffic_light = $(svgElement('circle')).addClass('traffic_light').attr(attributes); // Create a circle
+            traffic_light_wrapper.append(traffic_light); // Append the traffic light to the wrapper
         }
-        return traffic_light_wrapper;
+        return traffic_light_wrapper; // Return the wrapper
     }
 
+    /**
+     * Calculates the width of the incoming road
+     * @param {string} direction The direction of the incoming road
+     * @returns {number} The width of the incoming road
+     */
     getWidthOfIncomingRoad(direction) {
         if (this._snap_points[direction].connected) { // Check if the snap point is connected
             let road = this._snap_points[direction].road; // Get the road
@@ -512,30 +541,51 @@ class Intersection {
             let lanes = road.getLanesInDirection(point_type === 'start' ? -1 : 1); // Get the lanes in the direction of the road
             return lanes.length * getConfig('road_lane_width'); // Return the width of the incoming road
         }
-        return 0;
+        return 0; // Return 0 if the snap point is not connected
     }
 
+    /**
+     * Get the road that is connected to the intersection in the given direction
+     * @param {string} direction The direction of the road that is connected to the intersection
+     * @returns {Road} The road that is connected to the intersection in the given direction
+     */
     getRoadInDirection(direction) {
         return this._snap_points[direction].road; // Return the road in the direction
     }
 
+    /**
+     * Get the traffic controller type the is in a given direction
+     * @param {string} direction The direction of the traffic controller
+     * @returns {string} The traffic controller type
+     */
     getTrafficControllerInDirection(direction) {
         return this._traffic_controllers[direction].type; // Return the traffic controller in the direction
     }
 
-    setTrafficControllerInDirection(direction = 'north', type = 'right_of_way') {
+    /**
+     * Set the traffic controller type in a given direction
+     * @param {string} direction The direction of the traffic controller
+     * @param {string} type The type of the traffic controller
+     * @returns {Intersection} Self Reference for chaining
+     */
+    setTrafficControllerInDirection(direction = 'north', type = 'traffic_light') {
         if (this._traffic_controllers[direction].type !== type) { // Check if the traffic controller type is different
             this._traffic_controllers[direction].type = type; // Set the traffic controller type
-            this.updateTrafficControllers(direction); // Update the traffic controller
+            this.updateTrafficControllers(); // Update the traffic controller
         }
+        return this;
     }
 
+    /**
+     * Changes the intersection into a roundabout
+     * @param {boolean} value Whether the intersection should be a roundabout or not
+     */
     setRoundAbout(value = false) {
         if (value) { // Check if the traffic controller is a roundabout
             this._roundabout = $(svgElement('circle')).addClass('roundabout').attr({
-                cx: this._position.x,
-                cy: this._position.y,
-                r: this._half_size / 3
+                cx: this._position.x, // The x position of the circle
+                cy: this._position.y, // The y position of the circle
+                r: this._half_size / 3 // The radius of the circle
             }); // Create a circle
             this._self.append(this._roundabout); // Append the roundabout to the intersection
         } else {
@@ -544,6 +594,10 @@ class Intersection {
         }
     }
 
+    /**
+     * Checks if the intersection is a roundabout
+     * @returns {boolean} Whether the intersection is a roundabout or not
+     */
     isRoundAbout() {
         return !isEmpty(this._roundabout); // Return if the traffic controller is a roundabout
     }
