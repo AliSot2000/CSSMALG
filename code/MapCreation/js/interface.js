@@ -207,22 +207,44 @@ class Interface {
 
     /**
      * Shows the intersection edit screen
-     * @param {string} intersection The id of the intersection
+     * @param {string} intersection_id The id of the intersection
      * @returns {Interface} Self reference for chaining
      */
-    editIntersection(intersection) {
+    editIntersection(intersection_id) {
         this._body.empty();
         this._body.append('<button class="interface_small_button">Back to Intersections</button>');
         this._body.append('<h2>Intersection: </h2>');
-        this._body.append('<div class="input"><input name="intersectionName" type="text" placeholder="Intersection Name" value="' + intersection + '"></div>');
+        this._body.append('<div class="input"><input name="intersectionName" type="text" placeholder="Intersection Name" value="' + intersection_id + '"></div>');
+        this._body.append('<div class="input">Round About <input name="roundabout" type="checkbox"></div>');
         this._body.append('<div class="spacer"></div>');
         this._body.append('<h2>Edit Intersection</h2><div class="spacer"></div>');
-        this._body.append($('<button class="interface_button">Save Intersection</button>').data('intersection', intersection));
-        this._body.append($('<button class="interface_button">Delete Intersection</button>').data('intersection', intersection));
-        this._body.append('<h2>Connected Roads</h2><div class="spacer"></div>');
-        let roads = this._map.getIntersection(intersection).getLinkedRoads(); // The roads that are connected to the intersection
-        for (let i = 0; i < roads.length; i++) { // Loop through the roads
-            this._body.append($('<button class="interface_button">' + roads[i].getId() + '</button>').data('command', 'editRoad')); // Add the road to the list
+        this._body.append($('<button class="interface_button">Save Intersection</button>').data('intersection', intersection_id));
+        this._body.append($('<button class="interface_button">Delete Intersection</button>').data('intersection', intersection_id));
+
+        let intersection = this._map.getIntersection(intersection_id);
+        let directions = ['North', 'East', 'South', 'West'];
+
+        let selector = '<div class="input">Flow <select>';
+        selector += '<option value="right_of_way">Right of Way</option>'
+        selector += '<option value="traffic_light">Traffic Light</option>';
+        selector += '<option value="roundabout">Roundabout</option>';
+        selector += '<option value="stop_sign">Stop Sign</option>';
+        selector += '<option value="yield_sign">Yield Sign</option>';
+        selector += '</select></div>';
+
+        for (let i = 0; i < directions.length; i++) {
+            let direction = directions[i]
+            this._body.append('<h2>' + direction + '</h2>');
+            direction = direction.toLowerCase();
+            let select = $(selector);
+            select.find('select').attr('name', direction + '_type');
+            select.find('option[value="' + intersection.getTrafficControllerInDirection(direction) + '"]').attr('selected', 'selected');
+            this._body.append(select);
+            if (intersection.isConnected(direction)) {
+                let road_id = intersection.getRoadInDirection(direction).getId();
+                this._body.append($('<button class="interface_button">' + road_id + '</button>').data('command', 'editRoad'));
+            }
+            this._body.append('<div class="spacer"></div>');
         }
 
         return this;
@@ -477,6 +499,7 @@ class Interface {
      */
     saveIntersection (intersection_id) {
         let newName = this._body.find('input[name="intersectionName"]').val(); // Get the new name
+        let intersection = this._map.getIntersection(intersection_id); // Get the intersection
         if (intersection_id !== newName) { // If the name has changed
             if (this._map.idInUse(newName)) { // If the name is already in use
                 alert('Name already in use'); // Alert the user
@@ -484,6 +507,17 @@ class Interface {
                 this._map.renameIntersection(intersection_id, newName); // Rename the intersection
             }
         }
+
+        let directions = ['north', 'east', 'south', 'west']; // The directions
+        for (let i = 0; i < directions.length; i++) { // For each direction
+            let direction = directions[i]; // Get the direction
+            let traffic_control_type = this._body.find('select[name="' + direction + '_type"] option:selected').val(); // Get the traffic control type
+            intersection.setTrafficControllerInDirection(direction, traffic_control_type); // Set the traffic controller in the direction
+        }
+
+        let isRoundAbout = this._body.find('input[name="roundabout"]').is(':checked'); // If the intersection is a roundabout
+        intersection.setRoundAbout(isRoundAbout); // Set the roundabout
+
         return this;
     }
 

@@ -329,6 +329,14 @@ class Map {
                 this._loading.setSubHeader('Loading Intersection ' + id).setPercent(calculatePercent(count++, total)); // Update the loading screen
                 let intersection = data.intersections[id]; // Get the intersection
                 let i = new Intersection(id, new Point(intersection.position.x, intersection.position.y)); // Create the intersection
+                if (!isEmpty(intersection.isRoundAbout)) { // Check if the intersection is a roundabout, and make old save files compatible
+                    i.setRoundAbout(true); // Set the roundabout property
+                }
+                if (!isEmpty(intersection.traffic_controllers)) { // Check if the intersection has traffic controllers, and make old save files compatible
+                    for (let direction in intersection.traffic_controllers) { // Loop through the traffic controllers
+                        i.setTrafficControllerInDirection(direction, intersection.traffic_controllers[direction]); // Set the traffic controller
+                    }
+                }
                 this.addIntersection(i); // Add the intersection to the map
             }
         }
