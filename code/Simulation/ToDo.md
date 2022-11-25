@@ -3,6 +3,7 @@
     TODO bug: Intersections dont check if street has cars, but will still do a normal countdown for the green phase
 
 	TODO feature: Overtaking if opposite street is free
+    TODO feature: Add Traffic Light State to the exported simulation for Jannick <3
     
     TODO Somehow the actors can have an identical position...
 	TODO rename crossings to intersections

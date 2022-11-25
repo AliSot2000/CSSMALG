@@ -592,6 +592,7 @@ class Road {
                 distance: this._distance * pixels_per_meter, // The distance of the road
                 speed_limit: this._speed_limit // The speed limit of the road
             };
+            if (!isEmpty(backward)) roads.forward.oppositeStreetId = '!' + this._id; // If the road has backward lanes, set the opposite street id
         }
         if (!isEmpty(backward)) {
             let reverse_intersections = {}; // The reverse intersections
@@ -608,6 +609,7 @@ class Road {
                 distance: this._distance * pixels_per_meter, // The distance of the road
                 speed_limit: this._speed_limit // The speed limit of the road
             };
+            if (!isEmpty(forward)) roads.backward.oppositeStreetId = this._id; // If the road has forward lanes, set the opposite street id
         }
 
         return roads;
