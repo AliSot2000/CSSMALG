@@ -51,25 +51,25 @@ void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& 
 void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
                         const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length) {
 	int index = 1;
-	for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
+    for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
         Actor actor = {
-				.type = type,
-				.distanceToCrossing = 0.0f,
-				.distanceToRight = 0,
-				.speed = randint(minSpeed, maxSpeed) * 0.277778f, // 30km/h to 80km/h
-				.length = length,
-				//.width = 1.5f,
-				.id = std::to_string(std::rand())
-		};
+                .type = type,
+                .distanceToCrossing = 0.0f,
+                .distanceToRight = 0,
+                .length = length,
+                .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
+                //.width = 1.5f,
+                .id = std::to_string(std::rand())
+        };
 
 		
-		std::string start;
-		std::string end;
-		choseRandomPath(world, spt, start, end);
-		actor.path = retrievePath(spt, start, end);
+		std::string start_id;
+		std::string end_id;
+		choseRandomPath(world, spt, start_id, end_id);
+		actor.path = retrievePath(spt, start_id, end_id);
 
 		for (auto& crossing : world.crossings) {
-			if (crossing.id == start) {
+			if (crossing.id == start_id) {
 				crossing.waitingToBeInserted.push_back(&(*iter));
 				break;
 			}
