@@ -15,7 +15,7 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
 		[](const Actor* a, const float& b) {
-			return a->distanceToCrossing + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
+			return a->distanceToCrossing + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b; // Todo test if removing min distance has adverse effect.
 	});
 
 	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
