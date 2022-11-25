@@ -246,7 +246,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 void updateCrossings(world_t* world, const float timeDelta) {
 	
 	for (auto& crossing : world->crossings) {
-
+        // TODO Bugfix, insert fails if the velocity is 0.0f
 		if (crossing.waitingToBeInserted.size() > 0) {
 			Actor* actor = crossing.waitingToBeInserted[0];
 			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
