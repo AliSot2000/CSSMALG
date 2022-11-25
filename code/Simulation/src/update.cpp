@@ -63,6 +63,90 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 	return maxForwardDistance;
 }
 
+FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor) {
+    FrontVehicles f;
+
+    // Go through array and always update the frontVehicles if a new matching vehicle is found.
+    for (auto iter = street.traffic.begin(); iter != street.traffic.end(); iter++) {
+        Actor *other = *iter; // Get pointer to actor of iterator (with *)
+
+        if (actor == other) {
+            return f;
+        }
+
+        assert(other->distanceToRight <= street.width && "Vehicle is not on the street!");
+
+        // We can iterate through like that since the traffic is sorted by distanceToCrossing.
+        if (actor->distanceToRight == other->distanceToRight) {
+            f.frontVehicle = other;
+        } else if (actor->distanceToRight == other->distanceToRight + LANE_WIDTH) {
+            f.frontVehicleRight = other;
+        } else if (actor->distanceToRight == other->distanceToRight - LANE_WIDTH) {
+           f.frontVehicleLeft = other;
+        }
+    }
+
+    return f;
+}
+
+Actor* moveToOptimalLane(Street& street, Actor* actor) {
+    assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
+    assert((street.type != StreetTypes::OnlyBike || actor->type != ActorTypes::Car) && "Car is not allowed on this street!");
+
+    // Get front vehicles
+    FrontVehicles f = GetFrontVehicles(street, actor);
+
+    // Check in front
+    float frontDistance = actor->distanceToCrossing;
+    Actor* OptimalFrontActor = f.frontVehicle;
+    int distanceToRight = actor->distanceToRight;
+
+    if (f.frontVehicle != nullptr) {
+        frontDistance = actor->distanceToCrossing - (f.frontVehicle->distanceToCrossing + f.frontVehicle->length);
+    }
+
+    // Check left lane existence
+    if (actor->distanceToRight < street.width - LANE_WIDTH) {
+
+        float leftDistance = actor->distanceToCrossing;
+
+        // Update distance
+        if (f.frontVehicleLeft != nullptr) {
+            leftDistance =
+                    actor->distanceToCrossing - (f.frontVehicleLeft->distanceToCrossing + f.frontVehicleLeft->length);
+        }
+
+        if (leftDistance > frontDistance) {
+            frontDistance = leftDistance;
+            OptimalFrontActor = f.frontVehicleLeft;
+            distanceToRight = actor->distanceToRight + LANE_WIDTH;
+        }
+    }
+
+    // Check right lane existence
+    if (actor->distanceToRight > 0){
+
+        float rightDistance = actor->distanceToCrossing;
+
+        // Update distance
+        if (f.frontVehicleRight != nullptr) {
+            rightDistance =
+                    actor->distanceToCrossing - (f.frontVehicleRight->distanceToCrossing + f.frontVehicleRight->length);
+        }
+
+        // Prioritize right lane, that's why greater or equal than.
+        if (rightDistance >= frontDistance) {
+            OptimalFrontActor = f.frontVehicleRight;
+            distanceToRight = actor->distanceToRight - LANE_WIDTH;
+        }
+
+    }
+
+    // Update Distance to right, i.e. move actor to optimal lane.
+    actor->distanceToRight = distanceToRight;
+    return OptimalFrontActor;
+}
+
 float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
 
 	assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
