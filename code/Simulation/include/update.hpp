@@ -5,7 +5,7 @@
 #define MIN_DISTANCE_BETWEEN_VEHICLES 1.0f // There should be atleast half a meter distance between vehicles
 #define LANE_WIDTH 2 // A lane is per default 2 meters
 #define DISTANCE_TO_CROSSING_FOR_TELEPORT 0.5f
-#define SAFETY_TIME_HEADWAY 1.6f // 1.6 seconds headway
+#define SAFETY_TIME_HEADWAY 0.5f // 1.6 seconds headway
 
 typedef struct FrontVehicles{
     Actor* frontVehicle = nullptr;
