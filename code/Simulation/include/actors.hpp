@@ -22,13 +22,13 @@ typedef struct Actor {
     float length = 4.5f; //
 
     // Velocity
-    float current_velocity = 0.1f; // m/s
+    float current_velocity = 0.0f; // m/s
     float max_velocity = 8.7f; // m/s
     float target_velocity = 8.7f; // m/s
 
     // Acceleration
     float current_acceleration = 0; // m/s^2
-    float acceleration = 2*0.73f; // m/s^2
+    float acceleration = 4*0.73f; // m/s^2
     float deceleration = 2*1.67f; // m/s^2
     float acceleration_exp = 10.0f; // unitless
 
