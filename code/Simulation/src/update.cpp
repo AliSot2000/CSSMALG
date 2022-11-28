@@ -302,7 +302,8 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 
 
     // Keep in mind which lanes are available.
-    bool lanes[target->width / LANE_WIDTH];
+    // bool lanes[target->width / LANE_WIDTH];
+    std::vector<bool> lanes(target->width / LANE_WIDTH);
     int avlLanes = static_cast<int>(target->width) / LANE_WIDTH;
     for (int i = 0; i < target->width / LANE_WIDTH; i++) {
         lanes[i] = false;
@@ -320,7 +321,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
         Actor* other = *iter;
 
         // Continue if lane has been checked.
-        if (lanes[other->distanceToRight / LANE_WIDTH]) {
+        if (lanes.at(other->distanceToRight / LANE_WIDTH)) {
             continue;
         }
 
@@ -335,7 +336,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
             return true;
         } else {
             // Lane has been checked, number of availalbe lanes are rerduced
-            lanes[other->distanceToRight / LANE_WIDTH] = true;
+            lanes.at(other->distanceToRight / LANE_WIDTH) = true;
             avlLanes--;
         }
     }
