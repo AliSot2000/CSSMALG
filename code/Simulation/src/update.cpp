@@ -250,19 +250,20 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
     Street* target = crossing.outbound[actor->path.front()];
 
     // Copy constructor you dummy
-    Actor dummy = *actor;
-    dummy.distanceToRight = 0;
-    dummy.distanceToCrossing = target->length - dummy.length;
-    dummy.target_velocity = target->speedlimit;
+    // Actor dummy = *actor;
+
 
     // Empty, insert immediately and return
     if (target->traffic.empty()){
-        target->traffic.push_back(&dummy);
+        target->traffic.push_back(actor);
         actor->path.pop();
+        actor->distanceToRight = 0;
+        actor->distanceToCrossing = target->length - actor->length;
+        actor->target_velocity = target->speedlimit;
         return true;
     }
 
-    // If the street is both only, bikes may only take right lane
+    // If the street is both and actor is bike, it may only take right lane
     if (target->type == StreetTypes::Both && actor->type == ActorTypes::Bike) {
 
         // Move through entire street and only compare the right most vehicle.
@@ -278,6 +279,9 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
                 if (target->length - ((*iter)->distanceToCrossing + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
                     actor->path.pop();
                     target->traffic.push_back(actor);
+                    actor->distanceToRight = 0;
+                    actor->distanceToCrossing = target->length - actor->length;
+                    actor->target_velocity = target->speedlimit;
                     return true;
                 }
                 else {
@@ -287,9 +291,12 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
             }
         }
 
-        // If unexpectedly the right most street is empty. Insert into right
+        // If unexpectedly the right most street is empty. Insert into right, and update the actor
         actor->path.pop();
         target->traffic.push_back(actor);
+        actor->distanceToRight = 0;
+        actor->distanceToCrossing = target->length - actor->length;
+        actor->target_velocity = target->speedlimit;
         return true;
     }
 
@@ -319,9 +326,12 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 
         // Space in a lane, we can insert the actor and return true
         if (target->length - ((*iter)->distanceToCrossing + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
+            // Insert and update the actor.
             actor->path.pop();
             target->traffic.push_back(actor);
             actor->distanceToRight = other->distanceToRight;
+            actor->distanceToCrossing = target->length - actor->length;
+            actor->target_velocity = target->speedlimit;
             return true;
         } else {
             // Lane has been checked, number of availalbe lanes are rerduced
