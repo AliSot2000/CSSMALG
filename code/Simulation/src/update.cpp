@@ -411,30 +411,40 @@ void updateStreets(world_t* world, const float timeDelta) {
 
 
             float maxDrivableDistance = actor->distanceToCrossing;
-            float movment_distance = std::min(distance, actor->distanceToCrossing);
+            float movement_distance = std::min(distance, actor->distanceToCrossing);
 
             // Compute updated stuff
             if (frontVehicle != nullptr) {
-                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing + MIN_DISTANCE_BETWEEN_VEHICLES));
-                movment_distance = std::min(distance, actor->distanceToCrossing - (frontVehicle->length + frontVehicle->distanceToCrossing + MIN_DISTANCE_BETWEEN_VEHICLES));
-                assert(frontVehicle->distanceToCrossing  + frontVehicle->length < actor->distanceToCrossing - movment_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
+                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToCrossing - (frontVehicle->length
+                                                                                                 + frontVehicle->distanceToCrossing
+                                                                                                 + MIN_DISTANCE_BETWEEN_VEHICLES));
+                movement_distance = std::min(distance, actor->distanceToCrossing -
+                                                      (frontVehicle->length
+                                                      + frontVehicle->distanceToCrossing
+                                                      + MIN_DISTANCE_BETWEEN_VEHICLES));
+
+                assert(frontVehicle->distanceToCrossing + frontVehicle->length <
+                       actor->distanceToCrossing - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
+            actor->distanceToCrossing -= movement_distance;
+            // Clamping distance
+            if (actor->distanceToCrossing < 0.01f){actor->distanceToCrossing = 0;}
 
-            actor->distanceToCrossing -= movment_distance;
-
-             assert(std::isnan(actor->distanceToCrossing) == false && "Distance to Crossing is nan");
-             assert(std::isinf(actor->distanceToCrossing) == false && "Distance to Crossing is inf");
+            // assert(std::isnan(actor->distanceToCrossing) == false && "Distance to Crossing is nan");
+            // assert(std::isinf(actor->distanceToCrossing) == false && "Distance to Crossing is inf");
             // assert(actor->distanceToCrossing >= -10.0f && "Distance to crossing needs to be >= -10.0f");
 
             // TODO Rethink, having a maximum with velocity and velocity computed from acceleration
             actor->current_velocity = std::min(std::max(actor->current_acceleration * timeDelta + actor->current_velocity, 0.0f),
                                                actor->max_velocity);
+            if (actor->current_velocity < 0.01f){actor->current_velocity = 0;}
             // assert(std::isnan(actor->current_velocity) == false && "Current Velocity is not nan");
             // assert(std::isinf(actor->current_velocity) == false && "Current Velocity is not inf");
 
 
             // Only update the speed with formula if the vehicle is not at the end of the street (div by zero error)
-            if (maxDrivableDistance > 0.0f) {
+            // and if the distance to crossing was not updated beforehand to 0.
+            if (actor->distanceToCrossing > 0.0f && maxDrivableDistance > 0.0f) {
                 actor->current_acceleration = (frontVehicle == nullptr) ?
                                               actor->acceleration *
                                               (1
@@ -472,7 +482,7 @@ void updateStreets(world_t* world, const float timeDelta) {
             }) && "Street is sorted");
              */
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
-            // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf")
+            // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
 //            if (actor->distanceToCrossing <= 1.0f && actor->distanceToCrossing > 0.0f) {
 //                assert(actor->current_velocity >= 0.01f && "Acceleration needs to be >= -10.0f");
 //            }
