@@ -5,12 +5,11 @@
 	TODO feature: Overtaking if opposite street is free
     TODO feature: Add Traffic Light State to the exported simulation for Jannick <3
     
-    TODO Somehow the actors can have an identical position...
 	TODO rename crossings to intersections
 	TODO test if crossings switch inbound streets
-    TODO Negative forward distance for bikes resulting in error. (Requires more bikes than cars, and single and double lane streets on the map
 
 	CONSTRAINTS:
+        // Generation on my side will need to do this when importing the map.
 		If a street has following lanes:
 			1. Bike
 			2. Car
