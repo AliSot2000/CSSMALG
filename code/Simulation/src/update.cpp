@@ -216,7 +216,7 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 		return a->distanceToCrossing < b->distanceToCrossing;
 	});
 }
-
+/*
 bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) {
 	Street* target = crossing.outbound[actor->path.front()];
 	TrafficIterator targetStart;
@@ -226,6 +226,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 	Actor dummy = *actor;
 	dummy.distanceToRight = 0;
 	dummy.distanceToCrossing = target->length - dummy.length;
+    dummy.target_velocity = target->speedlimit;
 	while (dummy.distanceToRight + LANE_WIDTH <= target->width) {
         // TODO Since Velocity is 0, insert fails. use rbegin() and find the first vehicles like that.
 		if (maxSpaceInFrontOfVehicle(*target, &dummy, timeDelta, targetStart, targetEnd) > 0.0f) {
@@ -241,6 +242,96 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
         dummy.distanceToRight += LANE_WIDTH;
 	}
 	return false;
+}
+*/
+
+// Updated Version of Alex to handle zero velocity vehicles.
+bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) {
+    Street* target = crossing.outbound[actor->path.front()];
+
+    // Copy constructor you dummy
+    Actor dummy = *actor;
+    dummy.distanceToRight = 0;
+    dummy.distanceToCrossing = target->length - dummy.length;
+    dummy.target_velocity = target->speedlimit;
+
+    // Empty, insert immediately and return
+    if (target->traffic.empty()){
+        target->traffic.push_back(&dummy);
+        actor->path.pop();
+        return true;
+    }
+
+    // If the street is both only, bikes may only take right lane
+    if (target->type == StreetTypes::Both && actor->type == ActorTypes::Bike) {
+
+        // Move through entire street and only compare the right most vehicle.
+        for (auto iter = target->traffic.rbegin(); iter != target->traffic.rend(); iter++) {
+            if ((*iter)->distanceToRight == 0) {
+                /*
+                 * -----------------------------------------------------------------------------------------------------
+                 *
+                 * --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
+                 * <-----------distanceToCrossing------------------->[iter->length]<-----MinDistance---->[actor->length]
+                 * -----------------------------------------------------------------------------------------------------
+                 */
+                if (target->length - ((*iter)->distanceToCrossing + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
+                    actor->path.pop();
+                    target->traffic.push_back(actor);
+                    return true;
+                }
+                else {
+                    // Since the list is sorted, it doesn't make sense to compare the insertion to the next vehicle.
+                    return false;
+                }
+            }
+        }
+
+        // If unexpectedly the right most street is empty. Insert into right
+        actor->path.pop();
+        target->traffic.push_back(actor);
+        return true;
+    }
+
+
+    // Keep in mind which lanes are available.
+    bool lanes[target->width / LANE_WIDTH];
+    int avlLanes = static_cast<int>(target->width) / LANE_WIDTH;
+    for (int i = 0; i < target->width / LANE_WIDTH; i++) {
+        lanes[i] = false;
+    }
+
+    // If the vehicle is a car on a both road, and on a car road, it can move to any lane. Also, a bicycle can switch
+    // lanes in a pure bike road.
+
+    for (auto iter = target->traffic.rbegin(); iter != target->traffic.rend(); iter++) {
+        // If the number of available lanes is 0, return false
+        if (avlLanes == 0) {
+           return false;
+        }
+
+        Actor* other = *iter;
+
+        // Continue if lane has been checked.
+        if (lanes[other->distanceToRight / LANE_WIDTH]) {
+            continue;
+        }
+
+        // Space in a lane, we can insert the actor and return true
+        if (target->length - ((*iter)->distanceToCrossing + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
+            actor->path.pop();
+            target->traffic.push_back(actor);
+            actor->distanceToRight = other->distanceToRight;
+            return true;
+        } else {
+            // Lane has been checked, number of availalbe lanes are rerduced
+            lanes[other->distanceToRight / LANE_WIDTH] = true;
+            avlLanes--;
+        }
+    }
+    std::cerr << "I'm fucking stupid since I was not able to foresee this case happening" << std::endl;
+    return false;
+
 }
 
 void updateCrossings(world_t* world, const float timeDelta) {
