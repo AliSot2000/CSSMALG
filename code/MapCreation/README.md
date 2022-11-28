@@ -8,6 +8,7 @@
        - [Future](#future)
    - [Built With](#built-with)
 2. [Getting Started](#getting-started)
+3. [Usage](#usage)
 3. [Code Structure](#code-structure)
    - [index.html](#indexhtml)
    - [widescreen.css](#widescreencss)
@@ -80,6 +81,15 @@ python3 MapCreationWebServer.py
 ```sh
 firefox index.html
 ```
+
+## Usage
+The Map-Creation-Interface is quite simple to use. The user can create roads and intersections by clicking on the
+buttons on the interface or using the shortcuts. The roads and intersections can be moved by dragging them by their
+drag-points. In the interface single roads and intersections can be edited to have different names and attributes.
+Connecting a road with an intersection happens, when you pull the grab-point to one of the sides of the intersection. The
+map can finally be exported as a `.map` export or a `.tsim` export. Old maps can can be imported from one of the following
+files formats: `.map`, `.tsim`, or `.sim` (the last one is the format used by the simulation). The simulation can be
+loaded by clicking the `Import Simulation` button. The simulation can be played, paused and reset.
 
 ## Code Structure
 All the code is in the `code/MapCreation` directory. The main file is `index.html`. This file contains all the HTML and
