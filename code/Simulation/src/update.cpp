@@ -329,7 +329,9 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
             avlLanes--;
         }
     }
-    std::cerr << "I'm fucking stupid since I was not able to foresee this case happening" << std::endl;
+    // std::cerr << "I'm fucking stupid since I was not able to foresee this case happening" << std::endl;
+    // This occurs when there are exactly as many vehicles as there are lanes. We don't get to the avgLanes == 0,
+    // therefore, we don't return the false and exit the for loop. Then we end up here.
     return false;
 
 }
