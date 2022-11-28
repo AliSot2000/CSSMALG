@@ -372,9 +372,8 @@ void updateCrossings(world_t* world, const float timeDelta) {
 			}
 
 			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
-                actor->target_velocity = street->speedlimit;
 				street->traffic.erase(iter);
-				break; // I dont know if removing an element from a vector during iteration would lead to good code, hence break
+				break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
 			}
 		}
 
@@ -411,8 +410,8 @@ void updateStreets(world_t* world, const float timeDelta) {
 
             actor->distanceToCrossing -= movment_distance;
 
-           //  assert(std::isnan(actor->distanceToCrossing) == false && "Distance to Crossing is nan");
-           //  assert(std::isinf(actor->distanceToCrossing) == false && "Distance to Crossing is inf");
+             assert(std::isnan(actor->distanceToCrossing) == false && "Distance to Crossing is nan");
+             assert(std::isinf(actor->distanceToCrossing) == false && "Distance to Crossing is inf");
             // assert(actor->distanceToCrossing >= -10.0f && "Distance to crossing needs to be >= -10.0f");
 
             // TODO Rethink, having a maximum with velocity and velocity computed from acceleration
@@ -442,6 +441,8 @@ void updateStreets(world_t* world, const float timeDelta) {
             } else {
                 actor->current_acceleration = 0.0f;
             }
+
+            // TODO CLAMPING
             // Will make sure traffic is still sorted
 			sortStreet(start, end);
             /*
@@ -459,8 +460,11 @@ void updateStreets(world_t* world, const float timeDelta) {
             }) && "Street is sorted");
              */
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
-            // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
-		}
+            // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf")
+//            if (actor->distanceToCrossing <= 1.0f && actor->distanceToCrossing > 0.0f) {
+//                assert(actor->current_velocity >= 0.01f && "Acceleration needs to be >= -10.0f");
+//            }
+        }
 	}
 }
 
