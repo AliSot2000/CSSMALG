@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * class to read raw data from OSM and parse it
+ */
 class Parser
 {
     private array $rawNodes = array();
@@ -9,6 +12,11 @@ class Parser
     private array $agents = array();
     private int $streetCount = 0;
 
+
+    /**
+     * main method bundling all important other methods
+     * @return void
+     */
     public function execute(): void {
         $this->readData();
         $this->parseNodes();
@@ -16,9 +24,19 @@ class Parser
         $this->writeJSON();
     }
 
+    //ToDo: include stop signs and vortritt (also add at streets) and make bounding coordinates as variables
+    /**
+     * read the raw input OSM data from overpass API
+     * @return void
+     */
     private function readData(): void {
-        $rawData = json_decode(file_get_contents("../data/importMapData.json"), true);
+        // overpass query
+        $rawData = "http://overpass-api.de/api/interpreter?data=[out:json][bbox:47.397122,8.530290,47.42302,8.564614];(way[highway=primary];way[highway=trunk];way[highway=tertiary];way[highway=service];way[highway=traffic_signals];way[highway=residential];)->.a;(.a;>;);out;";
+        // collecting results in JSON format
+        $html = file_get_contents($rawData);
+        $rawData = json_decode($html, true);
 
+        //sorting the nodes and streets into two separate arrays
         foreach ($rawData["elements"] AS $element) {
             if ($element["type"] == "node") {
                 $this->rawNodes[] = $element;
@@ -28,9 +46,13 @@ class Parser
         }
     }
 
+    /**
+     * parse raw node data
+     * @return void
+     */
     private function parseNodes(): void {
         $nodeCounter = array();
-
+        // counting how often each node is used, counting nodes at end of street twice to not accidentally delete these
         foreach ($this->rawStreets AS $streetData) {
             foreach ($streetData["nodes"] AS $id => $nodeId) {
                 if ($id != 0 && $id != count($streetData["nodes"]) - 1) {
@@ -48,7 +70,7 @@ class Parser
                 }
             }
         }
-
+        // if node is only used once or not at all, delete it since it is unnecessary in the middle of a road
         foreach ($this->rawNodes AS $nodeData) {
             if (isset($nodeCounter[$nodeData["id"]]) &&  $nodeCounter[$nodeData["id"]] > 1) {
                 $this->parsedNodes[$nodeData["id"]]["id"] = $nodeData["id"];
@@ -59,6 +81,10 @@ class Parser
         }
     }
 
+    /**
+     * parse raw road data
+     * @return void
+     */
     private function parseStreets(): void {
         $splittedRoads = array();
 
@@ -68,6 +94,8 @@ class Parser
             $segments = array();
             $segments[] = array("start" => $nodes[0]);
             $current = 0;
+
+            // split roads at intersections
             for ($i = 1; $i < count($nodes); $i++) {
                 if (isset($this->parsedNodes[$nodes[$i]])) {
                     $segments[$current]["end"] = $nodes[$i];
@@ -77,6 +105,7 @@ class Parser
                 }
             }
 
+            // go through segments and check the properties
             foreach ($segments AS $segment) {
                 if (isset($streetData["tags"]["oneway"]) && $streetData["tags"]["oneway"] == "yes") {
                     $splittedRoads[$this->streetCount] = array("id" => $this->streetCount, "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => $this->streetCount + 1);
@@ -95,6 +124,7 @@ class Parser
             }
         }
 
+        // check how many lanes need to be made
         foreach ($splittedRoads AS $id => $data) {
             $coordinate1 = $this->parsedNodes[$data["startNodeId"]]["coordinates"];
             $coordinate2 = $this->parsedNodes[$data["endNodeId"]]["coordinates"];
@@ -108,6 +138,7 @@ class Parser
             } else {
                 if (isset($rawData["tags"]["lanes"])) {
                     if (isset($rawData["tags"]["lanes:forward"])) {
+                        // if original direction or other direction
                         $lanes = ($data["oppositeStreetId"] > $id) ? $rawData["tags"]["lanes:forward"] : $rawData["tags"]["lanes"] - $rawData["tags"]["lanes:forward"];
                     } else {
                         $lanes = $rawData["tags"]["lanes"];
@@ -124,16 +155,18 @@ class Parser
 
             $laneArray = array();
 
-            // with these road types we assume wide enough roads to always overtake so we add a seperate lane for bicycles
+            // with these road types we assume they wide enough roads to always overtake so we add a seperate lane for bicycles
             if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
                 $laneArray[] = array("type" => "bike", "left" => true, "forward" => true, "right" => true);
                 $type = "car";
             }
 
+            // actually add the lanes
             for ($i = 0; $i < $lanes; $i++) {
                 $laneArray[] = array("type" => $type, "left" => true, "forward" => true, "right" => true);
             }
 
+            // if it is not a oneway node, add the ID of the opposite street
             if ($data["oppositeStreetId"] == -1) {
                 $this->parsedStreets[$id] = array("id" => $id, "intersections" => array("start" => $data["startNodeId"], "end" => $data["endNodeId"]), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length);
             } else {
@@ -142,6 +175,10 @@ class Parser
         }
     }
 
+    /**
+     * write the result JSON
+     * @return void
+     */
     private function writeJSON(): void {
 
         $handle = fopen("../data/export.tsim", 'w+');
@@ -149,9 +186,16 @@ class Parser
         fclose($handle);
     }
 
-    //formula from https://www.movable-type.co.uk/scripts/latlong.html
-    //calculates distance between two coordinate pairs
+    /**
+     * calculate the distance in meters between two pairs of earth coordinates
+     * @param float $lon1
+     * @param float $lat1
+     * @param float $lon2
+     * @param float $lat2
+     * @return float
+     */
     private function distance(float $lon1, float $lat1, float $lon2, float $lat2): float {
+        // "haversine" formula from https://www.movable-type.co.uk/scripts/latlong.html (visited 28.11.2022)
         $radius = 6371e3;
 
         $phi1 = $lat1 * pi() / 180;
