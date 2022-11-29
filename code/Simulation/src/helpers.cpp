@@ -1,0 +1,91 @@
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+
+#include "helpers.hpp"
+
+int randint(int min, int max) {
+	return std::rand() % (max - min + 1) + min;
+}
+
+bool choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& end) {
+
+	if (world.crossings.size() == 0) {
+		std::cerr << "There are no crossings." << std::endl;
+		return false;
+	}
+
+	// Select start id which contains more than itself, meaning there is atleast one road to another crossing
+	int len = (int)world.crossings.size() - 1;
+	SPT::iterator startIter = spt.begin();
+	std::advance(startIter, randint(0, len));
+	int noFinityLoop = 0;
+	while (startIter->second.size() < 2 && noFinityLoop <= world.crossings.size()) {
+		startIter = spt.begin();
+		std::advance(startIter, randint(0, len));
+		noFinityLoop++;
+	}
+
+	// All crossings have been checked for size
+	if (noFinityLoop > world.crossings.size()) {
+		std::cerr << "There exists no paths. Meaning one can only go from a intersection to the intersection itself." << std::endl;
+		return false;
+	}
+
+	// Select entry which is not equal to start id
+	auto endIter = startIter->second.begin();
+	std::advance(endIter, randint(0, (int)startIter->second.size() - 1));
+	
+	if (endIter->first == startIter->first) {
+		endIter = startIter->second.begin();
+		if (endIter->first == startIter->first) 
+			endIter = std::next(endIter);
+	}
+
+	start = startIter->first;
+	end = endIter->first;
+
+	return true;
+}
+
+void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
+                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length) {
+
+    for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
+        Actor actor = {
+                .type = type,
+                .distanceToCrossing = 0.0f,
+                .distanceToRight = 0,
+                .length = length,
+                .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f,
+                .id = std::to_string(std::rand())
+        };
+
+		
+		std::string start_id;
+		std::string end_id;
+		// Only insert actor when a proper path has been found
+		if (choseRandomPath(world, spt, start_id, end_id)) {
+			actor.path = retrievePath(spt, start_id, end_id);
+			// Find starting crossing in vector. Not very efficient but does the job.
+			for (auto& crossing : world.crossings) {
+				if (crossing.id == start_id) {
+					crossing.waitingToBeInserted.push_back(&(*iter));
+					break;
+				}
+			}
+			*iter = actor;
+		}
+	}
+}
+
+std::chrono::high_resolution_clock::time_point start_time;
+
+void startMeasureTime(const std::string &task) {
+	std::cout << "Starting task: " << task << std::endl;
+    start_time = std::chrono::high_resolution_clock::now();
+}
+
+void stopMeasureTime() {
+	std::cout << "Last task took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count() / 1000.f << " seconds.\n\n" << std::endl;
+}
