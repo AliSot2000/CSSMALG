@@ -3,8 +3,8 @@
 agent is an object containing
 - length, float 
 - max_velocity, float in km/h
-- acceleration, float, the 'acceleration' in m/s, denoted _a_ in the formula
-- deceleration, float, the 'deceleration' in m/s denoted _b_ in the formula
+- acceleration, float, the 'acceleration' in m/s^2, denoted _a_ in the formula
+- deceleration, float, the 'deceleration' in m/s^2 denoted _b_ in the formula
 - acceleration_exponent, float, the exponent of the positive acceleration, denoted _sigma_ in the formula
 - waiting_period, float, the number of seconds to wait before the actor starts its journey.
 - key, string, the id of the actor. Must be unique
@@ -13,7 +13,7 @@ agent is an object containing
 
 The actors are stored in two objects, 'bikes' and 'cars' denoting their type.
 
-The Final Json should look something like this:
+The final JSON should look something like this:
 
 ```json
 {
