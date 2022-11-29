@@ -58,8 +58,7 @@
                     "traffic_controller": "outgoing"
                 }
             ],
-            "trafficSignal": true,
-            "roundabout": false,
+            "trafficSignal": true
         }
     ],
     "agents": [
@@ -91,7 +90,7 @@ This includes the type of the file and the date of the simulation.
 This is the same map that is exported from the map editor and will be passed along if provided in the simulated file.
 
 ## Example from the map export:
-Note that roads would have a "oppositeStreetId" if they would have a opposite.
+Note that roads would have a "oppositeStreetId" if they would have an opposite.
 ```json
 {
   "roads": [
