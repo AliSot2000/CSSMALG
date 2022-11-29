@@ -53,7 +53,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 	return spt;
 }
 
-Path retrievePath(const SPT& spt, const std::string &start, const std::string &end) {
+Path retrievePath(SPT& spt, const std::string &start, const std::string &end) {
 	if (!spt[start].contains(end)) {
 		return Path();
 	}
