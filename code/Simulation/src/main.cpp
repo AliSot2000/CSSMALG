@@ -49,8 +49,7 @@ void choseRandomPath(world_t& world, SPT& spt, std::string& start, std::string& 
 }
 
 void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
-                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length) {
-	int index = 1;
+                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length, const int max_start_time) {
     for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
         Actor actor = {
                 .type = type,
@@ -59,6 +58,7 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
                 .length = length,
                 .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
                 //.width = 1.5f,
+                .insertAfter = static_cast<float>(randint(0, max_start_time)),
                 .id = std::to_string(std::rand())
         };
 
@@ -75,7 +75,6 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
 			}
 		}
 		*iter = actor;
-		index++;
 	}
 }
 
@@ -144,14 +143,24 @@ int main(int argc, char* argv[]) {
         importAgents(world, agents, carsSPT, bikeSPT);
     } else {
         world.actors = std::vector<Actor>(randomCars + randomBikes);
-        createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
-        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
+        createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f, static_cast<int>(runtime * 0.5));
+        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f, static_cast<int>(runtime * 0.5));
     }
 
 	stopMeasureTime();
 
 
 	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+
+    for (crossing_t iter : world.crossings){
+
+        TrafficIterator start = iter.waitingToBeInserted.begin();
+        TrafficIterator stop = iter.waitingToBeInserted.end();
+
+        std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
+            return a->insertAfter > b->insertAfter;
+        });
+    }
 
 	startMeasureTime(
 		"running simulation with\n\t" +
@@ -164,7 +173,7 @@ int main(int argc, char* argv[]) {
 
 	float maxTime = runtime; 
 	while (maxTime > 0.0f) {
-		updateCrossings(&world, deltaTime, stupidCrossings);
+		updateCrossings(&world, deltaTime, stupidCrossings, runtime - maxTime);
 		updateStreets(&world, deltaTime);
 		maxTime -= deltaTime;
 
