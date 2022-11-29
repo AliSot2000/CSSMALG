@@ -32,6 +32,8 @@ typedef struct Actor {
     float deceleration = 2*1.67f; // m/s^2
     float acceleration_exp = 10.0f; // unitless
 
+    float insertAfter = 0.0f; // After how many seconds the actor should try to be inserted at the crossing
+
 	// Only used for visualization
 	std::string id = "empty";
 	Path path;
