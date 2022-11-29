@@ -113,7 +113,7 @@ void updateStreets(world_t* world, const float timeDelta);
 bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta);
 
 
-void updateCrossings(world_t* world, const float timeDelta);
+void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings);
 /*
     Compute the desired distance between the vehicle and the border of the next vehicle.
 

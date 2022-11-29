@@ -347,8 +347,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 
 }
 
-void updateCrossings(world_t* world, const float timeDelta) {
-	
+void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings) {
 	for (auto& crossing : world->crossings) {
         // TODO Bugfix, insert fails if the velocity is 0.0f
 		if (crossing.waitingToBeInserted.size() > 0) {
@@ -364,10 +363,22 @@ void updateCrossings(world_t* world, const float timeDelta) {
 		crossing.currentPhase -= timeDelta;
 
 		// Change street for which the light is green
-		if (crossing.currentPhase <= 0.0f) {
-			crossing.green = (crossing.green + 1) % (crossing.inbound.size());
-			crossing.currentPhase = crossing.greenPhaseDuration;
-		}
+        if (stupidCrossings){
+            crossing.green = (crossing.green + 1) % (crossing.inbound.size());
+            crossing.currentPhase = crossing.greenPhaseDuration;
+        } else {
+            if (crossing.currentPhase <= 0.0f) {
+                // Forloop to prevent an infinite while loop
+                // Go to next inbound street if a given inbound street is empty.
+                for (std::size_t i = 0; i < crossing.inbound.size(); i++){
+                    crossing.green = (crossing.green + 1) % (crossing.inbound.size());
+                    if (crossing.inbound.at(crossing.green)->traffic.size() > 0){
+                        break;
+                    }
+                }
+                crossing.currentPhase = crossing.greenPhaseDuration;
+            }
+        }
 
 		Street* street = crossing.inbound[crossing.green];
 		for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
@@ -446,6 +457,9 @@ void updateStreets(world_t* world, const float timeDelta) {
             // Only update the speed with formula if the vehicle is not at the end of the street (div by zero error)
             // and if the distance to crossing was not updated beforehand to 0.
             if (actor->distanceToCrossing > 0.0f && maxDrivableDistance > 0.0f) {
+
+                // Simplifying assumption. An Actor can at maximum only "see" up to the next crossing. This is
+                // advantageous both for MPI (If it was to be added) and it doesn't require the addition of a datastructure.
                 actor->current_acceleration = (frontVehicle == nullptr) ?
                                               actor->acceleration *
                                               (1
