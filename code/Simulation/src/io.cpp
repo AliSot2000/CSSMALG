@@ -75,6 +75,8 @@ void importMap(world_t& world, json& map) {
 
 void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
     assert(world.actors.size() == 0 && "Agents is not empty");
+    world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
+    int index = 0;
 
     // Import Bikes
     for (const auto& [name, data] : agents["bikes"].items()) {
@@ -95,8 +97,6 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
 
                 //.width = 1.5f,
                 .id = name,
-
-
         };
 
         std::string startIntersectionId = data["start_id"];
@@ -111,7 +111,8 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
             }
         }
 
-        world.actors.push_back(actor);
+        world.actors.at(index) = actor;
+        index++;
     }
 
     for (const auto& [name, data] : agents["cars"].items()) {
@@ -146,7 +147,8 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
             }
         }
 
-        world.actors.push_back(actor);
+        world.actors.at(index) = actor;
+        index++;
     }
 }
 
