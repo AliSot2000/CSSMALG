@@ -134,11 +134,6 @@ int main(int argc, char* argv[]) {
 
 	startMeasureTime("creating random actors");
 
-	world.actors = std::vector<Actor>(randomCars + randomBikes);
-
-    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
-    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
-
     if (agentsFile != nullptr){
 
         nlohmann::json agents;
@@ -147,6 +142,10 @@ int main(int argc, char* argv[]) {
         }
 
         importAgents(world, agents, carsSPT, bikeSPT);
+    } else {
+        world.actors = std::vector<Actor>(randomCars + randomBikes);
+        createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
+        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
     }
 
 	stopMeasureTime();
