@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 
 #include "actors.hpp"
+#include "routing.hpp"
 
 using nlohmann::json;
 
@@ -26,6 +27,16 @@ bool loadFile(const std::string& file, json& input);
  * @returns void
  */
 void importMap(world_t& world, nlohmann::json& map);
+
+/*
+ * Imports a json file into the c++ data structure.
+ *
+ * @param world (world) of current simulation
+ * @param agents the agents loaded from the json file
+ *
+ * @returns void
+ */
+void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT);
 
 /*
  * Docs in progress...
