@@ -93,7 +93,8 @@ void stopMeasureTime() {
 int main(int argc, char* argv[]) {
 
 	if (argc < 6) {
-		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time>" << std::endl;
+		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_crossing>" << std::endl;
+        std::cerr << "To only simulate the agents given via the <agents> file, set the n-random-cars and n-random-bikes to 0" << std::endl;
 		return -1;
 	}
 
@@ -103,6 +104,16 @@ int main(int argc, char* argv[]) {
 	const int randomBikes = std::atoi(argv[4]);
 	const auto runtime = (float)std::atof(argv[5]); // 60.0f;
 	const auto deltaTime = (float)std::atof(argv[6]); // 0.25f;
+    bool stupidCrossings = false;
+    char* agentsFile = nullptr;
+
+    if (argc == 7){
+        agentsFile = argv[7];
+    }
+
+    if (argc == 8){
+        stupidCrossings = (*argv[8] == '1');
+    }
 
 	world_t world;
 	nlohmann::json import;
@@ -125,8 +136,18 @@ int main(int argc, char* argv[]) {
 
 	world.actors = std::vector<Actor>(randomCars + randomBikes);
 
-	createRandomActors(world, carsSPT, ActorTypes::Car, 30, 50, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
-	createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
+    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
+    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
+
+    if (agentsFile != nullptr){
+
+        nlohmann::json agents;
+        if (!loadFile(importFile, agents)) {
+            return -1;
+        }
+
+        importAgents(world, agents, carsSPT, bikeSPT);
+    }
 
 	stopMeasureTime();
 
@@ -144,7 +165,7 @@ int main(int argc, char* argv[]) {
 
 	float maxTime = runtime; 
 	while (maxTime > 0.0f) {
-		updateCrossings(&world, deltaTime);
+		updateCrossings(&world, deltaTime, stupidCrossings);
 		updateStreets(&world, deltaTime);
 		maxTime -= deltaTime;
 
