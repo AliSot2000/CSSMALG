@@ -1,10 +1,5 @@
-
 #include <iostream>
-#include <iomanip>
 #include <vector>
-#include <cstdlib>
-#include <string>
-#include <chrono>
 
 #include "actors.hpp"
 #include "routing.hpp"
@@ -14,35 +9,29 @@
 
 int main(int argc, char* argv[]) {
 
-	if (argc < 6) {
+	// Check correct command line arguments
+	if (argc < 7) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_crossing>" << std::endl;
         std::cerr << "To only simulate the agents given via the <agents> file, set the n-random-cars and n-random-bikes to 0" << std::endl;
 		return -1;
 	}
 
+	// Arguments
 	const char* importFile = argv[1];
 	const char* outputFile = argv[2];
 	const int randomCars = std::atoi(argv[3]);
 	const int randomBikes = std::atoi(argv[4]);
-	const auto runtime = (float)std::atof(argv[5]); // 60.0f;
-	const auto deltaTime = (float)std::atof(argv[6]); // 0.25f;
-    bool stupidCrossings = false;
-    char* agentsFile = nullptr;
+	const auto runtime = (float)std::atof(argv[5]); // Runtime in seconds
+	const auto deltaTime = (float)std::atof(argv[6]); // Frame step in seconds
+    char* agentsFile = argc < 8 ? nullptr : argv[7];
 
-    if (argc == 7){
-        agentsFile = argv[7];
-    }
-
-    if (argc == 8){
-        stupidCrossings = (*argv[8] == '1');
-    }
+    bool stupidCrossings = argc < 9 ? false : *argv[8] == '1';
 
 	world_t world;
 	nlohmann::json import;
 	
-	if (!loadFile(importFile, import)) {
+	if (!loadFile(importFile, import))
 		return -1;
-	}
 
 	startMeasureTime("importing map");
 	importMap(world, import);
@@ -53,14 +42,13 @@ int main(int argc, char* argv[]) {
 	SPT bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
 	stopMeasureTime();
 
-
 	startMeasureTime("creating random actors");
-
 	world.actors = std::vector<Actor>(randomCars + randomBikes);
-
     createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f);
     createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f);
+	stopMeasureTime();
 
+	startMeasureTime("importing agents file");
     if (agentsFile != nullptr){
 
         nlohmann::json agents;
@@ -70,11 +58,11 @@ int main(int argc, char* argv[]) {
 
         importAgents(world, agents, carsSPT, bikeSPT);
     }
-
 	stopMeasureTime();
 
-
+	startMeasureTime("creating export header");
 	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+	stopMeasureTime();
 
 	startMeasureTime(
 		"running simulation with\n\t" +
@@ -96,10 +84,9 @@ int main(int argc, char* argv[]) {
 	stopMeasureTime();
 
 	startMeasureTime("saving simulation");
-
 	save(outputFile, output);
-
 	stopMeasureTime();
 
 	return 0;
+// U
 }
