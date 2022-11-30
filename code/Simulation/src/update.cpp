@@ -421,8 +421,11 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 
 		// Change street for which the light is green
         if (stupidCrossings){
-            crossing.green = (crossing.green + 1) % (crossing.inbound.size());
-            crossing.currentPhase = crossing.greenPhaseDuration;
+            if (crossing.currentPhase <= 0.0f) {
+                crossing.green = (crossing.green + 1) % (crossing.inbound.size());
+                crossing.currentPhase = crossing.greenPhaseDuration;
+                crossing.outputFlag = true;
+            }
         } else {
             if (crossing.currentPhase <= 0.0f) {
                 // Forloop to prevent an infinite while loop
