@@ -75,6 +75,7 @@ typedef struct Crossing {
 
 	std::vector<Actor*> waitingToBeInserted;
 	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
+    bool outputFlag = false; // All crossings which have this set are added to the output.
 } crossing_t;
 
 typedef struct World {
