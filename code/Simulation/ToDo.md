@@ -2,7 +2,6 @@
 	TODO feature: Overtaking if opposite street is free
     TODO feature: Add Traffic Light State to the exported simulation for Jannick <3
     
-    TODO actors need to check if the lane their switching to has no car to the side of them.
 	TODO rename crossings to intersections
 	TODO test if crossings switch inbound streets
 
