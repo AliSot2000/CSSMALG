@@ -139,7 +139,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     if (f.frontVehicle != nullptr) {
         frontDistance = actor->distanceToCrossing - (f.frontVehicle->distanceToCrossing + f.frontVehicle->length);
     }
-    assert(c.frontVehicle == actor && "Actor is not in place where it is expected.");
+    // assert(c.frontVehicle == actor && "Actor is not in place where it is expected.");
 
     // Check left lane existence
     if (actor->distanceToRight < street.width - LANE_WIDTH) {
