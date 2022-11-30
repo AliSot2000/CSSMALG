@@ -152,13 +152,9 @@ int main(int argc, char* argv[]) {
 
 	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
 
-    for (crossing_t iter : world.crossings){
-
-        TrafficIterator start = iter.waitingToBeInserted.begin();
-        TrafficIterator stop = iter.waitingToBeInserted.end();
-
+    for (crossing_t& iter : world.crossings){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
-            return a->insertAfter > b->insertAfter;
+            return a->insertAfter < b->insertAfter;
         });
     }
 
