@@ -91,6 +91,9 @@ This is the same map that is exported from the map editor and will be passed alo
 
 ## Example from the map export:
 Note that roads would have a "oppositeStreetId" if they would have an opposite.
+
+If the traffic controller is not given by Jan, he puts "NONE" in the traffic controller field.
+
 ```json
 {
   "roads": [
