@@ -51,7 +51,7 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
                                   ---------------------------> | Min Distance = actor->distanceToCrossing - distance_traveled
                                   IT-END            IT-START
 */
-float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
+//float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
 
 /*
     Locates the vehicle in front, in front and to the immediate right and in front and to the immediate left
@@ -63,7 +63,11 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
     @returns Returns a FrontVehicle struct containing the front vehicle, the front vehicle to the left and the front vehicle to the right.
 
 */
-FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor);
+FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd);
+/*
+    Gives the three vehicles which could collide with our actor
+ */
+FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, const TrafficIterator start);
 /*
     Finds the optimal Lane to drive for the vehicle and moves it to said lane. It then returns the
     vehicle in front if there is one.
@@ -89,7 +93,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor);
 	@returns Returns a float containing the maximum distance a car is allowed to drive forward.
 
 */
-float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
+// float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
 
 /*
 	Sorts vehicles in a street based on their distance to the next crossing.
