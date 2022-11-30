@@ -23,7 +23,7 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 			return a->distanceToCrossing > b;
 	});
 }
-
+/*
 float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
 
 	if (actor->distanceToCrossing <= 0.0f) 
@@ -62,15 +62,17 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 	assert(maxForwardDistance >= 0.0f && "Vehicle can not drive backwards.");
 	return maxForwardDistance;
 }
+*/
 
-FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor) {
+FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd) {
     FrontVehicles f;
 
     // Go through array and always update the frontVehicles if a new matching vehicle is found.
-    for (auto iter = street.traffic.begin(); iter != street.traffic.end(); iter++) {
+    for (TrafficIterator iter = trafficStart; iter != trafficEnd; iter++) {
         Actor *other = *iter; // Get pointer to actor of iterator (with *)
 
         if (actor == other) {
+            trafficEnd = iter;
             return f;
         }
 
@@ -85,7 +87,31 @@ FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor) {
            f.frontVehicleLeft = other;
         }
     }
+    return f;
+}
 
+FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, const TrafficIterator start){
+    FrontVehicles f;
+
+    // Go through array and always update the frontVehicles if a new matching vehicle is found.
+    for (TrafficIterator iter = start; iter != street.traffic.end(); iter++) {
+        Actor *other = *iter; // Get pointer to actor of iterator (with *)
+
+        if (other->distanceToCrossing > actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES) {
+            return f;
+        }
+
+        assert(other->distanceToRight <= street.width && "Vehicle is not on the street!");
+
+        // We can iterate through like that since the traffic is sorted by distanceToCrossing.
+        if (actor->distanceToRight == other->distanceToRight) {
+            f.frontVehicle = other;
+        } else if (actor->distanceToRight == other->distanceToRight + LANE_WIDTH) {
+            f.frontVehicleRight = other;
+        } else if (actor->distanceToRight == other->distanceToRight - LANE_WIDTH) {
+           f.frontVehicleLeft = other;
+        }
+    }
     return f;
 }
 
@@ -93,8 +119,17 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
     assert((street.type != StreetTypes::OnlyBike || actor->type != ActorTypes::Car) && "Car is not allowed on this street!");
 
+    TrafficIterator start = street.traffic.begin();
+    TrafficIterator end = street.traffic.end();
     // Get front vehicles
-    FrontVehicles f = GetFrontVehicles(street, actor);
+    FrontVehicles f = GetFrontVehicles(street, actor, start, end);
+
+    // Don't update the shit if we are a bike in a normal street.
+    if (actor->type == ActorTypes::Bike && street.type == StreetTypes::Both) {
+        return f.frontVehicle;
+    }
+
+    FrontVehicles c = GetCollisionVehicles(street, actor, end);
 
     // Check in front
     float frontDistance = actor->distanceToCrossing;
@@ -104,6 +139,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     if (f.frontVehicle != nullptr) {
         frontDistance = actor->distanceToCrossing - (f.frontVehicle->distanceToCrossing + f.frontVehicle->length);
     }
+    assert(c.frontVehicle == actor && "Actor is not in place where it is expected.");
 
     // Check left lane existence
     if (actor->distanceToRight < street.width - LANE_WIDTH) {
@@ -116,10 +152,20 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
                     actor->distanceToCrossing - (f.frontVehicleLeft->distanceToCrossing + f.frontVehicleLeft->length);
         }
 
+        // More suitable
         if (leftDistance > frontDistance) {
-            frontDistance = leftDistance;
-            OptimalFrontActor = f.frontVehicleLeft;
-            distanceToRight = actor->distanceToRight + LANE_WIDTH;
+            // Check for a collision with subsequent vehicle.
+            if (c.frontVehicleLeft == nullptr || (
+                    c.frontVehicleLeft->distanceToCrossing > actor->distanceToCrossing + actor->length +
+                                                             MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
+                    || c.frontVehicleLeft->distanceToCrossing + c.frontVehicleLeft->length +
+                       MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToCrossing)) { // Actor is enough behind.
+
+                frontDistance = leftDistance;
+                distanceToRight = actor->distanceToRight + LANE_WIDTH;
+                OptimalFrontActor = f.frontVehicleLeft;
+            }
+
         }
     }
 
@@ -136,8 +182,14 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
 
         // Prioritize right lane, that's why greater or equal than.
         if (rightDistance >= frontDistance) {
+            if (c.frontVehicleRight == nullptr
+            || (c.frontVehicleRight->distanceToCrossing > actor->distanceToCrossing + actor->length +
+                                                         MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
+                || c.frontVehicleRight->distanceToCrossing + c.frontVehicleRight->length +
+                   MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToCrossing)){
             OptimalFrontActor = f.frontVehicleRight;
             distanceToRight = actor->distanceToRight - LANE_WIDTH;
+            }
         }
 
     }
@@ -147,6 +199,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     return OptimalFrontActor;
 }
 
+/*
 float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
 
 	assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
@@ -201,7 +254,7 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 
 	return allowedDistance;
 }
-
+*/
 void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 	std::sort(start, end, [](const Actor* a, const Actor* b) {
         // Lexicographical order, starting with distanceToCrossing and then distanceToRight
