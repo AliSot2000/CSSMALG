@@ -33,6 +33,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 	}
 
 	for (int32_t k = 0; k < n; k++) {
+        std::cout << "Computing " << k << " of " << n << std::endl;
 		std::string ks = world->crossings[k].id;
 		for (int32_t i = 0; i < n; i++) {
 			std::string is = world->crossings[i].id;
