@@ -198,8 +198,17 @@ void addFrame(world_t& world, json& out) {
     auto c = [&crossingFrame](const Crossing* crossing) {
         crossingFrame[crossing->id] = {};
         json& obj = crossingFrame[crossing->id];
-        obj["green"] = crossing->inbound.at(crossing->green)->id;
-
+        obj["green"] = std::vector<json>();
+        obj["red"] = std::vector<json>();
+        int index = 0;
+        for (const auto inboundRoad : crossing->inbound){
+            if (index == crossing->green){
+                obj["green"].push_back(inboundRoad->id);
+            } else {
+                obj["red"].push_back(inboundRoad->id);
+            }
+            index++;
+        }
     };
 
     // Iterate through the actors on the street and update its distance.
@@ -235,7 +244,7 @@ void addFrame(world_t& world, json& out) {
 	}
 
     frame["actors"] = actorFrame;
-    frame["crossings"] = crossingFrame;
+    frame["intersections"] = crossingFrame;
 
 	if (frame.size() > 0) {
 		out["simulation"].push_back(frame);
