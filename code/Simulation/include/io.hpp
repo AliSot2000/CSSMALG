@@ -9,7 +9,7 @@
 using nlohmann::json;
 
 /*
- * Loads a file with json format into a json buffer TODO NILS! What happens here
+ * Loads a file with json format into a json buffer
  *
  * @param file, path to file
  * @param input json obj or sth to write the content into
