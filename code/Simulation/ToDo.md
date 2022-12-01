@@ -3,7 +3,6 @@
     TODO feature: Add Traffic Light State to the exported simulation for Jannick <3
     
 	TODO rename crossings to intersections
-	TODO test if crossings switch inbound streets
 
 ### CONSTRAINTS:
 Generation on my side will need to do this when importing the map.
