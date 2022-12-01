@@ -243,7 +243,7 @@ void addFrame(world_t& world, json& out) {
         }
 	}
 
-    frame["actors"] = actorFrame;
+    frame["agents"] = actorFrame;
     frame["intersections"] = crossingFrame;
 
 	if (frame.size() > 0) {
