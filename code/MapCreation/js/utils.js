@@ -527,3 +527,12 @@ class Point {
 function calculatePercent(value, total) {
     return (value / total) * 100; // Return the percentage
 }
+
+function sanitiseRoadIds(roadIds) {
+    for (let i = 0; i < roadIds.length; i++) {
+        if (roadIds[i].charAt(0) === '!') {
+            roadIds[i] = roadIds[i].substring(1);
+        }
+    }
+    return roadIds;
+}

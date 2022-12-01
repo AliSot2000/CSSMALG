@@ -629,4 +629,54 @@ class Intersection {
         }
         return false;
     }
+
+    getConnectedRoads() {
+        let roads = [];
+        for (let direction in this._snap_points) {
+            if (this._snap_points[direction].connected) {
+                roads.push(this._snap_points[direction].road.getId());
+            }
+        }
+        return roads;
+    }
+
+    getDirectionOfRoad(road_id) {
+        console.log(road_id, this._snap_points);
+        for (let direction in this._snap_points) {
+            console.log(direction)
+            if (this._snap_points[direction].connected && this._snap_points[direction].road.getId() === road_id) {
+                return direction;
+            }
+        }
+        return null;
+    }
+
+    setTrafficLightInDirection(direction, value) {
+        if (this._traffic_controllers[direction].type === 'traffic_light') {
+            let light = this._traffic_controllers[direction].element;
+            light.removeClass('green_light red_light').addClass(value);
+        }
+        return this;
+    }
+
+    setTrafficLights(step) {
+        console.log(step);
+        if (!isEmpty(step.green)) {
+            for (let i = 0; i < step.green.length; i++) {
+                let road_id = step.green[i];
+                let direction = this.getDirectionOfRoad(road_id);
+                console.log(direction);
+                this.setTrafficLightInDirection(direction, 'green_light');
+            }
+        }
+        if (!isEmpty(step.red)) {
+            for (let i = 0; i < step.red.length; i++) {
+                let road_id = step.red[i];
+                let direction = this.getDirectionOfRoad(road_id);
+                console.log(direction);
+                this.setTrafficLightInDirection(direction, 'red_light');
+            }
+        }
+        return this;
+    }
 }

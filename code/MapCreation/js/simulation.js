@@ -14,6 +14,7 @@ class Simulation {
     _interface = null; // The simulation interface
     _step = 1; // The current step of the simulation
     _agents = null; // All the agents of the simulation
+    _intersections = null; // The intersections of the simulation
     _pre_simulation = null; // The simulation that is loaded from the simulation file
     _sim_map = null; // The map exported that belongs to the simulation
     _speed = 1; // The speed of the simulation
@@ -21,6 +22,9 @@ class Simulation {
     _time_interval = 1000; // The time interval at which to read the positions of the agents
     _play_button = null; // The play/pause button
     _speed_dial = null; // The speed dial
+    _agent_simulation = null; // The simulation of the agents
+    _intersection_simulation = null; // The simulation of the intersections
+    _frames_per_step = 1; // The number of frames per step
 
     /**
      * Creates the simulation
@@ -117,11 +121,12 @@ class Simulation {
         }
 
         this._agents = this._map.getAgents(); // Get the agents from the map
+        this._intersections = this._map.getIntersections(); // Get the intersections from the map
 
         this._map._loading.setSubHeader('Precalculating Simulation'); // Set the sub header of the loading screen
         this.precalculateSimulation() // Precalculate the simulation
 
-        this._slider.attr('max', this._simulation.length); // Set the maximum value of the slider
+        this._slider.attr('max', this._agent_simulation.length); // Set the maximum value of the slider
         this._slider.val(0); // Set the value of the slider to 0
 
         this._step = 0; // Set the step to 0
@@ -136,28 +141,57 @@ class Simulation {
      * @returns {Simulation} Self Reference for chaining
      */
     precalculateSimulation() {
-        this._simulation = []; // The simulation data
+        this._agent_simulation = []; // The simulation data
+        this._intersection_simulation = []; // The simulation data
         let total_steps = this._pre_simulation.length;
-        let frames_per_step = Math.floor(1000/30 * this._time_interval); // The number of frames per step
-        let last_update = {}; // The last update for each agent in the simulation
-        if (this._pre_simulation.length > 0) { // If there is a pre-simulation
-            let step = this._pre_simulation[0]; // The first step of the pre-simulation
+        this._frames_per_step = Math.floor(1000/30 * this._time_interval); // The number of frames per step
+        let agent_last_update = {}; // The last update for each agent in the simulation
+        let intersection_last_update = {}; // The last update for each intersection in the simulation
 
-            let new_step = { // The first step of the simulation
+        if (this._pre_simulation.length > 0) { // If there is a pre-simulation
+            let agent_step = this._pre_simulation[0].agents; // The first step of the pre-simulation
+            let intersection_step = this._pre_simulation[0].intersections; // The first step of the pre-simulation
+
+            let agent_new_step = { // The first step of the simulation
+                changed: {}
+            }
+
+            let intersection_new_step = { // The first step of the simulation
                 changed: {}
             }
 
             for (let id in this._agents) { // For each agent
-                last_update[id] = 0; // Set the last update to 0
-                if (id in step) { // If the agent is in the pre-simulation
-                    new_step.changed[id] = this.calculatePosition(this._agents[id], step[id]);
+                agent_last_update[id] = 0; // Set the last update to 0
+                if (id in agent_step) { // If the agent is in the pre-simulation
+                    agent_new_step.changed[id] = this.calculatePosition(this._agents[id], agent_step[id]);
                 } else { // If the agent is not in the pre-simulation
-                    new_step.changed[id] = { // Add the agent to the first step of the simulation
+                    agent_new_step.changed[id] = { // Add the agent to the first step of the simulation
                         active: false // Set the agent to inactive
                     };
                 }
             }
-            this._simulation.push(new_step); // Add the first step to the simulation
+
+            for (let id in this._intersections) { // For each intersection
+                intersection_last_update[id] = 0; // Set the last update to 0
+                console.log(id);
+                if (id in intersection_step) { // If the intersection is in the pre-simulation
+                    intersection_new_step.changed[id] = {
+                        green: sanitiseRoadIds(intersection_step[id].green),
+                        red: sanitiseRoadIds(intersection_step[id].red)
+                    }
+                    console.log({
+                        green: sanitiseRoadIds(intersection_step[id].green),
+                        red: sanitiseRoadIds(intersection_step[id].red)
+                    })
+                } else { // If the intersection is not in the pre-simulation
+                    intersection_new_step.changed[id] = { // Add the intersection to the first step of the simulation
+                        red: this._intersections[id].getConnectedRoads()
+                    };
+                }
+            }
+
+            this._agent_simulation.push(agent_new_step); // Add the first step to the simulation
+            this._intersection_simulation.push(intersection_new_step); // Add the first step to the simulation
         } else {
             alert('Simulation is too short to be precalculated'); // If the simulation is too short to be precalculated
             return this; // Return
@@ -165,62 +199,81 @@ class Simulation {
 
         for (let step_num = 1; step_num < total_steps; step_num++) { // For each step in the pre-simulation
             this._map._loading.setPercent(Math.floor((step_num / total_steps) * 100)); // Update the loading screen
-            let pre_calculated_step = this._pre_simulation[step_num]; // The current step
+            let agent_step = this._pre_simulation[step_num].agents; // The current step
 
-            let new_steps = []; // The new steps that will be added to the simulation
-            for (let frame = 0; frame < frames_per_step; frame++) { // For each frame in the step
-                new_steps.push({same: {}, changed: {}}); // Add a new step to the simulation
+            let agent_new_steps = []; // The new steps that will be added to the simulation
+            for (let frame = 0; frame < this._frames_per_step; frame++) { // For each frame in the step
+                agent_new_steps.push({same: {}, changed: {}}); // Add a new step to the simulation
             }
 
             for (let id in this._agents) { // For each agent
-                if (id in pre_calculated_step) { // If the agent is in the pre-simulation
-                    let new_position = this.calculatePosition(this._agents[id], pre_calculated_step[id]); // Calculate the new position of the agent
-                    let current_position = this._simulation[last_update[id]].changed[id]; // Get the current position of the agent
-                    if (new_position.active && !current_position.active) { // If a agent is getting turned active
-                        for (let frame = 0; frame < new_steps.length - 1; frame++) { // For each frame in the step
-                            new_steps[frame].same[id] = last_update[id]; // Set the agent to the same as the last update
+                if (!isEmpty(agent_step) && id in agent_step) { // If the agent is in the pre-simulation
+                    let new_position = this.calculatePosition(this._agents[id], agent_step[id]); // Calculate the new position of the agent
+                    let current_position = this._agent_simulation[agent_last_update[id]].changed[id]; // Get the current position of the agent
+                    //console.log(agent_last_update[id]);
+                    if (new_position.active && !current_position.active) { // If an agent is getting turned active
+                        for (let frame = 0; frame < agent_new_steps.length - 1; frame++) { // For each frame in the step
+                            agent_new_steps[frame].same[id] = agent_last_update[id]; // Set the agent to the same as the last update
                         }
 
-                        new_steps[new_steps.length - 1].changed[id] = new_position; // Set the last frame to the new position
-                        last_update[id] = (step_num - 1) * new_steps.length + new_steps.length; // Set the last update to the last frame of the step
+                        agent_new_steps[agent_new_steps.length - 1].changed[id] = new_position; // Set the last frame to the new position
+                        agent_last_update[id] = step_num * agent_new_steps.length; // Set the last update to the last frame of the step
                         continue;
                     }
 
                     if (!new_position.active && current_position.active) { // If the agent is getting turned inactive
-                        new_steps[0].changed[id] = new_position; // Set the first frame to the new position
-                        last_update[id] = (step_num - 1) * new_steps.length + 1; // Set the last update to the first frame of the step
+                        agent_new_steps[0].changed[id] = new_position; // Set the first frame to the new position
+                        agent_last_update[id] = (step_num - 1) * agent_new_steps.length + 1; // Set the last update to the first frame of the step
 
-                        for (let frame = 1; frame < new_steps.length; frame++) { // For each frame in the step
-                            new_steps[frame].same[id] = last_update[id]; // Set the agent to the same as the last update
+                        for (let frame = 1; frame < agent_new_steps.length; frame++) { // For each frame in the step
+                            agent_new_steps[frame].same[id] = agent_last_update[id]; // Set the agent to the same as the last update
                         }
                         continue;
                     }
 
                     // If the agent stays at the same position or stays inactive
                     if (((new_position.x === current_position.x && new_position.y === current_position.y) && new_position.angle === current_position.angle) || (!new_position.active && !current_position.active)) {
-                        for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
-                            new_steps[frame].same[id] = last_update[id]; // Set the agent to the same as the last update
+                        for (let frame = 0; frame < agent_new_steps.length; frame++) { // For each frame in the step
+                            agent_new_steps[frame].same[id] = agent_last_update[id]; // Set the agent to the same as the last update
                         }
                         continue;
                     }
 
-                    last_update[id] = (step_num - 1) * new_steps.length + new_steps.length; // Set the last update to the last frame of the step
+                    agent_last_update[id] = step_num * agent_new_steps.length; // Set the last update to the last frame of the step
                     if (current_position.angle < new_position.angle && new_position.angle - current_position.angle > Math.PI) { // Make sure the angle is the shortest path
                         current_position.angle += 2 * Math.PI; // Add 2PI to the angle
                     } else if (current_position.angle - new_position.angle > Math.PI) { // Make sure the angle is the shortest path
                         new_position.angle += 2 * Math.PI; // Add 2PI to the angle
                     }
-                    for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
-                        new_steps[frame].changed[id] = this.calculateStep((frame + 1) / (new_steps.length + 1), current_position, new_position); // Calculate the position of the agent in the frame
+                    for (let frame = 0; frame < agent_new_steps.length; frame++) { // For each frame in the step
+                        agent_new_steps[frame].changed[id] = this.calculateStep((frame + 1) / (agent_new_steps.length + 1), current_position, new_position); // Calculate the position of the agent in the frame
                     }
                 } else { // If the agent is not in the pre-simulation
-                    for (let frame = 0; frame < new_steps.length; frame++) { // For each frame in the step
-                        new_steps[frame].same[id] = last_update[id]; // Set the agent to the same as the last update
+                    for (let frame = 0; frame < agent_new_steps.length; frame++) { // For each frame in the step
+                        agent_new_steps[frame].same[id] = agent_last_update[id]; // Set the agent to the same as the last update
                     }
                     continue;
                 }
             }
-            this._simulation = this._simulation.concat(new_steps); // Add the new steps to the simulation
+
+            let intersection_new_step = {same: {}, changed: {}}; // The new step that will be added to the simulation
+            for (let id in this._intersections) { // For each intersection
+                let intersection_step = this._pre_simulation[step_num].intersections; // The current step
+                if (isEmpty(intersection_step)) {
+                    continue;
+                }
+                if (id in intersection_step) { // If the intersection is in the pre-simulation
+                    intersection_new_step.changed[id] = {
+                        green: sanitiseRoadIds(intersection_step[id].green),
+                        red: sanitiseRoadIds(intersection_step[id].red)
+                    }
+                    intersection_last_update[id] = step_num;
+                } else { // If the intersection is not in the pre-simulation
+                    intersection_new_step.same[id] = intersection_last_update[id];
+                }
+            }
+            this._agent_simulation = this._agent_simulation.concat(agent_new_steps); // Add the new steps to the simulation
+            this._intersection_simulation.push(intersection_new_step); // Add the new step to the simulation
         }
         return this;
     }
@@ -282,7 +335,7 @@ class Simulation {
     runCommand(command, target) {
         switch (command) {
             case 'Play': // If the command is play
-                if (this._step >= this._simulation.length) { // If the simulation is at the end
+                if (this._step >= this._agent_simulation.length) { // If the simulation is at the end
                     this._step = 0; // Set the step to 0
                     this.jumpToStep(0) // Jump to the step
                 }
@@ -310,19 +363,34 @@ class Simulation {
      */
     jumpToStep(index) {
         this._step = index; // Set the step
-        if (index < 0) { // If the step is less than 0
+        let intersection_index = Math.ceil(index / this._frames_per_step);
+
+        if (index < 1) { // If the step is less than 0
             index = 0; // Set the step to 0
+            intersection_index = 0; // Set the intersection index to 0
         }
-        if (index >= this._simulation.length) { // If the step is greater than the length of the simulation
-            index = this._simulation.length - 1; // Set the step to the last step
+        if (index >= this._agent_simulation.length) { // If the step is greater than the length of the simulation
+            index = this._agent_simulation.length - 1; // Set the step to the last step
+            intersection_index = this._intersection_simulation.length - 1; // Set the intersection index to the last step
         }
-        let step = this._simulation[index]; // The step
+
+        let step = this._agent_simulation[index]; // The step
         for (let id in this._agents) { // For each agent
             if (id in step.changed) { // If the agent changed in the step
                 this._agents[id].simulate(step.changed[id]); // Set the position of the agent to the position in the step
             } else {
-                let last_step = this._simulation[step.same[id]].changed[id]; // The last step that the agent changed
+                let last_step = this._agent_simulation[step.same[id]].changed[id]; // The last step that the agent changed
                 this._agents[id].simulate(last_step); // Set the position of the agent to the position in the step
+            }
+        }
+
+        let intersection_step = this._intersection_simulation[intersection_index]; // The intersection step
+        for (let id in this._intersections) { // For each intersection
+            if (id in intersection_step.changed) { // If the intersection changed in the step
+                this._intersections[id].setTrafficLights(intersection_step.changed[id]); // Set the position of the intersection to the position in the step
+            } else {
+                let last_step = this._intersection_simulation[intersection_step.same[id]].changed[id]; // The last step that the intersection changed
+                this._intersections[id].setTrafficLights(last_step); // Set the position of the intersection to the position in the step
             }
         }
         return this;
@@ -346,13 +414,20 @@ class Simulation {
      */
     simulate() {
         this._slider.val(this._step - 1); // Set the slider to the step
-        if (this._step >= this._simulation.length) { // If the step is greater than the length of the simulation
+        if (this._step >= this._agent_simulation.length) { // If the step is greater than the length of the simulation
             this.stopSimulation(); // Stop the simulation
         }
 
-        let step = this._simulation[this._step]; // The step
+        let step = this._agent_simulation[this._step]; // The step
+        let intersection_index = Math.ceil(this._step / this._frames_per_step);
+
         for (let id in step.changed) { // For each agent that changed in the step
             this._agents[id].simulate(step.changed[id]); // Set the position of the agent to the position in the step
+        }
+
+        let intersection_step = this._intersection_simulation[intersection_index]; // The intersection step
+        for (let id in intersection_step.changed) { // For each intersection that changed in the step
+            this._intersections[id].setTrafficLights(intersection_step.changed[id]); // Set the position of the intersection to the position in the step
         }
 
         this._step += this._speed > 1 ? this._speed : 1; // Increase the step. This will skip steps if the speed is bigger than 1
