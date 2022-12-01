@@ -436,6 +436,7 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
                         break;
                     }
                 }
+                crossing.outputFlag = true;
                 crossing.currentPhase = crossing.greenPhaseDuration;
             }
         }
