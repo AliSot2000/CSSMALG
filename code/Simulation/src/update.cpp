@@ -402,14 +402,10 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 
 void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings, const float current_time) {
 	for (auto& crossing : world->crossings) {
-        // TODO Bugfix, insert fails if the velocity is 0.0f
 		if (crossing.waitingToBeInserted.size() > 0) {
 			Actor* actor = crossing.waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
-            if (actor->insertAfter > current_time){
-                continue;
-            }
-			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
+			if (actor->insertAfter > current_time && tryInsertInNextStreet(crossing, actor, timeDelta)) {
 				crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
 			}
 		}
