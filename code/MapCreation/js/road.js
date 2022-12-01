@@ -626,10 +626,10 @@ class Road {
         if (this._simulation_mode) { // If the road is in simulation mode
             percent = Math.round(percent * 1000) // Round the percent to 3 decimals and convert it to an integer by multiplying it by 1000 and rounding it
             // This gives us a number between 0 and 1000 which should be in the precalculated points
-            if(percent === 0) { // If the percent is 0
+            if(percent < 1) { // If the percent is less than 1
                 percent = 1; // Set the percent to 1 as the angle of the first point cannot be calculated
             }
-            if(percent === 1000) { // If the percent is 1000
+            if(percent > 999) { // If the percent is bigger than 999
                 percent = 999; // Set the percent to 999 as the angle of the last point cannot be calculated
             }
             point = this._simulation_points[percent].clone(); // Get the point from the precalculated points
