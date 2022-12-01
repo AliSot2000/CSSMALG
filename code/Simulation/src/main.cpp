@@ -90,7 +90,6 @@ void stopMeasureTime() {
 }
 
 int main(int argc, char* argv[]) {
-
 	if (argc < 6) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_crossing>" << std::endl;
         std::cerr << "If an agents file is provided, the n-random-cars and n-random-bikes is ignored" << std::endl;
