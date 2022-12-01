@@ -175,13 +175,15 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 	return output;
 }
 
-void addFrame(const world_t& world, json& out) {
+void addFrame(world_t& world, json& out) {
 	json frame;
+    json actorFrame;
+    json crossingFrame;
 
     // Lambda function to create json object to add to output.
-	auto a = [&frame](const Actor* actor, const Street* street, const float percent, bool active) {
-		frame[actor->id] = {};
-		json& obj = frame[actor->id];
+	auto a = [&actorFrame](const Actor* actor, const Street* street, const float percent, bool active) {
+        actorFrame[actor->id] = {};
+		json& obj = actorFrame[actor->id];
 		obj["road"] = street->id;
 		obj["percent_to_end"] = percent; 
 		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
@@ -193,6 +195,13 @@ void addFrame(const world_t& world, json& out) {
 		}
 	};
 
+    auto c = [&crossingFrame](const Crossing* crossing) {
+        crossingFrame[crossing->id] = {};
+        json& obj = crossingFrame[crossing->id];
+        obj["green"] = crossing->inbound.at(crossing->green)->id;
+
+    };
+
     // Iterate through the actors on the street and update its distance.
 	for (const auto& street : world.streets) {
 		for (const auto& actor : street.traffic) {
@@ -201,7 +210,7 @@ void addFrame(const world_t& world, json& out) {
 		}
 	}
 
-	for (const auto& crossing : world.crossings) {
+	for (auto& crossing : world.crossings) {
 		for (const auto& actor : crossing.waitingToBeInserted) {
 			std::string first = actor->path.front();
 			Street* street = crossing.outbound.find(first)->second;
@@ -217,7 +226,16 @@ void addFrame(const world_t& world, json& out) {
 				pair.first->outputFlag = true;
 			}
 		}
+
+        // Output Green phase if it has changed.
+        if (crossing.outputFlag) {
+            c(&crossing);
+            crossing.outputFlag = false;
+        }
 	}
+
+    frame["actors"] = actorFrame;
+    frame["crossings"] = crossingFrame;
 
 	if (frame.size() > 0) {
 		out["simulation"].push_back(frame);
