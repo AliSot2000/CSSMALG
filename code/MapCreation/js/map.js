@@ -166,7 +166,7 @@ class Map {
     }
 
     /**
-     * Gets an intersections from the map
+     * Gets all intersections from the map
      * @returns {Object} The intersections object
      */
     getIntersections() {
