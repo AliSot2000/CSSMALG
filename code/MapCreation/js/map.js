@@ -166,7 +166,7 @@ class Map {
     }
 
     /**
-     * Gets an intersections from the map
+     * Gets all intersections from the map
      * @returns {Object} The intersections object
      */
     getIntersections() {
@@ -323,69 +323,7 @@ class Map {
 
         let has_intersections = !isEmpty(data.intersections); // Check if there are intersections in the save object
 
-        // Add the intersections first, "1 &bull; Tunnel Westseite ",
-        //   "15 &bull; Rennpiste ",
-        //   "Hexenschuss",
-        //   "Schneekringel",
-        //   "16 &bull; L&auml;gni ",
-        //   "2 &bull; H&uuml;lsen ",
-        //   "3 &bull; H&auml;x oben ",
-        //   "17 &bull; Piste Nord ",
-        //   "50 &bull; Tunnel Westseite Roti Blatte ",
-        //   "51 &bull; R&auml;mifl&uuml;o ",
-        //   "18 &bull; Bruchji ",
-        //   "4 &bull; H&auml;x unten ",
-        //   "5 &bull; Grat ",
-        //   "19 &bull; Loch ",
-        //   "52 &bull; Bromat ",
-        //   "53 &bull; F&uuml;lmoos ",
-        //   "20 &bull; Sattlen ",
-        //   "6 &bull; JO-Piste ",
-        //   "7 &bull; Tola oben ",
-        //   "21 &bull; T&auml;lli ",
-        //   "54 &bull; Ofubiel ",
-        //   "55 &bull; Schwiibiel  ",
-        //   "22 &bull; Mausefalle ",
-        //   "8 &bull; Tola unten ",
-        //   "9 &bull; Gletscher ",
-        //   "23 &bull; Stafel ",
-        //   "24 &bull; Tschuggen-Blatten ",
-        //   "25 &bull; Belalp - Tschuggen ",
-        //   "24 &bull; Tschuggen-Blatten ",
-        //   "10 &bull; Aletsch ",
-        //   "11 &bull; F&auml;rrichpista ",
-        //   "25 &bull; Belalp-Tschuggen ",
-        //   "26 &bull; Chatzulecher ",
-        //   "27 &bull; Weisse Meile ",
-        //   "28 &bull; Strasse Bruchegg-Bergstation ",
-        //   "12 &bull; Kanonenrohr ",
-        //   "13 &bull; Tyndall ",
-        //   "Snowpark Belalp",
-        //   "9a &bull; Aussichtspunkt ",
-        //   "Chiematte Skating ",
-        //   "Wellenmulde",
-        //   "14 &bull; Aletschbord ",
-        //   " A &bull; Wanderung von Bergstation Luftseilbahn - Bruchegg - Aletschbord ",
-        //   "G &bull; Tschuggen - Mittelstat. Pendelbahn ",
-        //   "31 &bull; L&uuml;sgersee-Trail ",
-        //   "B &bull; Weisse Meile ",
-        //   "36 &bull; Wanderung von Talstation Blatten - Rischinerwald - Stalden ",
-        //   "32 &bull; Tyndall-Trail ",
-        //   "33 &bull; St. Antonius-Trail ",
-        //   "D &bull; Sch&ouml;nbiel-Bruchegg ",
-        //   "E &bull; Wanderung von Chiematte - Wolfstola - Bergstation Pendelbahn ",
-        //   "34 &bull; Holzji-Trail ",
-        //   "35 &bull; Aletschbord - Tyndall - Trail ",
-        //   "F &bull; Wanderung von Rischinen - Stausee Gibidum ",
-        //   "H &bull; F&auml;rrich",
-        //   "E &bull; Sparrhorngrat",
-        //   "F &bull; Hohstock",
-        //   "D &bull; Sparrhorn",
-        //   "C &bull; Bruchegg"
-        //   "A &bull; Blatten-Belalp",
-        //   "J &bull; Blatten-Chiematte",
-        //   "B &bull; Kelchbach",
-        //   "I &bull; Hexenland"so that we can add the roads and directly snap them to the intersections
+        // Add the intersections first, so that we can add the roads and directly snap them to the intersections
         if (has_intersections) { // Check if there are intersections
             for (let id in data.intersections) { // Loop through the intersections
                 this._loading.setSubHeader('Loading Intersection ' + id).setPercent(calculatePercent(count++, total)); // Update the loading screen
