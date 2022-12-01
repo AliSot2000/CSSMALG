@@ -641,9 +641,7 @@ class Intersection {
     }
 
     getDirectionOfRoad(road_id) {
-        console.log(road_id, this._snap_points);
         for (let direction in this._snap_points) {
-            console.log(direction)
             if (this._snap_points[direction].connected && this._snap_points[direction].road.getId() === road_id) {
                 return direction;
             }
@@ -660,12 +658,10 @@ class Intersection {
     }
 
     setTrafficLights(step) {
-        console.log(step);
         if (!isEmpty(step.green)) {
             for (let i = 0; i < step.green.length; i++) {
                 let road_id = step.green[i];
                 let direction = this.getDirectionOfRoad(road_id);
-                console.log(direction);
                 this.setTrafficLightInDirection(direction, 'green_light');
             }
         }
@@ -673,7 +669,6 @@ class Intersection {
             for (let i = 0; i < step.red.length; i++) {
                 let road_id = step.red[i];
                 let direction = this.getDirectionOfRoad(road_id);
-                console.log(direction);
                 this.setTrafficLightInDirection(direction, 'red_light');
             }
         }

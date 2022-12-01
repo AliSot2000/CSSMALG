@@ -173,16 +173,11 @@ class Simulation {
 
             for (let id in this._intersections) { // For each intersection
                 intersection_last_update[id] = 0; // Set the last update to 0
-                console.log(id);
                 if (id in intersection_step) { // If the intersection is in the pre-simulation
                     intersection_new_step.changed[id] = {
                         green: sanitiseRoadIds(intersection_step[id].green),
                         red: sanitiseRoadIds(intersection_step[id].red)
                     }
-                    console.log({
-                        green: sanitiseRoadIds(intersection_step[id].green),
-                        red: sanitiseRoadIds(intersection_step[id].red)
-                    })
                 } else { // If the intersection is not in the pre-simulation
                     intersection_new_step.changed[id] = { // Add the intersection to the first step of the simulation
                         red: this._intersections[id].getConnectedRoads()
@@ -210,7 +205,6 @@ class Simulation {
                 if (!isEmpty(agent_step) && id in agent_step) { // If the agent is in the pre-simulation
                     let new_position = this.calculatePosition(this._agents[id], agent_step[id]); // Calculate the new position of the agent
                     let current_position = this._agent_simulation[agent_last_update[id]].changed[id]; // Get the current position of the agent
-                    //console.log(agent_last_update[id]);
                     if (new_position.active && !current_position.active) { // If an agent is getting turned active
                         for (let frame = 0; frame < agent_new_steps.length - 1; frame++) { // For each frame in the step
                             agent_new_steps[frame].same[id] = agent_last_update[id]; // Set the agent to the same as the last update
