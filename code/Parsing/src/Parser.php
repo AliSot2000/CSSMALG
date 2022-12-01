@@ -195,7 +195,7 @@ class Parser
 
             // with these road types we assume they wide enough roads to always overtake so we add a seperate road for bicycles
             if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
-                $this->parsedStreets[$this->streetCount + 1] = array("id" => strval($this->streetCount + 1), "intersections" => array("start" => array("id" => $data["startNodeId"]), "end" => array("id" => $data["endNodeId"])), "lanes" =>  array("type" => "bike", "left" => true, "forward" => true, "right" => true), "speed_limit" => $maxSpeed, "distance" => $length);
+                $this->parsedStreets[$this->streetCount + 1] = array("id" => strval($this->streetCount + 1), "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" =>  array("type" => "bike", "left" => true, "forward" => true, "right" => true), "speed_limit" => $maxSpeed, "distance" => $length);
                 $this->streetCount++;
                 $type = "car";
             }
@@ -207,9 +207,9 @@ class Parser
 
             // if it is not a oneway node, add the ID of the opposite street
             if ($data["oppositeStreetId"] == "-1") {
-                $this->parsedStreets[$id] = array("id" => $data["id"], "intersections" => array("start" => array("id" => $data["startNodeId"]), "end" => array("id" => $data["endNodeId"])), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length);
+                $this->parsedStreets[$id] = array("id" => $data["id"], "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length);
             } else {
-                $this->parsedStreets[$id] = array("id" => $data["id"], "intersections" => array("start" => array("id" => $data["startNodeId"]), "end" => array("id" => $data["endNodeId"])), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length, "oppositeStreetId" => $data["oppositeStreetId"]);
+                $this->parsedStreets[$id] = array("id" => $data["id"], "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length, "oppositeStreetId" => $data["oppositeStreetId"]);
             }
         }
     }
