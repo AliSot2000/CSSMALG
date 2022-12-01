@@ -509,7 +509,17 @@ body.grabbing * {
     }
 }
 
-.traffic_light {
+.red_light {
+    fill: red !important;
+    animation: none !important;
+}
+
+.green_light {
+    fill: green !important;
+    animation: none !important;
+}
+
+.traffic_light_wrapper {
     animation: traffic_light_colors 10s infinite;
 }
 
