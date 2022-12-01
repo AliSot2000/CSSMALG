@@ -4,6 +4,8 @@
 
 #include "update.hpp"
 #include "io.hpp"
+#include "actors.hpp"
+#include "routing.hpp"
 
 
 bool loadFile(const std::string& file, json& input) {
@@ -71,6 +73,85 @@ void importMap(world_t& world, json& map) {
 	}
 }
 
+void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
+    assert(world.actors.size() == 0 && "Agents is not empty");
+    world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
+    int index = 0;
+
+    // Import Bikes
+    for (const auto& [name, data] : agents["bikes"].items()) {
+        Actor actor = {
+                .type = ActorTypes::Bike,
+                .distanceToCrossing = 0.0f,
+                .distanceToRight = 0,
+                .length = data["length"],
+
+                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+                .target_velocity = 50 / 3.6f,
+
+                .acceleration = data["acceleration"],
+                .deceleration = data["deceleration"],
+                .acceleration_exp = data["acceleration_exponent"],
+
+                .insertAfter = data["waiting_period"],
+
+                //.width = 1.5f,
+                .id = name,
+        };
+
+        std::string startIntersectionId = data["start_id"];
+        std::string endIntersectionId = data["end_id"];
+
+        actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId);
+
+        for (auto& crossing : world.crossings) {
+            if (crossing.id == startIntersectionId) {
+                crossing.waitingToBeInserted.push_back(&actor);
+                break;
+            }
+        }
+
+        world.actors.at(index) = actor;
+        index++;
+    }
+
+    for (const auto& [name, data] : agents["cars"].items()) {
+        Actor actor = {
+                .type = ActorTypes::Car,
+                .distanceToCrossing = 0.0f,
+                .distanceToRight = 0,
+                .length = data["length"],
+
+                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+                .target_velocity = 50 / 3.6f,
+
+                .acceleration = data["acceleration"],
+                .deceleration = data["deceleration"],
+                .acceleration_exp = data["acceleration_exponent"],
+
+                .insertAfter = data["waiting_period"],
+
+                //.width = 1.5f,
+                .id = name,
+        };
+
+        std::string startIntersectionId = data["start_id"];
+        std::string endIntersectionId = data["end_id"];
+
+        actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId);
+
+        for (auto& crossing : world.crossings) {
+            if (crossing.id == startIntersectionId) {
+                crossing.waitingToBeInserted.push_back(&actor);
+                break;
+            }
+        }
+
+        world.actors.at(index) = actor;
+        index++;
+    }
+}
+
 json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap) {
 	json output;
 
@@ -94,13 +175,15 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 	return output;
 }
 
-void addFrame(const world_t& world, json& out) {
+void addFrame(world_t& world, json& out) {
 	json frame;
+    json actorFrame;
+    json crossingFrame;
 
     // Lambda function to create json object to add to output.
-	auto a = [&frame](const Actor* actor, const Street* street, const float percent, bool active) {
-		frame[actor->id] = {};
-		json& obj = frame[actor->id];
+	auto a = [&actorFrame](const Actor* actor, const Street* street, const float percent, bool active) {
+        actorFrame[actor->id] = {};
+		json& obj = actorFrame[actor->id];
 		obj["road"] = street->id;
 		obj["percent_to_end"] = percent; 
 		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
@@ -112,6 +195,22 @@ void addFrame(const world_t& world, json& out) {
 		}
 	};
 
+    auto c = [&crossingFrame](const Crossing* crossing) {
+        crossingFrame[crossing->id] = {};
+        json& obj = crossingFrame[crossing->id];
+        obj["green"] = std::vector<json>();
+        obj["red"] = std::vector<json>();
+        int index = 0;
+        for (const auto inboundRoad : crossing->inbound){
+            if (index == crossing->green){
+                obj["green"].push_back(inboundRoad->id);
+            } else {
+                obj["red"].push_back(inboundRoad->id);
+            }
+            index++;
+        }
+    };
+
     // Iterate through the actors on the street and update its distance.
 	for (const auto& street : world.streets) {
 		for (const auto& actor : street.traffic) {
@@ -120,7 +219,7 @@ void addFrame(const world_t& world, json& out) {
 		}
 	}
 
-	for (const auto& crossing : world.crossings) {
+	for (auto& crossing : world.crossings) {
 		for (const auto& actor : crossing.waitingToBeInserted) {
 			std::string first = actor->path.front();
 			Street* street = crossing.outbound.find(first)->second;
@@ -136,7 +235,16 @@ void addFrame(const world_t& world, json& out) {
 				pair.first->outputFlag = true;
 			}
 		}
+
+        // Output Green phase if it has changed.
+        if (crossing.outputFlag) {
+            c(&crossing);
+            crossing.outputFlag = false;
+        }
 	}
+
+    frame["agents"] = actorFrame;
+    frame["intersections"] = crossingFrame;
 
 	if (frame.size() > 0) {
 		out["simulation"].push_back(frame);
