@@ -262,3 +262,8 @@ void save(const std::string& file, const json& out) {
 		std::cerr << "Failed to save to " << file << std::endl;
 	}
 }
+
+void exportSPT(const SPT& carTree, const SPT& bikeTree, json& output){
+    output["carTree"] = carTree;
+    output["bikeTree"] = bikeTree;
+}
