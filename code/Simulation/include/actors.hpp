@@ -32,6 +32,8 @@ typedef struct Actor {
     float deceleration = 2*1.67f; // m/s^2
     float acceleration_exp = 10.0f; // unitless
 
+    float insertAfter = 0.0f; // After how many seconds the actor should try to be inserted at the crossing
+
 	// Only used for visualization
 	std::string id = "empty";
 	Path path;
@@ -73,6 +75,7 @@ typedef struct Crossing {
 
 	std::vector<Actor*> waitingToBeInserted;
 	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
+    bool outputFlag = true; // All crossings which have this set are added to the output.
 } crossing_t;
 
 typedef struct World {
