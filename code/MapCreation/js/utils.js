@@ -536,3 +536,29 @@ function sanitiseRoadIds(roadIds) {
     }
     return roadIds;
 }
+
+/**
+ * Calculates the cubic control points
+ * @param {Point} p The start point
+ * @param {Point} q The end point
+ * @returns {{qm: Point, pm: Point}}
+ */
+function calculateCubicPoints(p, q) {
+    let offset = distance(p, q) / 2; // Calculate the offset
+
+    return {
+        pm: new Point(
+            p.x - offset * Math.sin(p.angle),
+            p.y - offset * Math.cos(p.angle)
+        ),
+        qm: new Point(
+            q.x - offset * Math.sin(q.angle),
+            q.y - offset * Math.cos(q.angle)
+        )
+    }
+}
+
+function offsetPercent(newTotalLength, oldTotalLength, offset, percent) {
+    return (offset + (percent * newTotalLength)) / oldTotalLength;
+}
+
