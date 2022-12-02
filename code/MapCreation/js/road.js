@@ -146,7 +146,7 @@ class Road {
     updatePosition() {
         let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
 
-        let c = this.calculateCubicPoints(this._start, this._end); // Calculate the cubic points
+        let c = calculateCubicPoints(this._start, this._end); // Calculate the cubic points
         this._control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
         let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`; // Create the path
 
@@ -321,27 +321,6 @@ class Road {
      */
     getRoadWidth() {
         return getConfig('road_lane_width') * this._lanes.length;
-    }
-
-    /**
-     * Calculates the cubic control points
-     * @param {Point} p The start point
-     * @param {Point} q The end point
-     * @returns {{qm: Point, pm: Point}}
-     */
-    calculateCubicPoints(p, q) {
-        let offset = distance(p, q) / 2; // Calculate the offset
-
-        return {
-            pm: new Point(
-                p.x - offset * Math.sin(this._start.angle),
-                p.y - offset * Math.cos(this._start.angle)
-            ),
-            qm: new Point(
-                q.x - offset * Math.sin(this._end.angle),
-                q.y - offset * Math.cos(this._end.angle)
-            )
-        }
     }
 
     /**
@@ -623,6 +602,7 @@ class Road {
      */
     getAgentPosition(percent, offset) {
         let point; // The position of the agent
+        percent = offsetPercent(this._distance - 32, this._distance, 16, percent);
         if (this._simulation_mode) { // If the road is in simulation mode
             percent = Math.round(percent * 1000) // Round the percent to 3 decimals and convert it to an integer by multiplying it by 1000 and rounding it
             // This gives us a number between 0 and 1000 which should be in the precalculated points
