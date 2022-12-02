@@ -75,7 +75,7 @@ class Road {
         this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container"); // Create the bike lane container
         this._lines_container = $(svgElement("g")).addClass("lines_container"); // Create the lines container
         this._arrows_container = $(svgElement("g")).addClass("arrows_container"); // Create the arrows container
-        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container); // Append the elements to the SVG element
+        this._self.append(this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container); // Append the elements to the SVG element
 
         // Create the grab points
         let points = ['start', 'end', 'start_angle', 'end_angle']; // Array of all the grab points
@@ -144,15 +144,12 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updatePosition() {
-        let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
-
         let c = calculateCubicPoints(this._start, this._end); // Calculate the cubic points
         this._control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
         let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`; // Create the path
 
-        for (let i = 0; i < children.length; i++) { // Loop through the children
-            $(children[i]).attr('d', path); // Set the path of the child
-        }
+        this._asphalt.attr('d', path); // Set the path of the asphalt
+        this._border.attr('d', path);
 
         let points = []; // Clear the points array
 
@@ -164,7 +161,7 @@ class Road {
 
         this._distance = approximateDistance(points); // Calculate the distance of the road
 
-        children = this._self.find('path.road_line'); // Get the road lines
+        let children = this._self.find('path.road_line'); // Get the road lines
         let mid_lane = getConfig('road_lane_width') / 2; // Calculate the middle of the lane
         let road_lane_width = getConfig('road_lane_width'); // Get the road lane width
 
@@ -305,6 +302,10 @@ class Road {
      */
     getElement() {
         return this._self;
+    }
+
+    getBorder() {
+        return this._border;
     }
 
     /**
@@ -461,6 +462,7 @@ class Road {
         this.checkAndDissconnectFromIntersection('start'); // Check and disconnect from the start intersection
         this.checkAndDissconnectFromIntersection('end'); // Check and disconnect from the end intersection
         this._self.remove(); // Remove the road from the DOM
+        this._border.remove();
         this.removeAgents(this._agents.length); // Remove all agents
         let points = ['start', 'end', 'start_angle', 'end_angle'];
         for (let i = 0; i < points.length; i++) { // Loop through the grab points

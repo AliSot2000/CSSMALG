@@ -53,7 +53,7 @@ class Intersection {
         this._border = $(svgElement("rect")).addClass("intersection_border");
         this._asphalt = $(svgElement("rect")).addClass("intersection_asphalt");
         this._traffic_controllers_wrapper = $(svgElement("g")).addClass("intersection_traffic_controllers");
-        this._self.append(this._border, this._asphalt, this._traffic_controllers_wrapper);
+        this._self.append(this._asphalt, this._traffic_controllers_wrapper);
 
         // Create the grab point
         this._grab_point = $('<div class="grabbable move"></div>').data('link', this).data('type', 'move');
@@ -94,10 +94,10 @@ class Intersection {
 
         let border_size = getConfig('road_border_width'); // The size of the border
         this._border.attr({
-            x: (this._position.x - this._half_size) - (this.isConnected('west') ? 0 : border_size), // Set the x coordinate
-            y: (this._position.y - this._half_size) - (this.isConnected('north') ? 0 : border_size), // Set the y coordinate
-            width: this._size + (this.isConnected('west') ? 0 : border_size) + (this.isConnected('east') ? 0 : border_size), // Set the width
-            height: this._size + (this.isConnected('north') ? 0 : border_size) + (this.isConnected('south') ? 0 : border_size) // Set the height
+            x: (this._position.x - this._half_size) - border_size, // Set the x coordinate
+            y: (this._position.y - this._half_size) - border_size, // Set the y coordinate
+            width: this._size + (2 * border_size), // Set the width
+            height: this._size + (2 * border_size) // Set the height
         });
 
         if (this.isRoundAbout()) { // Check if the intersection is a roundabout
@@ -239,6 +239,10 @@ class Intersection {
         return this._self;
     }
 
+    getBorder() {
+        return this._border;
+    }
+
     /**
      * Starts the drag of the intersection
      * @param {string} type The type of the grab point. (Not used for intersections. Only for roads.)
@@ -284,6 +288,7 @@ class Intersection {
      */
     remove() {
         this._self.remove(); // Remove the intersection from the DOM
+        this._border.remove();
         this._grab_point.remove(); // Remove the grab point from the DOM
         let grid_size = getConfig('grid_size'); // Get the grid size
         for (let i = 0; i < this._directions.length; i++) { // Loop through the directions
