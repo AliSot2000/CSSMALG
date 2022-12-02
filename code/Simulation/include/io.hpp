@@ -71,4 +71,4 @@ void addFrame(world_t& world, nlohmann::json& out);
 
 void save(const std::string& file, const nlohmann::json& out);
 
-void exportSPT(const SPT& carTree, const SPT& bikeTree, json& output);
+void exportSPT(const SPT& carTree, const SPT& bikeTree, const json& input_world, json& output);

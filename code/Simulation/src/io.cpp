@@ -263,7 +263,8 @@ void save(const std::string& file, const json& out) {
 	}
 }
 
-void exportSPT(const SPT& carTree, const SPT& bikeTree, json& output){
+void exportSPT(const SPT& carTree, const SPT& bikeTree, const json& input, json& output){
     output["carTree"] = carTree;
     output["bikeTree"] = bikeTree;
+    output["world"] = input;
 }
