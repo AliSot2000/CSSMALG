@@ -100,14 +100,24 @@ int main(int argc, char* argv[]) {
 		std::to_string(deltaTime) + " seconds precision time step"
 	);
 
-	float maxTime = runtime; 
+	float maxTime = runtime;
+    float lastDeadLock = runtime;
 	while (maxTime > 0.0f) {
-		updateCrossings(&world, deltaTime, stupidCrossings, runtime - maxTime);
-		updateStreets(&world, deltaTime);
+        updateCrossings(&world, deltaTime, stupidCrossings, runtime - maxTime);
+		lastDeadLock = updateStreets(&world, deltaTime) ? maxTime : lastDeadLock;
 		maxTime -= deltaTime;
+
+        if (lastDeadLock - maxTime > 10.0f){
+            if (lastDeadLock - maxTime > 20.0f){
+                std::cerr << "Persistent detected at " << runtime - lastDeadLock << " seconds" << std::endl;
+            }
+            resolveDeadLocks(&world, maxTime);
+        }
 
 		addFrame(world, output);
 	}
+    // Committing final state of simulation to output, required for the start and stop time.
+    addFrame(world, output, true);
 	stopMeasureTime(start);
 
 	start = startMeasureTime("saving simulation");
