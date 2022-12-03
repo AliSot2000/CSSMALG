@@ -540,6 +540,7 @@ bool updateStreets(world_t* world, const float timeDelta) {
                                                           2.0f));       // Case when the actor is in the back of the queue.
             } else {
                 actor->current_acceleration = 0.0f;
+                actor->current_velocity = 0.0f;
             }
 
             // TODO CLAMPING
