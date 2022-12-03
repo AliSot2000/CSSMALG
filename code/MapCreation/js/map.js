@@ -8,6 +8,7 @@ class Map {
     _self = null; // Map element
     _road_wrapper = null; // Road Wrapper Element
     _intersection_wrapper = null; // Intersection Wrapper Element
+    _border_wrapper = null; // Borders of roads and intersections
     _agents_wrapper = null; // Agent Wrapper Element
     _roads = null; // Object with all the roads
     _intersections = null; // Object with all the intersections
@@ -30,6 +31,7 @@ class Map {
         this._self.data('map', this); // Set the map data
         this._road_wrapper = $(svgElement("svg")).addClass("roads"); // Create the SVG element
         this._intersection_wrapper = $(svgElement("svg")).addClass("intersections"); // Create the SVG element
+        this._border_wrapper = $(svgElement("svg")).addClass('borders')
         this._roads = {}; // Create the roads object
         this._intersections = {}; // Create the intersections object
         this._agents = {}; // Create the agents object
@@ -50,6 +52,7 @@ class Map {
         this._self.append( // Add the elements to the map
             this._road_wrapper, // Add the road wrapper
             this._intersection_wrapper, // Add the intersection wrapper
+            this._border_wrapper,
             this._grab_points, // Add the grab points wrapper
             this._snap_points, // Add the snap points wrapper
             this._grid.getGrid(), // Add the grid
@@ -120,6 +123,7 @@ class Map {
     addRoad(road) {
         this._roads[road.getId()] = road; // Add the road to the roads object
         this._road_wrapper.append(road.getElement()); // Add the road to the SVG element
+        this._border_wrapper.append(road.getBorder());
         return this;
     }
 
@@ -131,6 +135,7 @@ class Map {
     addIntersection(intersection) {
         this._intersections[intersection.getId()] = intersection; // Add the intersection to the intersections object
         this._intersection_wrapper.append(intersection.getElement()); // Add the intersection to the SVG element
+        this._border_wrapper.append(intersection.getBorder());
         return this;
     }
 
