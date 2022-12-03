@@ -69,13 +69,14 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
  * @returns void
  *
  */
-void addFrame(world_t& world, nlohmann::json& out);
+void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
 
 /*
  * Exports the c++ data structure into a json object.
  *
  * @param world: (world) of current simulation
  * @param map: the map loaded from the json file
+ * @param final: if set, adds the start and end time of the travel of actors.
  *
  * @returns void
  */

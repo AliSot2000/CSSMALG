@@ -172,24 +172,36 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 		json& obj = output["setup"]["agents"][actor.id];
 		obj["id"] = actor.id;
 		obj["type"] = actor.type == ActorTypes::Car ? "car" : "bike";
+        obj["length"] = actor.length;
+        obj["max_velocity"] = actor.max_velocity * 3.6f;
+        obj["acceleration"] = actor.acceleration;
+        obj["deceleration"] = actor.deceleration;
+        obj["acceleration_exponent"] = actor.acceleration_exp;
+        obj["waiting_period"] = actor.insertAfter;
+        obj["start_crossing_id"] = actor.path.front();
+        obj["end_crossing_id"] = actor.path.back();
 	}
 
 	return output;
 }
 
-void addFrame(world_t& world, json& out) {
+void addFrame(world_t& world, json& out, const bool final) {
 	json frame;
     json actorFrame;
     json crossingFrame;
 
     // Lambda function to create json object to add to output.
-	auto a = [&actorFrame](const Actor* actor, const Street* street, const float percent, bool active) {
+	auto a = [&actorFrame, &final](const Actor* actor, const Street* street, const float percent, bool active) {
         actorFrame[actor->id] = {};
 		json& obj = actorFrame[actor->id];
 		obj["road"] = street->id;
 		obj["percent_to_end"] = percent; 
 		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
 		obj["active"] = active;
+        if (final){
+            obj["start_time"] = actor->start_time;
+            obj["end_time"] = actor->end_time;
+        }
 
 		if (!active) {
 			// TODO remove when frames of not active cars can be discarded
