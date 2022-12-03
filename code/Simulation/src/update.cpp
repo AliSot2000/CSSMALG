@@ -299,7 +299,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 */
 
 // Updated Version of Alex to handle zero velocity vehicles.
-bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) {
+bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
     Street* target = crossing.outbound[actor->path.front()];
 
     // Copy constructor you dummy
@@ -445,7 +445,7 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 				break;
 			}
 
-			if (tryInsertInNextStreet(crossing, actor, timeDelta)) {
+			if (tryInsertInNextStreet(crossing, actor)) {
 				street->traffic.erase(iter);
 				break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
 			}
@@ -455,8 +455,8 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
         if (crossing.waitingToBeInserted.size() > 0) {
             Actor* actor = crossing.waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
-            if (actor->insertAfter > current_time && tryInsertInNextStreet(crossing, actor, timeDelta)) {
-                actor->start_time = current_time;
+            if (actor->insertAfter > current_time && tryInsertInNextStreet(crossing, actor)) {
+                actor->start_time = current_time * (actor->start_time == -1.0f) + actor->start_time * (actor->start_time != -1.0f); // only set the start time if the if the start time
                 crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
             }
         }
@@ -465,7 +465,9 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 
 bool updateStreets(world_t* world, const float timeDelta) {
     bool actorMoved = false;
+    bool empty = true;
 	for (auto& street : world->streets) {
+        empty = empty && street.traffic.empty();
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
 			Actor* actor = street.traffic[i];
@@ -564,9 +566,25 @@ bool updateStreets(world_t* world, const float timeDelta) {
 //            }
         }
 	}
-    return actorMoved;
+
+    return actorMoved || empty;
 }
 
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
     return MIN_DISTANCE_BETWEEN_VEHICLES + actor->current_velocity * SAFETY_TIME_HEADWAY + (delta_velocity * actor->current_velocity) / (2 * std::sqrt(actor->acceleration * actor->deceleration));
+}
+
+void resolveDeadLocks(world_t* world, const float current_time) {
+    for (auto& crossing : world->crossings) {
+        //for (std::map<std::string, Street*>::iterator it = crossing.outbound.begin(); it != crossing.outbound.end(); ++it) {
+        for (auto& [_, value] : crossing.outbound) {
+            // Locate car that is not moving.
+            Actor* actor = value->traffic.back();
+            if (actor->current_velocity < 0.01f && value->length - (actor->distanceToCrossing + actor->length) < 1.0f) {
+                crossing.waitingToBeInserted.push_back(value->traffic.back());
+                value->traffic.back()->insertAfter = current_time + 5.0f;
+            }
+
+        }
+    }
 }
