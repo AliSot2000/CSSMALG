@@ -75,7 +75,7 @@ class Road {
         this._bike_lane_container = $(svgElement("g")).addClass("bike_lane_container"); // Create the bike lane container
         this._lines_container = $(svgElement("g")).addClass("lines_container"); // Create the lines container
         this._arrows_container = $(svgElement("g")).addClass("arrows_container"); // Create the arrows container
-        this._self.append(this._border, this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container); // Append the elements to the SVG element
+        this._self.append(this._asphalt, this._bike_lane_container, this._lines_container, this._arrows_container); // Append the elements to the SVG element
 
         // Create the grab points
         let points = ['start', 'end', 'start_angle', 'end_angle']; // Array of all the grab points
@@ -144,15 +144,12 @@ class Road {
      * @returns {Road} Self reference for chaining
      */
     updatePosition() {
-        let children = this._self.find('path.road_asphalt, path.road_border'); // Get the children of the road
-
-        let c = this.calculateCubicPoints(this._start, this._end); // Calculate the cubic points
+        let c = calculateCubicPoints(this._start, this._end); // Calculate the cubic points
         this._control_points = [this._start, c.pm, c.qm , this._end]; // Create the control points array
         let path = `M ${this._start.x},${this._start.y} C ${c.pm.x},${c.pm.y} ${c.qm.x},${c.qm.y} ${this._end.x},${this._end.y}`; // Create the path
 
-        for (let i = 0; i < children.length; i++) { // Loop through the children
-            $(children[i]).attr('d', path); // Set the path of the child
-        }
+        this._asphalt.attr('d', path); // Set the path of the asphalt
+        this._border.attr('d', path);
 
         let points = []; // Clear the points array
 
@@ -164,7 +161,7 @@ class Road {
 
         this._distance = approximateDistance(points); // Calculate the distance of the road
 
-        children = this._self.find('path.road_line'); // Get the road lines
+        let children = this._self.find('path.road_line'); // Get the road lines
         let mid_lane = getConfig('road_lane_width') / 2; // Calculate the middle of the lane
         let road_lane_width = getConfig('road_lane_width'); // Get the road lane width
 
@@ -307,6 +304,10 @@ class Road {
         return this._self;
     }
 
+    getBorder() {
+        return this._border;
+    }
+
     /**
      * Returns the id of the road
      * @returns {string} The id of the road
@@ -321,27 +322,6 @@ class Road {
      */
     getRoadWidth() {
         return getConfig('road_lane_width') * this._lanes.length;
-    }
-
-    /**
-     * Calculates the cubic control points
-     * @param {Point} p The start point
-     * @param {Point} q The end point
-     * @returns {{qm: Point, pm: Point}}
-     */
-    calculateCubicPoints(p, q) {
-        let offset = distance(p, q) / 2; // Calculate the offset
-
-        return {
-            pm: new Point(
-                p.x - offset * Math.sin(this._start.angle),
-                p.y - offset * Math.cos(this._start.angle)
-            ),
-            qm: new Point(
-                q.x - offset * Math.sin(this._end.angle),
-                q.y - offset * Math.cos(this._end.angle)
-            )
-        }
     }
 
     /**
@@ -482,6 +462,7 @@ class Road {
         this.checkAndDissconnectFromIntersection('start'); // Check and disconnect from the start intersection
         this.checkAndDissconnectFromIntersection('end'); // Check and disconnect from the end intersection
         this._self.remove(); // Remove the road from the DOM
+        this._border.remove();
         this.removeAgents(this._agents.length); // Remove all agents
         let points = ['start', 'end', 'start_angle', 'end_angle'];
         for (let i = 0; i < points.length; i++) { // Loop through the grab points
@@ -623,6 +604,7 @@ class Road {
      */
     getAgentPosition(percent, offset) {
         let point; // The position of the agent
+        percent = offsetPercent(this._distance - 32, this._distance, 16, percent);
         if (this._simulation_mode) { // If the road is in simulation mode
             percent = Math.round(percent * 1000) // Round the percent to 3 decimals and convert it to an integer by multiplying it by 1000 and rounding it
             // This gives us a number between 0 and 1000 which should be in the precalculated points
