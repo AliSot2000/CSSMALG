@@ -50,6 +50,13 @@
 
 typedef std::map<std::string, std::map<std::string, std::string>> SPT;
 
+typedef struct LookUp {
+    std::map<std::string, int> string_to_int;
+    std::map<int, std::string> int_to_string;
+} lookup_t;
+
+lookup_t BuildLookup(const world_t* world);
+
 /*
  * Calculates the shortest path tree for the given world.
  *
