@@ -1,6 +1,4 @@
-
 #include <iostream>
-#include <iomanip>
 #include <vector>
 #include <cstdlib>
 #include <string>
@@ -10,6 +8,7 @@
 #include "routing.hpp"
 #include "update.hpp"
 #include "io.hpp"
+#include "utils.hpp"
 
 int main(int argc, char* argv[]) {
 	if (argc < 6) {
@@ -64,9 +63,8 @@ int main(int argc, char* argv[]) {
         stopMeasureTime(start);
     }
 
-	stopMeasureTime();
 
-	startMeasureTime("creating random actors");
+	start = startMeasureTime("creating random actors");
 
     if (agentsFile != nullptr){
 
@@ -82,7 +80,7 @@ int main(int argc, char* argv[]) {
         createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f, static_cast<int>(runtime * 0.5));
     }
 
-	stopMeasureTime();
+	stopMeasureTime(start);
 
 
 	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
@@ -93,7 +91,7 @@ int main(int argc, char* argv[]) {
         });
     }
 
-	startMeasureTime(
+	start = startMeasureTime(
 		"running simulation with\n\t" +
 		std::to_string(world.crossings.size()) + " intersections\n\t" +
 		std::to_string(world.streets.size()) + " streets\n\t" +
@@ -110,13 +108,13 @@ int main(int argc, char* argv[]) {
 
 		addFrame(world, output);
 	}
-	stopMeasureTime();
+	stopMeasureTime(start);
 
-	startMeasureTime("saving simulation");
+	start = startMeasureTime("saving simulation");
 
 	save(outputFile, output);
 
-	stopMeasureTime();
+	stopMeasureTime(start);
 
 	return 0;
 }
