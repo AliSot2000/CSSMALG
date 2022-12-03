@@ -402,14 +402,6 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 
 void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings, const float current_time) {
 	for (auto& crossing : world->crossings) {
-		if (crossing.waitingToBeInserted.size() > 0) {
-			Actor* actor = crossing.waitingToBeInserted[0];
-            // Ignoring the actor if it is not it's start time yet.
-			if (actor->insertAfter > current_time && tryInsertInNextStreet(crossing, actor, timeDelta)) {
-				crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
-			}
-		}
-
 		if (crossing.inbound.size() == 0)
 			continue;
 
@@ -447,6 +439,7 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 			if (actor->path.empty()) {
 				// Actor has arrived at its target
 				actor->outputFlag = false; // make sure new active status is outputted once
+                actor->end_time = current_time;
 				street->traffic.erase(iter);
 				crossing.arrivedFrom.push_back({actor, street});
 				break;
@@ -458,10 +451,20 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 			}
 		}
 
+        // Adding new traffic to street needs to happen last, to reduce the likelihood of dead locks with too many cars.
+        if (crossing.waitingToBeInserted.size() > 0) {
+            Actor* actor = crossing.waitingToBeInserted[0];
+            // Ignoring the actor if it is not it's start time yet.
+            if (actor->insertAfter > current_time && tryInsertInNextStreet(crossing, actor, timeDelta)) {
+                actor->start_time = current_time;
+                crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
+            }
+        }
 	}
 }
 
-void updateStreets(world_t* world, const float timeDelta) {
+bool updateStreets(world_t* world, const float timeDelta) {
+    bool actorMoved = false;
 	for (auto& street : world->streets) {
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
@@ -496,6 +499,7 @@ void updateStreets(world_t* world, const float timeDelta) {
                        actor->distanceToCrossing - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
             actor->distanceToCrossing -= movement_distance;
+            actorMoved = actorMoved || movement_distance > 0.0f;
             // Clamping distance
             if (actor->distanceToCrossing < 0.01f){actor->distanceToCrossing = 0;}
 
@@ -560,6 +564,7 @@ void updateStreets(world_t* world, const float timeDelta) {
 //            }
         }
 	}
+    return actorMoved;
 }
 
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {

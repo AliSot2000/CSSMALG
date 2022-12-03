@@ -1,6 +1,6 @@
-
 #include <string>
 #include <iostream>
+#include <map>
 
 #include "update.hpp"
 #include "io.hpp"
@@ -19,10 +19,12 @@ bool loadFile(const std::string& file, json& input) {
 	return false;
 }
 
+bool hasPrecompute(const json& map){
+    return map.contains("world") && map.contains("carTree") && map.contains("bikeTree");
+}
+
 void importMap(world_t& world, json& map) {
-
 	assert(world.streets.size() == 0 && "Streets is not empty");
-
     // Data will be packed more neatly when first creating array with given size
     world.crossings = std::vector<Crossing>(map["intersections"].size());
 
@@ -170,24 +172,36 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 		json& obj = output["setup"]["agents"][actor.id];
 		obj["id"] = actor.id;
 		obj["type"] = actor.type == ActorTypes::Car ? "car" : "bike";
+        obj["length"] = actor.length;
+        obj["max_velocity"] = actor.max_velocity * 3.6f;
+        obj["acceleration"] = actor.acceleration;
+        obj["deceleration"] = actor.deceleration;
+        obj["acceleration_exponent"] = actor.acceleration_exp;
+        obj["waiting_period"] = actor.insertAfter;
+        obj["start_crossing_id"] = actor.path.front();
+        obj["end_crossing_id"] = actor.path.back();
 	}
 
 	return output;
 }
 
-void addFrame(world_t& world, json& out) {
+void addFrame(world_t& world, json& out, const bool final) {
 	json frame;
     json actorFrame;
     json crossingFrame;
 
     // Lambda function to create json object to add to output.
-	auto a = [&actorFrame](const Actor* actor, const Street* street, const float percent, bool active) {
+	auto a = [&actorFrame, &final](const Actor* actor, const Street* street, const float percent, bool active) {
         actorFrame[actor->id] = {};
 		json& obj = actorFrame[actor->id];
 		obj["road"] = street->id;
 		obj["percent_to_end"] = percent; 
 		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
 		obj["active"] = active;
+        if (final){
+            obj["start_time"] = actor->start_time;
+            obj["end_time"] = actor->end_time;
+        }
 
 		if (!active) {
 			// TODO remove when frames of not active cars can be discarded
@@ -261,4 +275,34 @@ void save(const std::string& file, const json& out) {
 	else {
 		std::cerr << "Failed to save to " << file << std::endl;
 	}
+}
+
+void exportSPT(const SPT& carTree, const SPT& bikeTree, const json& input, json& output){
+    output["carTree"] = carTree;
+    output["bikeTree"] = bikeTree;
+    output["world"] = input;
+}
+
+void importSPT(SPT& carTree, SPT& bikeTree, const json& input){
+    // Creating empty SPT.
+    carTree = SPT();
+    bikeTree = SPT();
+
+    // Importing Car Tree
+    json cars = input["carTree"];
+    for (const auto& [key, data] : cars.items()){
+        carTree[key] = std::map<std::string, std::string>();
+        for (const auto& [keyTwo, dataTwo] : cars[key].items()){
+            carTree[key][keyTwo] = dataTwo;
+        }
+    }
+
+    // Importing Bike Tree
+    json bikes = input["bikeTree"];
+    for (const auto& [key, data] : bikes.items()){
+        bikeTree[key] = std::map<std::string, std::string>();
+        for (const auto& [keyTwo, dataTwo] : bikes[key].items()){
+            bikeTree[key][keyTwo] = dataTwo;
+        }
+    }
 }

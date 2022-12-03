@@ -438,7 +438,6 @@ class Interface {
             if (!facing_toggle && !lane.find('input[name="facing"]').is(':checked')) {
                 facing_toggle = true; // Make sure that there is not a road with lane directions: 1, -1, 1
             }
-            console.log(facing_toggle);
             lanes.push({ // Add the lane to the list by getting the inputs
                 type: lane.find('input[name="bike"]').is(':checked') ? 'bike' : (lane.find('input[name="car"]').is(':checked') ? 'car' : 'both'),
                 direction: (facing_toggle ? -1 : 1),

@@ -226,7 +226,7 @@ class Simulation {
                     }
 
                     // If the agent stays at the same position or stays inactive
-                    if (((new_position.x === current_position.x && new_position.y === current_position.y) && new_position.angle === current_position.angle) || (!new_position.active && !current_position.active)) {
+                    if ((new_position.x === current_position.x && new_position.y === current_position.y) || (!new_position.active && !current_position.active)) {
                         for (let frame = 0; frame < agent_new_steps.length; frame++) { // For each frame in the step
                             agent_new_steps[frame].same[id] = agent_last_update[id]; // Set the agent to the same as the last update
                         }
@@ -234,13 +234,18 @@ class Simulation {
                     }
 
                     agent_last_update[id] = step_num * agent_new_steps.length; // Set the last update to the last frame of the step
-                    if (current_position.angle < new_position.angle && new_position.angle - current_position.angle > Math.PI) { // Make sure the angle is the shortest path
-                        current_position.angle += 2 * Math.PI; // Add 2PI to the angle
-                    } else if (current_position.angle - new_position.angle > Math.PI) { // Make sure the angle is the shortest path
-                        new_position.angle += 2 * Math.PI; // Add 2PI to the angle
-                    }
+                    let start = new Point (current_position.x, current_position.y, current_position.angle); // The start point
+                    let end = new Point (new_position.x, new_position.y,  truncateAngle(new_position.angle + Math.PI, 2 * Math.PI)); // The end point
+                    let c = calculateCubicPoints(start, end);
+                    let control_points = [start, c.pm, c.qm, end]; // The control points of the curve
                     for (let frame = 0; frame < agent_new_steps.length; frame++) { // For each frame in the step
-                        agent_new_steps[frame].changed[id] = this.calculateStep((frame + 1) / (agent_new_steps.length + 1), current_position, new_position); // Calculate the position of the agent in the frame
+                        let point = deCasteljausAlgorithm(control_points, (frame + 1) / (agent_new_steps.length + 1)); // Calculate the point on the curve
+                        agent_new_steps[frame].changed[id] = {
+                            x: point.x,
+                            y: point.y,
+                            angle: point.angle,
+                            active: true
+                        }
                     }
                 } else { // If the agent is not in the pre-simulation
                     for (let frame = 0; frame < agent_new_steps.length; frame++) { // For each frame in the step
@@ -270,22 +275,6 @@ class Simulation {
             this._intersection_simulation.push(intersection_new_step); // Add the new step to the simulation
         }
         return this;
-    }
-
-    /**
-     *
-     * @param {number} percent The percent of the step that has passed. Both start and end that are given are active
-     * @param {{x: number, y: number, angle: number}} start The start position of the agent
-     * @param {{x: number, y: number, angle: number}} end The end position of the agent
-     * @returns {{x: number, y: number, angle: number, active: boolean}} The position of the agent in the step
-     */
-    calculateStep(percent, start, end) {
-        return {
-            x: lerp(start.x, end.x, percent), // Linearly interpolate the x position
-            y: lerp(start.y, end.y, percent), // Linearly interpolate the y position
-            angle: truncateAngle(lerp(start.angle, end.angle, percent), 2 * Math.PI), // Linearly interpolate the angle
-            active: true // Set the agent to active
-        }
     }
 
     /**
