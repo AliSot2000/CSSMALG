@@ -451,16 +451,16 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 			}
 		}
 
-        // Adding new traffic to street needs to happen last, to reduce the likelihood of dead locks with too many cars.
+        // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
         if (crossing.waitingToBeInserted.size() > 0) {
             Actor* actor = crossing.waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
-            if (actor->insertAfter > current_time && tryInsertInNextStreet(crossing, actor)) {
+            if (actor->insertAfter <= current_time && tryInsertInNextStreet(crossing, actor)) {
                 actor->start_time = current_time * (actor->start_time == -1.0f) + actor->start_time * (actor->start_time != -1.0f); // only set the start time if the if the start time
                 crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
             }
         }
-	}
+    }
 }
 
 bool updateStreets(world_t* world, const float timeDelta) {
