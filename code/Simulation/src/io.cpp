@@ -270,3 +270,27 @@ void exportSPT(const SPT& carTree, const SPT& bikeTree, const json& input, json&
     output["bikeTree"] = bikeTree;
     output["world"] = input;
 }
+
+void importSPT(SPT& carTree, SPT& bikeTree, const json& input){
+    // Creating empty SPT.
+    carTree = SPT();
+    bikeTree = SPT();
+
+    // Importing Car Tree
+    json cars = input["carTree"];
+    for (const auto& [key, data] : cars.items()){
+        carTree[key] = std::map<std::string, std::string>();
+        for (const auto& [keyTwo, dataTwo] : cars[key].items()){
+            carTree[key][keyTwo] = dataTwo;
+        }
+    }
+
+    // Importing Bike Tree
+    json bikes = input["bikeTree"];
+    for (const auto& [key, data] : bikes.items()){
+        bikeTree[key] = std::map<std::string, std::string>();
+        for (const auto& [keyTwo, dataTwo] : bikes[key].items()){
+            bikeTree[key][keyTwo] = dataTwo;
+        }
+    }
+}
