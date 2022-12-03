@@ -4,6 +4,20 @@
 #include <iostream>
 #include <algorithm>
 
+
+lookup_t BuildLookup(const world_t* world){
+    LookUp result{};
+    int index = 0;
+
+    for (auto iter : world->crossings){
+        result.int_to_string[index] = iter.id;
+        result.string_to_int[iter.id] = index;
+        index++;
+    }
+
+    return result;
+}
+
 // Idea: If a road has multiple turning lanes, split a crossing into sets of identical turn options and split the single
 // Crossing vertex into multiple vertecies representing the crossing with each new vertex only containing roads with
 // identical turning sets.
@@ -33,6 +47,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 	}
 
 	for (int32_t k = 0; k < n; k++) {
+        std::cout << "Computing " << k << " of " << n << std::endl;
 		std::string ks = world->crossings[k].id;
 		for (int32_t i = 0; i < n; i++) {
 			std::string is = world->crossings[i].id;
@@ -53,6 +68,31 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 	return spt;
 }
 
+/*
+SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include){
+    LookUp lu = BuildLookup(world);
+
+    // Allocating Memory for the distance and optimal neighbour
+    void *Udistance;
+    void *UNeighbour;
+    int size = lu.string_to_int.size();
+
+    cudaMallocManaged(&Udistance, size*size*sizeof(double));
+    cudaMallocManaged(&UNeighbour, size*size*sizeof(int));
+
+    double *distance = static_cast<double*>(Udistance);
+    int *neighbour = static_cast<int*>(UNeighbour);
+
+    for (int start = 0; start < size; start++){
+        for (int end = 0; end < size; end++) {
+            *(distance + start * size + end) = 10e30; // Initializing the
+        }
+    }
+    SPT res = SPT {};
+    return res;
+
+}
+*/
 Path retrievePath(SPT& spt, const std::string &start, const std::string &end) {
 	if (!spt[start].contains(end)) {
 		return Path();

@@ -45,7 +45,7 @@ body.grabbing * {
     left: 0;
     width: inherit;
     height: inherit;
-    z-index: 3;
+    z-index: 4;
 }
 
 .intersections {
@@ -54,7 +54,16 @@ body.grabbing * {
     left: 0;
     width: inherit;
     height: inherit;
-    z-index: 4;
+    z-index: 5;
+}
+
+.borders {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    z-index: 3;
 }
 
 .intersection_border {
