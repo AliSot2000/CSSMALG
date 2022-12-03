@@ -1,11 +1,13 @@
 ﻿# CMakeList.txt : CMake project for CSSMALG, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.12)
-
+cmake_minimum_required (VERSION 3.23)
+# set(CMAKE_C_COMPILER "nvcc")
+# set(CMAKE_CXX_COMPILER "nvcc")
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 project ("CSSMALG")
+# project ("CSSMALG" LANGUAGES CXX CUDA)
 
 include_directories("include")
 
