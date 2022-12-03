@@ -463,7 +463,8 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 	}
 }
 
-void updateStreets(world_t* world, const float timeDelta) {
+bool updateStreets(world_t* world, const float timeDelta) {
+    bool actorMoved = false;
 	for (auto& street : world->streets) {
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
@@ -498,6 +499,7 @@ void updateStreets(world_t* world, const float timeDelta) {
                        actor->distanceToCrossing - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
             actor->distanceToCrossing -= movement_distance;
+            actorMoved = actorMoved || movement_distance > 0.0f;
             // Clamping distance
             if (actor->distanceToCrossing < 0.01f){actor->distanceToCrossing = 0;}
 
@@ -562,6 +564,7 @@ void updateStreets(world_t* world, const float timeDelta) {
 //            }
         }
 	}
+    return actorMoved;
 }
 
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
