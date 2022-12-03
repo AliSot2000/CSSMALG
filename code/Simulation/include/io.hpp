@@ -19,6 +19,11 @@ using nlohmann::json;
 bool loadFile(const std::string& file, json& input);
 
 /*
+    Small wrapper to determine if the map contains a precomputed SPT.
+ */
+bool hasPrecompute(const json& map);
+
+/*
  * Imports a json file into the c++ data structure.
  *
  * @param world (world) of current simulation

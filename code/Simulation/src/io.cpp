@@ -1,6 +1,6 @@
-
 #include <string>
 #include <iostream>
+#include <map>
 
 #include "update.hpp"
 #include "io.hpp"
@@ -19,10 +19,12 @@ bool loadFile(const std::string& file, json& input) {
 	return false;
 }
 
+bool hasPrecompute(const json& map){
+    return map.contains("world") && map.contains("carTree") && map.contains("bikeTree");
+}
+
 void importMap(world_t& world, json& map) {
-
 	assert(world.streets.size() == 0 && "Streets is not empty");
-
     // Data will be packed more neatly when first creating array with given size
     world.crossings = std::vector<Crossing>(map["intersections"].size());
 
