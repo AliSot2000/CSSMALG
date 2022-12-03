@@ -28,6 +28,11 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    if (hasPrecompute(import)){
+        std::cout << "File containes a Precomputed SPT. No need to compute it again.";
+        return 0;
+    }
+
     std::chrono::high_resolution_clock::time_point time = startMeasureTime("importing map");
     importMap(world, import);
     stopMeasureTime(time);
