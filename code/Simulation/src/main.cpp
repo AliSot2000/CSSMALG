@@ -42,17 +42,27 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	startMeasureTime("importing map");
-	importMap(world, import);
-	stopMeasureTime();
-	
-	startMeasureTime("calculating shortest path tree with floyd warshall");
-	SPT carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
-	SPT bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
+    std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
+    if (hasPrecompute(import)){
+        importMap(world, import["world"]);
+    } else {
+        importMap(world, import);
+    }
+	stopMeasureTime(start);
 
-    nlohmann::json spts;
-    exportSPT(carsSPT, bikeSPT, spts);
-    save("/home/alisot2000/Documents/01_ReposNCode/CSSMALG/code/Simulation/test/data.spt", spts);
+    SPT carsSPT;
+    SPT bikeSPT;
+
+    if (hasPrecompute(import)){
+        start = startMeasureTime("calculating shortest path tree with floyd warshall");
+        importSPT(carsSPT, bikeSPT, import);
+        stopMeasureTime(start);
+    } else {
+        start = startMeasureTime("calculating shortest path tree with floyd warshall");
+        carsSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyCar});
+        bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
+        stopMeasureTime(start);
+    }
 
 	stopMeasureTime();
 
