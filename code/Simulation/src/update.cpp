@@ -577,21 +577,6 @@ float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
 
 void resolveDeadLocks(world_t* world, const float current_time) {
     for (auto& crossing : world->crossings) {
-        /*
-        for (auto& [_, value] : crossing.outbound) {
-            // Locate car that is not moving.
-            if (value->traffic.empty()){
-                continue;
-            }
-
-            Actor* actor = value->traffic.back();
-            if (actor->current_velocity < 0.01f && value->length - (actor->distanceToCrossing + actor->length) < 1.0f) {
-                crossing.waitingToBeInserted.insert(crossing.waitingToBeInserted.begin(), actor);
-                actor->insertAfter = current_time + 5.0f;
-                value->traffic.pop_back();
-            }
-        }
-         */
         for (auto& iter : crossing.inbound){
             if (iter->traffic.empty()){
                 continue;
