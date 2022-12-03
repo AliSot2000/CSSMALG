@@ -38,6 +38,9 @@ typedef struct Actor {
 	std::string id = "empty";
 	Path path;
 	bool outputFlag = false; // this flag is needed for exporter to know if non-active actors status has been outputted once
+
+    float start_time = -1.0f;
+    float end_time = -1.0f;
 } actor_t;
 
 enum StreetTypes {
