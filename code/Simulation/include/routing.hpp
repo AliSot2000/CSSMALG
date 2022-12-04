@@ -10,13 +10,13 @@
 
 	world_t world;
 
-	world.crossings = std::vector<Crossing>(4);
+	world.intersections = std::vector<Intersection>(4);
 	world.streets = std::vector<Street>(5);
 
-	world.crossings[0].id = 0;
-	world.crossings[1].id = 1;
-	world.crossings[2].id = 2;
-	world.crossings[3].id = 3;
+	world.intersections[0].id = 0;
+	world.intersections[1].id = 1;
+	world.intersections[2].id = 2;
+	world.intersections[3].id = 3;
 
 	world.streets[0].start = 0;
 	world.streets[0].end = 2;

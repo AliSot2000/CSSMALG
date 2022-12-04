@@ -16,21 +16,21 @@ int randint(int min, int max) {
 }
 
 void choseRandomPath(const world_t& world, SPT& spt, std::string& start, std::string& end) {
-    if (world.crossings.size() == 0) {
-        std::cerr << "There are no crossings." << std::endl;
+    if (world.intersections.size() == 0) {
+        std::cerr << "There are no intersections." << std::endl;
         return;
     }
-    int len = (int)world.crossings.size() - 1;
+    int len = (int)world.intersections.size() - 1;
     SPT::iterator startIter = spt.begin();
     std::advance(startIter, randint(0, len));
     int noFinityLoop = 0;
-    while (startIter->second.size() < 2 && noFinityLoop <= world.crossings.size()) {
+    while (startIter->second.size() < 2 && noFinityLoop <= world.intersections.size()) {
         startIter = spt.begin();
         std::advance(startIter, randint(0, len));
         noFinityLoop++;
     }
 
-    if (noFinityLoop > world.crossings.size()) {
+    if (noFinityLoop > world.intersections.size()) {
         std::cerr << "There exists no paths. Meaning one can only go from a intersection to the intersection itself." << std::endl;
         return;
     }
@@ -53,7 +53,7 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
     for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
         Actor actor = {
                 .type = type,
-                .distanceToCrossing = 0.0f,
+                .distanceToIntersection = 0.0f,
                 .distanceToRight = 0,
                 .length = length,
                 .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
@@ -68,9 +68,9 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
         choseRandomPath(world, spt, start_id, end_id);
         actor.path = retrievePath(spt, start_id, end_id);
 
-        for (auto& crossing : world.crossings) {
-            if (crossing.id == start_id) {
-                crossing.waitingToBeInserted.push_back(&(*iter));
+        for (auto& intersection : world.intersections) {
+            if (intersection.id == start_id) {
+                intersection.waitingToBeInserted.push_back(&(*iter));
                 break;
             }
         }

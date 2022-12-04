@@ -46,7 +46,7 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
  * std::vector{[A5]              [A4]     [A2]     [A1]              [A0]}
  * ----------------------------------------------------------------------------------------------
  * | Max Distance
- * ---------------------------> | Min Distance = actor->distanceToCrossing - distance_traveled
+ * ---------------------------> | Min Distance = actor->distanceToIntersection - distance_traveled
  * IT-END            IT-START
 */
 //float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
@@ -92,7 +92,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor);
 // float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
 
 /*
- * Sorts vehicles in a street based on their distance to the next crossing.
+ * Sorts vehicles in a street based on their distance to the next intersection.
  *
  * @param start Where to begin sorting
  * @param end Where to stop sorting
@@ -110,26 +110,26 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end);
 bool updateStreets(world_t* world, const float timeDelta);
 
 /*
- * Given an Actor, the function tries to insert it into the road adjacent to the crossing that is indicated in the head
+ * Given an Actor, the function tries to insert it into the road adjacent to the intersection that is indicated in the head
  * of its path. Returns true if the actor was inserted, false if no space was in the road
  *
- * @param crossing: Crossing where the actor is currently in the rerouting phase
+ * @param intersection: Intersection where the actor is currently in the rerouting phase
  * @param actor: Actor to be inserted
  *
  * @returns True <=> if the actor was inserted
 */
-bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor);
+bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor);
 
 /*
- * Updates all Crossings in the world.
+ * Updates all Intersections in the world.
  *
  * @param world: World instance to update.
  * @param timeDelta: Time past since last frame. Used for traffic light.
- * @param stupidCrossings: Crossing will not check if a road is empty and still try to route its traffic for the green phase.
+ * @param stupidIntersections: Intersection will not check if a road is empty and still try to route its traffic for the green phase.
  * @param currentTime: Needed to indicate the start and arrival time of the cars.
  *
 */
-void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings, const float current_time);
+void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time);
 /*
  * Compute the desired distance between the vehicle and the border of the next vehicle.
  *

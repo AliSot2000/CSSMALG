@@ -17,7 +17,7 @@ typedef struct Actor {
 	ActorTypes type = ActorTypes::Car;
 
     // Position of the actor.
-	float distanceToCrossing = 50.0f;
+	float distanceToIntersection = 50.0f;
     int distanceToRight = 0;
     float length = 4.5f; //
 
@@ -32,7 +32,7 @@ typedef struct Actor {
     float deceleration = 2*1.67f; // m/s^2
     float acceleration_exp = 10.0f; // unitless
 
-    float insertAfter = 0.0f; // After how many seconds the actor should try to be inserted at the crossing
+    float insertAfter = 0.0f; // After how many seconds the actor should try to be inserted at the intersection
 
 	// Only used for visualization
 	std::string id = "empty";
@@ -68,7 +68,7 @@ typedef struct Street {
 	std::string id;
 } street_t;
 
-typedef struct Crossing {
+typedef struct Intersection {
 	std::string id;
 	std::vector<Street*> inbound;
 	std::map<std::string, Street*> outbound;
@@ -78,11 +78,11 @@ typedef struct Crossing {
 
 	std::vector<Actor*> waitingToBeInserted;
 	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
-    bool outputFlag = true; // All crossings which have this set are added to the output.
-} crossing_t;
+    bool outputFlag = true; // All intersections which have this set are added to the output.
+} intersection_t;
 
 typedef struct World {
-	std::vector<Crossing> crossings;
+	std::vector<Intersection> intersections;
 	std::vector<Street> streets;
 	std::vector<Actor> actors;
 } world_t;

@@ -38,7 +38,7 @@ void choseRandomPath(const world_t& world, SPT& spt, std::string& start, std::st
     @param start, where in actors vector to start adding new actors
     @param end, where to stop adding new actors to the vector
     @param length, length of the new actors
-    @param max_start_time, maximum time into the simulation when an actor may be spawned into a crossing.
+    @param max_start_time, maximum time into the simulation when an actor may be spawned into a intersection.
 
     @returns void, everything over reference
 */
