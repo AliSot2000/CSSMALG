@@ -32,7 +32,7 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 	const float distance = actor->current_velocity * timeDelta;
 
 	float maxForwardDistance = std::min(distance, actor->distanceToIntersection); // don't overshoot intersection (go beyond the road)
-	const float actorRearEnd = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES; 
+	const float actorRearEnd = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
     for (TrafficIterator iter = trafficStart; iter != trafficEnd; iter++) {
         // If space is less than MIN_DISTANCE_BETWEEN_VEHICLES then there is no space to drive forward
