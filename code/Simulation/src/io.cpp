@@ -34,6 +34,10 @@ void importMap(world_t& world, json& map) {
 		intersectionIdToIndex[data["id"]] = index;
 		Intersection& intersection = world.intersections[index];
 		intersection.id = data["id"];
+        if (data.contains("trafficLight")){
+            intersection.hasTrafficLight = data["trafficLight"];
+        }
+
 		index++;
 	}
 
