@@ -432,51 +432,67 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
 		if (intersection.inbound.size() == 0)
 			continue;
 
-		intersection.currentPhase -= timeDelta;
+        if (intersection.hasTrafficLight){
+            updateIntersectionPhase(intersection, timeDelta, stupidIntersections);
 
-		// Change street for which the light is green
-        if (stupidIntersections){
-            if (intersection.currentPhase <= 0.0f) {
-                intersection.green = (intersection.green + 1) % (intersection.inbound.size());
-                intersection.currentPhase = intersection.greenPhaseDuration;
-                intersection.outputFlag = true;
+            Street* street = intersection.inbound[intersection.green];
+            for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
+                Actor* actor = *iter;
+                if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
+                    // No vehicle is close enough to change street
+                    break;
+
+                if (actor->path.empty()) {
+                    // Actor has arrived at its target
+                    actor->outputFlag = false; // make sure new active status is outputted once
+                    actor->end_time = current_time;
+                    street->traffic.erase(iter);
+                    intersection.arrivedFrom.push_back({actor, street});
+                    break;
+                }
+
+                if (tryInsertInNextStreet(intersection, actor)) {
+                    street->traffic.erase(iter);
+                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
+                }
             }
         } else {
-            if (intersection.currentPhase <= 0.0f) {
-                // Forloop to prevent an infinite while loop
-                // Go to next inbound street if a given inbound street is empty.
-                for (std::size_t i = 0; i < intersection.inbound.size(); i++){
-                    intersection.green = (intersection.green + 1) % (intersection.inbound.size());
-                    if (intersection.inbound.at(intersection.green)->traffic.size() > 0){
-                        break;
-                    }
-                }
-                intersection.outputFlag = true;
-                intersection.currentPhase = intersection.greenPhaseDuration;
-            }
+           for (int i = 0; i < intersection.inbound.size(); i++){
+               int index = (i + intersection.green) % intersection.inbound.size();
+               Street* street = intersection.inbound[index];
+
+               // Ignore empty streets
+               if (street->traffic.size() == 0){
+                   continue;
+               }
+
+               Actor* actor = street->traffic.front();
+
+               // Check if front actor is eligible to change street
+               if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT){
+                   continue;
+               }
+
+               // Actor has arrived at its destination
+               if (actor->path.empty()) {
+                   // Actor has arrived at its target
+                   actor->outputFlag = false; // make sure new active status is outputted once
+                   actor->end_time = current_time;
+                   street->traffic.erase(street->traffic.begin());
+                   intersection.arrivedFrom.push_back({actor, street});
+                   break;
+               }
+
+               if (tryInsertInNextStreet(intersection, actor)) {
+                   street->traffic.erase(street->traffic.begin());
+                   intersection.green = index;
+                   break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
+               }
+           }
         }
 
-		Street* street = intersection.inbound[intersection.green];
-		for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
-			Actor* actor = *iter;
-			if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
-				// No vehicle is close enough to change street
-				break;
 
-			if (actor->path.empty()) {
-				// Actor has arrived at its target
-				actor->outputFlag = false; // make sure new active status is outputted once
-                actor->end_time = current_time;
-				street->traffic.erase(iter);
-				intersection.arrivedFrom.push_back({actor, street});
-				break;
-			}
 
-			if (tryInsertInNextStreet(intersection, actor)) {
-				street->traffic.erase(iter);
-				break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
-			}
-		}
 
         // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
         if (intersection.waitingToBeInserted.size() > 0) {
