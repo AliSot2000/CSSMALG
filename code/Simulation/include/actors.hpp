@@ -79,6 +79,7 @@ typedef struct Intersection {
 	std::vector<Actor*> waitingToBeInserted;
 	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
     bool outputFlag = true; // All intersections which have this set are added to the output.
+    bool hasTrafficLight = false;
 } intersection_t;
 
 typedef struct World {
