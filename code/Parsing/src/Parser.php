@@ -211,7 +211,6 @@ class Parser
      * @return void
      */
     private function writeJSON(): void {
-
         $handle = fopen("../data/mapExport.tsim", 'w+');
         $toWrite = array("peripherals" => array("type" => "to-be-simulated", "date" => date("Y-m-d_H-i-s")), "intersections" => array_values($this->parsedNodes), "roads" => array_values($this->parsedStreets));
 
