@@ -10,6 +10,8 @@
 #include "io.hpp"
 #include "utils.hpp"
 
+#define STATUS_UPDATAE_INTERVAL 3600
+
 int main(int argc, char* argv[]) {
 	if (argc < 6) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_crossing>" << std::endl;
@@ -102,6 +104,7 @@ int main(int argc, char* argv[]) {
 
 	float maxTime = runtime;
     float lastDeadLock = runtime;
+    float lastStatusTime = runtime;
 	while (maxTime > 0.0f) {
         updateCrossings(&world, deltaTime, stupidCrossings, runtime - maxTime);
 		lastDeadLock = updateStreets(&world, deltaTime) ? maxTime : lastDeadLock;
@@ -112,6 +115,11 @@ int main(int argc, char* argv[]) {
                 std::cerr << "Persistent detected at " << runtime - lastDeadLock << " seconds" << std::endl;
             }
             resolveDeadLocks(&world, maxTime);
+        }
+
+        if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
+            lastStatusTime = maxTime;
+            std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
         }
 
 		addFrame(world, output);
