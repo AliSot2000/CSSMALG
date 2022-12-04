@@ -400,6 +400,33 @@ bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor) {
 
 }
 
+void updateIntersectionPhase(intersection_t& intersection, float timeDelta, bool stupidIntersections) {
+    intersection.currentPhase -= timeDelta;
+
+    // Change street for which the light is green
+    if (stupidIntersections){
+        // Perform the stupid intersection algorithm, i.e. don't check if the street is empty
+        if (intersection.currentPhase <= 0.0f) {
+            intersection.green = (intersection.green + 1) % (intersection.inbound.size());
+            intersection.currentPhase = intersection.greenPhaseDuration;
+            intersection.outputFlag = true;
+        }
+    } else {
+        if (intersection.currentPhase <= 0.0f) {
+            // Forloop to prevent an infinite while loop
+            // Go to next inbound street if a given inbound street is empty.
+            for (std::size_t i = 0; i < intersection.inbound.size(); i++){
+                intersection.green = (intersection.green + 1) % (intersection.inbound.size());
+                if (intersection.inbound.at(intersection.green)->traffic.size() > 0){
+                    break;
+                }
+            }
+            intersection.outputFlag = true;
+            intersection.currentPhase = intersection.greenPhaseDuration;
+        }
+    }
+}
+
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time) {
 	for (auto& intersection : world->intersections) {
 		if (intersection.inbound.size() == 0)

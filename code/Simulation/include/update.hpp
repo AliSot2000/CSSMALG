@@ -121,6 +121,18 @@ bool updateStreets(world_t* world, const float timeDelta);
 bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor);
 
 /*
+ * Performs the update light routine of an intersection which hase a traffic light. It selects which lane currently has
+ * the green light.
+ *
+ * @param intersection: Intersection to update
+ * @param timeDelta: Time past since last frame
+ * @param stupidIntersections: If intersection is stupid or not.
+ *
+ * @returns void.
+*/
+void updateIntersectionPhase(intersection_t& intersection, float timeDelta, bool stupidIntersections);
+
+/*
  * Updates all Intersections in the world.
  *
  * @param world: World instance to update.
