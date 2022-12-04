@@ -5,7 +5,7 @@
  */
 class Parser
 {
-    private array $coordinates = array();
+    private array $coordinates;
     private array $rawNodes = array();
     private array $rawStreets = array();
     private array $parsedNodes = array();
@@ -13,7 +13,7 @@ class Parser
     private int $streetCount = 0;
 
     /**
-     * constructor where coordinates for bounding box can be passed
+     * constructor where coordinates (in OSM defined order) for bounding box can be passed
      * @param float $lon1
      * @param float $lon2
      * @param float $lat1
@@ -21,23 +21,12 @@ class Parser
      */
     public function __construct(float $lon1, float $lon2, float $lat1, float $lat2)
     {
-        if ($lon1 > $lon2) {
-            $temp = $lon1;
-            $lon1 = $lon2;
-            $lon2 = $temp;
-        }
-
-        if ($lat1 > $lat2) {
-            $temp = $lat1;
-            $lat1 = $lat2;
-            $lat2 = $temp;
-        }
         $this->coordinates = array("lon1" => $lon1, "lon2" => $lon2, "lat1" => $lat1, "lat2" => $lat2);
     }
 
 
     /**
-     * main method bundling all important other methods
+     * main method of class bundling all important other methods
      * @return void
      */
     public function execute(): void {
@@ -57,7 +46,6 @@ class Parser
         // collecting results in JSON format
         $html = file_get_contents($query);
         $rawData = json_decode($html, true);
-
         //sorting the nodes and streets into two separate arrays
         foreach ($rawData["elements"] AS $element) {
             if ($element["type"] == "node") {
@@ -104,6 +92,8 @@ class Parser
                 $this->parsedNodes[$nodeData["id"]]["roundabout"] = false;
             }
         }
+
+        unset($this->rawNodes);
     }
 
     /**
@@ -163,7 +153,7 @@ class Parser
         }
 
         // check how many lanes need to be made
-        foreach ($splittedRoads AS $id => $data) {
+        foreach ($splittedRoads AS $id => &$data) {
             $coordinate1 = $this->parsedNodes[$data["startNodeId"]]["coordinates"];
             $coordinate2 = $this->parsedNodes[$data["endNodeId"]]["coordinates"];
             $length = round($this->distance($coordinate1["lon"], $coordinate1["lat"], $coordinate2["lon"], $coordinate2["lat"]));
@@ -195,7 +185,7 @@ class Parser
 
             // with these road types we assume they wide enough roads to always overtake so we add a seperate road for bicycles
             if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
-                $this->parsedStreets[$this->streetCount + 1] = array("id" => strval($this->streetCount + 1), "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" =>  array("type" => "bike", "left" => true, "forward" => true, "right" => true), "speed_limit" => $maxSpeed, "distance" => $length);
+                $this->parsedStreets[$this->streetCount + 1] = array("id" => strval($this->streetCount + 1), "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" =>  array(array("type" => "bike", "left" => true, "forward" => true, "right" => true)), "speed_limit" => $maxSpeed, "distance" => $length);
                 $this->streetCount++;
                 $type = "car";
             }
@@ -211,7 +201,9 @@ class Parser
             } else {
                 $this->parsedStreets[$id] = array("id" => $data["id"], "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length, "oppositeStreetId" => $data["oppositeStreetId"]);
             }
+            $data = NULL;
         }
+        unset($this->rawStreets);
     }
 
     /**
@@ -221,8 +213,15 @@ class Parser
     private function writeJSON(): void {
 
         $handle = fopen("../data/mapExport.tsim", 'w+');
-        fwrite($handle, json_encode(array("peripherals" => array("type" => "to-be-simulated", "date" => date("Y-m-d_H-i-s")), "intersections" => array_values($this->parsedNodes), "roads" => array_values($this->parsedStreets)), JSON_PRETTY_PRINT));
+        $toWrite = array("peripherals" => array("type" => "to-be-simulated", "date" => date("Y-m-d_H-i-s")), "intersections" => array_values($this->parsedNodes), "roads" => array_values($this->parsedStreets));
+
+        unset($this->parsedNodes);
+        unset($this->parsedStreets);
+
+        fwrite($handle, json_encode($toWrite));
         fclose($handle);
+
+        unset($toWrite);
     }
 
     /**
