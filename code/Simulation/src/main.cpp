@@ -14,7 +14,7 @@
 
 int main(int argc, char* argv[]) {
 	if (argc < 6) {
-		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_crossing>" << std::endl;
+		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_intersection>" << std::endl;
         std::cerr << "If an agents file is provided, the n-random-cars and n-random-bikes is ignored" << std::endl;
 		return -1;
 	}
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	const int randomBikes = std::atoi(argv[4]);
 	const auto runtime = (float)std::atof(argv[5]); // 60.0f;
 	const auto deltaTime = (float)std::atof(argv[6]); // 0.25f;
-    bool stupidCrossings = false;
+    bool stupidIntersections = false;
     char* agentsFile = nullptr;
 
     if (argc == 7){
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (argc == 8){
-        stupidCrossings = (*argv[8] == '1');
+        stupidIntersections = (*argv[8] == '1');
     }
 
 	world_t world;
@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
 
 	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
 
-    for (crossing_t& iter : world.crossings){
+    for (intersection_t& iter : world.intersections){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
             return a->insertAfter < b->insertAfter;
         });
@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
 
 	start = startMeasureTime(
 		"running simulation with\n\t" +
-		std::to_string(world.crossings.size()) + " intersections\n\t" +
+		std::to_string(world.intersections.size()) + " intersections\n\t" +
 		std::to_string(world.streets.size()) + " streets\n\t" +
 		std::to_string(world.actors.size()) + " actors\n\t" +
 		std::to_string(runtime) + " seconds of runtime\n\t" +
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
     float lastDeadLock = runtime;
     float lastStatusTime = runtime;
 	while (maxTime > 0.0f) {
-        updateCrossings(&world, deltaTime, stupidCrossings, runtime - maxTime);
+        updateIntersections(&world, deltaTime, stupidIntersections, runtime - maxTime);
 		lastDeadLock = updateStreets(&world, deltaTime) ? maxTime : lastDeadLock;
 		maxTime -= deltaTime;
 

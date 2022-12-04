@@ -9,7 +9,7 @@ lookup_t BuildLookup(const world_t* world){
     LookUp result{};
     int index = 0;
 
-    for (auto iter : world->crossings){
+    for (auto iter : world->intersections){
         result.int_to_string[index] = iter.id;
         result.string_to_int[iter.id] = index;
         index++;
@@ -18,20 +18,20 @@ lookup_t BuildLookup(const world_t* world){
     return result;
 }
 
-// Idea: If a road has multiple turning lanes, split a crossing into sets of identical turn options and split the single
-// Crossing vertex into multiple vertecies representing the crossing with each new vertex only containing roads with
+// Idea: If a road has multiple turning lanes, split a intersection into sets of identical turn options and split the single
+// Intersection vertex into multiple vertecies representing the intersection with each new vertex only containing roads with
 // identical turning sets.
 
 // Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
 SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include) {
-	const size_t n = world->crossings.size();
+	const size_t n = world->intersections.size();
 
 	std::map<std::string, std::map<std::string, float>> minimumDistance;
 	SPT spt;
 
     // initialize the value of the map with empty maps.
-	for (const auto& crossing : world->crossings) {
-		minimumDistance[crossing.id] = std::map<std::string, float>();
+	for (const auto& intersection : world->intersections) {
+		minimumDistance[intersection.id] = std::map<std::string, float>();
 	}
 
 	for (const auto& street : world->streets) {
@@ -41,18 +41,18 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 		}
 	}
 
-	for (const auto& crossing : world->crossings) {
-		minimumDistance[crossing.id][crossing.id] = 0;
-		spt[crossing.id][crossing.id] = crossing.id;
+	for (const auto& intersection : world->intersections) {
+		minimumDistance[intersection.id][intersection.id] = 0;
+		spt[intersection.id][intersection.id] = intersection.id;
 	}
 
 	for (int32_t k = 0; k < n; k++) {
         std::cout << "Computing " << k << " of " << n << std::endl;
-		std::string ks = world->crossings[k].id;
+		std::string ks = world->intersections[k].id;
 		for (int32_t i = 0; i < n; i++) {
-			std::string is = world->crossings[i].id;
+			std::string is = world->intersections[i].id;
 			for (int32_t j = 0; j < n; j++) {
-				std::string js = world->crossings[j].id;
+				std::string js = world->intersections[j].id;
 
 				bool hasEdge = spt[is].contains(ks) && spt[ks].contains(js);
                 // Check if the two edges is-ks, ks-js are valid.

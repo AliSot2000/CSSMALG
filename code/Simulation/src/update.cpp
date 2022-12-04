@@ -15,24 +15,24 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
 		[](const Actor* a, const float& b) {
-			return a->distanceToCrossing + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b; // Todo test if removing min distance has adverse effect.
+			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b; // Todo test if removing min distance has adverse effect.
 	});
 
 	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
 		[](const float& b, const Actor* a) {
-			return a->distanceToCrossing > b;
+			return a->distanceToIntersection > b;
 	});
 }
 /*
 float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd) {
 
-	if (actor->distanceToCrossing <= 0.0f) 
+	if (actor->distanceToIntersection <= 0.0f)
 		return 0.0f;
 
 	const float distance = actor->current_velocity * timeDelta;
 
-	float maxForwardDistance = std::min(distance, actor->distanceToCrossing); // don't overshoot crossing (go beyond the road)
-	const float actorRearEnd = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES; // TODO rear end doesn't need min distance
+	float maxForwardDistance = std::min(distance, actor->distanceToIntersection); // don't overshoot intersection (go beyond the road)
+	const float actorRearEnd = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES; 
 
     for (TrafficIterator iter = trafficStart; iter != trafficEnd; iter++) {
         // If space is less than MIN_DISTANCE_BETWEEN_VEHICLES then there is no space to drive forward
@@ -45,17 +45,17 @@ float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const f
 		// they are in the same lane, thus collision could happen
 		if (actor->distanceToRight == other->distanceToRight) { // TEST IF SAME LANE AND RETURN SPACE TO FORWARD VEHICLE
 
-			const float otherRearEnd = other->distanceToCrossing + other->length + MIN_DISTANCE_BETWEEN_VEHICLES; // TODO rear end doesn't need min distance
+			const float otherRearEnd = other->distanceToIntersection + other->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
 			// Check if they are already colliding, this should only happen when car is trying to swap lanes
-			if ((otherRearEnd >= actor->distanceToCrossing && other->distanceToCrossing <= actor->distanceToCrossing) ||
-				(actorRearEnd >= other->distanceToCrossing && actor->distanceToCrossing <= other->distanceToCrossing)) {
+			if ((otherRearEnd >= actor->distanceToIntersection && other->distanceToIntersection <= actor->distanceToIntersection) ||
+				(actorRearEnd >= other->distanceToIntersection && actor->distanceToIntersection <= other->distanceToIntersection)) {
 				maxForwardDistance = 0.0f;
 				continue;
 			}
 
             // Calculates maximum distance vehicle is allowed to move forward
-            maxForwardDistance = std::min(maxForwardDistance, actor->distanceToCrossing - otherRearEnd);
+            maxForwardDistance = std::min(maxForwardDistance, actor->distanceToIntersection - otherRearEnd);
 		}
 	}
 
@@ -78,7 +78,7 @@ FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const T
 
         assert(other->distanceToRight <= street.width && "Vehicle is not on the street!");
 
-        // We can iterate through like that since the traffic is sorted by distanceToCrossing.
+        // We can iterate through like that since the traffic is sorted by distanceToIntersection.
         if (actor->distanceToRight == other->distanceToRight) {
             f.frontVehicle = other;
         } else if (actor->distanceToRight == other->distanceToRight + LANE_WIDTH) {
@@ -97,13 +97,13 @@ FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, con
     for (TrafficIterator iter = start; iter != street.traffic.end(); iter++) {
         Actor *other = *iter; // Get pointer to actor of iterator (with *)
 
-        if (other->distanceToCrossing > actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES) {
+        if (other->distanceToIntersection > actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES) {
             return f;
         }
 
         assert(other->distanceToRight <= street.width && "Vehicle is not on the street!");
 
-        // We can iterate through like that since the traffic is sorted by distanceToCrossing.
+        // We can iterate through like that since the traffic is sorted by distanceToIntersection.
         if (actor->distanceToRight == other->distanceToRight) {
             f.frontVehicle = other;
         } else if (actor->distanceToRight == other->distanceToRight + LANE_WIDTH) {
@@ -132,34 +132,34 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     FrontVehicles c = GetCollisionVehicles(street, actor, end);
 
     // Check in front
-    float frontDistance = actor->distanceToCrossing;
+    float frontDistance = actor->distanceToIntersection;
     Actor* OptimalFrontActor = f.frontVehicle;
     int distanceToRight = actor->distanceToRight;
 
     if (f.frontVehicle != nullptr) {
-        frontDistance = actor->distanceToCrossing - (f.frontVehicle->distanceToCrossing + f.frontVehicle->length);
+        frontDistance = actor->distanceToIntersection - (f.frontVehicle->distanceToIntersection + f.frontVehicle->length);
     }
     // assert(c.frontVehicle == actor && "Actor is not in place where it is expected.");
 
     // Check left lane existence
     if (actor->distanceToRight < street.width - LANE_WIDTH) {
 
-        float leftDistance = actor->distanceToCrossing;
+        float leftDistance = actor->distanceToIntersection;
 
         // Update distance
         if (f.frontVehicleLeft != nullptr) {
             leftDistance =
-                    actor->distanceToCrossing - (f.frontVehicleLeft->distanceToCrossing + f.frontVehicleLeft->length);
+                    actor->distanceToIntersection - (f.frontVehicleLeft->distanceToIntersection + f.frontVehicleLeft->length);
         }
 
         // More suitable
         if (leftDistance > frontDistance) {
             // Check for a collision with subsequent vehicle.
             if (c.frontVehicleLeft == nullptr || (
-                    c.frontVehicleLeft->distanceToCrossing > actor->distanceToCrossing + actor->length +
+                    c.frontVehicleLeft->distanceToIntersection > actor->distanceToIntersection + actor->length +
                                                              MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
-                    || c.frontVehicleLeft->distanceToCrossing + c.frontVehicleLeft->length +
-                       MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToCrossing)) { // Actor is enough behind.
+                    || c.frontVehicleLeft->distanceToIntersection + c.frontVehicleLeft->length +
+                       MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToIntersection)) { // Actor is enough behind.
 
                 frontDistance = leftDistance;
                 distanceToRight = actor->distanceToRight + LANE_WIDTH;
@@ -172,21 +172,21 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     // Check right lane existence
     if (actor->distanceToRight > 0){
 
-        float rightDistance = actor->distanceToCrossing;
+        float rightDistance = actor->distanceToIntersection;
 
         // Update distance
         if (f.frontVehicleRight != nullptr) {
             rightDistance =
-                    actor->distanceToCrossing - (f.frontVehicleRight->distanceToCrossing + f.frontVehicleRight->length);
+                    actor->distanceToIntersection - (f.frontVehicleRight->distanceToIntersection + f.frontVehicleRight->length);
         }
 
         // Prioritize right lane, that's why greater or equal than.
         if (rightDistance >= frontDistance) {
             if (c.frontVehicleRight == nullptr
-            || (c.frontVehicleRight->distanceToCrossing > actor->distanceToCrossing + actor->length +
+            || (c.frontVehicleRight->distanceToIntersection > actor->distanceToIntersection + actor->length +
                                                          MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
-                || c.frontVehicleRight->distanceToCrossing + c.frontVehicleRight->length +
-                   MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToCrossing)){
+                || c.frontVehicleRight->distanceToIntersection + c.frontVehicleRight->length +
+                   MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToIntersection)){
             OptimalFrontActor = f.frontVehicleRight;
             distanceToRight = actor->distanceToRight - LANE_WIDTH;
             }
@@ -244,7 +244,7 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
         checkNewDistance();
     }
 
-    // This distinction removes vehicles trying to switch to lanes more to the right when standing still at the crossing.
+    // This distinction removes vehicles trying to switch to lanes more to the right when standing still at the intersection.
     if (allowedDistance > 0.0f) {
         actor->distanceToRight = maxDistanceLane;
     }
@@ -257,8 +257,8 @@ float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const f
 */
 void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 	std::sort(start, end, [](const Actor* a, const Actor* b) {
-        // Lexicographical order, starting with distanceToCrossing and then distanceToRight
-		if (a->distanceToCrossing == b->distanceToCrossing) {
+        // Lexicographical order, starting with distanceToIntersection and then distanceToRight
+		if (a->distanceToIntersection == b->distanceToIntersection) {
             // this if statement make sure that no vehicles have the same ordering
             if (a->distanceToRight == b->distanceToRight) {
                 //throw std::runtime_error("Two Vehicles with identical position");
@@ -266,24 +266,24 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
             }
             return a->distanceToRight < b->distanceToRight;
 		}
-		return a->distanceToCrossing < b->distanceToCrossing;
+		return a->distanceToIntersection < b->distanceToIntersection;
 	});
 }
 /*
-bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) {
-	Street* target = crossing.outbound[actor->path.front()];
+bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor, float timeDelta) {
+	Street* target = intersection.outbound[actor->path.front()];
 	TrafficIterator targetStart;
 	TrafficIterator targetEnd;
 	trafficInDrivingDistance(*target, target->length - actor->length, target->length, &targetStart, &targetEnd);
 
 	Actor dummy = *actor;
 	dummy.distanceToRight = 0;
-	dummy.distanceToCrossing = target->length - dummy.length;
+	dummy.distanceToIntersection = target->length - dummy.length;
     dummy.target_velocity = target->speedlimit;
 	while (dummy.distanceToRight + LANE_WIDTH <= target->width) {
         // TODO Since Velocity is 0, insert fails. use rbegin() and find the first vehicles like that.
 		if (maxSpaceInFrontOfVehicle(*target, &dummy, timeDelta, targetStart, targetEnd) > 0.0f) {
-			actor->distanceToCrossing = dummy.distanceToCrossing;
+			actor->distanceToIntersection = dummy.distanceToIntersection;
 			actor->distanceToRight = dummy.distanceToRight;
 			actor->path.pop();
 			target->traffic.push_back(actor);
@@ -299,8 +299,8 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor, float timeDelta) 
 */
 
 // Updated Version of Alex to handle zero velocity vehicles.
-bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
-    Street* target = crossing.outbound[actor->path.front()];
+bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor) {
+    Street* target = intersection.outbound[actor->path.front()];
 
     // Copy constructor you dummy
     // Actor dummy = *actor;
@@ -311,7 +311,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
         target->traffic.push_back(actor);
         actor->path.pop();
         actor->distanceToRight = 0;
-        actor->distanceToCrossing = target->length - actor->length;
+        actor->distanceToIntersection = target->length - actor->length;
         actor->target_velocity = target->speedlimit;
         return true;
     }
@@ -326,14 +326,14 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
                  * -----------------------------------------------------------------------------------------------------
                  *
                  * --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
-                 * <-----------distanceToCrossing------------------->[iter->length]<-----MinDistance---->[actor->length]
+                 * <-----------distanceToIntersection--------------->[iter->length]<-----MinDistance---->[actor->length]
                  * -----------------------------------------------------------------------------------------------------
                  */
-                if (target->length - ((*iter)->distanceToCrossing + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
+                if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
                     actor->path.pop();
                     target->traffic.push_back(actor);
                     actor->distanceToRight = 0;
-                    actor->distanceToCrossing = target->length - actor->length;
+                    actor->distanceToIntersection = target->length - actor->length;
                     actor->target_velocity = target->speedlimit;
                     return true;
                 }
@@ -348,7 +348,7 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
         actor->path.pop();
         target->traffic.push_back(actor);
         actor->distanceToRight = 0;
-        actor->distanceToCrossing = target->length - actor->length;
+        actor->distanceToIntersection = target->length - actor->length;
         actor->target_velocity = target->speedlimit;
         return true;
     }
@@ -379,12 +379,12 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
         }
 
         // Space in a lane, we can insert the actor and return true
-        if (target->length - ((*iter)->distanceToCrossing + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
+        if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
             // Insert and update the actor.
             actor->path.pop();
             target->traffic.push_back(actor);
             actor->distanceToRight = other->distanceToRight;
-            actor->distanceToCrossing = target->length - actor->length;
+            actor->distanceToIntersection = target->length - actor->length;
             actor->target_velocity = target->speedlimit;
             return true;
         } else {
@@ -400,39 +400,39 @@ bool tryInsertInNextStreet(crossing_t& crossing, Actor* actor) {
 
 }
 
-void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings, const float current_time) {
-	for (auto& crossing : world->crossings) {
-		if (crossing.inbound.size() == 0)
+void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time) {
+	for (auto& intersection : world->intersections) {
+		if (intersection.inbound.size() == 0)
 			continue;
 
-		crossing.currentPhase -= timeDelta;
+		intersection.currentPhase -= timeDelta;
 
 		// Change street for which the light is green
-        if (stupidCrossings){
-            if (crossing.currentPhase <= 0.0f) {
-                crossing.green = (crossing.green + 1) % (crossing.inbound.size());
-                crossing.currentPhase = crossing.greenPhaseDuration;
-                crossing.outputFlag = true;
+        if (stupidIntersections){
+            if (intersection.currentPhase <= 0.0f) {
+                intersection.green = (intersection.green + 1) % (intersection.inbound.size());
+                intersection.currentPhase = intersection.greenPhaseDuration;
+                intersection.outputFlag = true;
             }
         } else {
-            if (crossing.currentPhase <= 0.0f) {
+            if (intersection.currentPhase <= 0.0f) {
                 // Forloop to prevent an infinite while loop
                 // Go to next inbound street if a given inbound street is empty.
-                for (std::size_t i = 0; i < crossing.inbound.size(); i++){
-                    crossing.green = (crossing.green + 1) % (crossing.inbound.size());
-                    if (crossing.inbound.at(crossing.green)->traffic.size() > 0){
+                for (std::size_t i = 0; i < intersection.inbound.size(); i++){
+                    intersection.green = (intersection.green + 1) % (intersection.inbound.size());
+                    if (intersection.inbound.at(intersection.green)->traffic.size() > 0){
                         break;
                     }
                 }
-                crossing.outputFlag = true;
-                crossing.currentPhase = crossing.greenPhaseDuration;
+                intersection.outputFlag = true;
+                intersection.currentPhase = intersection.greenPhaseDuration;
             }
         }
 
-		Street* street = crossing.inbound[crossing.green];
+		Street* street = intersection.inbound[intersection.green];
 		for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
 			Actor* actor = *iter;
-			if (actor->distanceToCrossing >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
+			if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
 				// No vehicle is close enough to change street
 				break;
 
@@ -441,23 +441,23 @@ void updateCrossings(world_t* world, const float timeDelta, bool stupidCrossings
 				actor->outputFlag = false; // make sure new active status is outputted once
                 actor->end_time = current_time;
 				street->traffic.erase(iter);
-				crossing.arrivedFrom.push_back({actor, street});
+				intersection.arrivedFrom.push_back({actor, street});
 				break;
 			}
 
-			if (tryInsertInNextStreet(crossing, actor)) {
+			if (tryInsertInNextStreet(intersection, actor)) {
 				street->traffic.erase(iter);
 				break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
 			}
 		}
 
         // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
-        if (crossing.waitingToBeInserted.size() > 0) {
-            Actor* actor = crossing.waitingToBeInserted[0];
+        if (intersection.waitingToBeInserted.size() > 0) {
+            Actor* actor = intersection.waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
-            if (actor->insertAfter <= current_time && tryInsertInNextStreet(crossing, actor)) {
+            if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor)) {
                 actor->start_time = current_time * (actor->start_time == -1.0f) + actor->start_time * (actor->start_time != -1.0f); // only set the start time if the if the start time
-                crossing.waitingToBeInserted.erase(crossing.waitingToBeInserted.begin());
+                intersection.waitingToBeInserted.erase(intersection.waitingToBeInserted.begin());
             }
         }
     }
@@ -472,42 +472,42 @@ bool updateStreets(world_t* world, const float timeDelta) {
 
 			Actor* actor = street.traffic[i];
 			const float distance = actor->current_velocity * timeDelta;
-			const float wantedDistanceToCrossing = std::max(0.0f, actor->distanceToCrossing - distance);
-			const float maxDistance = actor->distanceToCrossing + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
+			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
 			TrafficIterator start;
 			TrafficIterator end;
 
 			// Find all traffic which could be colliding with vehicle
-			trafficInDrivingDistance(street, wantedDistanceToCrossing, maxDistance, &start, &end);
+			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
 //			float maxDrivableDistance = choseLaneGetMaxDrivingDistance(street, actor, timeDelta, start, end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
 
-            float maxDrivableDistance = actor->distanceToCrossing;
-            float movement_distance = std::min(distance, actor->distanceToCrossing);
+            float maxDrivableDistance = actor->distanceToIntersection;
+            float movement_distance = std::min(distance, actor->distanceToIntersection);
 
             // Compute updated stuff
             if (frontVehicle != nullptr) {
-                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToCrossing - (frontVehicle->length
-                                                                                                 + frontVehicle->distanceToCrossing
+                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToIntersection - (frontVehicle->length
+                                                                                                 + frontVehicle->distanceToIntersection
                                                                                                  + MIN_DISTANCE_BETWEEN_VEHICLES));
-                movement_distance = std::min(distance, actor->distanceToCrossing -
+                movement_distance = std::min(distance, actor->distanceToIntersection -
                                                       (frontVehicle->length
-                                                      + frontVehicle->distanceToCrossing
+                                                      + frontVehicle->distanceToIntersection
                                                       + MIN_DISTANCE_BETWEEN_VEHICLES));
 
-                assert(frontVehicle->distanceToCrossing + frontVehicle->length <
-                       actor->distanceToCrossing - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
+                assert(frontVehicle->distanceToIntersection + frontVehicle->length <
+                       actor->distanceToIntersection - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
-            actor->distanceToCrossing -= movement_distance;
+            actor->distanceToIntersection -= movement_distance;
             actorMoved = actorMoved || movement_distance > 0.0f;
             // Clamping distance
-            if (actor->distanceToCrossing < 0.01f){actor->distanceToCrossing = 0;}
+            if (actor->distanceToIntersection < 0.01f){actor->distanceToIntersection = 0;}
 
-            // assert(std::isnan(actor->distanceToCrossing) == false && "Distance to Crossing is nan");
-            // assert(std::isinf(actor->distanceToCrossing) == false && "Distance to Crossing is inf");
-            // assert(actor->distanceToCrossing >= -10.0f && "Distance to crossing needs to be >= -10.0f");
+            // assert(std::isnan(actor->distanceToIntersection) == false && "Distance to Intersection is nan");
+            // assert(std::isinf(actor->distanceToIntersection) == false && "Distance to Intersection is inf");
+            // assert(actor->distanceToIntersection >= -10.0f && "Distance to intersection needs to be >= -10.0f");
 
             // TODO Rethink, having a maximum with velocity and velocity computed from acceleration
             actor->current_velocity = std::min(std::max(actor->current_acceleration * timeDelta + actor->current_velocity, 0.0f),
@@ -518,10 +518,10 @@ bool updateStreets(world_t* world, const float timeDelta) {
 
 
             // Only update the speed with formula if the vehicle is not at the end of the street (div by zero error)
-            // and if the distance to crossing was not updated beforehand to 0.
-            if (actor->distanceToCrossing > 0.0f && maxDrivableDistance > 0.0f) {
+            // and if the distance to intersection was not updated beforehand to 0.
+            if (actor->distanceToIntersection > 0.0f && maxDrivableDistance > 0.0f) {
 
-                // Simplifying assumption. An Actor can at maximum only "see" up to the next crossing. This is
+                // Simplifying assumption. An Actor can at maximum only "see" up to the next intersection. This is
                 // advantageous both for MPI (If it was to be added) and it doesn't require the addition of a datastructure.
                 actor->current_acceleration = (frontVehicle == nullptr) ?
                                               actor->acceleration *
@@ -548,21 +548,21 @@ bool updateStreets(world_t* world, const float timeDelta) {
 			sortStreet(start, end);
             /*
             assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
-                // Lexicographical order, starting with distanceToCrossing and then distanceToRight
-                if (a->distanceToCrossing == b->distanceToCrossing) {
+                // Lexicographical order, starting with distanceToIntersection and then distanceToRight
+                if (a->distanceToIntersection == b->distanceToIntersection) {
                     // this if statement make sure that no vehicles have the same ordering
                     if (a->distanceToRight == b->distanceToRight) {
                         //throw std::runtime_error("Two Vehicles with identical position");
-                        a < b;Crossing
+                        a < b;Intersection
                     }
                     return a->distanceToRight < b->distanceToRight;
                 }
-                return a->distanceToCrossing < b->distanceToCrossing;
+                return a->distanceToIntersection < b->distanceToIntersection;
             }) && "Street is sorted");
              */
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
             // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
-//            if (actor->distanceToCrossing <= 1.0f && actor->distanceToCrossing > 0.0f) {
+//            if (actor->distanceToIntersection <= 1.0f && actor->distanceToIntersection > 0.0f) {
 //                assert(actor->current_velocity >= 0.01f && "Acceleration needs to be >= -10.0f");
 //            }
         }
@@ -576,15 +576,15 @@ float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
 }
 
 void resolveDeadLocks(world_t* world, const float current_time) {
-    for (auto& crossing : world->crossings) {
-        for (auto& iter : crossing.inbound){
+    for (auto& intersection : world->intersections) {
+        for (auto& iter : intersection.inbound){
             if (iter->traffic.empty()){
                 continue;
             }
 
             Actor* actor = iter->traffic.front();
-            if (actor->current_velocity < 0.01f && actor->distanceToCrossing < DISTANCE_TO_CROSSING_FOR_TELEPORT) {
-                crossing.waitingToBeInserted.insert(crossing.waitingToBeInserted.begin(), actor);
+            if (actor->current_velocity < 0.01f && actor->distanceToIntersection < DISTANCE_TO_CROSSING_FOR_TELEPORT) {
+                intersection.waitingToBeInserted.insert(intersection.waitingToBeInserted.begin(), actor);
                 actor->insertAfter = current_time + 5.0f;
                 iter->traffic.erase(iter->traffic.begin());
             }
