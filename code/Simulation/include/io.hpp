@@ -104,4 +104,4 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input_wo
  *
  * @returns void
  * */
-void importSPT(SPT& carTree, SPT& bikeTree, const json& input);
+void importSPT(SPT& carTree, SPT& bikeTree, const json& input, world_t& world);
