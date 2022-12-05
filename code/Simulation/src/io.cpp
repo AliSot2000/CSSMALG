@@ -328,6 +328,7 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
         for (int j = 0; i < carTree.size; i++){
             std::cout << carTree.array[i * carTree.size + j] << " ";
         }
+        std::cout << std::endl;
     }
 
     output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
