@@ -104,7 +104,7 @@ class Simulation {
         this._time_interval = sim.peripherals.time_step; // The time interval at which to read the positions of the agents
         this._pre_simulation = sim.simulation; // The simulation that is loaded from the simulation file
         this._sim_map = sim.setup.map; // The map exported that belongs to the simulation
-        if (this._map == null) { // If there is no map
+        if (isEmpty(this._map)) { // If there is no map
             alert('No map was given, so the simulation will not be loaded'); // Alert the user
             return this;
         }
