@@ -370,7 +370,7 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     bikeTree.array = static_cast<int*>(bikeTreeVoidPtr);
 
     for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
             std::cout << carTree.array[i * carTree.size + j] << " ";
         }
     }
