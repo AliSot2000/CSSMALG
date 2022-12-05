@@ -29,11 +29,13 @@ void importMap(world_t& world, json& map) {
     world.intersections = std::vector<Intersection>(map["intersections"].size());
 
 	int32_t index = 0;
-	std::map<std::string, int32_t> intersectionIdToIndex;
+	// std::map<std::string, int32_t> intersectionIdToIndex;
 	for (const auto& [_, data] : map["intersections"].items()) {
-		intersectionIdToIndex[data["id"]] = index;
-		Intersection& intersection = world.intersections[index];
-		intersection.id = data["id"];
+		world.string_to_int[data["id"]] = index;
+        world.int_to_string[index] = data["id"];
+
+        Intersection& intersection = world.intersections[index];
+		intersection.id = index;
         if (data.contains("trafficLight")){
             intersection.hasTrafficLight = data["trafficLight"];
         }
@@ -69,11 +71,11 @@ void importMap(world_t& world, json& map) {
             }
 		}
 
-		street.start = data["intersections"]["start"]["id"];
-		street.end = data["intersections"]["end"]["id"];
+		street.start = world.string_to_int[data["intersections"]["start"]["id"]];
+		street.end = world.string_to_int[data["intersections"]["end"]["id"]];
 
-		world.intersections[intersectionIdToIndex[street.start]].outbound[street.end] = &street;
-		world.intersections[intersectionIdToIndex[street.end]].inbound.push_back(&street);
+		world.intersections[street.start].outbound[street.end] = &street;
+		world.intersections[street.end].inbound.push_back(&street);
 
 		index++;
 	}
@@ -105,8 +107,8 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
                 .id = name,
         };
 
-        std::string startIntersectionId = data["start_id"];
-        std::string endIntersectionId = data["end_id"];
+        int startIntersectionId = world.string_to_int[data["start_id"]];
+        int endIntersectionId = world.string_to_int[data["end_id"]];
 
         actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId);
 
@@ -141,8 +143,8 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
                 .id = name,
         };
 
-        std::string startIntersectionId = data["start_id"];
-        std::string endIntersectionId = data["end_id"];
+        int startIntersectionId = world.string_to_int[data["start_id"]];
+        int endIntersectionId = world.string_to_int[data["end_id"]];
 
         actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId);
 
@@ -158,7 +160,7 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
     }
 }
 
-json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap) {
+json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap) {
 	json output;
 
 	output["setup"]["map"] = originMap;
@@ -182,8 +184,8 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
         obj["deceleration"] = actor.deceleration;
         obj["acceleration_exponent"] = actor.acceleration_exp;
         obj["waiting_period"] = actor.insertAfter;
-        obj["start_crossing_id"] = actor.path.front();
-        obj["end_crossing_id"] = actor.path.back();
+        obj["start_crossing_id"] = world.int_to_string[actor.path.front()];
+        obj["end_crossing_id"] = world.int_to_string[actor.path.back()];
 	}
 
 	return output;
@@ -238,8 +240,9 @@ void addFrame(world_t& world, json& out, const bool final) {
 	}
 
 	for (auto& intersection : world.intersections) {
+        // Initial output so the simulation knows how many actors there are
 		for (const auto& actor : intersection.waitingToBeInserted) {
-			std::string first = actor->path.front();
+			int first = actor->path.front();
 			Street* street = intersection.outbound.find(first)->second;
 			if (!actor->outputFlag) {
 				a(actor, street, 0.0f, false);
@@ -247,6 +250,7 @@ void addFrame(world_t& world, json& out, const bool final) {
 			}
 		}
 
+        // Iterate through every actor which has newly arrived at his destination to print out his last frame.
 		for (const auto& pair : intersection.arrivedFrom) {
 			if (!pair.first->outputFlag) {
 				a(pair.first, pair.second, 1.0f, false);
@@ -281,32 +285,65 @@ void save(const std::string& file, const json& out) {
 	}
 }
 
-void exportSPT(const SPT& carTree, const SPT& bikeTree, const json& input, json& output){
-    output["carTree"] = carTree;
-    output["bikeTree"] = bikeTree;
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){
+    std::map<std::string, std::map<std::string, std::string>> carSPT = {};
+    std::map<std::string, std::map<std::string, std::string>> bikeSPT = {};
+
+    // Convert carTree to json map
+    // Init map
+    for (int i = 0; i < carTree.size; i++) {
+        carSPT[std::to_string(i)] = std::map<std::string, std::string> ();
+    }
+
+    #pragma omp parallel for
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
+            carSPT[std::to_string(i)][std::to_string(j)] = std::to_string(carTree.array[i * carTree.size + j]);
+        }
+    }
+
+    // Convert carTree to json map
+    // Init map
+    for (int i = 0; i < carTree.size; i++) {
+        bikeSPT[std::to_string(i)] = std::map<std::string, std::string> ();
+    }
+
+    #pragma omp parallel for
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
+            bikeSPT[std::to_string(i)][std::to_string(j)] = std::to_string(bikeTree.array[i * bikeTree.size + j]);
+        }
+    }
+
+    output["carTree"] = carSPT;
+    output["bikeTree"] = bikeSPT;
     output["world"] = input;
 }
 
-void importSPT(SPT& carTree, SPT& bikeTree, const json& input){
+void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world){
+    carTree = {
+            .array = new int[world.intersections.size() * world.intersections.size()],
+            .size = static_cast<int>(world.intersections.size()),
+            };
     // Creating empty SPT.
-    carTree = SPT();
-    bikeTree = SPT();
+    bikeTree = {
+            .array = new int[world.intersections.size() * world.intersections.size()],
+            .size = static_cast<int>(world.intersections.size()),
+    };
 
     // Importing Car Tree
     json cars = input["carTree"];
     for (const auto& [key, data] : cars.items()){
-        carTree[key] = std::map<std::string, std::string>();
         for (const auto& [keyTwo, dataTwo] : cars[key].items()){
-            carTree[key][keyTwo] = dataTwo;
+            carTree.array[std::stoi(key) * carTree.size + std::stoi(keyTwo)] = std::stoi(static_cast<std::string>(dataTwo));
         }
     }
 
     // Importing Bike Tree
     json bikes = input["bikeTree"];
     for (const auto& [key, data] : bikes.items()){
-        bikeTree[key] = std::map<std::string, std::string>();
         for (const auto& [keyTwo, dataTwo] : bikes[key].items()){
-            bikeTree[key][keyTwo] = dataTwo;
+            bikeTree.array[std::stoi(key) * bikeTree.size + std::stoi(keyTwo)] = std::stoi(static_cast<std::string>(dataTwo));
         }
     }
 }
