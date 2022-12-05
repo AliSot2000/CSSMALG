@@ -154,7 +154,7 @@ class Interface {
         let agent; // The current agent element
         for (let i = 0; i < agents.length; i++) { // Loop through the agents
             agent = agents[i]; // Get the current agent
-            a = this.generateAgent(i, agent._distance_to_end, agent._lane, agent._speed, agent._type); // Generate the agent element
+            a = this.generateAgent(i, agent._initial_percent_to_end, agent._initial_lane, agent._initial_speed, agent._type); // Generate the agent element
             agent_list.append(a); // Add the agent to the list
         }
         this._body.append(agent_list);

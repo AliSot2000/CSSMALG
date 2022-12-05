@@ -461,6 +461,7 @@ class Road {
     remove() {
         this.checkAndDissconnectFromIntersection('start'); // Check and disconnect from the start intersection
         this.checkAndDissconnectFromIntersection('end'); // Check and disconnect from the end intersection
+        console.log(this._agents)
         this._self.remove(); // Remove the road from the DOM
         this._border.remove();
         this.removeAgents(this._agents.length); // Remove all agents
@@ -651,7 +652,7 @@ class Road {
     }
 
     /**
-     * Adds a agent to the road
+     * Adds an agent to the road
      * @param {Agent} agent The agent to add
      * @returns {Road} Self Reference for chaining
      */

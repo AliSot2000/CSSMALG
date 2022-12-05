@@ -218,7 +218,13 @@ class Map {
      * @param {string} id The id of the road you would like to remove
      */
     removeRoad(id) {
-        this.getRoad(id).remove(); // Remove the road from the SVG element
+        let road = this.getRoad(id); // Get the road
+        let agents = road.getAgents(); // Get the agents on the road
+        for (let i = 0; i < agents.length; i++) { // Loop through the agents
+            let agent_id = agents[i].getId(); // Get the id of the agent
+            this.removeAgent(agent_id); // Remove the agent
+        }
+        road.remove(); // Remove the road from the SVG element
         delete this._roads[id]; // Remove the road from the roads object
     }
 
