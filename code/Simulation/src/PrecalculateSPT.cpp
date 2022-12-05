@@ -38,13 +38,13 @@ int main(int argc, char* argv[]) {
     stopMeasureTime(time);
 
     time = startMeasureTime("calculating shortest path tree with floyd warshall");
-    SPT carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
-    SPT bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
+    spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
+    spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
     stopMeasureTime(time);
 
     time = startMeasureTime("Exporting to file");
     nlohmann::json spts;
-    exportSPT(carsSPT, bikeSPT, import, spts);
+    exportSPT(carsSPT, bikeSPT, import, spts, world);
     save(outputFile, spts);
     stopMeasureTime(time);
 }
