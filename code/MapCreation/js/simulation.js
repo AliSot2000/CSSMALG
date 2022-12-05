@@ -261,12 +261,10 @@ class Simulation {
             }
 
             let intersection_new_step = {same: {}, changed: {}}; // The new step that will be added to the simulation
+            let intersection_step = this._pre_simulation[step_num].intersections; // The current step
+            let intersection_empty_step = isEmpty(intersection_step); // If the step is empty
             for (let id in this._intersections) { // For each intersection
-                let intersection_step = this._pre_simulation[step_num].intersections; // The current step
-                if (isEmpty(intersection_step)) {
-                    continue;
-                }
-                if (id in intersection_step) { // If the intersection is in the pre-simulation
+                if (!intersection_empty_step && id in intersection_step) { // If the intersection is in the pre-simulation
                     intersection_new_step.changed[id] = {
                         green: sanitiseRoadIds(intersection_step[id].green),
                         red: sanitiseRoadIds(intersection_step[id].red)
