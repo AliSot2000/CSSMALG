@@ -84,8 +84,11 @@ int main(int argc, char* argv[]) {
 
 	stopMeasureTime(start);
 
-
-	nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+    if (hasPrecompute(import)){
+	    nlohmann::json output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
+    } else {
+        nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+    }
 
     for (intersection_t& iter : world.intersections){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
@@ -110,6 +113,7 @@ int main(int argc, char* argv[]) {
 		lastDeadLock = updateStreets(&world, deltaTime) ? maxTime : lastDeadLock;
 		maxTime -= deltaTime;
 
+        // Status message about the simulation and if there are deadlocks
         if (lastDeadLock - maxTime > 10.0f){
             if (lastDeadLock - maxTime > 20.0f){
                 std::cerr << "Persistent detected at " << runtime - lastDeadLock << " seconds" << std::endl;
@@ -117,6 +121,7 @@ int main(int argc, char* argv[]) {
             resolveDeadLocks(&world, maxTime);
         }
 
+        // Status messsage to tell me how far the simulation  has come along
         if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
