@@ -6,6 +6,7 @@
 #include "io.hpp"
 #include "actors.hpp"
 #include "routing.hpp"
+#include <omp.h>
 
 
 bool loadFile(const std::string& file, json& input) {
