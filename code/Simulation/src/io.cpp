@@ -324,6 +324,12 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
     void* bikePtr =  bikeTree.array;
     unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
 
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; i < carTree.size; i++){
+            std::cout << carTree.array[i * carTree.size + j] << " ";
+        }
+    }
+
     output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
     output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
     output["world"] = input;
@@ -361,6 +367,12 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
 
     carTree.array = static_cast<int*>(carTreeVoidPtr);
     bikeTree.array = static_cast<int*>(bikeTreeVoidPtr);
+
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; i < carTree.size; i++){
+            std::cout << carTree.array[i * carTree.size + j] << " ";
+        }
+    }
 
     /*
     // Importing Car Tree
