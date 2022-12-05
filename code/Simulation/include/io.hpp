@@ -58,7 +58,7 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT);
  *
  * @returns json marshalling.
  */
-json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap);
+json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap);
 
 /*
  * Adds a frame to the output json.
@@ -93,7 +93,7 @@ void save(const std::string& file, const nlohmann::json& out);
  *
  * @returns void
 */
-void exportSPT(const SPT& carTree, const SPT& bikeTree, const json& input_world, json& output);
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input_world, json& output, world_t& world);
 
 /*
  * Imports the Shortest Path Trees from a json object.
