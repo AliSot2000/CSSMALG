@@ -84,7 +84,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
     for (int start = 0; start < size; start++){
         for (int end = 0; end < size; end++) {
             *(distance + start * size + end) = (start != end) * 1e30; // Initializing the default distance between nodes
-            *(neighbour + start * size + end) = (start == end) * start + (start != end) * -1; // Initializing the default neighbour TODO MIGHT BE WRONG VALUE
+            *(neighbour + start * size + end) = (start == end) * start + (start != end) * -1; // Initializing the default neighbour
         }
     }
 
