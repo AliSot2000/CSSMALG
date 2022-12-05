@@ -168,7 +168,7 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
 	output["setup"]["map"] = originMap;
 
 	output["peripherals"] = {};
-	output["peripherals"]["date"] = "Ich weiss doch ned wie mer date in c++ bechunt?";
+	output["peripherals"]["date"] = "Ich weiss doch ned wie mer date in c++ bechunt?"; // TODO Figure this out
 	output["peripherals"]["type"] = "simulation";
 	output["peripherals"]["elapsed_time"] = time;
 	output["peripherals"]["time_step"] = timeDelta;
