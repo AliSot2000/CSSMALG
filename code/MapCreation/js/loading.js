@@ -50,7 +50,7 @@ class Loading {
      * @returns {Loading} Self Reference for chaining
      */
     hide() {
-        this._self.css('display', 'none');
+        this._self.css('display', 'none'); // Hide the loading screen
         return this;
     }
 
