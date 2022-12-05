@@ -26,7 +26,7 @@ int randint(int min, int max);
     @returns void, Everything over passed by reference.
 
 */
-void choseRandomPath(const world_t& world, SPT& spt, std::string& start, std::string& end);
+void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end);
 /*
     Function populates the actors of the world.
 

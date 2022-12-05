@@ -15,37 +15,18 @@ int randint(int min, int max) {
     return std::rand() % (max - min + 1) + min;
 }
 
-void choseRandomPath(const world_t& world, SPT& spt, std::string& start, std::string& end) {
+void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
     if (world.intersections.size() == 0) {
         std::cerr << "There are no intersections." << std::endl;
         return;
     }
-    int len = (int)world.intersections.size() - 1;
-    SPT::iterator startIter = spt.begin();
-    std::advance(startIter, randint(0, len));
-    int noFinityLoop = 0;
-    while (startIter->second.size() < 2 && noFinityLoop <= world.intersections.size()) {
-        startIter = spt.begin();
-        std::advance(startIter, randint(0, len));
-        noFinityLoop++;
+    start = randint(0, world.intersections.size() - 1);
+    end = start;
+    int antiInfinitLoop = 0;
+    while (end == start && antiInfinitLoop < 100) {
+        end = randint(0, world.intersections.size() - 1);
+        ++antiInfinitLoop;
     }
-
-    if (noFinityLoop > world.intersections.size()) {
-        std::cerr << "There exists no paths. Meaning one can only go from a intersection to the intersection itself." << std::endl;
-        return;
-    }
-
-    auto endIter = startIter->second.begin();
-    std::advance(endIter, randint(0, (int)startIter->second.size() - 1));
-
-    if (endIter->first == startIter->first) {
-        endIter = startIter->second.begin();
-        if (endIter->first == startIter->first)
-            endIter = std::next(endIter);
-    }
-
-    start = startIter->first;
-    end = endIter->first;
 }
 
 void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
@@ -63,8 +44,8 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
         };
 
 
-        std::string start_id;
-        std::string end_id;
+        int start_id;
+        int end_id;
         choseRandomPath(world, spt, start_id, end_id);
         actor.path = retrievePath(spt, start_id, end_id);
 
