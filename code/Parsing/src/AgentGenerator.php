@@ -62,8 +62,8 @@ class AgentGenerator
                 for ($j = 0; $j < $amountPerMinute; $j++) {
                     // pseudo random length in m
                     $length = rand(7, 10) / 2;
-                    // pseudo random max velocity in m/s
-                    $maxVelocity = rand(40, 70);
+                    // pseudo random max velocity in km/h
+                    $maxVelocity = rand(100, 250);
                     // pseudo random acceleration in m/s^2
                     $acceleration = rand(150, 500) / 100;
                     // pseudo random deceleration in m/s^2
