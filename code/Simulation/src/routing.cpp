@@ -102,16 +102,16 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
         }
     }
 
-    /*
+
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
             std::cout << *(neighbour + i * size + j) << " ";
         }
         std::cout << std::endl;
     }
-    */
+
     FloydWarshal(distance, neighbour, size);
-    /*
+
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
             std::cout << *(distance + i * size + j) << " ";
@@ -125,7 +125,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
         }
         std::cout << std::endl;
     }
-    */
+
     std::cout << "Done with Floyd-Warshal - converting to map" << std::endl;
     SPT res = SPT {};
 
