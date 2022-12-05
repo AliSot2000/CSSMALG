@@ -325,7 +325,7 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
     unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
 
     for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
             std::cout << carTree.array[i * carTree.size + j] << " ";
         }
         std::cout << std::endl;
