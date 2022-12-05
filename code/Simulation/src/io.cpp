@@ -7,6 +7,7 @@
 #include "actors.hpp"
 #include "routing.hpp"
 #include <omp.h>
+#include "base64.hpp"
 
 
 bool loadFile(const std::string& file, json& input) {
@@ -287,6 +288,7 @@ void save(const std::string& file, const json& out) {
 }
 
 void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){
+    /*
     std::map<std::string, std::map<std::string, std::string>> carSPT = {};
     std::map<std::string, std::map<std::string, std::string>> bikeSPT = {};
 
@@ -315,23 +317,49 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
             bikeSPT[std::to_string(i)][std::to_string(j)] = std::to_string(bikeTree.array[i * bikeTree.size + j]);
         }
     }
+    */
 
-    output["carTree"] = carSPT;
-    output["bikeTree"] = bikeSPT;
+    void* carTreePtr =  carTree.array;
+    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
+    void* bikePtr =  bikeTree.array;
+    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
+
+    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
+    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
     output["world"] = input;
 }
 
 void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world){
     carTree = {
-            .array = new int[world.intersections.size() * world.intersections.size()],
+            .array = nullptr,
             .size = static_cast<int>(world.intersections.size()),
             };
     // Creating empty SPT.
     bikeTree = {
-            .array = new int[world.intersections.size() * world.intersections.size()],
+            .array = nullptr,
             .size = static_cast<int>(world.intersections.size()),
     };
 
+    // Get the String
+    std::string carTreeB64 = input["carTree"];
+    std::string bikeTreeB64 = input["bikeTree"];
+
+    // Convert to std::vector<unsigned char>
+    std::vector<BYTE> carTreeBytes = base64_decode(carTreeB64);
+    std::vector<BYTE> bikeTreeBytes = base64_decode(bikeTreeB64);
+
+    // Allocate Memory for copying
+    BYTE* carTreePtr = new BYTE[carTree.size() * carTree.size];
+    BYTE* bikeTreePtr = new BYTE[bikeTree.size() * bikeTree.size];
+
+    // Copy to allocated Memory
+    std::copy(carTreeBytes.begin(), carTreeBytes.end(), carTreePtr);
+    std::copy(bikeTreeBytes.begin(), bikeTreeBytes.end(), bikeTreePtr);
+
+    carTree.array = static_cast<int*>(carTreePtr);
+    bikeTree.array = static_cast<int*>(bikeTreePtr);
+
+    /*
     // Importing Car Tree
     json cars = input["carTree"];
     for (const auto& [key, data] : cars.items()){
@@ -347,4 +375,5 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
             bikeTree.array[std::stoi(key) * bikeTree.size + std::stoi(keyTwo)] = std::stoi(static_cast<std::string>(dataTwo));
         }
     }
+     */
 }
