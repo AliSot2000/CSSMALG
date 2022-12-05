@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-typedef std::queue<std::string> Path;
+typedef std::queue<int> Path;
 
 enum ActorTypes {
 	Bike,
@@ -50,8 +50,8 @@ enum StreetTypes {
 };
 
 typedef struct Street {
-	std::string start = "";
-	std::string end = "";
+	int start = -1;
+	int end = -1;
 
 	struct Street* opposite = nullptr;
 	StreetTypes type = StreetTypes::Both;
@@ -69,9 +69,9 @@ typedef struct Street {
 } street_t;
 
 typedef struct Intersection {
-	std::string id;
+	int id;
 	std::vector<Street*> inbound;
-	std::map<std::string, Street*> outbound;
+	std::map<int, Street*> outbound;
 	float greenPhaseDuration = 5.0f;
 	float currentPhase = 5.0f;
 	int32_t green = 0;
@@ -86,4 +86,6 @@ typedef struct World {
 	std::vector<Intersection> intersections;
 	std::vector<Street> streets;
 	std::vector<Actor> actors;
+    std::map<std::string, int> string_to_int;
+    std::map<int, std::string> int_to_string;
 } world_t;
