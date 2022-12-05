@@ -48,14 +48,10 @@
 	}
 */
 
-typedef std::map<std::string, std::map<std::string, std::string>> SPT;
-
-typedef struct LookUp {
-    std::map<std::string, int> string_to_int;
-    std::map<int, std::string> int_to_string;
-} lookup_t;
-
-lookup_t BuildLookup(const world_t* world);
+typedef struct SPT{
+    int* array;
+    int size;
+} spt_t;
 
 /*
  * Calculates the shortest path tree for the given world.
@@ -65,7 +61,7 @@ lookup_t BuildLookup(const world_t* world);
  *
  * @return The shortest path tree.
  */
-SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include);
+spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include);
 
 /*
  * Retrieves the path from start to end.
@@ -76,4 +72,4 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
  *
  * @return The path from start to end.
  */
-Path retrievePath(SPT& spt, const std::string &start, const std::string &end);
+Path retrievePath(spt_t& spt, const int &start, const int &end);
