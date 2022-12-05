@@ -239,6 +239,10 @@ class Intersection {
         return this._self;
     }
 
+    /**
+     * Gets the border of an intersection
+     * @returns {jQuery} The jQuery object of the border
+     */
     getBorder() {
         return this._border;
     }
@@ -635,25 +639,40 @@ class Intersection {
         return false;
     }
 
+    /**
+     * Gets an array of all connected roads
+     * @returns {Array.<String>} An array of all the connected roads ids
+     */
     getConnectedRoads() {
-        let roads = [];
-        for (let direction in this._snap_points) {
-            if (this._snap_points[direction].connected) {
-                roads.push(this._snap_points[direction].road.getId());
+        let roads = []; // Create an empty array
+        for (let direction in this._snap_points) { // Loop through the snap points
+            if (this._snap_points[direction].connected) { // Check if the snap point is connected
+                roads.push(this._snap_points[direction].road.getId()); // Add the road id to the array
             }
         }
         return roads;
     }
 
+    /**
+     * Gets the direction a road is connected to the intersection
+     * @param {String} road_id The id of the road
+     * @returns {String|null} The direction the road is connected to the intersection, or null if the road is not connected
+     */
     getDirectionOfRoad(road_id) {
-        for (let direction in this._snap_points) {
-            if (this._snap_points[direction].connected && this._snap_points[direction].road.getId() === road_id) {
-                return direction;
+        for (let direction in this._snap_points) { // Loop through the snap points
+            if (this._snap_points[direction].connected && this._snap_points[direction].road.getId() === road_id) { // Check if the snap point is connected and the road id is the same
+                return direction; // Return the direction
             }
         }
         return null;
     }
 
+    /**
+     * Set the color of a traffic light in a given direction
+     * @param {String} direction The direction of the traffic light
+     * @param {String} value The color of the traffic light
+     * @returns {Intersection} Self Reference for chaining
+     */
     setTrafficLightInDirection(direction, value) {
         if (this._traffic_controllers[direction].type === 'traffic_light') {
             let light = this._traffic_controllers[direction].element;
@@ -662,19 +681,24 @@ class Intersection {
         return this;
     }
 
+    /**
+     * Updates the traffic lights depending on the simulation step provided
+     * @param {Object} step The simulation step
+     * @returns {Intersection} Self Reference for chaining
+     */
     setTrafficLights(step) {
-        if (!isEmpty(step.green)) {
-            for (let i = 0; i < step.green.length; i++) {
-                let road_id = step.green[i];
-                let direction = this.getDirectionOfRoad(road_id);
-                this.setTrafficLightInDirection(direction, 'green_light');
+        if (!isEmpty(step.green)) { // Check if the step has a green property
+            for (let i = 0; i < step.green.length; i++) { // Loop through the green traffic lights
+                let road_id = step.green[i]; // Get the road id
+                let direction = this.getDirectionOfRoad(road_id); // Get the direction of the road
+                this.setTrafficLightInDirection(direction, 'green_light'); // Set the traffic light to green
             }
         }
-        if (!isEmpty(step.red)) {
-            for (let i = 0; i < step.red.length; i++) {
-                let road_id = step.red[i];
-                let direction = this.getDirectionOfRoad(road_id);
-                this.setTrafficLightInDirection(direction, 'red_light');
+        if (!isEmpty(step.red)) { // Check if the step has a red property
+            for (let i = 0; i < step.red.length; i++) { // Loop through the red traffic lights
+                let road_id = step.red[i]; // Get the road id
+                let direction = this.getDirectionOfRoad(road_id); // Get the direction of the road
+                this.setTrafficLightInDirection(direction, 'red_light'); // Set the traffic light to red
             }
         }
         return this;

@@ -27,10 +27,6 @@ class Agent {
     _initial_percent_to_end = 0; // Initial percent to the end of the road
 
     _current_road = null; // Current Road the agent is on
-    _current_road_id = ''; // Current Road ID
-    _current_position = null; // Current Position of the agent
-    _current_flip = false; // Current Facing direction of the agent
-    _current_road_width = 0; // Current Road Width
     _time_interval = 1000; // Time interval between two steps
 
     /**
