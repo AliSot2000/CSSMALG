@@ -21,7 +21,7 @@ find_package(OpenMP REQUIRED)
 
 # Add source to this project's executable.
 add_executable (CSSMALG "src/main.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp" "src/fastFW.cu" "src/base64.cpp")
-add_executable (PrecalcSPT "src/PrecalculateSPT.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp" "src/fastFW.cu",  "src/base64.cpp")
+add_executable (PrecalcSPT "src/PrecalculateSPT.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp" "src/fastFW.cu"  "src/base64.cpp")
 
 target_link_libraries(CSSMALG PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(PrecalcSPT PRIVATE nlohmann_json::nlohmann_json)
