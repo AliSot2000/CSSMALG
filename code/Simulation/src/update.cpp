@@ -383,8 +383,9 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
 bool updateStreets(world_t* world, const float timeDelta) {
     bool actorMoved = false;
     bool empty = true;
-    #pragma omp parallel for
-	for (auto& street : world->streets) {
+
+    #pragma omp parallel for private(empty, actorMoved)
+    for (auto& street : world->streets) {
         empty = empty && street.traffic.empty();
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
