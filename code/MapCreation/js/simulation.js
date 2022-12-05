@@ -124,14 +124,19 @@ class Simulation {
         this._intersections = this._map.getIntersections(); // Get the intersections from the map
 
         this._map._loading.setSubHeader('Precalculating Simulation'); // Set the sub header of the loading screen
-        this.precalculateSimulation() // Precalculate the simulation
+        setTimeout(() => { // Wait for the map to load
+            this.precalculateSimulation() // Precalculate the simulation
 
-        this._slider.attr('max', this._agent_simulation.length); // Set the maximum value of the slider
-        this._slider.val(0); // Set the value of the slider to 0
+            this._slider.attr('max', this._agent_simulation.length); // Set the maximum value of the slider
+            this._slider.val(0); // Set the value of the slider to 0
 
-        this._step = 0; // Set the step to 0
-        this.jumpToStep(0); // Jump to step 0
-        this._map._loading.setSubHeader('Simulation Ready').setPercent(100).hide(); // Hide the loading screen
+            this._step = 0; // Set the step to 0
+            this.jumpToStep(0); // Jump to step 0
+            this._map._loading.setSubHeader('Simulation Ready').setPercent(100);
+            setTimeout(() => {
+                this._map._loading.hide(); // Hide the loading screen
+            }, 100);
+        }, 100);
 
         return this;
     }
