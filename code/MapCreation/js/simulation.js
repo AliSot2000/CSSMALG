@@ -108,6 +108,11 @@ class Simulation {
         return this;
     }
 
+
+    /**
+     * Sets up the simulation. This includes the loading of the map, the creation of the agents and the precalculation of the simulation
+     * @returns {Simulation} Self Reference for chaining
+     */
     setupSimulation() {
         this._map.clear(); // Clear the map
         this._map.load(this._sim_map, false); // Load the map

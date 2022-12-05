@@ -326,7 +326,7 @@ class Interface {
     }
 
     /**
-     * Adds a agent to the edit road screen
+     * Adds an agent to the edit road screen
      * @returns {Interface} Self reference for chaining
      */
     addAgent() {
