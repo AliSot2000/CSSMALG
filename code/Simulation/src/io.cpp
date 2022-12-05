@@ -349,15 +349,18 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     std::vector<BYTE> bikeTreeBytes = base64_decode(bikeTreeB64);
 
     // Allocate Memory for copying
-    BYTE* carTreePtr = new BYTE[carTree.size() * carTree.size];
-    BYTE* bikeTreePtr = new BYTE[bikeTree.size() * bikeTree.size];
+    BYTE* carTreePtr = new BYTE[carTree.size * carTree.size * sizeof(int) * sizeof(int)];
+    BYTE* bikeTreePtr = new BYTE[bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int)];
 
     // Copy to allocated Memory
     std::copy(carTreeBytes.begin(), carTreeBytes.end(), carTreePtr);
     std::copy(bikeTreeBytes.begin(), bikeTreeBytes.end(), bikeTreePtr);
 
-    carTree.array = static_cast<int*>(carTreePtr);
-    bikeTree.array = static_cast<int*>(bikeTreePtr);
+    void* carTreeVoidPtr = static_cast<void*>(carTreePtr);
+    void* bikeTreeVoidPtr = static_cast<void*>(bikeTreePtr);
+
+    carTree.array = static_cast<int*>(carTreeVoidPtr);
+    bikeTree.array = static_cast<int*>(bikeTreeVoidPtr);
 
     /*
     // Importing Car Tree
