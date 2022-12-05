@@ -56,7 +56,7 @@ void FloydWarshal(double* dis, int* next, int V){
 
     for (int k = 0; k < V; k++)
     {
-        std::cout << "k: " << k << std::endl;
+        std::cout << "k: " << (k + 1) << " of " << V <<  std::endl;
         GPUInnerLoops<<<dim3(2,1,1),dim3(1024,1,1)>>>(distance,neighbour,k,V);
         cudaDeviceSynchronize();
     }

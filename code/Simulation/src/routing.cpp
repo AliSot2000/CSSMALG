@@ -124,6 +124,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
         std::cout << std::endl;
     }
     */
+    std::cout << "Done with Floyd-Warshal - converting to map" << std::endl;
     SPT res = SPT {};
 
     for (int i = 0; i < size; i++){
@@ -133,6 +134,7 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
             res[lu.int_to_string[i]][lu.int_to_string[j]] = lu.int_to_string[*(neighbour + i * size + j)];
         }
     }
+    std::cout << "Map done" << std::endl;
 
     return res;
 
