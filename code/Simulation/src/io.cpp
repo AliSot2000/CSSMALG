@@ -29,8 +29,8 @@ void importMap(world_t& world, json& map) {
     world.intersections = std::vector<Intersection>(map["intersections"].size());
 
 	int32_t index = 0;
-	// std::map<std::string, int32_t> intersectionIdToIndex;
 	for (const auto& [_, data] : map["intersections"].items()) {
+        // Filling look up tables
 		world.string_to_int[data["id"]] = index;
         world.int_to_string[index] = data["id"];
 
