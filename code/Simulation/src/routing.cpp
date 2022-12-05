@@ -72,13 +72,13 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include){
     // Allocating Memory for the distance and optimal neighbour
     spt_t sopatree = {
-            .array = nullptr,
+            .array = new int[world->intersections.size() * world->intersections.size()],
             .size = static_cast<int>(world->intersections.size()),
     };
 
     int size = sopatree.size;
     double *distance = (double*)malloc(size * size * sizeof(double));
-    int *neighbour = (int*)malloc(size * size * sizeof(int));
+    int *neighbour = sopatree.array;
 
     // Initialize the distance and neighbour arrays
     for (int start = 0; start < size; start++){
@@ -106,18 +106,18 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         std::cout << std::endl;
     }
 
-    for (int i = 0; i < size; i++){
-        for (int j = 0; j < size; j++){
-            std::cout << neighbour[i * size + j] << " ";
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
         }
         std::cout << std::endl;
     }
 
     FloydWarshal(distance, neighbour, size);
 
-    for (int i = 0; i < size; i++){
-        for (int j = 0; j < size; j++){
-            std::cout << neighbour[i * size + j] << " ";
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
         }
         std::cout << std::endl;
     }
@@ -130,7 +130,7 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         std::cout << std::endl;
     }
 
-    sopatree.array = neighbour;
+
     return sopatree;
 
 }
