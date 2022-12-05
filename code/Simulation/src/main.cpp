@@ -84,10 +84,11 @@ int main(int argc, char* argv[]) {
 
 	stopMeasureTime(start);
 
+    nlohmann::json output;
     if (hasPrecompute(import)){
-	    nlohmann::json output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
+	    output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
     } else {
-        nlohmann::json output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+        output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
     }
 
     for (intersection_t& iter : world.intersections){
