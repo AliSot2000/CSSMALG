@@ -37,12 +37,15 @@ int main(int argc, char* argv[]) {
     importMap(world, import);
     stopMeasureTime(time);
 
-    startMeasureTime("calculating shortest path tree with floyd warshall");
+    time = startMeasureTime("calculating shortest path tree with floyd warshall");
     SPT carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
     SPT bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
+    stopMeasureTime(time);
 
+    time = startMeasureTime("Exporting to file");
     nlohmann::json spts;
     exportSPT(carsSPT, bikeSPT, import, spts);
     save(outputFile, spts);
+    stopMeasureTime(time);
 }
 
