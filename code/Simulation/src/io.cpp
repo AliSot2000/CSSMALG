@@ -288,37 +288,6 @@ void save(const std::string& file, const json& out) {
 }
 
 void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){
-    /*
-    std::map<std::string, std::map<std::string, std::string>> carSPT = {};
-    std::map<std::string, std::map<std::string, std::string>> bikeSPT = {};
-
-    // Convert carTree to json map
-    // Init map
-    for (int i = 0; i < carTree.size; i++) {
-        carSPT[std::to_string(i)] = std::map<std::string, std::string> ();
-    }
-
-    #pragma omp parallel for
-    for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; j < carTree.size; j++){
-            carSPT[std::to_string(i)][std::to_string(j)] = std::to_string(carTree.array[i * carTree.size + j]);
-        }
-    }
-
-    // Convert carTree to json map
-    // Init map
-    for (int i = 0; i < carTree.size; i++) {
-        bikeSPT[std::to_string(i)] = std::map<std::string, std::string> ();
-    }
-
-    #pragma omp parallel for
-    for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; j < carTree.size; j++){
-            bikeSPT[std::to_string(i)][std::to_string(j)] = std::to_string(bikeTree.array[i * bikeTree.size + j]);
-        }
-    }
-    */
-
     void* carTreePtr =  carTree.array;
     unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
     void* bikePtr =  bikeTree.array;
@@ -375,22 +344,4 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
         }
         std::cout << std::endl;
     }
-
-    /*
-    // Importing Car Tree
-    json cars = input["carTree"];
-    for (const auto& [key, data] : cars.items()){
-        for (const auto& [keyTwo, dataTwo] : cars[key].items()){
-            carTree.array[std::stoi(key) * carTree.size + std::stoi(keyTwo)] = std::stoi(static_cast<std::string>(dataTwo));
-        }
-    }
-
-    // Importing Bike Tree
-    json bikes = input["bikeTree"];
-    for (const auto& [key, data] : bikes.items()){
-        for (const auto& [keyTwo, dataTwo] : bikes[key].items()){
-            bikeTree.array[std::stoi(key) * bikeTree.size + std::stoi(keyTwo)] = std::stoi(static_cast<std::string>(dataTwo));
-        }
-    }
-     */
 }
