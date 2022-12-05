@@ -3,3 +3,5 @@
 
 - [nlohmann::json](https://github.com/nlohmann/json) at git@github.com:nlohmann/json.git
 
+- [base64](git@github.com:ReneNyffenegger/cpp-base64.git) at git@github.com:ReneNyffenegger/cpp-base64.git (Currently not needed)
+
