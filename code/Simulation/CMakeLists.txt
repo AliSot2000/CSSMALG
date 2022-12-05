@@ -12,7 +12,6 @@ project ("CSSMALG" LANGUAGES CXX CUDA)
 include_directories("include")
 
 add_subdirectory(third_party/json)
-# include_directories(third_party/cpp-base64)
 
 find_package(CUDAToolkit REQUIRED)
 set(CMAKE_CUDA_ARCHITECTURES 75)
