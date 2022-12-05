@@ -1,9 +1,10 @@
-
 #include "routing.hpp"
 
 #include <iostream>
 #include <algorithm>
 
+#include "fastFW.cuh"
+#define USE_CUDA
 
 lookup_t BuildLookup(const world_t* world){
     LookUp result{};
@@ -23,6 +24,7 @@ lookup_t BuildLookup(const world_t* world){
 // identical turning sets.
 
 // Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
+#ifndef USE_CUDA
 SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include) {
 	const size_t n = world->intersections.size();
 
@@ -67,32 +69,77 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
 
 	return spt;
 }
+#else
 
-/*
 SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include){
     LookUp lu = BuildLookup(world);
 
     // Allocating Memory for the distance and optimal neighbour
-    void *Udistance;
-    void *UNeighbour;
     int size = lu.string_to_int.size();
 
-    cudaMallocManaged(&Udistance, size*size*sizeof(double));
-    cudaMallocManaged(&UNeighbour, size*size*sizeof(int));
+    double *distance = (double*)malloc(size * size * sizeof(double));
+    int *neighbour = (int*)malloc(size * size * sizeof(int));
 
-    double *distance = static_cast<double*>(Udistance);
-    int *neighbour = static_cast<int*>(UNeighbour);
-
+    // Initialize the distance and neighbour arrays
     for (int start = 0; start < size; start++){
         for (int end = 0; end < size; end++) {
-            *(distance + start * size + end) = 10e30; // Initializing the
+            *(distance + start * size + end) = (start != end) * 1e30; // Initializing the default distance between nodes
+            *(neighbour + start * size + end) = (start == end) * start + (start != end) * -1; // Initializing the default neighbour TODO MIGHT BE WRONG VALUE
         }
     }
+
+    // Add Distance of Streets to the distance array
+    for (const auto& street : world->streets) {
+        if (std::find(include.begin(), include.end(), street.type) != include.end()) {
+            int start = lu.string_to_int[street.start];
+            int end = lu.string_to_int[street.end];
+            // Take the shortest street in case there are multiple (for what ever reason there should be multiple
+            *(distance + start * size + end) = std::min(static_cast<double>(street.length), *(distance + start * size + end));
+            // spt[street.start][street.end] = street.end;
+            *(neighbour + start * size + end) = end;
+        }
+    }
+
+    /*
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            std::cout << *(neighbour + i * size + j) << " ";
+        }
+        std::cout << std::endl;
+    }
+    */
+    FloydWarshal(distance, neighbour, size);
+    /*
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            std::cout << *(distance + i * size + j) << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            std::cout << *(neighbour + i * size + j) << " ";
+        }
+        std::cout << std::endl;
+    }
+    */
     SPT res = SPT {};
+
+    for (int i = 0; i < size; i++){
+        res[lu.int_to_string[i]] = std::map<std::string, std::string> ();
+
+        for (int j = 0; j < size; j++){
+            res[lu.int_to_string[i]][lu.int_to_string[j]] = lu.int_to_string[*(neighbour + i * size + j)];
+        }
+    }
+
     return res;
 
 }
-*/
+
+#endif
+
 Path retrievePath(SPT& spt, const std::string &start, const std::string &end) {
 	if (!spt[start].contains(end)) {
 		return Path();
