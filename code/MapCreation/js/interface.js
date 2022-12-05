@@ -224,22 +224,22 @@ class Interface {
         let intersection = this._map.getIntersection(intersection_id);
         let directions = ['North', 'East', 'South', 'West'];
 
-        /*let selector = '<div class="input">Flow <select>';
+        let selector = '<div class="input">Flow <select>';
         selector += '<option value="right_of_way">Right of Way</option>'
         selector += '<option value="traffic_light">Traffic Light</option>';
-        selector += '<option value="roundabout">Roundabout</option>';
-        selector += '<option value="stop_sign">Stop Sign</option>';
-        selector += '<option value="yield_sign">Yield Sign</option>';
-        selector += '</select></div>';*/
+        // selector += '<option value="roundabout">Roundabout</option>';
+        // selector += '<option value="stop_sign">Stop Sign</option>';
+        // selector += '<option value="yield_sign">Yield Sign</option>';
+        selector += '</select></div>';
 
         for (let i = 0; i < directions.length; i++) {
             let direction = directions[i]
             this._body.append('<h2>' + direction + '</h2>');
             direction = direction.toLowerCase();
-            /*let select = $(selector);
+            let select = $(selector);
             select.find('select').attr('name', direction + '_type');
             select.find('option[value="' + intersection.getTrafficControllerInDirection(direction) + '"]').attr('selected', 'selected');
-            this._body.append(select);*/
+            this._body.append(select);
             if (intersection.isConnected(direction)) {
                 let road_id = intersection.getRoadInDirection(direction).getId();
                 this._body.append($('<button class="interface_button">' + road_id + '</button>').data('command', 'editRoad'));
@@ -513,7 +513,6 @@ class Interface {
             }
         }
 
-        /*
         let directions = ['north', 'east', 'south', 'west']; // The directions
         for (let i = 0; i < directions.length; i++) { // For each direction
             let direction = directions[i]; // Get the direction
@@ -521,9 +520,8 @@ class Interface {
             intersection.setTrafficControllerInDirection(direction, traffic_control_type); // Set the traffic controller in the direction
         }
 
-        let isRoundAbout = this._body.find('input[name="roundabout"]').is(':checked'); // If the intersection is a roundabout
-        intersection.setRoundAbout(isRoundAbout); // Set the roundabout
-        */
+        // let isRoundAbout = this._body.find('input[name="roundabout"]').is(':checked'); // If the intersection is a roundabout
+        // intersection.setRoundAbout(isRoundAbout); // Set the roundabout
 
         return this;
     }
