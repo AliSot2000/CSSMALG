@@ -124,7 +124,6 @@ void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
         world.actors.at(index) = actor;
         index++;
     }
-
     for (const auto& [name, data] : agents["cars"].items()) {
         Actor actor = {
                 .type = ActorTypes::Car,
