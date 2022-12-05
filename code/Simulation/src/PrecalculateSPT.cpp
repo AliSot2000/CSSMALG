@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
     time = startMeasureTime("Exporting to file");
     nlohmann::json spts;
-    exportSPT(carsSPT, bikeSPT, import, spts, world);
+    exportSPT(carsSPT, bikeSPT, import, spts);
     save(outputFile, spts);
     stopMeasureTime(time);
 }
