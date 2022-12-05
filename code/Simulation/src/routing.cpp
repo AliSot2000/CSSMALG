@@ -3,6 +3,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include <omp.h>
+
 #include "fastFW.cuh"
 #define USE_CUDA
 
@@ -127,9 +129,12 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
     std::cout << "Done with Floyd-Warshal - converting to map" << std::endl;
     SPT res = SPT {};
 
-    for (int i = 0; i < size; i++){
+    for (int i = 0; i < size; i++) {
         res[lu.int_to_string[i]] = std::map<std::string, std::string> ();
-
+    }
+    
+    #pragma omp parallel for
+    for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
             res[lu.int_to_string[i]][lu.int_to_string[j]] = lu.int_to_string[*(neighbour + i * size + j)];
         }
