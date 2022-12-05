@@ -99,13 +99,6 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         }
     }
 
-    for (int i = 0; i < sopatree.size; i++){
-        for (int j = 0; j < sopatree.size; j++){
-            std::cout << sopatree.array[i * sopatree.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
-
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
             std::cout << distance[i * size + j] << " ";
@@ -113,13 +106,26 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         std::cout << std::endl;
     }
 
-
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
 
     FloydWarshal(distance, neighbour, size);
 
     for (int i = 0; i < sopatree.size; i++){
         for (int j = 0; j < sopatree.size; j++){
             std::cout << sopatree.array[i * sopatree.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            std::cout << distance[i * size + j] << " ";
         }
         std::cout << std::endl;
     }
