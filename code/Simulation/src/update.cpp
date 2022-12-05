@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "update.hpp"
+#include <omp.h>
 
 void trafficInDrivingDistance(Street& street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
 
@@ -300,7 +301,8 @@ void updateIntersectionPhase(intersection_t& intersection, float timeDelta, bool
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time) {
-	for (auto& intersection : world->intersections) {
+    #pragma omp parallel for
+    for (auto& intersection : world->intersections) {
 		if (intersection.inbound.size() == 0)
 			continue;
 
@@ -381,6 +383,7 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
 bool updateStreets(world_t* world, const float timeDelta) {
     bool actorMoved = false;
     bool empty = true;
+    #pragma omp parallel for
 	for (auto& street : world->streets) {
         empty = empty && street.traffic.empty();
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
