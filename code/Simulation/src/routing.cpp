@@ -7,7 +7,7 @@
 
 #include "fastFW.cuh"
 #include "routing.hpp"
-// #define USE_CUDA
+#define USE_CUDA
 
 
 // Idea: If a road has multiple turning lanes, split a intersection into sets of identical turn options and split the single
