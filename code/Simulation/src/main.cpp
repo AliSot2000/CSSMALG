@@ -51,8 +51,8 @@ int main(int argc, char* argv[]) {
     }
 	stopMeasureTime(start);
 
-    SPT carsSPT;
-    SPT bikeSPT;
+    spt_t carsSPT;
+    spt_t bikeSPT;
 
     if (hasPrecompute(import)){
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
