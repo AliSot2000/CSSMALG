@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
         }
 
-		addFrame(world, output);
+//		addFrame(world, output);
 	}
     // Committing final state of simulation to output, required for the start and stop time.
     addFrame(world, output, true);
