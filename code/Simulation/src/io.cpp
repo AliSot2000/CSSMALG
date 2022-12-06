@@ -338,10 +338,25 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     }
 }
 
-void dumpSpt(spt_t Tree, const char* fname){
+bool dumpSpt(spt_t Tree, const char* fname){
     void* carTreePtr =  Tree.array;
 
+    /*
     FILE *file = fopen(fname, "wb");
     fwrite(Tree.array, Tree.size * Tree.size * sizeof(int) * sizeof(int), 1, file);
     fclose(file);
+     */
+
+    std::ofstream f(fname, std::ios::out | std::ios::binary);
+    if (!f){
+        std::cerr << "Failed to open " << fname << std::endl;
+        return false;
+    }
+    f.write(static_cast<char*>(carTreePtr), Tree.size * Tree.size * sizeof(int) * sizeof(int));
+    f.close();
+    if (!f.good()){
+        std::cerr << "Failed to write to " << fname << std::endl;
+        return false;
+    }
+    return true;
 }
