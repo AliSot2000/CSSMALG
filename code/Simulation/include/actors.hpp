@@ -88,4 +88,6 @@ typedef struct World {
 	std::vector<Actor> actors;
     std::map<std::string, int> string_to_int;
     std::map<int, std::string> int_to_string;
+    std::vector<Intersection*> IntersectionPtr;
+    std::vector<Street*> StreetPtr;
 } world_t;
