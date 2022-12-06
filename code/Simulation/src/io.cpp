@@ -29,6 +29,7 @@ void importMap(world_t& world, json& map) {
 	assert(world.streets.size() == 0 && "Streets is not empty");
     // Data will be packed more neatly when first creating array with given size
     world.intersections = std::vector<Intersection>(map["intersections"].size());
+    world.IntersectionPtr = std::vector<Intersection*>(map["intersections"].size());
 
 	int32_t index = 0;
 	for (const auto& [_, data] : map["intersections"].items()) {
@@ -42,12 +43,13 @@ void importMap(world_t& world, json& map) {
             intersection.hasTrafficLight = data["trafficLight"];
         }
 
+        world.IntersectionPtr[index] = &intersection;
 		index++;
 	}
 
 	// Data will be packed more neatly when first creating array with given size
 	world.streets = std::vector<Street>(map["roads"].size());
-	
+	world.StreetPtr = std::vector<Street*>(map["roads"].size());
 	index = 0;
 	for (const auto& [_, data] : map["roads"].items()) {
 		Street& street = world.streets[index];
@@ -79,6 +81,7 @@ void importMap(world_t& world, json& map) {
 		world.intersections[street.start].outbound[street.end] = &street;
 		world.intersections[street.end].inbound.push_back(&street);
 
+        world.StreetPtr[index] = &street;
 		index++;
 	}
 }
