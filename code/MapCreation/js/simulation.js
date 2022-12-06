@@ -206,8 +206,14 @@ class Simulation {
             return this; // Return
         }
 
+        let percentage = 0; // The percentage of the simulation that has been precalculated
         for (let step_num = 1; step_num < total_steps; step_num++) { // For each step in the pre-simulation
-            this._map._loading.setPercent(Math.floor((step_num / total_steps) * 100)); // Update the loading screen
+            percentage = snap(Math.floor((step_num / total_steps) * 100), 5); // Calculate the percentage of the simulation that has been precalculated
+            if (percentage !== this._map._loading.getPercent()) {
+                console.log('Loading Simulation: ' + percentage + '%');
+                this._map._loading.setPercent(percentage); // Set the percentage of the loading screen
+            }
+            this._map._loading.setPercent(percentage); // Update the loading screen
             let agent_step = this._pre_simulation[step_num].agents; // The current step
 
             let agent_new_steps = []; // The new steps that will be added to the simulation
