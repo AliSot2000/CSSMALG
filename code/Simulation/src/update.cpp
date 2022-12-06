@@ -300,10 +300,16 @@ void updateIntersectionPhase(intersection_t& intersection, float timeDelta, bool
     }
 }
 
-void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time) {
-    // #pragma omp parallel for
-    for (auto& intersection : world->intersections) {
-		if (intersection.inbound.size() == 0)
+void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset) {
+    // Move so no thread is colliding with another thread.
+    auto start_iter = world->intersections.begin();
+    std::advance(start_iter, offset);
+
+    for (auto iter = start_iter; iter != world->intersections.end(); std::advance(iter, stride)) {
+//    for (auto& intersection : world->intersections) {
+        Intersection intersection = *iter;
+
+        if (intersection.inbound.size() == 0)
 			continue;
 
         if (intersection.hasTrafficLight){
@@ -380,12 +386,18 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
     }
 }
 
-bool updateStreets(world_t* world, const float timeDelta) {
+bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int stride, const int offset) {
     bool actorMoved = false;
     bool empty = true;
 
+    // Move so no thread is colliding with another thread.
+    auto start_iter = world->streets.begin();
+    std::advance(start_iter, offset);
+
     // #pragma omp parallel for private(empty, actorMoved)
-    for (auto& street : world->streets) {
+    for (auto iter = start_iter; iter != world->streets.end(); std::advance(iter, stride)){
+//    for (auto& street : world->streets) {
+        Street street = *iter;
         empty = empty && street.traffic.empty();
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
@@ -489,6 +501,23 @@ bool updateStreets(world_t* world, const float timeDelta) {
     return actorMoved || empty;
 }
 
+bool updateStreets(world_t* world, const float timeDelta){
+    bool actorMoved = false;
+
+    #pragma omp parallel for
+    for (int32_t i = 0; i < 128; i++) {
+        actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
+    }
+    return actorMoved;
+}
+
+void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
+    #pragma omp parallel for
+    for (int32_t i = 0; i < 128; i++){
+        singleIntersectionStrideUpdate(world, timeDelta, stupidIntersections, current_time, 128, i);
+    }
+}
+
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
     return MIN_DISTANCE_BETWEEN_VEHICLES + actor->current_velocity * SAFETY_TIME_HEADWAY + (delta_velocity * actor->current_velocity) / (2 * std::sqrt(actor->acceleration * actor->deceleration));
 }
@@ -510,3 +539,4 @@ void resolveDeadLocks(world_t* world, const float current_time) {
         }
     }
 }
+
