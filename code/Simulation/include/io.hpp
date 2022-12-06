@@ -45,7 +45,7 @@ void importMap(world_t& world, nlohmann::json& map);
  *
  * @returns void
  */
-void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT);
+void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
 
 /*
  * Exports the world to json format. It is the static part of the simulation. The simulation is added step by step with
@@ -104,4 +104,4 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
  *
  * @returns void
  * */
-void importSPT(SPT& carTree, SPT& bikeTree, const json& input, world_t& world);
+void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world);
