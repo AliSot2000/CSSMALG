@@ -154,10 +154,6 @@ function depending on what data is given with the button press.
 This file contains the code for the intersections. It contains the code for creating the intersections, displaying them
 and moving them.
 
-### loading.js
-This file contains the code for the loading screen. It contains the code for creating the loading screen, displaying it.
-It also can be animated during the loading process.
-
 ### road.js
 This file contains the code for the roads. It contains the code for creating the roads, displaying them and moving them.
 It also has supporting functions for animating the agents later in the simulation.
