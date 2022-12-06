@@ -12,14 +12,15 @@
 #include "io.hpp"
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
+    if (argc < 3) {
         std::cerr << "Usage PrecalculateSPT <map-in> <spt-out>" << std::endl;
         std::cerr << "Function precalculates the spt" << std::endl;
         return -1;
     }
 
     const char* importFile = argv[1];
-    const char* outputFile = argv[2];
+    const char* carFile = argv[2];
+    const char* bikeFile = argv[3];
 
     world_t world;
     nlohmann::json import;
@@ -38,14 +39,20 @@ int main(int argc, char* argv[]) {
     stopMeasureTime(time);
 
     time = startMeasureTime("calculating shortest path tree with floyd warshall");
-    spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
+    {
+        spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
+        dumpSpt(carsSPT, carFile);
+    }
+    {
     spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
+    dumpSpt(bikeSPT, bikeFile);
+    }
     stopMeasureTime(time);
 
-    time = startMeasureTime("Exporting to file");
-    nlohmann::json spts;
-    exportSPT(carsSPT, bikeSPT, import, spts);
-    save(outputFile, spts);
-    stopMeasureTime(time);
+//    time = startMeasureTime("Exporting to file");
+//    nlohmann::json spts;
+    // exportSPT(carsSPT, bikeSPT, import, spts);
+    // save(outputFile, spts);
+//    stopMeasureTime(time);
 }
 

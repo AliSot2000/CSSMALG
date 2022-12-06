@@ -337,3 +337,14 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
         std::cout << std::endl;
     }
 }
+
+void dumpSpt(spt_t Tree, std::string fname){
+    void* carTreePtr =  Tree.array;
+    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
+    std::string ostring = base64_encode(carTreeChar,  Tree.size * Tree.size * sizeof(int) * sizeof(int));
+
+    std::ofstream f(fname);
+    f << ostring;
+    f.close();
+
+}
