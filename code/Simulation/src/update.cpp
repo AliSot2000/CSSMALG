@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 #include "update.hpp"
-// #include <omp.h>
+#include <omp.h>
 
 void trafficInDrivingDistance(Street& street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
 
