@@ -43,7 +43,7 @@ void importMap(world_t& world, json& map) {
             intersection.hasTrafficLight = data["trafficLight"];
         }
 
-        world.IntersectionPtr[index] = &intersection;
+        world.IntersectionPtr[index] = &world.intersections[index];
 		index++;
 	}
 
@@ -81,7 +81,7 @@ void importMap(world_t& world, json& map) {
 		world.intersections[street.start].outbound[street.end] = &street;
 		world.intersections[street.end].inbound.push_back(&street);
 
-        world.StreetPtr[index] = &street;
+        world.StreetPtr[index] = &world.streets[index];
 		index++;
 	}
 }
