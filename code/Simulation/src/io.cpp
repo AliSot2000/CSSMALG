@@ -317,8 +317,8 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     std::vector<BYTE> bikeTreeBytes = base64_decode(bikeTreeB64);
 
     // Allocate Memory for copying
-    BYTE* carTreePtr = new BYTE[carTree.size * carTree.size * sizeof(int) * sizeof(int)];
-    BYTE* bikeTreePtr = new BYTE[bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int)];
+    BYTE* carTreePtr = new BYTE[carTree.size * carTree.size * sizeof(int)];
+    BYTE* bikeTreePtr = new BYTE[bikeTree.size * bikeTree.size * sizeof(int)];
 
     // Copy to allocated Memory
     std::copy(carTreeBytes.begin(), carTreeBytes.end(), carTreePtr);
@@ -340,23 +340,32 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
 
 bool dumpSpt(spt_t Tree, const char* fname){
     void* carTreePtr =  Tree.array;
+    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
+    std::string ostring = base64_encode(carTreeChar,  Tree.size * Tree.size * sizeof(int) * sizeof(int));
 
-    /*
-    FILE *file = fopen(fname, "wb");
-    fwrite(Tree.array, Tree.size * Tree.size * sizeof(int) * sizeof(int), 1, file);
-    fclose(file);
-     */
-
-    std::ofstream f(fname, std::ios::out | std::ios::binary);
-    if (!f){
-        std::cerr << "Failed to open " << fname << std::endl;
-        return false;
-    }
-    f.write(static_cast<char*>(carTreePtr), Tree.size * Tree.size * sizeof(int) * sizeof(int));
+    std::ofstream f(fname);
+    f << ostring;
     f.close();
-    if (!f.good()){
-        std::cerr << "Failed to write to " << fname << std::endl;
-        return false;
-    }
     return true;
+
+//
+//    /*
+//    FILE *file = fopen(fname, "wb");
+//    fwrite(Tree.array, Tree.size * Tree.size * sizeof(int) * sizeof(int), 1, file);
+//    fclose(file);
+//     */
+//
+//    std::ofstream f(fname, std::ios::out | std::ios::binary);
+//    if (!f){
+//        std::cerr << "Failed to open " << fname << std::endl;
+//        return false;
+//    }
+//    f.write(static_cast<char*>(carTreePtr), Tree.size * Tree.size);
+//    std::cout << "Dumped SPT to " << Tree.size * Tree.size << std::endl;
+//    f.close();
+//    if (!f.good()){
+//        std::cerr << "Failed to write to " << fname << std::endl;
+//        return false;
+//    }
+//    return true;
 }

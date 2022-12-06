@@ -44,15 +44,15 @@ int main(int argc, char* argv[]) {
         dumpSpt(carsSPT, carFile);
     }
     {
-    spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
-    dumpSpt(bikeSPT, bikeFile);
+        spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
+        dumpSpt(bikeSPT, bikeFile);
     }
     stopMeasureTime(time);
 
 //    time = startMeasureTime("Exporting to file");
 //    nlohmann::json spts;
     // exportSPT(carsSPT, bikeSPT, import, spts);
-    // save(outputFile, spts);
+    // save(carFile, spts);
 //    stopMeasureTime(time);
 }
 
