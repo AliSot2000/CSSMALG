@@ -83,7 +83,7 @@ void importMap(world_t& world, json& map) {
 	}
 }
 
-void importAgents(world_t& world, json& agents, SPT carsSPT, SPT bikeSPT){
+void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     assert(world.actors.size() == 0 && "Agents is not empty");
     world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
     int index = 0;
@@ -291,13 +291,6 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
     unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
     void* bikePtr =  bikeTree.array;
     unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
-
-    for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; j < carTree.size; j++){
-            std::cout << carTree.array[i * carTree.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
 
     output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
     output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
