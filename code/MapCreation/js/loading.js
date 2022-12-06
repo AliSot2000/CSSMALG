@@ -9,6 +9,7 @@ class Loading {
     _bar = null;
     _main_header = null;
     _sub_header = null;
+    _percent = 0;
 
     /**
      * Initialize the loading screen
@@ -60,10 +61,18 @@ class Loading {
      * @returns {Loading} Self Reference for chaining
      */
     setPercent(percent) {
+        this._percent = percent; // Set the percentage
         this._bar.css('width', `${percent}%`);
         return this;
     }
 
+    /**
+     * Get the percentage of the loading screen
+     * @returns {number} The percentage of the loading screen
+     */
+    getPercent() {
+        return this._percent;
+    }
     /**
      * Set the main header of the loading screen
      * @param {string} text The text of the main header
