@@ -175,8 +175,8 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 }
 
 // Updated Version of Alex to handle zero velocity vehicles.
-bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor) {
-    Street* target = intersection.outbound[actor->path.front()];
+bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
+    Street* target = intersection->outbound[actor->path.front()];
 
 
     // Empty, insert immediately and return
@@ -273,49 +273,49 @@ bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor) {
 
 }
 
-void updateIntersectionPhase(intersection_t& intersection, float timeDelta, bool stupidIntersections) {
-    intersection.currentPhase -= timeDelta;
+void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool stupidIntersections) {
+    intersection->currentPhase -= timeDelta;
 
     // Change street for which the light is green
     if (stupidIntersections){
         // Perform the stupid intersection algorithm, i.e. don't check if the street is empty
-        if (intersection.currentPhase <= 0.0f) {
-            intersection.green = (intersection.green + 1) % (intersection.inbound.size());
-            intersection.currentPhase = intersection.greenPhaseDuration;
-            intersection.outputFlag = true;
+        if (intersection->currentPhase <= 0.0f) {
+            intersection->green = (intersection->green + 1) % (intersection->inbound.size());
+            intersection->currentPhase = intersection->greenPhaseDuration;
+            intersection->outputFlag = true;
         }
     } else {
-        if (intersection.currentPhase <= 0.0f) {
+        if (intersection->currentPhase <= 0.0f) {
             // Forloop to prevent an infinite while loop
             // Go to next inbound street if a given inbound street is empty.
-            for (std::size_t i = 0; i < intersection.inbound.size(); i++){
-                intersection.green = (intersection.green + 1) % (intersection.inbound.size());
-                if (intersection.inbound.at(intersection.green)->traffic.size() > 0){
+            for (std::size_t i = 0; i < intersection->inbound.size(); i++){
+                intersection->green = (intersection->green + 1) % (intersection->inbound.size());
+                if (intersection->inbound.at(intersection->green)->traffic.size() > 0){
                     break;
                 }
             }
-            intersection.outputFlag = true;
-            intersection.currentPhase = intersection.greenPhaseDuration;
+            intersection->outputFlag = true;
+            intersection->currentPhase = intersection->greenPhaseDuration;
         }
     }
 }
 
 void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset) {
     // Move so no thread is colliding with another thread.
-    auto start_iter = world->intersections.begin();
-    std::advance(start_iter, offset);
+//    std::vector<Intersection*>::iterator start_iter = world->IntersectionPtr.begin();
+//    std::advance(start_iter, offset);
 
-    for (auto iter = start_iter; iter != world->intersections.end(); std::advance(iter, stride)) {
-//    for (auto& intersection : world->intersections) {
-        Intersection intersection = *iter;
+    for (int32_t x = offset; x < world->intersections.size(); x += stride) {
+      //    for (auto& intersection : world->intersections) {
+        Intersection* intersection = world->IntersectionPtr.at(x);
 
-        if (intersection.inbound.size() == 0)
+        if (intersection->inbound.size() == 0)
 			continue;
 
-        if (intersection.hasTrafficLight){
+        if (intersection->hasTrafficLight){
             updateIntersectionPhase(intersection, timeDelta, stupidIntersections);
 
-            Street* street = intersection.inbound[intersection.green];
+            Street* street = intersection->inbound[intersection->green];
             for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
                 Actor* actor = *iter;
                 if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
@@ -327,7 +327,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                     actor->outputFlag = false; // make sure new active status is outputted once
                     actor->end_time = current_time;
                     street->traffic.erase(iter);
-                    intersection.arrivedFrom.push_back({actor, street});
+                    intersection->arrivedFrom.push_back({actor, street});
                     break;
                 }
 
@@ -337,9 +337,9 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                 }
             }
         } else {
-           for (int i = 0; i < intersection.inbound.size(); i++){
-               int index = (i + intersection.green) % intersection.inbound.size();
-               Street* street = intersection.inbound[index];
+           for (int i = 0; i < intersection->inbound.size(); i++){
+               int index = (i + intersection->green) % intersection->inbound.size();
+               Street* street = intersection->inbound[index];
 
                // Ignore empty streets
                if (street->traffic.size() == 0){
@@ -359,13 +359,13 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                    actor->outputFlag = false; // make sure new active status is outputted once
                    actor->end_time = current_time;
                    street->traffic.erase(street->traffic.begin());
-                   intersection.arrivedFrom.push_back({actor, street});
+                   intersection->arrivedFrom.push_back({actor, street});
                    break;
                }
 
                if (tryInsertInNextStreet(intersection, actor)) {
                    street->traffic.erase(street->traffic.begin());
-                   intersection.green = index;
+                   intersection->green = index;
                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
                }
            }
@@ -375,12 +375,12 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
 
 
         // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
-        if (intersection.waitingToBeInserted.size() > 0) {
-            Actor* actor = intersection.waitingToBeInserted[0];
+        if (intersection->waitingToBeInserted.size() > 0) {
+            Actor* actor = intersection->waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
             if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor)) {
                 actor->start_time = current_time * (actor->start_time == -1.0f) + actor->start_time * (actor->start_time != -1.0f); // only set the start time if the if the start time
-                intersection.waitingToBeInserted.erase(intersection.waitingToBeInserted.begin());
+                intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
             }
         }
     }
@@ -391,13 +391,13 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
     bool empty = true;
 
     // Move so no thread is colliding with another thread.
-    auto start_iter = world->streets.begin();
-    std::advance(start_iter, offset);
+//    std::vector<Street>::iterator start_iter = world->streets.begin();
+//    std::advance(start_iter, offset);
 
     // #pragma omp parallel for private(empty, actorMoved)
-    for (auto iter = start_iter; iter != world->streets.end(); std::advance(iter, stride)){
+    for (int32_t x = offset; x < world->streets.size(); x+=stride){
 //    for (auto& street : world->streets) {
-        Street street = *iter;
+        Street street = world->streets[x];
         empty = empty && street.traffic.empty();
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
@@ -504,7 +504,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 bool updateStreets(world_t* world, const float timeDelta){
     bool actorMoved = false;
 
-    #pragma omp parallel for
+    #pragma omp parallel for reduction(||:actorMoved) default(none) shared(world, timeDelta)
     for (int32_t i = 0; i < 128; i++) {
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
@@ -512,7 +512,7 @@ bool updateStreets(world_t* world, const float timeDelta){
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
-    #pragma omp parallel for
+    #pragma omp parallel for default(none) shared(world, timeDelta, stupidIntersections, current_time)
     for (int32_t i = 0; i < 128; i++){
         singleIntersectionStrideUpdate(world, timeDelta, stupidIntersections, current_time, 128, i);
     }
