@@ -54,9 +54,10 @@ void FloydWarshal(double* dis, int* next, int V){
     result = cudaMemcpy(neighbour, next, V * V * sizeof(int), cudaMemcpyHostToDevice);
     assert(result == cudaSuccess);
 
+    std::cout << std::endl;
     for (int k = 0; k < V; k++)
     {
-        std::cout << "k: " << (k + 1) << " of " << V <<  std::endl;
+        std::cout << "\rk: " << (k + 1) << " of " << V;
         GPUInnerLoops<<<dim3(2,1,1),dim3(1024,1,1)>>>(distance,neighbour,k,V);
         cudaDeviceSynchronize();
         for (int i = 0; i < V; i++){
@@ -66,6 +67,7 @@ void FloydWarshal(double* dis, int* next, int V){
             std::cout << std::endl;
         }
     }
+    std::cout << std::endl;
 
     result = cudaMemcpy(dis, distance, V * V * sizeof(double), cudaMemcpyDeviceToHost);
     assert(result == cudaSuccess);
