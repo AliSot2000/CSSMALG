@@ -106,4 +106,4 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
  * */
 void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world);
 
-void dumpSpt(spt_t Tree, const char* fname);
+bool dumpSpt(spt_t Tree, const char* fname);
