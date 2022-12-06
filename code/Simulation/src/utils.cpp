@@ -10,7 +10,7 @@
 
 #include "actors.hpp"
 #include "routing.hpp"
-#include <omp.h>
+// #include <omp.h>
 
 
 int randint(int min, int max) {
@@ -33,7 +33,7 @@ void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
 
 void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
                         const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length, const int max_start_time) {
-#pragma omp parallel for
+// #pragma omp parallel for
     for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
         Actor actor = {
                 .type = type,
