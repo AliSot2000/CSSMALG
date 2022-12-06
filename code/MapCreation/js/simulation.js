@@ -207,7 +207,8 @@ class Simulation {
         for (let step_num = 1; step_num < total_steps; step_num++) { // For each step in the pre-simulation
             let new_percentage = snap(Math.floor((step_num / total_steps) * 100), 5); // Calculate the percentage of the simulation that has been precalculated
             if (percentage !== new_percentage) {
-                console.log('Precalculating: ' + new_percentage + '%');
+                percentage = new_percentage; // Set the percentage to the new percentage
+                console.log('Precalculating: ' + percentage + '%');
             }
             let agent_step = this._pre_simulation[step_num].agents; // The current step
 
