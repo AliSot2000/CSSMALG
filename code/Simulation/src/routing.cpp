@@ -3,8 +3,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include <omp.h>
-
 #include "fastFW.cuh"
 #include "routing.hpp"
 #define USE_CUDA
