@@ -95,9 +95,9 @@ int main(int argc, char* argv[]) {
 
 //    int randomCars = 2000;
 //    int randomBikes = 2000;
-//    world.actors = std::vector<Actor>(randomCars + randomBikes);
-//    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f, static_cast<int>(runtime * 0.5));
-//    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f, static_cast<int>(runtime * 0.5));
+//    world.actors = std::vector<Actor*>(randomCars + randomBikes);
+//    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, static_cast<int>(runtime * 0.5));
+//    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, static_cast<int>(runtime * 0.5));
 
     // Export the world.
     nlohmann::json output;
