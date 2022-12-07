@@ -60,6 +60,7 @@ void importMap(world_t& world, json& map) {
 
 		if (data["lanes"].empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
+            std::cerr << "Failed Street ID: " << street.id << std::endl;
 			street.type = StreetTypes::Both;
 		}
 		else {
@@ -68,10 +69,16 @@ void importMap(world_t& world, json& map) {
 			if (lane["type"] == "both") {
 				street.type = StreetTypes::Both;
 			}
-			else if (lane["type"] == "bike") {
-				street.type = StreetTypes::OnlyBike;
-			} else {
+			else if (lane["type"] == "car") {
                 street.type = StreetTypes::OnlyCar;
+            }
+            else if (lane["type"] == "bike") {
+                street.type = StreetTypes::OnlyBike;
+            } else {
+                std::cerr << "Unknown street type: " << lane["type"] << std::endl;
+            }
+            for (int i = 1; i < data["lanes"].size(); ++i){
+                assert(data["lanes"][i]["type"] == lane["type"] && "All lanes must have same type");
             }
 		}
 
