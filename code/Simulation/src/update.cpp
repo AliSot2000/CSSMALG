@@ -57,6 +57,10 @@ FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, con
     // Go through array and always update the frontVehicles if a new matching vehicle is found.
     for (TrafficIterator iter = start; iter != street.traffic.end(); iter++) {
         Actor *other = *iter; // Get pointer to actor of iterator (with *)
+        //Ignoring the actor itself
+        if (other == actor) {
+            continue;
+        }
 
         if (other->distanceToIntersection > actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES) {
             return f;
