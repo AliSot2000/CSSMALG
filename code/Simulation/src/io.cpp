@@ -103,39 +103,58 @@ void importMap(world_t& world, json& map) {
 
 void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     assert(world.actors.size() == 0 && "Agents is not empty");
-    world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
+    world.actors = std::vector<Actor*>(agents["bikes"].size() + agents["cars"].size());
     std::cout << "importing " << agents["bikes"].size() << " bikes and " << agents["cars"].size() << " cars" << std::endl;
     int index = 0;
 
     // Import Bikes
     for (const auto& [name, data] : agents["bikes"].items()) {
-        Actor actor = {
-                .type = ActorTypes::Bike,
-                .distanceToIntersection = 0.0f,
-                .distanceToRight = 0,
-                .length = data["length"],
+        Actor* actor = new Actor();
 
-                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
-                .target_velocity = 50 / 3.6f,
+        // Set that shit
+        actor->type = ActorTypes::Bike;
+        actor->distanceToIntersection = 0.0f;
+        actor->distanceToRight = 0;
+        actor->length = data["length"];
 
-                .acceleration = data["acceleration"],
-                .deceleration = data["deceleration"],
-                .acceleration_exp = data["acceleration_exponent"],
+        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f; // Convert km/h to m/s
+        actor->target_velocity = 50 / 3.6f;
 
-                .insertAfter = data["waiting_period"],
+        actor->acceleration = data["acceleration"];
+        actor->deceleration = data["deceleration"];
+        actor->acceleration_exp = data["acceleration_exponent"];
 
-                //.width = 1.5f,
-                .id = name,
-        };
+        actor->insertAfter = data["waiting_period"];
+
+//        actor->width = 1.5f;
+        actor->id = name;
+//      Actor actor = {
+//                .type = ActorTypes::Bike,
+//                .distanceToIntersection = 0.0f,
+//                .distanceToRight = 0,
+//                .length = data["length"],
+//
+//                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+//                .target_velocity = 50 / 3.6f,
+//
+//                .acceleration = data["acceleration"],
+//                .deceleration = data["deceleration"],
+//                .acceleration_exp = data["acceleration_exponent"],
+//
+//                .insertAfter = data["waiting_period"],
+//
+//                //.width = 1.5f,
+//                .id = name,
+//        };
 
         int startIntersectionId = world.string_to_int[data["start_id"]];
         int endIntersectionId = world.string_to_int[data["end_id"]];
 
-        actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId, bikeSPT.size);
+        actor->path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId, bikeSPT.size);
 
         for (auto& intersection : world.intersections) {
             if (intersection.id == startIntersectionId) {
-                intersection.waitingToBeInserted.push_back(&actor);
+                intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
         }
@@ -144,33 +163,52 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         index++;
     }
     for (const auto& [name, data] : agents["cars"].items()) {
-        Actor actor = {
-                .type = ActorTypes::Car,
-                .distanceToIntersection = 0.0f,
-                .distanceToRight = 0,
-                .length = data["length"],
+        Actor* actor = new Actor();
 
-                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
-                .target_velocity = 50 / 3.6f,
+        // Set that shit
+        actor->type = ActorTypes::Bike;
+        actor->distanceToIntersection = 0.0f;
+        actor->distanceToRight = 0;
+        actor->length = data["length"];
 
-                .acceleration = data["acceleration"],
-                .deceleration = data["deceleration"],
-                .acceleration_exp = data["acceleration_exponent"],
+        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f; // Convert km/h to m/s
+        actor->target_velocity = 50 / 3.6f;
 
-                .insertAfter = data["waiting_period"],
+        actor->acceleration = data["acceleration"];
+        actor->deceleration = data["deceleration"];
+        actor->acceleration_exp = data["acceleration_exponent"];
 
-                //.width = 1.5f,
-                .id = name,
-        };
+        actor->insertAfter = data["waiting_period"];
+
+//        actor->width = 1.5f;
+        actor->id = name;
+//        Actor actor = {
+//                .type = ActorTypes::Car,
+//                .distanceToIntersection = 0.0f,
+//                .distanceToRight = 0,
+//                .length = data["length"],
+//
+//                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+//                .target_velocity = 50 / 3.6f,
+//
+//                .acceleration = data["acceleration"],
+//                .deceleration = data["deceleration"],
+//                .acceleration_exp = data["acceleration_exponent"],
+//
+//                .insertAfter = data["waiting_period"],
+//
+//                //.width = 1.5f,
+//                .id = name,
+//        };
 
         int startIntersectionId = world.string_to_int[data["start_id"]];
         int endIntersectionId = world.string_to_int[data["end_id"]];
 
-        actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId, carsSPT.size);
+        actor->path = retrievePath(carsSPT, startIntersectionId, endIntersectionId, carsSPT.size);
 
         for (auto& intersection : world.intersections) {
             if (intersection.id == startIntersectionId) {
-                intersection.waitingToBeInserted.push_back(&actor);
+                intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
         }
