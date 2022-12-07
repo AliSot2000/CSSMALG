@@ -188,7 +188,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
         return false;
     }
 
-    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike[actor->path.front()] : intersection->outboundCar[actor->path.front()];
+    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
 
     // Empty, insert immediately and return
     if (target->traffic.empty()){
