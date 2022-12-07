@@ -254,8 +254,8 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
             obj["start_crossing_id"] = "NO_PATH_FOUND";
             obj["end_crossing_id"] = "NO_PATH_FOUND";
         } else {
-            obj["start_crossing_id"] = world.int_to_string.at(actor->path.front());
-            obj["end_crossing_id"] = world.int_to_string.at(actor->path.back());
+            obj["start_crossing_id"] = world.int_to_string.at(actor->start_id);
+            obj["end_crossing_id"] = world.int_to_string.at(actor->end_id);
         }
         no_path += actor->path.empty() ? 1 : 0;
 	}
@@ -315,6 +315,7 @@ void addFrame(world_t& world, json& out, const bool final) {
 	for (auto& intersection : world.intersections) {
         // Initial output so the simulation knows how many actors there are
 		for (const auto& actor : intersection.waitingToBeInserted) {
+            assert(actor->start_id == intersection.id && "Actor start id does not match intersection id");
             Street* street;
             if (actor->path.empty()){
                 street = &world.empty;
@@ -331,21 +332,6 @@ void addFrame(world_t& world, json& out, const bool final) {
 				actor->outputFlag = true;
 			}
 		}
-        /*
-        for (const auto& actor : intersection.waitingToBeInserted) {
-			int first = actor->path.front();
-            Street* street;
-            if (actor->type == ActorTypes::Car){
-                street = intersection.outboundCar.find(first)->second;
-            } else {
-                street = intersection.outboundBike.find(first)->second;
-            }
-			if (!actor->outputFlag) {
-				a(actor, street, 0.0f, false);
-				actor->outputFlag = true;
-			}
-		}
-         */
 
         // Iterate through every actor which has newly arrived at his destination to print out his last frame.
 		for (const auto& pair : intersection.arrivedFrom) {
@@ -540,8 +526,8 @@ void exportAgents(json& out, const world_t& world){
         obj["deceleration"] = agent->deceleration;
         obj["acceleration_exponent"] = agent->acceleration_exp;
         obj["waiting_period"] = agent->insertAfter;
-        obj["start_id"] = world.int_to_string.at(agent->path.front());
-        obj["end_id"] = world.int_to_string.at(agent->path.back());
+        obj["start_id"] = world.int_to_string.at(agent->start_id);
+        obj["end_id"] = world.int_to_string.at(agent->end_id);
         if (agent->type == ActorTypes::Car)
         {
             out["cars"][agent->id] = obj;
