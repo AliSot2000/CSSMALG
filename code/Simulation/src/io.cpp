@@ -89,6 +89,7 @@ void importMap(world_t& world, json& map) {
 void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     assert(world.actors.size() == 0 && "Agents is not empty");
     world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
+    std::cout << "importing " << agents["bikes"].size() << " bikes and " << agents["cars"].size() << " cars" << std::endl;
     int index = 0;
 
     // Import Bikes
@@ -176,6 +177,7 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
 	output["peripherals"]["time_step"] = timeDelta;
 
 	output["simulation"] = std::vector<json>();
+    int no_path = 0;
 
 	for (const auto& actor : world.actors) {
 		output["setup"]["agents"][actor.id] = {};
@@ -188,10 +190,11 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
         obj["deceleration"] = actor.deceleration;
         obj["acceleration_exponent"] = actor.acceleration_exp;
         obj["waiting_period"] = actor.insertAfter;
-        obj["start_crossing_id"] = world.int_to_string[actor.path.front()];
-        obj["end_crossing_id"] = world.int_to_string[actor.path.back()];
+        obj["start_crossing_id"] = actor.path.empty() ? "NO_PATH_FOUND" : world.int_to_string[actor.path.front()];
+        obj["end_crossing_id"] = actor.path.empty() ? "NO_PATH_FOUND" : world.int_to_string[actor.path.back()];
+        no_path += actor.path.empty() ? 1 : 0;
 	}
-
+    std::cout << "No path found with  " << no_path << " agents." << std::endl;
 	return output;
 }
 
