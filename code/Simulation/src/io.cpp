@@ -455,7 +455,7 @@ void jsonDumpStats(const float& avgTime, json& output, world_t& world, const boo
     // Get data from intersections
     for (auto& intersection : world.intersections) {
         json obj = {};
-        obj["id"] = world.int_to_string[intersection.id];
+        obj["id"] = world.int_to_string.at(intersection.id);
         obj["bikeFlow"] = intersection.bike_flow_accumulate / avgTime;
         obj["carFlow"] = intersection.car_flow_accumulate / avgTime;
         intersection.car_flow_accumulate = 0.0f;
