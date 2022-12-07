@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     }
 
 	world_t world;
-	nlohmann::json import;
+	Document import;
 	
 	if (!loadFile(importFile, import)) {
 		return -1;

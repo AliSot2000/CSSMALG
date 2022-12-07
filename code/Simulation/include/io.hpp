@@ -3,10 +3,16 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/ostreamwrapper.h>
+
 #include "actors.hpp"
 #include "routing.hpp"
 
 using nlohmann::json;
+using namespace rapidjson;
 
 /*
  * Loads a file with json format into a json buffer
@@ -16,7 +22,7 @@ using nlohmann::json;
  *
  * @returns True <=> the loading was successful.
 */
-bool loadFile(const std::string& file, json& input);
+bool loadFile(const std::string& file, Document& input);
 
 /*
  * Small wrapper to determine if the map contains a precomputed SPT.
@@ -25,7 +31,7 @@ bool loadFile(const std::string& file, json& input);
  *
  * @returns bool, weather the map contains precomputed SPTs.
  */
-bool hasPrecompute(const json& map);
+bool hasPrecompute(const Document& map);
 
 /*
  * Imports a json object into the c++ data structure.
@@ -35,7 +41,7 @@ bool hasPrecompute(const json& map);
  *
  * @returns void
  */
-void importMap(world_t& world, nlohmann::json& map);
+void importMap(world_t& world, Value& map);
 
 /*
  * Imports a json object into the c++ data structure.
@@ -80,7 +86,7 @@ void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
  *
  * @returns void
  */
-void save(const std::string& file, const nlohmann::json& out);
+bool save(const std::string& file, const Document& out);
 
 /*
  * Exports the Shortest Path Tree as well as the current world of the simulation to one json file.

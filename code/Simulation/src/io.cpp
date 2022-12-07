@@ -10,71 +10,72 @@
 #include "base64.hpp"
 
 
-bool loadFile(const std::string& file, json& input) {
-	std::ifstream f(file);
-	if (f.is_open()) {
-		f >> input;
-		f.close();
-		return true;
+bool loadFile(const std::string& file, Document& input) {
+	std::ifstream ifs(file);
+	if (ifs.is_open()) {
+        IStreamWrapper isw { ifs };
+        input.ParseStream(isw);
+        ifs.close();
+        return true;
 	}
 	std::cerr << "Failed to load " << file << std::endl;
 	return false;
 }
 
-bool hasPrecompute(const json& map){
-    return map.contains("world") && map.contains("carTree") && map.contains("bikeTree");
+bool hasPrecompute(const Document& map){
+    return map.HasMember("world") && map.HasMember("carTree") && map.HasMember("bikeTree");
 }
 
-void importMap(world_t& world, json& map) {
+void importMap(world_t& world, Value& map) {
 	assert(world.streets.size() == 0 && "Streets is not empty");
     // Data will be packed more neatly when first creating array with given size
-    world.intersections = std::vector<Intersection>(map["intersections"].size());
+    world.intersections = std::vector<Intersection>(map["intersections"].Size());
 
 	int32_t index = 0;
-	for (const auto& [_, data] : map["intersections"].items()) {
+	for (const auto& data : map["intersections"].GetArray()) {
         // Filling look up tables
-		world.string_to_int[data["id"]] = index;
-        world.int_to_string[index] = data["id"];
+		world.string_to_int[data["id"].GetString()] = index;
+        world.int_to_string[index] = data["id"].GetInt();
 
         Intersection& intersection = world.intersections[index];
 		intersection.id = index;
-        if (data.contains("trafficLight")){
-            intersection.hasTrafficLight = data["trafficLight"];
+        if (data.HasMember("trafficLight")){
+            intersection.hasTrafficLight = data["trafficLight"].GetBool();
         }
 
 		index++;
 	}
 
 	// Data will be packed more neatly when first creating array with given size
-	world.streets = std::vector<Street>(map["roads"].size());
+	world.streets = std::vector<Street>(map["roads"].Size());
 	
 	index = 0;
-	for (const auto& [_, data] : map["roads"].items()) {
+	for (const auto& data : map["intersections"].GetArray()) {
 		Street& street = world.streets[index];
-		street.id = data["id"];
-		street.length = data["distance"];
-		street.width = LANE_WIDTH * data["lanes"].size();
-        street.speedlimit = static_cast<float>(data["speed_limit"]) / 3.6f;
+		street.id = data["id"].GetString();
+		street.length = data["distance"].GetFloat();
+		street.width = LANE_WIDTH * data["lanes"].Size();
+        street.speedlimit = data["speed_limit"].GetFloat() / 3.6f;
 
-		if (data["lanes"].empty()) {
+		if (data["lanes"].Empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
 			street.type = StreetTypes::Both;
 		}
 		else {
             // TODO What happens if we have multiple lanes.
-			json& lane = data["lanes"][0];
-			if (lane["type"] == "both") {
+			const Value& lane = data["lanes"][0];
+			if (lane["type"].GetString() == "both") {
 				street.type = StreetTypes::Both;
 			}
-			else if (lane["type"] == "bike") {
+			else if (lane["type"].GetString() == "bike") {
 				street.type = StreetTypes::OnlyBike;
 			} else {
                 street.type = StreetTypes::OnlyCar;
             }
 		}
 
-		street.start = world.string_to_int[data["intersections"]["start"]["id"]];
-		street.end = world.string_to_int[data["intersections"]["end"]["id"]];
+		street.start = world.string_to_int[data["intersections"]["start"]["id"].GetString()];
+		street.end = world.string_to_int[data["intersections"]["end"]["id"].GetString()];
 
 		world.intersections[street.start].outbound[street.end] = &street;
 		world.intersections[street.end].inbound.push_back(&street);
@@ -274,16 +275,18 @@ void addFrame(world_t& world, json& out, const bool final) {
 	}
 }
 
-void save(const std::string& file, const json& out) {
-	std::ofstream f(file);
+bool save(const std::string& file, const Document& out) {
+	std::ofstream ofs(file);
 
-	if (f.is_open()) {
-		f << std::setw(4) << out << std::endl;
-		f.close();
+	if (ofs.is_open()) {
+        OStreamWrapper osw(ofs);
+        Writer<OStreamWrapper> writer(osw);
+        out.Accept(writer);
+		ofs.close();
+        return true;
 	}
-	else {
-		std::cerr << "Failed to save to " << file << std::endl;
-	}
+    std::cerr << "Failed to save to " << file << std::endl;
+    return false;
 }
 
 void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){

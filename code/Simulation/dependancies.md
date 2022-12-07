@@ -5,3 +5,4 @@
 
 - [base64](git@github.com:ReneNyffenegger/cpp-base64.git) at git@github.com:ReneNyffenegger/cpp-base64.git (Currently not needed)
 
+- [Tencent::rapidjson](https://github.com/Tencent/rapidjson) at git@github.com:Tencent/rapidjson.git
