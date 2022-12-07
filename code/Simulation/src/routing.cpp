@@ -52,6 +52,14 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 
 			}
 		}
+
+        for (int i = 0; i < sopatree.size; i++){
+            for (int j = 0; j < sopatree.size; j++){
+                std::cout << sopatree.array[i * sopatree.size + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
 	}
 
 	return sopatree;
@@ -132,6 +140,7 @@ Path retrievePath(spt_t& spt, const int &start, const int &end, const int& maxVe
 	Path p;
 
 	int u = start;
+    p.push(u);
 	while (u != end) {
         assert(u < maxVertexId);
 		u = spt.array[u * spt.size + end];
