@@ -26,10 +26,10 @@ After generating the map data, `AgentGenerator.php` is called and generates diff
 ## Code Structure
 ### Parser
 
-The Parser is located in the `src` directory. It sends following request to the Overpass API and retrieves raw OSM data. `lat1, lon1, lat2, lon2` are the bounding coordinates of the box, from which data shall be retrieved from. It can be declared in the `main.php` file. 
+The Parser is located in the `src` directory. It sends following request to the Overpass API and retrieves raw OSM data. `South, West, North, East` are the bounding coordinates of the box, from which data shall be retrieved from. It can be declared in the `main.php` file. 
 
             [out:json]
-            [bbox:lat1, lon1, lat2, lon2];
+            [bbox:South,West,North,East];
             (
                 way[highway=primary];
                 way[highway=secondary];
@@ -49,6 +49,6 @@ From the given coordinates, the AgentGenerator computes the center of the map an
 
 ### Main
 
-The file `main.php` in the `src` folder contains a PHP script, creating a Parser and AgentGenerator object. In the constructor of those the coordinate boundaries of the map are given. The order of the coordinates needs to be according to [OSM Documentation](https://wiki.openstreetmap.org/wiki/Bounding_Box#Overpass_API).  Both pairs of coordinates in the constructors must be the same.
+The file `main.php` in the `src` folder contains a PHP script, creating a Parser and AgentGenerator object. In the constructor of those the coordinate boundaries of the map are given. The order of the coordinates needs to be `West, East, South, North`.  Both pairs of coordinates in the constructors must be the same.
 
 This script can be run.
