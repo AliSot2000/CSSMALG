@@ -12,8 +12,9 @@
 
 #define STATUS_UPDATAE_INTERVAL 3600
 
+// TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
-	if (argc < 6) {
+	if (argc < 7) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_intersection>" << std::endl;
         std::cerr << "If an agents file is provided, the n-random-cars and n-random-bikes is ignored" << std::endl;
 		return -1;
@@ -127,8 +128,7 @@ int main(int argc, char* argv[]) {
             lastStatusTime = maxTime;
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
         }
-
-//		addFrame(world, output);
+		addFrame(world, output);
 	}
     // Committing final state of simulation to output, required for the start and stop time.
     addFrame(world, output, true);
