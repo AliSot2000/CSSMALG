@@ -41,6 +41,7 @@ typedef struct Actor {
 
     float start_time = -1.0f;
     float end_time = -1.0f;
+    float time_spent_waiting = 0.0f;
 } actor_t;
 
 enum StreetTypes {
@@ -66,6 +67,9 @@ typedef struct Street {
 	// These values are not used by the simulation itself, just for the visulisation later
 	// start and end position
 	std::string id;
+    float density_accumulate = 0.0f;
+    uint64_t total_traffic_count = 0;
+    float flow_accumulate = 0.0f;
 } street_t;
 
 typedef struct Intersection {
@@ -80,6 +84,8 @@ typedef struct Intersection {
 	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
     bool outputFlag = true; // All intersections which have this set are added to the output.
     bool hasTrafficLight = false;
+    float car_flow_accumulate = 0.0f;
+    float bike_flow_accumulate = 0.0f;
 } intersection_t;
 
 typedef struct World {
