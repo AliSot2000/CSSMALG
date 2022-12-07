@@ -49,26 +49,14 @@ void createRandomActors(world_t& world, spt_t& spt, const ActorTypes type, const
         actor->insertAfter = static_cast<float>(randint(0, max_start_time));
         actor->id = std::to_string(std::rand());
 
-//        Actor actor = {
-//                .type = type,
-//                .distanceToIntersection = 0.0f,
-//                .distanceToRight = 0,
-//                .length = length,
-//                .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
-//                //.width = 1.5f,
-//                .insertAfter = static_cast<float>(randint(0, max_start_time)),
-//                .id = std::to_string(std::rand())
-//        };
+        // Filling start and end id via choose Random Path
+        choseRandomPath(world, spt, actor->start_id, actor->end_id);
+        assert(actor->start_id != actor->end_id && "start_id and end_id are the same");
 
-
-        int start_id;
-        int end_id;
-        choseRandomPath(world, spt, start_id, end_id);
-        assert(start_id != end_id && "start_id and end_id are the same");
-        actor->path = retrievePath(spt, start_id, end_id, spt.size);
+        actor->path = retrievePath(spt, actor->start_id, actor->end_id, spt.size);
 
         for (auto& intersection : world.intersections) {
-            if (intersection.id == start_id) {
+            if (intersection.id == actor->start_id) {
                 intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
