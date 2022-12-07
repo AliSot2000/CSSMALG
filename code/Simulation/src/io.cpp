@@ -211,6 +211,7 @@ void addFrame(world_t& world, json& out, const bool final) {
         if (final){
             obj["start_time"] = actor->start_time;
             obj["end_time"] = actor->end_time;
+            obj["time_spent_waiting"] = actor->time_spent_waiting;
         }
 
 		if (!active) {
@@ -341,15 +342,47 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     }
 }
 
-bool dumpSpt(spt_t Tree, const char* fname){
-    void* carTreePtr =  Tree.array;
-    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
-    std::string ostring = base64_encode(carTreeChar,  Tree.size * Tree.size * sizeof(int));
+bool dumpSpt(spt_t Tree, const char* fname) {
+    void *carTreePtr = Tree.array;
+    unsigned char *carTreeChar = static_cast<unsigned char *>(carTreePtr);
+    std::string ostring = base64_encode(carTreeChar, Tree.size * Tree.size * sizeof(int));
 
     std::ofstream f(fname);
     f << ostring;
     f.close();
     return true;
+}
+
+void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final){
+    output["avgTime"] = avgTime;
+    output["intersections"] = std::vector<json>();
+    output["streets"] = std::vector<json>();
+
+    // Get data from intersections
+    for (auto& intersection : world.intersections) {
+        json obj = {};
+        obj["id"] = world.int_to_string[intersection.id];
+        obj["bikeFlow"] = intersection.bike_flow_accumulate / avgTime;
+        obj["carFlow"] = intersection.car_flow_accumulate / avgTime;
+        intersection.car_flow_accumulate = 0.0f;
+        intersection.bike_flow_accumulate = 0.0f;
+        output["intersections"].push_back(obj);
+    }
+
+    // Get data from streets
+    for (auto& street : world.streets) {
+        json obj = {};
+        obj["id"] = street.id;
+        obj["flow"] = street.flow_accumulate / avgTime;
+        obj["density"] = street.density_accumulate / avgTime;
+        if (final) {
+            obj["total_passing_traffic"] = street.total_traffic_count;
+        }
+        street.flow_accumulate = 0.0f;
+        street.density_accumulate = 0.0f;
+        output["streets"].push_back(obj);
+    }
+}
 
 //
 //    /*
@@ -371,4 +404,4 @@ bool dumpSpt(spt_t Tree, const char* fname){
 //        return false;
 //    }
 //    return true;
-}
+
