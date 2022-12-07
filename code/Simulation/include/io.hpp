@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <nlohmann/json.hpp>
 
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
@@ -11,7 +10,6 @@
 #include "actors.hpp"
 #include "routing.hpp"
 
-using nlohmann::json;
 using namespace rapidjson;
 
 /*
@@ -41,7 +39,7 @@ bool hasPrecompute(const Document& map);
  *
  * @returns void
  */
-void importMap(world_t& world, Value& map);
+void importMap(world_t& world, Document& map);
 
 /*
  * Imports a json object into the c++ data structure.
@@ -51,7 +49,7 @@ void importMap(world_t& world, Value& map);
  *
  * @returns void
  */
-void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
+void importAgents(world_t& world, Document& agents, spt_t& carsSPT, spt_t& bikeSPT);
 
 /*
  * Exports the world to json format. It is the static part of the simulation. The simulation is added step by step with
@@ -64,7 +62,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
  *
  * @returns json marshalling.
  */
-json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap);
+Document exportWorld(world_t& world, const float& time, const float& timeDelta, Value& originMap);
 
 /*
  * Adds a frame to the output json.
@@ -75,7 +73,7 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
  * @returns void
  *
  */
-void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
+void addFrame(world_t& world, Document& out, const bool final = false);
 
 /*
  * Exports the c++ data structure into a json object.
@@ -87,29 +85,5 @@ void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
  * @returns void
  */
 bool save(const std::string& file, const Document& out);
-
-/*
- * Exports the Shortest Path Tree as well as the current world of the simulation to one json file.
- * The purpose of this function is to save time when loading the map again by not having to compute floyd warshall again.
- *
- * @param carTree: Shortest Path Tree for cars
- * @param bikeTree: Shortest Path Tree for bikes
- * @param input_world: (world) of current simulation
- * @param output: json obj or sth to write the content into
- *
- * @returns void
-*/
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output);
-
-/*
- * Imports the Shortest Path Trees from a json object.
- *
- * @param carTree: Shortest Path Tree for cars
- * @param bikeTree: Shortest Path Tree for bikes
- * @param input: json obj read the content from
- *
- * @returns void
- * */
-void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world);
 
 bool dumpSpt(spt_t Tree, const char* fname);

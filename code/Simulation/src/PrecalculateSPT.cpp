@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     const char* bikeFile = argv[3];
 
     world_t world;
-    nlohmann::json import;
+    Document import;
 
     if (!loadFile(importFile, import)) {
         return -1;

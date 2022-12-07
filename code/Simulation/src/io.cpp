@@ -1,6 +1,9 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctime>
 
 #include "update.hpp"
 #include "io.hpp"
@@ -26,7 +29,7 @@ bool hasPrecompute(const Document& map){
     return map.HasMember("world") && map.HasMember("carTree") && map.HasMember("bikeTree");
 }
 
-void importMap(world_t& world, Value& map) {
+void importMap(world_t& world, Document& map) {
 	assert(world.streets.size() == 0 && "Streets is not empty");
     // Data will be packed more neatly when first creating array with given size
     world.intersections = std::vector<Intersection>(map["intersections"].Size());
@@ -62,12 +65,11 @@ void importMap(world_t& world, Value& map) {
 			street.type = StreetTypes::Both;
 		}
 		else {
-            // TODO What happens if we have multiple lanes.
 			const Value& lane = data["lanes"][0];
-			if (lane["type"].GetString() == "both") {
+			if (lane["type"] == "both") { // TODO This might need to be replaced with .GetString()
 				street.type = StreetTypes::Both;
 			}
-			else if (lane["type"].GetString() == "bike") {
+			else if (lane["type"] == "bike") {
 				street.type = StreetTypes::OnlyBike;
 			} else {
                 street.type = StreetTypes::OnlyCar;
@@ -84,34 +86,36 @@ void importMap(world_t& world, Value& map) {
 	}
 }
 
-void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
+void importAgents(world_t& world, Document& agents, spt_t& carsSPT, spt_t& bikeSPT){
     assert(world.actors.size() == 0 && "Agents is not empty");
-    world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
+    world.actors = std::vector<Actor>(agents["bikes"].Size() + agents["cars"].Size());
     int index = 0;
 
     // Import Bikes
-    for (const auto& [name, data] : agents["bikes"].items()) {
+    for (auto i = agents["bikes"].MemberBegin(); i != agents["bikes"].MemberEnd(); ++i)
+    {
+        Value& data = i->value;
         Actor actor = {
                 .type = ActorTypes::Bike,
                 .distanceToIntersection = 0.0f,
                 .distanceToRight = 0,
-                .length = data["length"],
+                .length = data["length"].GetFloat(),
 
-                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+                .max_velocity = data["max_velocity"].GetFloat() / 0.36f, // Convert km/h to m/s
                 .target_velocity = 50 / 3.6f,
 
-                .acceleration = data["acceleration"],
-                .deceleration = data["deceleration"],
-                .acceleration_exp = data["acceleration_exponent"],
+                .acceleration = data["acceleration"].GetFloat(),
+                .deceleration = data["deceleration"].GetFloat(),
+                .acceleration_exp = data["acceleration_exponent"].GetFloat(),
 
-                .insertAfter = data["waiting_period"],
+                .insertAfter = data["waiting_period"].GetFloat(),
 
                 //.width = 1.5f,
-                .id = name,
+                .id = i->name.GetString()
         };
 
-        int startIntersectionId = world.string_to_int[data["start_id"]];
-        int endIntersectionId = world.string_to_int[data["end_id"]];
+        int startIntersectionId = world.string_to_int[data["start_id"].GetString()];
+        int endIntersectionId = world.string_to_int[data["end_id"].GetString()];
 
         actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId);
 
@@ -125,28 +129,31 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         world.actors.at(index) = actor;
         index++;
     }
-    for (const auto& [name, data] : agents["cars"].items()) {
+
+
+    for (auto i = agents["cars"].MemberBegin(); i != agents["cars"].MemberEnd(); ++i) {
+        Value& data = i->value;
         Actor actor = {
                 .type = ActorTypes::Car,
                 .distanceToIntersection = 0.0f,
                 .distanceToRight = 0,
-                .length = data["length"],
+                .length = data["length"].GetFloat(),
 
-                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+                .max_velocity = data["max_velocity"].GetFloat() / 0.36f, // Convert km/h to m/s
                 .target_velocity = 50 / 3.6f,
 
-                .acceleration = data["acceleration"],
-                .deceleration = data["deceleration"],
-                .acceleration_exp = data["acceleration_exponent"],
+                .acceleration = data["acceleration"].GetFloat(),
+                .deceleration = data["deceleration"].GetFloat(),
+                .acceleration_exp = data["acceleration_exponent"].GetFloat(),
 
-                .insertAfter = data["waiting_period"],
+                .insertAfter = data["waiting_period"].GetFloat(),
 
                 //.width = 1.5f,
-                .id = name,
+                .id = i->name.GetString()
         };
 
-        int startIntersectionId = world.string_to_int[data["start_id"]];
-        int endIntersectionId = world.string_to_int[data["end_id"]];
+        int startIntersectionId = world.string_to_int[data["start_id"].GetString()];
+        int endIntersectionId = world.string_to_int[data["end_id"].GetString()];
 
         actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId);
 
@@ -162,75 +169,89 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     }
 }
 
-json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap) {
-	json output;
+Document exportWorld(world_t& world, const float& elapsed_time, const float& timeDelta, Value& originMap) {
+	Document output(kObjectType);
 
-	output["setup"]["map"] = originMap;
+    Value setup(kObjectType);
+    setup.AddMember("map", originMap, output.GetAllocator());
 
-	output["peripherals"] = {};
-	output["peripherals"]["date"] = "Ich weiss doch ned wie mer date in c++ bechunt?"; // TODO Figure this out
-	output["peripherals"]["type"] = "simulation";
-	output["peripherals"]["elapsed_time"] = time;
-	output["peripherals"]["time_step"] = timeDelta;
+    Value peripherals(kObjectType);
 
-	output["simulation"] = std::vector<json>();
+    time_t rawtime;
+    struct tm *timeinfo;
+    char buffer [80];
+    time( &rawtime );
+    timeinfo = localtime(&rawtime);
+    int len = static_cast<int>(strftime(buffer, sizeof(buffer), "%d-%m-%Y_%H-%M-%S", timeinfo));
+
+    Value date;
+    date.SetString(buffer, len, output.GetAllocator());
+    peripherals.AddMember("date", date, output.GetAllocator());
+    peripherals.AddMember("type", "simulation", output.GetAllocator());
+    peripherals.AddMember("elapsed_time", elapsed_time, output.GetAllocator());
+    peripherals.AddMember("time_step", timeDelta, output.GetAllocator());
+
+    Value simulation(kArrayType);
+    output.AddMember("simulation", simulation, output.GetAllocator());
+
+    Value actors(kObjectType);
 
 	for (const auto& actor : world.actors) {
-		output["setup"]["agents"][actor.id] = {};
-		json& obj = output["setup"]["agents"][actor.id];
-		obj["id"] = actor.id;
-		obj["type"] = actor.type == ActorTypes::Car ? "car" : "bike";
-        obj["length"] = actor.length;
-        obj["max_velocity"] = actor.max_velocity * 3.6f;
-        obj["acceleration"] = actor.acceleration;
-        obj["deceleration"] = actor.deceleration;
-        obj["acceleration_exponent"] = actor.acceleration_exp;
-        obj["waiting_period"] = actor.insertAfter;
-        obj["start_crossing_id"] = world.int_to_string[actor.path.front()];
-        obj["end_crossing_id"] = world.int_to_string[actor.path.back()];
+        Value actorData(kObjectType);
+        actorData.AddMember("id", Value(actor.id.c_str(), output.GetAllocator()), output.GetAllocator());
+        actorData.AddMember("type", Value(actor.type == ActorTypes::Car ? "car" : "bike", output.GetAllocator()), output.GetAllocator());
+        actorData.AddMember("length", actor.length, output.GetAllocator());
+        actorData.AddMember("max_velocity", actor.max_velocity * 3.6f, output.GetAllocator());
+        actorData.AddMember("acceleration", actor.acceleration, output.GetAllocator());
+        actorData.AddMember("deceleration", actor.deceleration, output.GetAllocator());
+        actorData.AddMember("acceleration_exponent", actor.acceleration_exp, output.GetAllocator());
+        actorData.AddMember("waiting_period", actor.insertAfter, output.GetAllocator());
+        actorData.AddMember("start_id", Value(world.int_to_string[actor.path.front()].c_str(), output.GetAllocator()), output.GetAllocator());
+        actorData.AddMember("end_id", Value(world.int_to_string[actor.path.back()].c_str(), output.GetAllocator()), output.GetAllocator());
+
+        actors.AddMember(Value(actor.id.c_str(), output.GetAllocator()), actorData, output.GetAllocator());
 	}
 
 	return output;
 }
 
-void addFrame(world_t& world, json& out, const bool final) {
-	json frame;
-    json actorFrame;
-    json intersectionFrame;
+void addFrame(world_t& world, Document& out, const bool final) {
+    Value frame(kObjectType);
+    Value intersectionFrame(kObjectType);
+    Value actorFrame(kObjectType);
 
     // Lambda function to create json object to add to output.
-	auto a = [&actorFrame, &final](const Actor* actor, const Street* street, const float percent, bool active) {
-        actorFrame[actor->id] = {};
-		json& obj = actorFrame[actor->id];
-		obj["road"] = street->id;
-		obj["percent_to_end"] = percent; 
-		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
-		obj["active"] = active;
+	auto a = [&actorFrame, &final, &out](const Actor* actor, const Street* street, const float percent, bool active) {
+		Value obj(kObjectType);
+        obj.AddMember("road", Value(street->id.c_str(), out.GetAllocator()), out.GetAllocator());
+        obj.AddMember("percent_to_end", percent, out.GetAllocator());
+        obj.AddMember("distance_to_side", actor->distanceToRight * 10.0f, out.GetAllocator());
         if (final){
-            obj["start_time"] = actor->start_time;
-            obj["end_time"] = actor->end_time;
+            obj.AddMember("start_time", actor->start_time, out.GetAllocator());
+            obj.AddMember("end_time", actor->end_time, out.GetAllocator());
         }
 
-		if (!active) {
-			// TODO remove when frames of not active cars can be discarded
-			obj["distance_to_side"] = -10000.0f;
-		}
+        actorFrame.AddMember(Value(actor->id.c_str(), out.GetAllocator()), obj, out.GetAllocator());
 	};
 
-    auto c = [&intersectionFrame](const Intersection* intersection) {
-        intersectionFrame[intersection->id] = {};
-        json& obj = intersectionFrame[intersection->id];
-        obj["green"] = std::vector<json>();
-        obj["red"] = std::vector<json>();
+    auto c = [&intersectionFrame, &out, &world](const Intersection* intersection) {
+        Value obj(kObjectType);
+        Value green(kArrayType);
+        Value red(kArrayType);
+
         int index = 0;
         for (const auto inboundRoad : intersection->inbound){
             if (index == intersection->green){
-                obj["green"].push_back(inboundRoad->id);
+                green.PushBack(Value(inboundRoad->id.c_str(), out.GetAllocator()), out.GetAllocator());
             } else {
-                obj["red"].push_back(inboundRoad->id);
+                red.PushBack(Value(inboundRoad->id.c_str(), out.GetAllocator()), out.GetAllocator());
             }
             index++;
         }
+
+        obj.AddMember("green", green, out.GetAllocator());
+        obj.AddMember("red", red, out.GetAllocator());
+        intersectionFrame.AddMember(Value(world.int_to_string[intersection->id].c_str(), out.GetAllocator()), obj, out.GetAllocator());
     };
 
     // Iterate through the actors on the street and update its distance.
@@ -267,11 +288,11 @@ void addFrame(world_t& world, json& out, const bool final) {
         }
 	}
 
-    frame["agents"] = actorFrame;
-    frame["intersections"] = intersectionFrame;
+    frame.AddMember("agents", actorFrame, out.GetAllocator());
+    frame.AddMember("intersections", intersectionFrame, out.GetAllocator());
 
-	if (frame.size() > 0) {
-		out["simulation"].push_back(frame);
+	if (frame.Size() > 0) {
+        out["simulation"].PushBack(frame, out.GetAllocator());
 	}
 }
 
@@ -287,58 +308,6 @@ bool save(const std::string& file, const Document& out) {
 	}
     std::cerr << "Failed to save to " << file << std::endl;
     return false;
-}
-
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){
-    void* carTreePtr =  carTree.array;
-    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
-    void* bikePtr =  bikeTree.array;
-    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
-
-    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
-    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
-    output["world"] = input;
-}
-
-void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world){
-    carTree = {
-            .array = nullptr,
-            .size = static_cast<int>(world.intersections.size()),
-            };
-    // Creating empty SPT.
-    bikeTree = {
-            .array = nullptr,
-            .size = static_cast<int>(world.intersections.size()),
-    };
-
-    // Get the String
-    std::string carTreeB64 = input["carTree"];
-    std::string bikeTreeB64 = input["bikeTree"];
-
-    // Convert to std::vector<unsigned char>
-    std::vector<BYTE> carTreeBytes = base64_decode(carTreeB64);
-    std::vector<BYTE> bikeTreeBytes = base64_decode(bikeTreeB64);
-
-    // Allocate Memory for copying
-    BYTE* carTreePtr = new BYTE[carTree.size * carTree.size * sizeof(int)];
-    BYTE* bikeTreePtr = new BYTE[bikeTree.size * bikeTree.size * sizeof(int)];
-
-    // Copy to allocated Memory
-    std::copy(carTreeBytes.begin(), carTreeBytes.end(), carTreePtr);
-    std::copy(bikeTreeBytes.begin(), bikeTreeBytes.end(), bikeTreePtr);
-
-    void* carTreeVoidPtr = static_cast<void*>(carTreePtr);
-    void* bikeTreeVoidPtr = static_cast<void*>(bikeTreePtr);
-
-    carTree.array = static_cast<int*>(carTreeVoidPtr);
-    bikeTree.array = static_cast<int*>(bikeTreeVoidPtr);
-
-    for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; j < carTree.size; j++){
-            std::cout << carTree.array[i * carTree.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 bool dumpSpt(spt_t Tree, const char* fname){

@@ -45,32 +45,24 @@ int main(int argc, char* argv[]) {
 
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
     if (hasPrecompute(import)){
-        importMap(world, import["world"]);
-    } else {
-        importMap(world, import);
+        return -1;
     }
+    importMap(world, import);
 	stopMeasureTime(start);
 
     spt_t carsSPT;
     spt_t bikeSPT;
 
-    if (hasPrecompute(import)){
-        start = startMeasureTime("calculating shortest path tree with floyd warshall");
-        importSPT(carsSPT, bikeSPT, import, world);
-        stopMeasureTime(start);
-    } else {
-        start = startMeasureTime("calculating shortest path tree with floyd warshall");
-        carsSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyCar});
-        bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
-        stopMeasureTime(start);
-    }
+    start = startMeasureTime("calculating shortest path tree with floyd warshall");
+    carsSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyCar});
+    bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
+    stopMeasureTime(start);
 
 
 	start = startMeasureTime("creating random actors");
 
     if (agentsFile != nullptr){
-
-        nlohmann::json agents;
+        Document agents;
         if (!loadFile(importFile, agents)) {
             return -1;
         }
@@ -84,12 +76,7 @@ int main(int argc, char* argv[]) {
 
 	stopMeasureTime(start);
 
-    nlohmann::json output;
-    if (hasPrecompute(import)){
-	    output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
-    } else {
-        output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
-    }
+    Document output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
 
     for (intersection_t& iter : world.intersections){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
