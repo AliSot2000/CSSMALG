@@ -97,7 +97,8 @@ Actor* moveToOptimalLane(Street& street, Actor* actor);
  * @param start Where to begin sorting
  * @param end Where to stop sorting
 */
-void sortStreet(TrafficIterator& start, TrafficIterator& end);
+//void sortStreet(TrafficIterator& start, TrafficIterator& end);
+void sortStreet(std::vector<Actor*>& traffic);
 
 /*
  * Updates all vehicles in all streets
