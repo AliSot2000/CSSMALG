@@ -16,7 +16,7 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
 		[](const Actor* a, const float& b) {
-			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES >= b; 
+			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES >= b;
 	});
 
 	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
@@ -332,9 +332,6 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
       //    for (auto& intersection : world->intersections) {
         Intersection* intersection = world->IntersectionPtr.at(x);
 
-        if (intersection->inbound.size() == 0)
-			continue;
-
         if (intersection->hasTrafficLight){
             updateIntersectionPhase(intersection, timeDelta, stupidIntersections);
 
@@ -429,9 +426,10 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
         empty = empty && street.traffic.empty();
         street.density_accumulate += static_cast<float>(street.traffic.size()) / street.length;
         street.flow_accumulate += static_cast<float>(street.traffic.size()) / timeDelta;
-		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
+        for (int32_t i = 0; i < street.traffic.size(); i++) {
 			Actor* actor = street.traffic[i];
+
 			const float distance = actor->current_velocity * timeDelta;
 //			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
 //			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
@@ -443,23 +441,24 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 //			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
-
             float maxDrivableDistance = actor->distanceToIntersection;
-            float movement_distance = std::min(distance, actor->distanceToIntersection);
+            float movement_distance = std::min(distance, actor->distanceToIntersection); // Don't overshoot intersection
 
             // Compute updated stuff
             if (frontVehicle != nullptr) {
-                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToIntersection - (frontVehicle->length
-                                                                                                 + frontVehicle->distanceToIntersection
-                                                                                                 + MIN_DISTANCE_BETWEEN_VEHICLES));
-                movement_distance = std::min(distance, actor->distanceToIntersection -
-                                                      (frontVehicle->length
+                maxDrivableDistance = std::min(maxDrivableDistance, actor->distanceToIntersection
+                                                                     - (frontVehicle->length
+                                                                     + frontVehicle->distanceToIntersection
+                                                                     + MIN_DISTANCE_BETWEEN_VEHICLES));
+                movement_distance = std::min(distance, actor->distanceToIntersection
+                                                      - (frontVehicle->length
                                                       + frontVehicle->distanceToIntersection
                                                       + MIN_DISTANCE_BETWEEN_VEHICLES));
 
                 assert(frontVehicle->distanceToIntersection + frontVehicle->length <
                        actor->distanceToIntersection - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
+
             actor->distanceToIntersection -= movement_distance;
             actorMoved = actorMoved || movement_distance > 0.0f;
             actor->time_spent_waiting += static_cast<float>(movement_distance > 0.0f) * timeDelta;
