@@ -176,8 +176,13 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 
 // Updated Version of Alex to handle zero velocity vehicles.
 bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
-    Street* target = intersection->outbound[actor->path.front()];
 
+    if (actor->path.empty()){
+        intersection->arrivedFrom.push_back({actor, {}});
+        return false;
+    }
+
+    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike[actor->path.front()] : intersection->outboundCar[actor->path.front()];
 
     // Empty, insert immediately and return
     if (target->traffic.empty()){
@@ -403,7 +408,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 //    std::vector<Street>::iterator start_iter = world->streets.begin();
 //    std::advance(start_iter, offset);
 
-    // #pragma omp parallel for private(empty, actorMoved)
+//    #pragma omp parallel for private(empty, actorMoved)
     for (int32_t x = offset; x < world->streets.size(); x+=stride){
 //    for (auto& street : world->streets) {
         Street street = world->streets[x];
@@ -516,7 +521,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 bool updateStreets(world_t* world, const float timeDelta){
     bool actorMoved = false;
 
-    #pragma omp parallel for reduction(||:actorMoved) default(none) shared(world, timeDelta)
+    #pragma omp parallel for reduction(||:actorMoved)  default(none) shared(world, timeDelta)
     for (int32_t i = 0; i < 128; i++) {
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
@@ -524,7 +529,7 @@ bool updateStreets(world_t* world, const float timeDelta){
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
-    #pragma omp parallel for default(none) shared(world, timeDelta, stupidIntersections, current_time)
+    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
     for (int32_t i = 0; i < 128; i++){
         singleIntersectionStrideUpdate(world, timeDelta, stupidIntersections, current_time, 128, i);
     }
