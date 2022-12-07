@@ -31,14 +31,14 @@ class AgentGenerator
      */
     public function execute(): void {
         $this->readData();
-        $this->generateCars();
+        $this->generateAgents();
     }
 
     /**
-     * generates the agents, that are cars
+     * generates the agents
      * @return void
      */
-    private function generateCars(): void {
+    private function generateAgents(): void {
         $agentAmount = $this->calculateAgentAmount();
         // distribution of cars going into the city center
         // 1/4 of going into city center we assume inter city travel and for 1/4 of rest we assume outer city travel
