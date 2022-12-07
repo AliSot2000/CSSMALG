@@ -342,15 +342,35 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     }
 }
 
-bool dumpSpt(spt_t Tree, const char* fname) {
+bool binDumpSpt(spt_t Tree, const char* file_name) {
     void *carTreePtr = Tree.array;
     unsigned char *carTreeChar = static_cast<unsigned char *>(carTreePtr);
     std::string ostring = base64_encode(carTreeChar, Tree.size * Tree.size * sizeof(int));
 
-    std::ofstream f(fname);
+    std::ofstream f(file_name);
     f << ostring;
     f.close();
     return true;
+
+//    /*
+//    FILE *file = fopen(fname, "wb");
+//    fwrite(Tree.array, Tree.size * Tree.size * sizeof(int) * sizeof(int), 1, file);
+//    fclose(file);
+//     */
+//
+//    std::ofstream f(fname, std::ios::out | std::ios::binary);
+//    if (!f){
+//        std::cerr << "Failed to open " << fname << std::endl;
+//        return false;
+//    }
+//    f.write(static_cast<char*>(carTreePtr), Tree.size * Tree.size);
+//    std::cout << "Dumped SPT to " << Tree.size * Tree.size << std::endl;
+//    f.close();
+//    if (!f.good()){
+//        std::cerr << "Failed to write to " << fname << std::endl;
+//        return false;
+//    }
+//    return true;
 }
 
 void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final){
@@ -384,24 +404,30 @@ void jsonDumpStats(const float& avgTime, json& output, world_t& world, const boo
     }
 }
 
-//
-//    /*
-//    FILE *file = fopen(fname, "wb");
-//    fwrite(Tree.array, Tree.size * Tree.size * sizeof(int) * sizeof(int), 1, file);
-//    fclose(file);
-//     */
-//
-//    std::ofstream f(fname, std::ios::out | std::ios::binary);
-//    if (!f){
-//        std::cerr << "Failed to open " << fname << std::endl;
-//        return false;
-//    }
-//    f.write(static_cast<char*>(carTreePtr), Tree.size * Tree.size);
-//    std::cout << "Dumped SPT to " << Tree.size * Tree.size << std::endl;
-//    f.close();
-//    if (!f.good()){
-//        std::cerr << "Failed to write to " << fname << std::endl;
-//        return false;
-//    }
-//    return true;
 
+bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world) {
+    std::ifstream f(file_name);
+    if (!f.is_open()) {
+        std::cerr << "Failed to load " << file_name << std::endl;
+        return false;
+    }
+
+    std::stringstream b64stuff;
+    b64stuff << f.rdbuf();
+
+    std::vector<BYTE> inStream = base64_decode(b64stuff.str());
+    std::cout << "Loaded SPT of size " << inStream.size() << std::endl;
+    unsigned char* charPtr = inStream.data();
+
+    // Pointer magic
+    void* voidPtr = static_cast<void*>(charPtr);
+    int* tempVectorPtr = static_cast<int*>(voidPtr);
+
+    SPT.size = static_cast<int>(world.intersections.size());
+    SPT.array = new int[SPT.size * SPT.size];
+
+    // Copy data to non-temporary memory
+    std::copy(tempVectorPtr, tempVectorPtr + SPT.size * SPT.size, SPT.array);
+    f.close();
+    return true;
+}
