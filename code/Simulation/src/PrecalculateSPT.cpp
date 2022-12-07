@@ -41,11 +41,11 @@ int main(int argc, char* argv[]) {
     time = startMeasureTime("calculating shortest path tree with floyd warshall");
     {
         spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
-        dumpSpt(carsSPT, carFile);
+        binDumpSpt(carsSPT, carFile);
     }
     {
         spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
-        dumpSpt(bikeSPT, bikeFile);
+        binDumpSpt(bikeSPT, bikeFile);
     }
     stopMeasureTime(time);
 
