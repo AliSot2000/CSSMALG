@@ -92,9 +92,10 @@ typedef struct Intersection {
 typedef struct World {
 	std::vector<Intersection> intersections;
 	std::vector<Street> streets;
-	std::vector<Actor> actors;
+	std::vector<Actor*> actors;
     std::map<std::string, int> string_to_int;
     std::map<int, std::string> int_to_string;
     std::vector<Intersection*> IntersectionPtr;
     std::vector<Street*> StreetPtr;
+    Street empty;
 } world_t;
