@@ -57,9 +57,27 @@ int main(int argc, char* argv[]) {
 
     start = startMeasureTime("importing shortest path trees");
     // Don't continue if loading fails.
-    if (binLoadTree(carsSPT, carTree, world) && binLoadTree(bikeSPT, bikeTree, world)){
+    if (!binLoadTree(carsSPT, carTree, world)){
         return -1;
     }
+    if (!binLoadTree(bikeSPT, bikeTree, world)){
+        return -1;
+    }
+    /*
+    for (int i = 0; i < carsSPT.size; i++){
+        for (int j = 0; j < carsSPT.size; j++){
+            std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    for (int i = 0; i < bikeSPT.size; i++){
+        for (int j = 0; j < bikeSPT.size; j++){
+            std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    */
     stopMeasureTime(start);
 
     // Scope so json gets destroyed.
@@ -81,7 +99,7 @@ int main(int argc, char* argv[]) {
     // Sort the Cars in the intersections
     start = startMeasureTime("sorting actors in intersections");
 
-    #pragma omp parallel for shared(world) default(none)
+    // #pragma omp parallel for shared(world) default(none)
     for (intersection_t& iter : world.intersections){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
             return a->insertAfter < b->insertAfter;
