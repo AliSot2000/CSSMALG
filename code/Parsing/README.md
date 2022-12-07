@@ -39,7 +39,7 @@ The Parser is located in the `src` directory. It sends following request to the 
                 way[highway=residential];
             )->.a;
             (.a;>;);
-            out
+            out;
             
 The results of cleaning and generating the data according to specifications of `map-input-json-spec.md` is saved in `mapExport.tsim` in JSON format into the `data` directory.
 
