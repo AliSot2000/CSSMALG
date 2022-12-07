@@ -29,8 +29,6 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         }
     }
 
-
-
 	for (const auto& street : world->streets) {
 		if (std::find(include.begin(), include.end(), street.type) != include.end()) {
             // Access the matrix as a 1D array.
@@ -40,22 +38,14 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 		}
 	}
 
-	for (const auto& intersection : world->intersections) {
-		*(minimumDistance + intersection.id * sopatree.size + intersection.id) = 0;
-		*(sopatree.array + intersection.id * sopatree.size + intersection.id) = intersection.id;
-	}
-
     int V = sopatree.size;
     float newDistance;
 	for (int32_t k = 0; k < sopatree.size; k++) {
         std::cout << "Computing " << k << " of " << sopatree.size << std::endl;
-		int ks = world->intersections[k].id;
 
         for (int32_t i = 0; i < sopatree.size; i++) {
-			int is = world->intersections[i].id;
 
             for (int32_t j = 0; j < sopatree.size; j++) {
-				int js = world->intersections[j].id;
                 newDistance = minimumDistance[i * sopatree.size + k] + minimumDistance[k * sopatree.size + j];
                 sopatree.array[i * V + j] = sopatree.array[i * V + k] * (newDistance < minimumDistance[i * V + j]) + sopatree.array[i * V + j] * (newDistance >= minimumDistance[i * V + j]);
                 minimumDistance[i * V + j] = newDistance * (newDistance < minimumDistance[i * V + j]) + minimumDistance[i * V + j] * (newDistance >= minimumDistance[i * V + j]);
@@ -113,6 +103,7 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
     }
 
     FloydWarshal(distance, neighbour, size);
+    std::cout << std::endl;
 
     for (int i = 0; i < sopatree.size; i++){
         for (int j = 0; j < sopatree.size; j++){
