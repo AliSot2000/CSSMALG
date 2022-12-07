@@ -31,34 +31,44 @@ void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
     }
 }
 
-void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
-                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length, const int max_start_time) {
+void createRandomActors(world_t& world, spt_t& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
+                        const int& start, const int& numberOfActors, const float length, const int max_start_time) {
 // #pragma omp parallel for
-    for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
-        Actor actor = {
-                .type = type,
-                .distanceToIntersection = 0.0f,
-                .distanceToRight = 0,
-                .length = length,
-                .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
-                //.width = 1.5f,
-                .insertAfter = static_cast<float>(randint(0, max_start_time)),
-                .id = std::to_string(std::rand())
-        };
+    for (int i = start;  i < start + numberOfActors; ++i) {
+        Actor* actor = new Actor();
+        actor->type = type;
+        actor->distanceToIntersection = 0.0f;
+        actor->distanceToRight = 0;
+        actor->length = length;
+        actor->max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f; // 30km/h to 80km/h
+//        actor->width = 1.5f;
+        actor->insertAfter = static_cast<float>(randint(0, max_start_time));
+        actor->id = std::to_string(std::rand());
+
+//        Actor actor = {
+//                .type = type,
+//                .distanceToIntersection = 0.0f,
+//                .distanceToRight = 0,
+//                .length = length,
+//                .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
+//                //.width = 1.5f,
+//                .insertAfter = static_cast<float>(randint(0, max_start_time)),
+//                .id = std::to_string(std::rand())
+//        };
 
 
         int start_id;
         int end_id;
         choseRandomPath(world, spt, start_id, end_id);
-        actor.path = retrievePath(spt, start_id, end_id, spt.size);
+        actor->path = retrievePath(spt, start_id, end_id, spt.size);
 
         for (auto& intersection : world.intersections) {
             if (intersection.id == start_id) {
-                intersection.waitingToBeInserted.push_back(&(*iter));
+                intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
         }
-        *iter = actor;
+        world.actors.at(i) = actor;
     }
 }
 
