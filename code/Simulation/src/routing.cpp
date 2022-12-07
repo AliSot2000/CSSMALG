@@ -5,6 +5,7 @@
 
 #include "fastFW.cuh"
 #include "routing.hpp"
+#include <cassert>
 
 
 // Idea: If a road has multiple turning lanes, split a intersection into sets of identical turn options and split the single
@@ -131,15 +132,16 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 
 #endif
 
-Path retrievePath(spt_t& spt, const int &start, const int &end) {
+Path retrievePath(spt_t& spt, const int &start, const int &end, const int& maxVertexId) {
 	if (spt.array[start * spt.size + end] == -1) {
-		return Path();
+		return {};
 	}
 
 	Path p;
 
 	int u = start;
 	while (u != end) {
+        assert(u < maxVertexId);
 		u = spt.array[u * spt.size + end];
 		p.push(u);
 	}

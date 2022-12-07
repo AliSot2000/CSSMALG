@@ -50,7 +50,7 @@ void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const i
         int start_id;
         int end_id;
         choseRandomPath(world, spt, start_id, end_id);
-        actor.path = retrievePath(spt, start_id, end_id);
+        actor.path = retrievePath(spt, start_id, end_id, spt.size);
 
         for (auto& intersection : world.intersections) {
             if (intersection.id == start_id) {
