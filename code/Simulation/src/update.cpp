@@ -186,6 +186,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
         actor->distanceToRight = 0;
         actor->distanceToIntersection = target->length - actor->length;
         actor->target_velocity = target->speedlimit;
+        target->total_traffic_count++;
         return true;
     }
 
@@ -208,6 +209,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
                     actor->distanceToRight = 0;
                     actor->distanceToIntersection = target->length - actor->length;
                     actor->target_velocity = target->speedlimit;
+                    target->total_traffic_count++;
                     return true;
                 }
                 else {
@@ -223,6 +225,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
         actor->distanceToRight = 0;
         actor->distanceToIntersection = target->length - actor->length;
         actor->target_velocity = target->speedlimit;
+        target->total_traffic_count++;
         return true;
     }
 
@@ -259,6 +262,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
             actor->distanceToRight = other->distanceToRight;
             actor->distanceToIntersection = target->length - actor->length;
             actor->target_velocity = target->speedlimit;
+            target->total_traffic_count++;
             return true;
         } else {
             // Lane has been checked, number of availalbe lanes are rerduced
@@ -333,6 +337,8 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
 
                 if (tryInsertInNextStreet(intersection, actor)) {
                     street->traffic.erase(iter);
+                    intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
+                    intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
                     break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
                 }
             }
@@ -365,6 +371,8 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
 
                if (tryInsertInNextStreet(intersection, actor)) {
                    street->traffic.erase(street->traffic.begin());
+                   intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
+                   intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
                    intersection->green = index;
                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
                }
@@ -399,6 +407,8 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 //    for (auto& street : world->streets) {
         Street street = world->streets[x];
         empty = empty && street.traffic.empty();
+        street.density_accumulate += static_cast<float>(street.traffic.size()) / street.length;
+        street.flow_accumulate += static_cast<float>(street.traffic.size()) / timeDelta;
 		for (int32_t i = 0; i < street.traffic.size(); i++) {
 
 			Actor* actor = street.traffic[i];
@@ -432,6 +442,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
             }
             actor->distanceToIntersection -= movement_distance;
             actorMoved = actorMoved || movement_distance > 0.0f;
+            actor->time_spent_waiting += static_cast<float>(movement_distance > 0.0f) * timeDelta;
             // Clamping distance
             if (actor->distanceToIntersection < 0.01f){actor->distanceToIntersection = 0;}
 
