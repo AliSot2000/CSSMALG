@@ -346,7 +346,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                     break;
                 }
 
-                if (tryInsertInNextStreet(intersection, actor)) {
+                if (tryInsertInNextStreet(intersection, actor, world)) {
                     street->traffic.erase(iter);
                     intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
                     intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
@@ -356,7 +356,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
         } else {
            for (int i = 0; i < intersection->inbound.size(); i++){
                int index = (i + intersection->green) % static_cast<int>(intersection->inbound.size());
-               Street* street = intersection->inbound[index];
+               Street* street = intersection->inbound.at(index);
 
                // Ignore empty streets
                if (street->traffic.size() == 0){
@@ -380,7 +380,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                    break;
                }
 
-               if (tryInsertInNextStreet(intersection, actor)) {
+               if (tryInsertInNextStreet(intersection, actor, world)) {
                    street->traffic.erase(street->traffic.begin());
                    intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
                    intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
@@ -397,7 +397,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
         if (intersection->waitingToBeInserted.size() > 0) {
             Actor* actor = intersection->waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
-            if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor)) {
+            if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor, world)) {
                 actor->start_time = current_time * static_cast<float>(actor->start_time == -1.0f)
                         + actor->start_time * static_cast<float>(actor->start_time != -1.0f); // only set the start time if the if the start time
                 intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
