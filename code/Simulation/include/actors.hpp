@@ -42,6 +42,9 @@ typedef struct Actor {
     float start_time = -1.0f;
     float end_time = -1.0f;
     float time_spent_waiting = 0.0f;
+
+    int start_id = -1;
+    int end_id = -1;
 } actor_t;
 
 enum StreetTypes {
