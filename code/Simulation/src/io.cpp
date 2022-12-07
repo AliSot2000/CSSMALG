@@ -116,7 +116,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         int startIntersectionId = world.string_to_int[data["start_id"]];
         int endIntersectionId = world.string_to_int[data["end_id"]];
 
-        actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId);
+        actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId, bikeSPT.size);
 
         for (auto& intersection : world.intersections) {
             if (intersection.id == startIntersectionId) {
@@ -151,7 +151,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         int startIntersectionId = world.string_to_int[data["start_id"]];
         int endIntersectionId = world.string_to_int[data["end_id"]];
 
-        actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId);
+        actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId, carsSPT.size);
 
         for (auto& intersection : world.intersections) {
             if (intersection.id == startIntersectionId) {
