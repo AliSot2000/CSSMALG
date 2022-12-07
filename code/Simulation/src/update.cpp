@@ -16,12 +16,12 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
 		[](const Actor* a, const float& b) {
-			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b; // Todo test if removing min distance has adverse effect.
+			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES >= b; 
 	});
 
 	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
 		[](const float& b, const Actor* a) {
-			return a->distanceToIntersection > b;
+			return a->distanceToIntersection - a->length - MIN_DISTANCE_BETWEEN_VEHICLES  < b;
 	});
 }
 
@@ -48,6 +48,7 @@ FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const T
            f.frontVehicleLeft = other;
         }
     }
+    // Don't update traffic end iterator since we want to iterate through all vehicles.
     return f;
 }
 
@@ -62,6 +63,7 @@ FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, con
             continue;
         }
 
+        // Return if the other vehicle is behind the actor and cannot collide
         if (other->distanceToIntersection > actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES) {
             return f;
         }
@@ -87,72 +89,72 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     TrafficIterator start = street.traffic.begin();
     TrafficIterator end = street.traffic.end();
     // Get front vehicles
-    FrontVehicles f = GetFrontVehicles(street, actor, start, end);
+    FrontVehicles frontActors = GetFrontVehicles(street, actor, start, end);
 
     // Don't update the shit if we are a bike in a normal street.
     if (actor->type == ActorTypes::Bike && street.type == StreetTypes::Both) {
-        return f.frontVehicle;
+        return frontActors.frontVehicle;
     }
 
-    FrontVehicles c = GetCollisionVehicles(street, actor, end);
+    // Locate vehicles which could possibly collide
+    FrontVehicles collisionVehicle = GetCollisionVehicles(street, actor, end);
 
     // Check in front
     float frontDistance = actor->distanceToIntersection;
-    Actor* OptimalFrontActor = f.frontVehicle;
+    Actor* OptimalFrontActor = frontActors.frontVehicle;
     int distanceToRight = actor->distanceToRight;
 
-    if (f.frontVehicle != nullptr) {
-        frontDistance = actor->distanceToIntersection - (f.frontVehicle->distanceToIntersection + f.frontVehicle->length);
+    // Update front distance if there is a vehicle in front
+    if (frontActors.frontVehicle != nullptr) {
+        frontDistance = actor->distanceToIntersection - (frontActors.frontVehicle->distanceToIntersection + frontActors.frontVehicle->length);
     }
-    // assert(c.frontVehicle == actor && "Actor is not in place where it is expected.");
 
-    // Check left lane existence
+    // Check if you can move to a left lane
     if (actor->distanceToRight < street.width - LANE_WIDTH) {
-
+        // Preemptively set the movable distance.
         float leftDistance = actor->distanceToIntersection;
 
         // Update distance
-        if (f.frontVehicleLeft != nullptr) {
+        if (frontActors.frontVehicleLeft != nullptr) {
             leftDistance =
-                    actor->distanceToIntersection - (f.frontVehicleLeft->distanceToIntersection + f.frontVehicleLeft->length);
+                    actor->distanceToIntersection - (frontActors.frontVehicleLeft->distanceToIntersection + frontActors.frontVehicleLeft->length);
         }
 
-        // More suitable
+        // Check if the left lane has a greater distance the actor can travel.
         if (leftDistance > frontDistance) {
             // Check for a collision with subsequent vehicle.
-            if (c.frontVehicleLeft == nullptr || (
-                    c.frontVehicleLeft->distanceToIntersection > actor->distanceToIntersection + actor->length +
-                                                             MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
-                    || c.frontVehicleLeft->distanceToIntersection + c.frontVehicleLeft->length +
-                       MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToIntersection)) { // Actor is enough behind.
+            if (collisionVehicle.frontVehicleLeft == nullptr // If there's no vehicle to colide, proceed
+                || (collisionVehicle.frontVehicleLeft->distanceToIntersection > actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead of collision vehicle.
+                    || collisionVehicle.frontVehicleLeft->distanceToIntersection + collisionVehicle.frontVehicleLeft->length + MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToIntersection)) // Actor is enough behind collision vehicle.
+            {
 
                 frontDistance = leftDistance;
                 distanceToRight = actor->distanceToRight + LANE_WIDTH;
-                OptimalFrontActor = f.frontVehicleLeft;
+                OptimalFrontActor = frontActors.frontVehicleLeft;
             }
 
         }
     }
 
-    // Check right lane existence
+    // Check if the actor can move on a right lane
     if (actor->distanceToRight > 0){
-
+        // Preemptively set the movable distance.
         float rightDistance = actor->distanceToIntersection;
 
-        // Update distance
-        if (f.frontVehicleRight != nullptr) {
+        // Update front distance if there is a vehicle in front
+        if (frontActors.frontVehicleRight != nullptr) {
             rightDistance =
-                    actor->distanceToIntersection - (f.frontVehicleRight->distanceToIntersection + f.frontVehicleRight->length);
+                    actor->distanceToIntersection - (frontActors.frontVehicleRight->distanceToIntersection + frontActors.frontVehicleRight->length);
         }
 
         // Prioritize right lane, that's why greater or equal than.
+        // Check if the right lane has a greater distance the actor can travel.
         if (rightDistance >= frontDistance) {
-            if (c.frontVehicleRight == nullptr
-            || (c.frontVehicleRight->distanceToIntersection > actor->distanceToIntersection + actor->length +
-                                                         MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
-                || c.frontVehicleRight->distanceToIntersection + c.frontVehicleRight->length +
-                   MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToIntersection)){
-            OptimalFrontActor = f.frontVehicleRight;
+            if (collisionVehicle.frontVehicleRight == nullptr // There's no vehicle in front of the actor.
+            || (collisionVehicle.frontVehicleRight->distanceToIntersection > actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES // Actor is enough ahead.
+                || collisionVehicle.frontVehicleRight->distanceToIntersection + collisionVehicle.frontVehicleRight->length + MIN_DISTANCE_BETWEEN_VEHICLES < actor->distanceToIntersection))
+            {
+            OptimalFrontActor = frontActors.frontVehicleRight;
             distanceToRight = actor->distanceToRight - LANE_WIDTH;
             }
         }
