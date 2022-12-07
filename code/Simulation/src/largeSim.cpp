@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
     if (!binLoadTree(bikeSPT, bikeTree, world)){
         return -1;
     }
+    // DEBUGGING PRINT
     /*
     for (int i = 0; i < carsSPT.size; i++){
         for (int j = 0; j < carsSPT.size; j++){
@@ -92,6 +93,12 @@ int main(int argc, char* argv[]) {
         stopMeasureTime(start);
     }
 
+//    int randomCars = 2000;
+//    int randomBikes = 2000;
+//    world.actors = std::vector<Actor>(randomCars + randomBikes);
+//    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f, static_cast<int>(runtime * 0.5));
+//    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f, static_cast<int>(runtime * 0.5));
+
     // Export the world.
     nlohmann::json output;
     output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
@@ -99,8 +106,11 @@ int main(int argc, char* argv[]) {
     // Sort the Cars in the intersections
     start = startMeasureTime("sorting actors in intersections");
 
-    // #pragma omp parallel for shared(world) default(none)
-    for (intersection_t& iter : world.intersections){
+     #pragma omp parallel for shared(world) default(none)
+    for (int i = 0; i < world.intersections.size(); ++i){
+        Intersection iter = world.intersections.at(i);
+//#pragma omp parallel for shared(world) default(none)
+//    for (auto& iter : world.intersections){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
             return a->insertAfter < b->insertAfter;
         });
