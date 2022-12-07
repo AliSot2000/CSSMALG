@@ -118,7 +118,7 @@ bool updateStreets(world_t* world, const float timeDelta);
  *
  * @returns True <=> if the actor was inserted
 */
-bool tryInsertInNextStreet(Intersection* intersection, Actor* actor);
+bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world);
 
 /*
  * Performs the update light routine of an intersection which hase a traffic light. It selects which lane currently has
