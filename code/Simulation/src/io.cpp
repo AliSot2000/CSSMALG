@@ -265,8 +265,13 @@ void addFrame(world_t& world, json& out, const bool final) {
 	for (auto& intersection : world.intersections) {
         // Initial output so the simulation knows how many actors there are
 		for (const auto& actor : intersection.waitingToBeInserted) {
-			int first = actor->path.front();
-			Street* street = intersection.outboundCar.find(first)->second;
+            Street* street;
+            if (actor->path.empty()){
+                street = &world.empty;
+            } else {
+                int first = actor->path.front();
+                street = intersection.outboundCar.find(first)->second;
+            }
 			if (!actor->outputFlag) {
 				a(actor, street, 0.0f, false);
 				actor->outputFlag = true;
