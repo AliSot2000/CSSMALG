@@ -284,7 +284,7 @@ void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool s
     if (stupidIntersections){
         // Perform the stupid intersection algorithm, i.e. don't check if the street is empty
         if (intersection->currentPhase <= 0.0f) {
-            intersection->green = (intersection->green + 1) % (intersection->inbound.size());
+            intersection->green = (intersection->green + 1) % static_cast<int>(intersection->inbound.size());
             intersection->currentPhase = intersection->greenPhaseDuration;
             intersection->outputFlag = true;
         }
@@ -293,7 +293,7 @@ void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool s
             // Forloop to prevent an infinite while loop
             // Go to next inbound street if a given inbound street is empty.
             for (std::size_t i = 0; i < intersection->inbound.size(); i++){
-                intersection->green = (intersection->green + 1) % (intersection->inbound.size());
+                intersection->green = (intersection->green + 1) % static_cast<int>(intersection->inbound.size());
                 if (intersection->inbound.at(intersection->green)->traffic.size() > 0){
                     break;
                 }
@@ -344,7 +344,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
             }
         } else {
            for (int i = 0; i < intersection->inbound.size(); i++){
-               int index = (i + intersection->green) % intersection->inbound.size();
+               int index = (i + intersection->green) % static_cast<int>(intersection->inbound.size());
                Street* street = intersection->inbound[index];
 
                // Ignore empty streets
@@ -387,7 +387,8 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
             Actor* actor = intersection->waitingToBeInserted[0];
             // Ignoring the actor if it is not it's start time yet.
             if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor)) {
-                actor->start_time = current_time * (actor->start_time == -1.0f) + actor->start_time * (actor->start_time != -1.0f); // only set the start time if the if the start time
+                actor->start_time = current_time * static_cast<float>(actor->start_time == -1.0f)
+                        + actor->start_time * static_cast<float>(actor->start_time != -1.0f); // only set the start time if the if the start time
                 intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
             }
         }
