@@ -88,7 +88,17 @@ void importMap(world_t& world, json& map) {
 
         world.StreetPtr[index] = &world.streets[index];
 		index++;
-	}
+    }
+
+    world.empty = {
+            .start = -1,
+            .end = -1,
+            .type = StreetTypes::Both,
+            .width = 0,
+            .length = 0,
+            .speedlimit = 0,
+            .id = "NO_ROUT",
+    };
 }
 
 void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
@@ -199,7 +209,7 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
         obj["end_crossing_id"] = actor.path.empty() ? "NO_PATH_FOUND" : world.int_to_string[actor.path.back()];
         no_path += actor.path.empty() ? 1 : 0;
 	}
-    std::cout << "No path found with  " << no_path << " agents." << std::endl;
+    std::cout << "No path found with  " << no_path << " agents." << std::endl << std::endl;
 	return output;
 }
 
