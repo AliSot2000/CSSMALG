@@ -81,6 +81,23 @@ class Parser
             }
         }
 
+        // filter out unconnected streets
+        foreach ($this->rawStreets AS $roadId => $streetData) {
+            $sum = 0;
+
+            foreach ($streetData["nodes"] AS $nodeId) {
+                $sum += $nodeCounter[$nodeId];
+            }
+
+            if ($sum == count($streetData["nodes"]) + 2) {
+                unset($this->rawStreets[$roadId]);
+
+                foreach ($streetData["nodes"] AS $nodeId) {
+                    $nodeCounter[$nodeId] = 0;
+                }
+            }
+        }
+
         // if node is only used once or not at all, delete it since it is unnecessary in the middle of a road
         foreach ($this->rawNodes AS $nodeData) {
             if (isset($nodeCounter[$nodeData["id"]]) && ($nodeCounter[$nodeData["id"]] > 1 || (isset($nodeData["tags"]["highway"]) && $nodeData["tags"]["highway"] == "traffic_signals"))) {
