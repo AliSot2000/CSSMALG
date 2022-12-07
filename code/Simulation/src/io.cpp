@@ -218,7 +218,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     }
 }
 
-json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap) {
+json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap) {
 	json output;
 
 	output["setup"]["map"] = originMap;
@@ -233,19 +233,24 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
     int no_path = 0;
 
 	for (const auto& actor : world.actors) {
-		output["setup"]["agents"][actor.id] = {};
-		json& obj = output["setup"]["agents"][actor.id];
-		obj["id"] = actor.id;
-		obj["type"] = actor.type == ActorTypes::Car ? "car" : "bike";
-        obj["length"] = actor.length;
-        obj["max_velocity"] = actor.max_velocity * 3.6f;
-        obj["acceleration"] = actor.acceleration;
-        obj["deceleration"] = actor.deceleration;
-        obj["acceleration_exponent"] = actor.acceleration_exp;
-        obj["waiting_period"] = actor.insertAfter;
-        obj["start_crossing_id"] = actor.path.empty() ? "NO_PATH_FOUND" : world.int_to_string[actor.path.front()];
-        obj["end_crossing_id"] = actor.path.empty() ? "NO_PATH_FOUND" : world.int_to_string[actor.path.back()];
-        no_path += actor.path.empty() ? 1 : 0;
+		output["setup"]["agents"][actor->id] = {};
+		json& obj = output["setup"]["agents"][actor->id];
+		obj["id"] = actor->id;
+		obj["type"] = actor->type == ActorTypes::Car ? "car" : "bike";
+        obj["length"] = actor->length;
+        obj["max_velocity"] = actor->max_velocity * 3.6f;
+        obj["acceleration"] = actor->acceleration;
+        obj["deceleration"] = actor->deceleration;
+        obj["acceleration_exponent"] = actor->acceleration_exp;
+        obj["waiting_period"] = actor->insertAfter;
+        if (actor->path.empty()){
+            obj["start_crossing_id"] = "NO_PATH_FOUND";
+            obj["end_crossing_id"] = "NO_PATH_FOUND";
+        } else {
+            obj["start_crossing_id"] = world.int_to_string.at(actor->path.front());
+            obj["end_crossing_id"] = world.int_to_string.at(actor->path.back());
+        }
+        no_path += actor->path.empty() ? 1 : 0;
 	}
     std::cout << "No path found with  " << no_path << " agents." << std::endl << std::endl;
 	return output;
