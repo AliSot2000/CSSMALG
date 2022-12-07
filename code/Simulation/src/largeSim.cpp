@@ -54,6 +54,9 @@ int main(int argc, char* argv[]) {
     // Import the SPTs
     spt_t carsSPT;
     spt_t bikeSPT;
+//    std::vector<spt_t> SPTs = {carsSPT, bikeSPT};
+//    std::vector<const char*> SPTFiles = {carTree, bikeTree};
+//    std::vector<bool> succsss = {false, false};
 
     start = startMeasureTime("importing shortest path trees");
     // Don't continue if loading fails.
@@ -63,6 +66,16 @@ int main(int argc, char* argv[]) {
     if (!binLoadTree(bikeSPT, bikeTree, world)){
         return -1;
     }
+// TODO parallelize import
+//#pragma omp parallel for default(none) shared(SPTs, SPTFiles, world, succsss)
+//    for (int i = 0; i < 2; ++i){
+//        succsss.at(i) = binLoadTree(SPTs[i], SPTFiles[i], world);
+//    }
+//
+//    if (!succsss[0] || !succsss[1]){
+//        return -1;
+//    }
+
     // DEBUGGING PRINT
     /*
     for (int i = 0; i < carsSPT.size; i++){
@@ -106,7 +119,7 @@ int main(int argc, char* argv[]) {
     // Sort the Cars in the intersections
     start = startMeasureTime("sorting actors in intersections");
 
-     #pragma omp parallel for shared(world) default(none)
+    #pragma omp parallel for shared(world) default(none)
     for (int i = 0; i < world.intersections.size(); ++i){
         Intersection iter = world.intersections.at(i);
 //#pragma omp parallel for shared(world) default(none)
@@ -149,7 +162,7 @@ int main(int argc, char* argv[]) {
         // Status messsage to tell me how far the simulation  has come along
         if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
-            std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds";
+            std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
         }
 
         // Dump stats to file if time has passed
