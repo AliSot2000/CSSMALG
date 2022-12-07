@@ -140,7 +140,7 @@ Path retrievePath(spt_t& spt, const int &start, const int &end, const int& maxVe
 	Path p;
 
 	int u = start;
-    p.push(u);
+//    p.push(u);
 	while (u != end) {
         assert(u < maxVertexId);
 		u = spt.array[u * spt.size + end];
