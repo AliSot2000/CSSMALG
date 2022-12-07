@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 
     // Export the world.
     nlohmann::json output;
-    output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
+    output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
 
     // Sort the Cars in the intersections
     start = startMeasureTime("sorting actors in intersections");
@@ -173,6 +173,8 @@ int main(int argc, char* argv[]) {
             jsonDumpStats(statsLogInterval, stats, world, false);
             save(statsFile, stats);
         }
+
+        //addFrame(world, output, false);
     }
     // Committing final state of simulation to output, required for the start and stop time.
     addFrame(world, output, true);

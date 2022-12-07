@@ -10,6 +10,7 @@
 
 #include "actors.hpp"
 #include "routing.hpp"
+#include <cassert>
 // #include <omp.h>
 
 // TODO Parallel actor generation is generating a segfault when inserting the actors into the intersections.
@@ -25,9 +26,12 @@ void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
     start = randint(0, world.intersections.size() - 1);
     end = start;
     int antiInfinitLoop = 0;
-    while (end == start && antiInfinitLoop < 100) {
+    while (end == start && antiInfinitLoop < 1000) {
         end = randint(0, world.intersections.size() - 1);
         ++antiInfinitLoop;
+    }
+    if (start == end){
+        end = (start + 1) & spt.size;
     }
 }
 
@@ -60,6 +64,7 @@ void createRandomActors(world_t& world, spt_t& spt, const ActorTypes type, const
         int start_id;
         int end_id;
         choseRandomPath(world, spt, start_id, end_id);
+        assert(start_id != end_id && "start_id and end_id are the same");
         actor->path = retrievePath(spt, start_id, end_id, spt.size);
 
         for (auto& intersection : world.intersections) {

@@ -124,7 +124,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         actor->distanceToRight = 0;
         actor->length = data["length"];
 
-        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f; // Convert km/h to m/s
+        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f; // Convert km/h to m/s
         actor->target_velocity = 50 / 3.6f;
 
         actor->acceleration = data["acceleration"];
@@ -141,7 +141,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
 //                .distanceToRight = 0,
 //                .length = data["length"],
 //
-//                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+//                .max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f, // Convert km/h to m/s
 //                .target_velocity = 50 / 3.6f,
 //
 //                .acceleration = data["acceleration"],
@@ -178,7 +178,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         actor->distanceToRight = 0;
         actor->length = data["length"];
 
-        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f; // Convert km/h to m/s
+        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f; // Convert km/h to m/s
         actor->target_velocity = 50 / 3.6f;
 
         actor->acceleration = data["acceleration"];
@@ -195,7 +195,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
 //                .distanceToRight = 0,
 //                .length = data["length"],
 //
-//                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
+//                .max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f, // Convert km/h to m/s
 //                .target_velocity = 50 / 3.6f,
 //
 //                .acceleration = data["acceleration"],
@@ -522,4 +522,31 @@ bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world) {
     std::copy(tempVectorPtr, tempVectorPtr + SPT.size * SPT.size, SPT.array);
     f.close();
     return true;
+}
+
+void exportAgents(json& out, const world_t& world){
+    out["bikes"] = {};
+    out["cars"] = {};
+
+    for (auto& agent : world.actors) {
+        if (agent->path.empty()){
+            continue;
+        }
+
+        json obj = {};
+        obj["length"] = agent->length;
+        obj["max_velocity"] = agent->max_velocity * 3.6f;
+        obj["acceleration"] = agent->acceleration;
+        obj["deceleration"] = agent->deceleration;
+        obj["acceleration_exponent"] = agent->acceleration_exp;
+        obj["waiting_period"] = agent->insertAfter;
+        obj["start_id"] = world.int_to_string.at(agent->path.front());
+        obj["end_id"] = world.int_to_string.at(agent->path.back());
+        if (agent->type == ActorTypes::Car)
+        {
+            out["cars"][agent->id] = obj;
+        } else {
+            out["bikes"][agent->id] = obj;
+        }
+    }
 }
