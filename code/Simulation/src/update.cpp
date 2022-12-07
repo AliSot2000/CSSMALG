@@ -175,10 +175,16 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 }
 
 // Updated Version of Alex to handle zero velocity vehicles.
-bool tryInsertInNextStreet(Intersection* intersection, Actor* actor) {
-
+bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world) {
+    // TODO UNSAFE SHOULD BE DONE IN chose_optimal_lane_or_sth
     if (actor->path.empty()){
-        intersection->arrivedFrom.push_back({actor, {}});
+        // Storing the Actor as arrived
+        intersection->arrivedFrom.push_back({actor, &world->empty});
+        actor->outputFlag = false; // make sure new active status is outputted once
+        actor->end_time = -10.0f;
+        actor->start_time = -10.0f;
+        // I hope that's right, removing the actor from the traffic waiting to be inserted and putting it to
+        intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
         return false;
     }
 
