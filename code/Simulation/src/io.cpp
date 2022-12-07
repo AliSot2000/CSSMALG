@@ -78,7 +78,12 @@ void importMap(world_t& world, json& map) {
 		street.start = world.string_to_int[data["intersections"]["start"]["id"]];
 		street.end = world.string_to_int[data["intersections"]["end"]["id"]];
 
-		world.intersections[street.start].outbound[street.end] = &street;
+        if (street.type != StreetTypes::OnlyCar){
+		    world.intersections[street.start].outboundBike[street.end] = &street;
+        }
+        if (street.type != StreetTypes::OnlyBike){
+            world.intersections[street.start].outboundCar[street.end] = &street;
+        }
 		world.intersections[street.end].inbound.push_back(&street);
 
         world.StreetPtr[index] = &world.streets[index];
