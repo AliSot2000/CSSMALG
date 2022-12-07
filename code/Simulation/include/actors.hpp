@@ -75,7 +75,8 @@ typedef struct Street {
 typedef struct Intersection {
 	int id;
 	std::vector<Street*> inbound;
-	std::map<int, Street*> outbound;
+	std::map<int, Street*> outboundCar;
+	std::map<int, Street*> outboundBike;
 	float greenPhaseDuration = 5.0f;
 	float currentPhase = 5.0f;
 	int32_t green = 0;
