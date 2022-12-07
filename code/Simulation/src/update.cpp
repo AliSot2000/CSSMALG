@@ -165,19 +165,21 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     actor->distanceToRight = distanceToRight;
     return OptimalFrontActor;
 }
-void sortStreet(TrafficIterator& start, TrafficIterator& end) {
-	std::sort(start, end, [](const Actor* a, const Actor* b) {
+//void sortStreet(TrafficIterator& start, TrafficIterator& end) {
+void sortStreet(std::vector<Actor*>& traffic) {
+//	std::sort(start, end, [](const Actor* a, const Actor* b) {
+	std::sort(traffic.begin(), traffic.end(), [](const Actor* a, const Actor* b) {
         // Lexicographical order, starting with distanceToIntersection and then distanceToRight
-		if (a->distanceToIntersection == b->distanceToIntersection) {
+        if (a->distanceToIntersection == b->distanceToIntersection) {
             // this if statement make sure that no vehicles have the same ordering
             if (a->distanceToRight == b->distanceToRight) {
                 //throw std::runtime_error("Two Vehicles with identical position");
                 return a < b;
             }
             return a->distanceToRight < b->distanceToRight;
-		}
-		return a->distanceToIntersection < b->distanceToIntersection;
-	});
+        }
+        return a->distanceToIntersection < b->distanceToIntersection;
+    });
 }
 
 // Updated Version of Alex to handle zero velocity vehicles.
@@ -431,14 +433,14 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 
 			Actor* actor = street.traffic[i];
 			const float distance = actor->current_velocity * timeDelta;
-			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
-			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+//			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
+//			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
-			TrafficIterator start;
-			TrafficIterator end;
+//			TrafficIterator start;
+//			TrafficIterator end;
 
-			// Find all traffic which could be colliding with vehicle
-			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
+			// Find all traffic which could be colliding with vehicle TODO FIX TRAFFIC IN DRIVING DISTANCE
+//			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
 
@@ -468,7 +470,6 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
             // assert(std::isinf(actor->distanceToIntersection) == false && "Distance to Intersection is inf");
             // assert(actor->distanceToIntersection >= -10.0f && "Distance to intersection needs to be >= -10.0f");
 
-            // TODO Rethink, having a maximum with velocity and velocity computed from acceleration
             actor->current_velocity = std::min(std::max(actor->current_acceleration * timeDelta + actor->current_velocity, 0.0f),
                                                actor->max_velocity);
             if (actor->current_velocity < 0.01f){actor->current_velocity = 0;}
@@ -501,24 +502,22 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 actor->current_acceleration = 0.0f;
                 actor->current_velocity = 0.0f;
             }
-
-            // TODO CLAMPING
             // Will make sure traffic is still sorted
-			sortStreet(start, end);
-            /*
+			sortStreet(street.traffic);
+
             assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
                 // Lexicographical order, starting with distanceToIntersection and then distanceToRight
                 if (a->distanceToIntersection == b->distanceToIntersection) {
                     // this if statement make sure that no vehicles have the same ordering
                     if (a->distanceToRight == b->distanceToRight) {
                         //throw std::runtime_error("Two Vehicles with identical position");
-                        a < b;Intersection
+                        return a < b;
                     }
                     return a->distanceToRight < b->distanceToRight;
                 }
                 return a->distanceToIntersection < b->distanceToIntersection;
             }) && "Street is sorted");
-             */
+
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
             // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
 //            if (actor->distanceToIntersection <= 1.0f && actor->distanceToIntersection > 0.0f) {
