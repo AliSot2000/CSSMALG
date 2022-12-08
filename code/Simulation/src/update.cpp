@@ -8,20 +8,20 @@
 #include "update.hpp"
 #include <omp.h>
 
-void trafficInDrivingDistance(Street& street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
+void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
 
-	auto& traffic = street.traffic;
+	auto& traffic = street->traffic;
 	
 	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
 	// Lower bound binary search (traffic must always be sorted!)
 	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
 		[](const Actor* a, const float& b) {
-			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES >= b;
+			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
 	});
 
 	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
 		[](const float& b, const Actor* a) {
-			return a->distanceToIntersection - a->length - MIN_DISTANCE_BETWEEN_VEHICLES  < b;
+			return a->distanceToIntersection > b;
 	});
 }
 
