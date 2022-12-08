@@ -38,10 +38,11 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 		}
 	}
 
+    std::cout << std::endl;
     int V = sopatree.size;
     float newDistance;
 	for (int32_t k = 0; k < sopatree.size; k++) {
-        std::cout << "Computing " << k << " of " << sopatree.size << std::endl;
+        std::cout << "\rComputing " << k + 1<< " of " << sopatree.size << std::flush;
 
         for (int32_t i = 0; i < sopatree.size; i++) {
 
@@ -52,16 +53,24 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 
 			}
 		}
-
+        /*
         for (int i = 0; i < sopatree.size; i++){
             for (int j = 0; j < sopatree.size; j++){
                 std::cout << sopatree.array[i * sopatree.size + j] << " ";
             }
             std::cout << std::endl;
         }
-        std::cout << std::endl;
+        std::cout << std::endl;*/
 	}
-
+    /*
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    */
 	return sopatree;
 }
 #else
