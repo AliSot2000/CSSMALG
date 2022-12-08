@@ -25,7 +25,7 @@ void trafficInDrivingDistance(Street* street, const float& minDistance, const fl
 	});
 }
 
-FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd) {
+FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd) {
     FrontVehicles f;
 
     // Go through array and always update the frontVehicles if a new matching vehicle is found.
@@ -37,7 +37,7 @@ FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const T
             return f;
         }
 
-        assert(other->distanceToRight <= street.width && "Vehicle is not on the street!");
+        assert(other->distanceToRight <= street->width && "Vehicle is not on the street!");
 
         // We can iterate through like that since the traffic is sorted by distanceToIntersection.
         if (actor->distanceToRight == other->distanceToRight) {
@@ -52,11 +52,11 @@ FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const T
     return f;
 }
 
-FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, const TrafficIterator start){
+FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, const TrafficIterator start){
     FrontVehicles f;
 
     // Go through array and always update the frontVehicles if a new matching vehicle is found.
-    for (TrafficIterator iter = start; iter != street.traffic.end(); iter++) {
+    for (TrafficIterator iter = start; iter != street->traffic.end(); iter++) {
         Actor *other = *iter; // Get pointer to actor of iterator (with *)
         //Ignoring the actor itself
         if (other == actor) {
@@ -68,7 +68,7 @@ FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, con
             return f;
         }
 
-        assert(other->distanceToRight <= street.width && "Vehicle is not on the street!");
+        assert(other->distanceToRight <= street->width && "Vehicle is not on the street!");
 
         // We can iterate through like that since the traffic is sorted by distanceToIntersection.
         if (actor->distanceToRight == other->distanceToRight) {
