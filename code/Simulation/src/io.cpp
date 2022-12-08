@@ -60,6 +60,7 @@ void importMap(world_t& world, json& map) {
 
 		if (data["lanes"].empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
+            std::cerr << "Failed Street ID: " << street.id << std::endl;
 			street.type = StreetTypes::Both;
 		}
 		else {
@@ -68,59 +69,84 @@ void importMap(world_t& world, json& map) {
 			if (lane["type"] == "both") {
 				street.type = StreetTypes::Both;
 			}
-			else if (lane["type"] == "bike") {
-				street.type = StreetTypes::OnlyBike;
-			} else {
+			else if (lane["type"] == "car") {
                 street.type = StreetTypes::OnlyCar;
+            }
+            else if (lane["type"] == "bike") {
+                street.type = StreetTypes::OnlyBike;
+            } else {
+                std::cerr << "Unknown street type: " << lane["type"] << std::endl;
+            }
+            for (int i = 1; i < data["lanes"].size(); ++i){
+                assert(data["lanes"][i]["type"] == lane["type"] && "All lanes must have same type");
             }
 		}
 
 		street.start = world.string_to_int[data["intersections"]["start"]["id"]];
 		street.end = world.string_to_int[data["intersections"]["end"]["id"]];
 
-		world.intersections[street.start].outbound[street.end] = &street;
+        if (street.type != StreetTypes::OnlyCar){
+		    world.intersections[street.start].outboundBike[street.end] = &street;
+        }
+        if (street.type != StreetTypes::OnlyBike){
+            world.intersections[street.start].outboundCar[street.end] = &street;
+        }
 		world.intersections[street.end].inbound.push_back(&street);
 
         world.StreetPtr[index] = &world.streets[index];
 		index++;
-	}
+    }
+
+    world.empty = {
+            .start = -1,
+            .end = -1,
+            .type = StreetTypes::Both,
+            .width = 0,
+            .length = 0,
+            .speedlimit = 0,
+            .id = "NO_ROUT",
+    };
+    world.string_to_int["NO_ROUT"] = -1;
+    world.int_to_string[-1] = "NO_ROUT";
 }
 
 void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     assert(world.actors.size() == 0 && "Agents is not empty");
-    world.actors = std::vector<Actor>(agents["bikes"].size() + agents["cars"].size());
+    world.actors = std::vector<Actor*>(agents["bikes"].size() + agents["cars"].size());
+    std::cout << "importing " << agents["bikes"].size() << " bikes and " << agents["cars"].size() << " cars" << std::endl;
     int index = 0;
 
     // Import Bikes
     for (const auto& [name, data] : agents["bikes"].items()) {
-        Actor actor = {
-                .type = ActorTypes::Bike,
-                .distanceToIntersection = 0.0f,
-                .distanceToRight = 0,
-                .length = data["length"],
+        Actor* actor = new Actor();
 
-                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
-                .target_velocity = 50 / 3.6f,
+        // Set that shit
+        actor->type = ActorTypes::Bike;
+        actor->distanceToIntersection = 0.0f;
+        actor->distanceToRight = 0;
+        actor->length = data["length"];
 
-                .acceleration = data["acceleration"],
-                .deceleration = data["deceleration"],
-                .acceleration_exp = data["acceleration_exponent"],
+        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f; // Convert km/h to m/s
+        actor->target_velocity = 50 / 3.6f;
 
-                .insertAfter = data["waiting_period"],
+        actor->acceleration = data["acceleration"];
+        actor->deceleration = data["deceleration"];
+        actor->acceleration_exp = data["acceleration_exponent"];
 
-                //.width = 1.5f,
-                .id = name,
-        };
+        actor->insertAfter = data["waiting_period"];
+        actor->id = name;
 
-        int startIntersectionId = world.string_to_int[data["start_id"]];
-        int endIntersectionId = world.string_to_int[data["end_id"]];
+        actor->start_id = world.string_to_int[data["start_id"]];
+        actor->end_id = world.string_to_int[data["end_id"]];
 
-        actor.path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId);
+        actor->path = retrievePath(bikeSPT, actor->start_id, actor->end_id, bikeSPT.size);
 
-        for (auto& intersection : world.intersections) {
-            if (intersection.id == startIntersectionId) {
-                intersection.waitingToBeInserted.push_back(&actor);
-                break;
+        if (actor->start_id == -1 || actor->end_id == -1){
+            for (auto& intersection : world.intersections) {
+                if (intersection.id == actor->start_id) {
+                    intersection.waitingToBeInserted.push_back(actor);
+                    break;
+                }
             }
         }
 
@@ -128,33 +154,33 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         index++;
     }
     for (const auto& [name, data] : agents["cars"].items()) {
-        Actor actor = {
-                .type = ActorTypes::Car,
-                .distanceToIntersection = 0.0f,
-                .distanceToRight = 0,
-                .length = data["length"],
+        Actor* actor = new Actor();
 
-                .max_velocity = static_cast<float>(data["max_velocity"]) / 0.36f, // Convert km/h to m/s
-                .target_velocity = 50 / 3.6f,
+        // Set that shit
+        actor->type = ActorTypes::Bike;
+        actor->distanceToIntersection = 0.0f;
+        actor->distanceToRight = 0;
+        actor->length = data["length"];
 
-                .acceleration = data["acceleration"],
-                .deceleration = data["deceleration"],
-                .acceleration_exp = data["acceleration_exponent"],
+        actor->max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f; // Convert km/h to m/s
+        actor->target_velocity = 50 / 3.6f;
 
-                .insertAfter = data["waiting_period"],
+        actor->acceleration = data["acceleration"];
+        actor->deceleration = data["deceleration"];
+        actor->acceleration_exp = data["acceleration_exponent"];
 
-                //.width = 1.5f,
-                .id = name,
-        };
+        actor->insertAfter = data["waiting_period"];
+        actor->id = name;
 
-        int startIntersectionId = world.string_to_int[data["start_id"]];
-        int endIntersectionId = world.string_to_int[data["end_id"]];
 
-        actor.path = retrievePath(carsSPT, startIntersectionId, endIntersectionId);
+        actor->start_id = world.string_to_int[data["start_id"]];
+        actor->end_id = world.string_to_int[data["end_id"]];
+
+        actor->path = retrievePath(carsSPT, actor->start_id, actor->end_id, carsSPT.size);
 
         for (auto& intersection : world.intersections) {
-            if (intersection.id == startIntersectionId) {
-                intersection.waitingToBeInserted.push_back(&actor);
+            if (intersection.id == actor->start_id) {
+                intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
         }
@@ -164,7 +190,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
     }
 }
 
-json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap) {
+json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap) {
 	json output;
 
 	output["setup"]["map"] = originMap;
@@ -176,22 +202,29 @@ json exportWorld(world_t& world, const float& time, const float& timeDelta, cons
 	output["peripherals"]["time_step"] = timeDelta;
 
 	output["simulation"] = std::vector<json>();
+    int no_path = 0;
 
 	for (const auto& actor : world.actors) {
-		output["setup"]["agents"][actor.id] = {};
-		json& obj = output["setup"]["agents"][actor.id];
-		obj["id"] = actor.id;
-		obj["type"] = actor.type == ActorTypes::Car ? "car" : "bike";
-        obj["length"] = actor.length;
-        obj["max_velocity"] = actor.max_velocity * 3.6f;
-        obj["acceleration"] = actor.acceleration;
-        obj["deceleration"] = actor.deceleration;
-        obj["acceleration_exponent"] = actor.acceleration_exp;
-        obj["waiting_period"] = actor.insertAfter;
-        obj["start_crossing_id"] = world.int_to_string[actor.path.front()];
-        obj["end_crossing_id"] = world.int_to_string[actor.path.back()];
+		output["setup"]["agents"][actor->id] = {};
+		json& obj = output["setup"]["agents"][actor->id];
+		obj["id"] = actor->id;
+		obj["type"] = actor->type == ActorTypes::Car ? "car" : "bike";
+        obj["length"] = actor->length;
+        obj["max_velocity"] = actor->max_velocity * 3.6f;
+        obj["acceleration"] = actor->acceleration;
+        obj["deceleration"] = actor->deceleration;
+        obj["acceleration_exponent"] = actor->acceleration_exp;
+        obj["waiting_period"] = actor->insertAfter;
+        if (actor->path.empty()){
+            obj["start_crossing_id"] = "NO_PATH_FOUND";
+            obj["end_crossing_id"] = "NO_PATH_FOUND";
+        } else {
+            obj["start_crossing_id"] = world.int_to_string.at(actor->start_id);
+            obj["end_crossing_id"] = world.int_to_string.at(actor->end_id);
+        }
+        no_path += actor->path.empty() ? 1 : 0;
 	}
-
+    std::cout << "No path found with  " << no_path << " agents." << std::endl << std::endl;
 	return output;
 }
 
@@ -247,8 +280,18 @@ void addFrame(world_t& world, json& out, const bool final) {
 	for (auto& intersection : world.intersections) {
         // Initial output so the simulation knows how many actors there are
 		for (const auto& actor : intersection.waitingToBeInserted) {
-			int first = actor->path.front();
-			Street* street = intersection.outbound.find(first)->second;
+//            assert(actor->start_id == intersection.id && "Actor start id does not match intersection id");
+            Street* street;
+            if (actor->path.empty()){
+                street = &world.empty;
+            } else {
+                int first = actor->path.front();
+                if (actor->type == ActorTypes::Car){
+                    street = intersection.outboundCar.find(first)->second;
+                } else {
+                    street = intersection.outboundBike.find(first)->second;
+                }
+            }
 			if (!actor->outputFlag) {
 				a(actor, street, 0.0f, false);
 				actor->outputFlag = true;
@@ -381,7 +424,7 @@ void jsonDumpStats(const float& avgTime, json& output, world_t& world, const boo
     // Get data from intersections
     for (auto& intersection : world.intersections) {
         json obj = {};
-        obj["id"] = world.int_to_string[intersection.id];
+        obj["id"] = world.int_to_string.at(intersection.id);
         obj["bikeFlow"] = intersection.bike_flow_accumulate / avgTime;
         obj["carFlow"] = intersection.car_flow_accumulate / avgTime;
         intersection.car_flow_accumulate = 0.0f;
@@ -430,4 +473,40 @@ bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world) {
     std::copy(tempVectorPtr, tempVectorPtr + SPT.size * SPT.size, SPT.array);
     f.close();
     return true;
+}
+
+void exportAgents(json& out, const world_t& world){
+    out["bikes"] = {};
+    out["cars"] = {};
+
+    int empty = 0;
+
+    for (auto& agent : world.actors) {
+        if (agent->path.empty()){
+            empty++;
+            continue;
+        }
+
+        json obj = {};
+        obj["length"] = agent->length;
+        obj["max_velocity"] = agent->max_velocity * 3.6f;
+        obj["acceleration"] = agent->acceleration;
+        obj["deceleration"] = agent->deceleration;
+        obj["acceleration_exponent"] = agent->acceleration_exp;
+        obj["waiting_period"] = agent->insertAfter;
+        obj["start_id"] = world.int_to_string.at(agent->start_id);
+        obj["end_id"] = world.int_to_string.at(agent->end_id);
+        obj["path"] = std::vector<int>();
+        for (int i = 0; i < agent->path.size(); i++){
+            obj["path"].push_back(agent->path.front());
+            agent->path.pop();
+        }
+        if (agent->type == ActorTypes::Car)
+        {
+            out["cars"][agent->id] = obj;
+        } else {
+            out["bikes"][agent->id] = obj;
+        }
+    }
+    std::cout << "Number of Actors with empty Path: " << empty << std::endl;
 }

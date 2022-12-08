@@ -10,11 +10,11 @@
 #include "io.hpp"
 #include "utils.hpp"
 
-#define STATUS_UPDATAE_INTERVAL 3600
+#define STATUS_UPDATAE_INTERVAL 60
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
-	if (argc < 7) {
+    if (argc < 7) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_intersection>" << std::endl;
         std::cerr << "If an agents file is provided, the n-random-cars and n-random-bikes is ignored" << std::endl;
 		return -1;
@@ -27,19 +27,15 @@ int main(int argc, char* argv[]) {
 	const auto runtime = (float)std::atof(argv[5]); // 60.0f;
 	const auto deltaTime = (float)std::atof(argv[6]); // 0.25f;
     bool stupidIntersections = false;
-    char* agentsFile = nullptr;
+    const char* agentsFile = ((argc == 8)) ? argv[8] : nullptr;
 
-    if (argc == 7){
-        agentsFile = argv[7];
-    }
-
-    if (argc == 8){
+    if (argc == 9){
         stupidIntersections = (*argv[8] == '1');
     }
 
 	world_t world;
 	nlohmann::json import;
-	
+
 	if (!loadFile(importFile, import)) {
 		return -1;
 	}
@@ -51,6 +47,10 @@ int main(int argc, char* argv[]) {
         importMap(world, import);
     }
 	stopMeasureTime(start);
+
+/*    for (auto& [key, value] : world.int_to_string){
+        std::cout << key << " " << value << std::endl;
+    }*/
 
     spt_t carsSPT;
     spt_t bikeSPT;
@@ -66,21 +66,37 @@ int main(int argc, char* argv[]) {
         stopMeasureTime(start);
     }
 
+    std::cout << "Car Tree" << std::endl;
+    for (int i = 0; i < carsSPT.size; i++){
+        for (int j = 0; j < carsSPT.size; j++){
+            std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Bike Tree" <<std::endl;
+    for (int i = 0; i < bikeSPT.size; i++){
+        for (int j = 0; j < bikeSPT.size; j++){
+            std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
 
 	start = startMeasureTime("creating random actors");
 
     if (agentsFile != nullptr){
 
         nlohmann::json agents;
-        if (!loadFile(importFile, agents)) {
+        if (!loadFile(agentsFile, agents)) {
             return -1;
         }
 
         importAgents(world, agents, carsSPT, bikeSPT);
     } else {
-        world.actors = std::vector<Actor>(randomCars + randomBikes);
-        createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, world.actors.begin(), world.actors.begin() + randomCars, 4.5f, static_cast<int>(runtime * 0.5));
-        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, world.actors.begin() + randomCars, world.actors.end(), 1.5f, static_cast<int>(runtime * 0.5));
+        world.actors = std::vector<Actor*>(randomCars + randomBikes);
+        createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, static_cast<int>(runtime * 0.5));
+//        createRandomActors(world, carsSPT, ActorTypes::Car, 70, 120, randomBikes, randomCars, 4.5f, 0.0f);
+        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, static_cast<int>(runtime * 0.5));
+//        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 15, 0, randomBikes, 1.5f, 0.0f);
     }
 
 	stopMeasureTime(start);
@@ -108,20 +124,16 @@ int main(int argc, char* argv[]) {
 	);
 
 	float maxTime = runtime;
-    float lastDeadLock = runtime;
     float lastStatusTime = runtime;
+//    bool emptyness = false;
+//    bool current_emptyness = false;
 	while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, stupidIntersections, runtime - maxTime);
-		lastDeadLock = updateStreets(&world, deltaTime) ? maxTime : lastDeadLock;
-		maxTime -= deltaTime;
-
-        // Status message about the simulation and if there are deadlocks
-        if (lastDeadLock - maxTime > 10.0f){
-            if (lastDeadLock - maxTime > 20.0f){
-                std::cerr << "Persistent detected at " << runtime - lastDeadLock << " seconds" << std::endl;
-            }
-            resolveDeadLocks(&world, maxTime);
+		if  (!updateStreets(&world, deltaTime)) {
+//            resolveDeadLocks(&world, maxTime);
+            std::cout << "Deadlock detected" << std::endl;
         }
+		maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
         if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
@@ -129,6 +141,12 @@ int main(int argc, char* argv[]) {
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
         }
 		addFrame(world, output);
+
+        /*mptyness = emptynessOfStreets(&world);
+        if (emptyness != current_emptyness){
+            current_emptyness = emptyness;
+            std::cout << "Emptyness of streets: " << emptyness << std::endl;
+        }*/
 	}
     // Committing final state of simulation to output, required for the start and stop time.
     addFrame(world, output, true);

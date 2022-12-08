@@ -41,11 +41,25 @@ int main(int argc, char* argv[]) {
     time = startMeasureTime("calculating shortest path tree with floyd warshall");
     {
         spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
+        std::cout << "Car Tree" << std::endl;
+        for (int i = 0; i < carsSPT.size; i++){
+            for (int j = 0; j < carsSPT.size; j++){
+                std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
+            }
+            std::cout << std::endl;
+        }
         binDumpSpt(carsSPT, carFile);
     }
     {
         spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
         binDumpSpt(bikeSPT, bikeFile);
+        std::cout << "Bike Tree" <<std::endl;
+        for (int i = 0; i < bikeSPT.size; i++){
+            for (int j = 0; j < bikeSPT.size; j++){
+                std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
+            }
+            std::cout << std::endl;
+        }
     }
     stopMeasureTime(time);
 
