@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // Import the map
+    // Import Map
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
     importMap(world, import);
     stopMeasureTime(start);
@@ -66,6 +66,7 @@ int main(int argc, char* argv[]) {
     if (!binLoadTree(bikeSPT, bikeTree, world)){
         return -1;
     }
+    stopMeasureTime(start);
 // TODO parallelize import
 //#pragma omp parallel for default(none) shared(SPTs, SPTFiles, world, succsss)
 //    for (int i = 0; i < 2; ++i){
@@ -77,27 +78,25 @@ int main(int argc, char* argv[]) {
 //    }
 
     // DEBUGGING PRINT
-    /*
+    std::cout << "Car Tree" << std::endl;
     for (int i = 0; i < carsSPT.size; i++){
         for (int j = 0; j < carsSPT.size; j++){
             std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
         }
         std::cout << std::endl;
     }
-
+    std::cout << "Bike Tree" <<std::endl;
     for (int i = 0; i < bikeSPT.size; i++){
         for (int j = 0; j < bikeSPT.size; j++){
             std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
         }
         std::cout << std::endl;
     }
-    */
-    stopMeasureTime(start);
 
     // Scope so json gets destroyed.
     // Import the agents.
     {
-        json agents;
+        nlohmann::json agents;
         start = startMeasureTime("importing actors");
         if (!loadFile(agentsIn, agents)) {
             return -1;
@@ -121,10 +120,10 @@ int main(int argc, char* argv[]) {
 
     #pragma omp parallel for shared(world) default(none)
     for (int i = 0; i < world.intersections.size(); ++i){
-        Intersection iter = world.intersections.at(i);
+        Intersection *iter = &world.intersections.at(i);
 //#pragma omp parallel for shared(world) default(none)
 //    for (auto& iter : world.intersections){
-        std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
+        std::sort(iter->waitingToBeInserted.begin(), iter->waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
             return a->insertAfter < b->insertAfter;
         });
     }
@@ -141,29 +140,25 @@ int main(int argc, char* argv[]) {
     );
 
     float maxTime = runtime;
-    float lastDeadLock = runtime;
     float lastStatusTime = runtime;
     float lastStatsTime = runtime;
-
+//    bool emptyness = false;
+//    bool current_emptyness = false;
     std::cout << std::endl;
     while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, USE_STUPID_INTERSECTIONS, runtime - maxTime);
-        lastDeadLock = updateStreets(&world, deltaTime) ? maxTime : lastDeadLock;
-        maxTime -= deltaTime;
-
-        // Status message about the simulation and if there are deadlocks
-        if (lastDeadLock - maxTime > 10.0f){
-            if (lastDeadLock - maxTime > 20.0f){
-                std::cerr << "Persistent detected at " << runtime - lastDeadLock << " seconds" << std::endl;
-            }
-            resolveDeadLocks(&world, maxTime);
+        if  (!updateStreets(&world, deltaTime)) {
+//            resolveDeadLocks(&world, maxTime);
+            std::cout << "Deadlock detected" << std::endl;
         }
+        maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
         if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
             std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
         }
+        addFrame(world, output, false);
 
         // Dump stats to file if time has passed
         if (lastStatsTime - maxTime > statsLogInterval){
@@ -174,7 +169,11 @@ int main(int argc, char* argv[]) {
             save(statsFile, stats);
         }
 
-        //addFrame(world, output, false);
+        /*mptyness = emptynessOfStreets(&world);
+        if (emptyness != current_emptyness){
+            current_emptyness = emptyness;
+            std::cout << "Emptyness of streets: " << emptyness << std::endl;
+        }*/
     }
     // Committing final state of simulation to output, required for the start and stop time.
     addFrame(world, output, true);
