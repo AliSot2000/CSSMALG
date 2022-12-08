@@ -75,7 +75,7 @@ FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, con
  *
  * @returns Pointer to Vehicle in Front
  */
-Actor* moveToOptimalLane(Street& street, Actor* actor);
+Actor* moveToOptimalLane(Street* street, Actor* actor);
 /*
  * Chooses the optimal lane for a car and returns the maximal distance it is allowed to drive forward.
  * Bikes will not switch  lanes, cars will go left and right
@@ -97,8 +97,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor);
  * @param start Where to begin sorting
  * @param end Where to stop sorting
 */
-//void sortStreet(TrafficIterator& start, TrafficIterator& end);
-void sortStreet(std::vector<Actor*>& traffic);
+void sortStreet(TrafficIterator& start, TrafficIterator& end);
 
 /*
  * Updates all vehicles in all streets

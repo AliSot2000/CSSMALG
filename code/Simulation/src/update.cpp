@@ -82,17 +82,17 @@ FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, con
     return f;
 }
 
-Actor* moveToOptimalLane(Street& street, Actor* actor) {
-    assert((street.type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
-    assert((street.type != StreetTypes::OnlyBike || actor->type != ActorTypes::Car) && "Car is not allowed on this street!");
+Actor* moveToOptimalLane(Street* street, Actor* actor) {
+    assert((street->type != StreetTypes::OnlyCar || actor->type != ActorTypes::Bike) && "Bike is not allowed on this street!");
+    assert((street->type != StreetTypes::OnlyBike || actor->type != ActorTypes::Car) && "Car is not allowed on this street!");
 
-    TrafficIterator start = street.traffic.begin();
-    TrafficIterator end = street.traffic.end();
+    TrafficIterator start = street->traffic.begin();
+    TrafficIterator end = street->traffic.end();
     // Get front vehicles
     FrontVehicles frontActors = GetFrontVehicles(street, actor, start, end);
 
     // Don't update the shit if we are a bike in a normal street.
-    if (actor->type == ActorTypes::Bike && street.type == StreetTypes::Both) {
+    if (actor->type == ActorTypes::Bike && street->type == StreetTypes::Both) {
         return frontActors.frontVehicle;
     }
 
@@ -110,7 +110,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     }
 
     // Check if you can move to a left lane
-    if (actor->distanceToRight < street.width - LANE_WIDTH) {
+    if (actor->distanceToRight < street->width - LANE_WIDTH) {
         // Preemptively set the movable distance.
         float leftDistance = actor->distanceToIntersection;
 
@@ -165,10 +165,8 @@ Actor* moveToOptimalLane(Street& street, Actor* actor) {
     actor->distanceToRight = distanceToRight;
     return OptimalFrontActor;
 }
-//void sortStreet(TrafficIterator& start, TrafficIterator& end) {
-void sortStreet(std::vector<Actor*>& traffic) {
-//	std::sort(start, end, [](const Actor* a, const Actor* b) {
-	std::sort(traffic.begin(), traffic.end(), [](const Actor* a, const Actor* b) {
+void sortStreet(TrafficIterator& start, TrafficIterator& end) {
+    std::sort(start, end, [](const Actor* a, const Actor* b) {
         // Lexicographical order, starting with distanceToIntersection and then distanceToRight
         if (a->distanceToIntersection == b->distanceToIntersection) {
             // this if statement make sure that no vehicles have the same ordering
