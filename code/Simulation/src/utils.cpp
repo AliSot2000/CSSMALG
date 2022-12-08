@@ -35,8 +35,8 @@ void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
     }
 }
 
-void createRandomActors(world_t& world, spt_t& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
-                        const int& start, const int& numberOfActors, const float length, const int max_start_time) {
+void createRandomActors(world_t& world, spt_t& spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
+                        const int& start, const int& numberOfActors, const float& length, const int& max_start_time) {
 // #pragma omp parallel for default(none) shared(world, spt, type, minSpeed, maxSpeed, start, numberOfActors, length, max_start_time)
     for (int i = start;  i < start + numberOfActors; ++i) {
         Actor* actor = new Actor();
