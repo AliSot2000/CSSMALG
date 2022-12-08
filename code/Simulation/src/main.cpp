@@ -10,10 +10,86 @@
 #include "io.hpp"
 #include "utils.hpp"
 
-#define STATUS_UPDATAE_INTERVAL 3600
+#define STATUS_UPDATAE_INTERVAL 60
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
+
+    actor_t a1 = {
+            .distanceToIntersection = 5.5f,
+            .distanceToRight = 0,
+            .length=1.5f,
+    };
+    actor_t a2 = {
+            .distanceToIntersection = 0.0f,
+            .distanceToRight = 2,
+            .length=4.5f,
+    };
+    actor_t a3 = {
+            .distanceToIntersection = 8.23f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a4 = {
+            .distanceToIntersection = 0.0f,
+            .distanceToRight = 0,
+            .length = 4.5f,
+    };
+    actor_t a5 = {
+            .distanceToIntersection = 11.0f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a6 = {
+            .distanceToIntersection = 5.5f,
+            .distanceToRight = 2,
+            .length = 4.5f,
+    };
+    actor_t a7 = {
+            .distanceToIntersection = 13.5f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a8 = {
+            .distanceToIntersection = 16.37f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a9 = {
+            .distanceToIntersection = 19.1f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a10 = {
+            .distanceToIntersection = 21.0f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a11 = {
+            .distanceToIntersection = 24.0f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a12 = {
+            .distanceToIntersection = 27.0f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+    actor_t a13 = {
+            .distanceToIntersection = 31.5f,
+            .distanceToRight = 0,
+            .length = 1.5f,
+    };
+
+
+    std::vector<Actor*> testPtr = {&a1, &a2, &a3, &a4, &a5, &a6, &a7, &a8, &a9, &a10, &a11, &a12, &a13};
+    std::sort(testPtr.begin(), testPtr.end(), [](Actor* a, Actor* b) {
+        if (a->distanceToIntersection == b->distanceToIntersection) {
+            return a->distanceToRight < b->distanceToRight;
+        }
+        return a->distanceToIntersection < b->distanceToIntersection;
+    });
+
 	if (argc < 7) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_intersection>" << std::endl;
         std::cerr << "If an agents file is provided, the n-random-cars and n-random-bikes is ignored" << std::endl;
