@@ -160,3 +160,5 @@ void resolveDeadLocks(world_t* world, const float current_time);
 bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int stride, const int offset);
 
 void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset);
+
+bool emptynessOfStreets(world_t* world);
