@@ -18,24 +18,24 @@ int randint(int min, int max) {
     return std::rand() % (max - min + 1) + min;
 }
 
-void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
-    if (world.intersections.size() == 0) {
+void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end) {
+    if (world->intersections.size() == 0) {
         std::cerr << "There are no intersections." << std::endl;
         return;
     }
-    start = randint(0, world.intersections.size() - 1);
+    start = randint(0, static_cast<int>(world->intersections.size()) - 1);
     end = start;
     int antiInfinitLoop = 0;
     while (end == start && antiInfinitLoop < 1000) {
-        end = randint(0, world.intersections.size() - 1);
+        end = randint(0, static_cast<int>(world->intersections.size()) - 1);
         ++antiInfinitLoop;
     }
     if (start == end){
-        end = (start + 1) & spt.size;
+        end = (start + 1) & spt->size;
     }
 }
 
-void createRandomActors(world_t& world, spt_t& spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
+void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
                         const int& start, const int& numberOfActors, const float& length, const int& max_start_time) {
 // #pragma omp parallel for default(none) shared(world, spt, type, minSpeed, maxSpeed, start, numberOfActors, length, max_start_time)
     for (int i = start;  i < start + numberOfActors; ++i) {
@@ -53,15 +53,15 @@ void createRandomActors(world_t& world, spt_t& spt, const ActorTypes& type, cons
         choseRandomPath(world, spt, actor->start_id, actor->end_id);
         assert(actor->start_id != actor->end_id && "start_id and end_id are the same");
 
-        actor->path = retrievePath(spt, actor->start_id, actor->end_id, spt.size);
+        actor->path = retrievePath(spt, actor->start_id, actor->end_id);
 
-        for (auto& intersection : world.intersections) {
+        for (auto& intersection : world->intersections) {
             if (intersection.id == actor->start_id) {
                 intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
         }
-        world.actors.at(i) = actor;
+        world->actors.at(i) = actor;
     }
 }
 

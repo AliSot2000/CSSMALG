@@ -16,7 +16,7 @@ using nlohmann::json;
  *
  * @returns True <=> the loading was successful.
 */
-bool loadFile(const std::string& file, json& input);
+bool loadFile(const std::string file, json* input);
 
 /*
  * Small wrapper to determine if the map contains a precomputed SPT.
@@ -25,7 +25,7 @@ bool loadFile(const std::string& file, json& input);
  *
  * @returns bool, weather the map contains precomputed SPTs.
  */
-bool hasPrecompute(const json& map);
+bool hasPrecompute(const json* map);
 
 /*
  * Imports a json object into the c++ data structure.
@@ -35,7 +35,7 @@ bool hasPrecompute(const json& map);
  *
  * @returns void
  */
-void importMap(world_t& world, nlohmann::json& map);
+void importMap(world_t* world, nlohmann::json* map);
 
 /*
  * Imports a json object into the c++ data structure.
@@ -45,7 +45,7 @@ void importMap(world_t& world, nlohmann::json& map);
  *
  * @returns void
  */
-void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
+void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT);
 
 /*
  * Exports the world to json format. It is the static part of the simulation. The simulation is added step by step with
@@ -58,7 +58,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
  *
  * @returns json marshalling.
  */
-json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap);
+json exportWorld(const world_t* world, const float& time, const float& timeDelta, const json* originMap);
 
 /*
  * Adds a frame to the output json.
@@ -69,7 +69,7 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
  * @returns void
  *
  */
-void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
+void addFrame(world_t* world, nlohmann::json* out, const bool final = false);
 
 /*
  * Exports the c++ data structure into a json object.
@@ -80,7 +80,7 @@ void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
  *
  * @returns void
  */
-void save(const std::string& file, const nlohmann::json& out);
+void save(const std::string file, const nlohmann::json* out);
 
 /*
  * Exports the Shortest Path Tree as well as the current world of the simulation to one json file.
@@ -93,7 +93,7 @@ void save(const std::string& file, const nlohmann::json& out);
  *
  * @returns void
 */
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output);
+void exportSPT(const spt_t* carTree, const spt_t* bikeTree, const json* input, json* output);
 
 /*
  * Imports the Shortest Path Trees from a json object.
@@ -104,12 +104,14 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
  *
  * @returns void
  * */
-void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world);
+void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* world);
 
-bool binDumpSpt(spt_t Tree, const char* file_name);
+bool binDumpSpt(spt_t* Tree, const char* file_name);
 
-void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final);
+void jsonDumpStats(const float& avgTime, json* output, world_t* world, const bool final);
 
-bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world);
+bool binLoadTree(spt_t* SPT, const char* file_name, const world_t* world);
 
-void exportAgents(json& out, const world_t& world);
+void exportAgents(json* out, const world_t* world);
+
+void printSPT(const spt_t* SPT);
