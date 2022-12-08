@@ -315,7 +315,7 @@ void addFrame(world_t& world, json& out, const bool final) {
 	for (auto& intersection : world.intersections) {
         // Initial output so the simulation knows how many actors there are
 		for (const auto& actor : intersection.waitingToBeInserted) {
-            assert(actor->start_id == intersection.id && "Actor start id does not match intersection id");
+//            assert(actor->start_id == intersection.id && "Actor start id does not match intersection id");
             Street* street;
             if (actor->path.empty()){
                 street = &world.empty;
