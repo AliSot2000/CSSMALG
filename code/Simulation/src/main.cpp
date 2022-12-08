@@ -36,15 +36,15 @@ int main(int argc, char* argv[]) {
 	world_t world;
 	nlohmann::json import;
 
-	if (!loadFile(importFile, import)) {
+	if (!loadFile(importFile, &import)) {
 		return -1;
 	}
 
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
-    if (hasPrecompute(import)){
-        importMap(world, import["world"]);
+    if (hasPrecompute(&import)){
+        importMap(&world, &import["world"]);
     } else {
-        importMap(world, import);
+        importMap(&world, &import);
     }
 	stopMeasureTime(start);
 
@@ -55,9 +55,9 @@ int main(int argc, char* argv[]) {
     spt_t carsSPT;
     spt_t bikeSPT;
 
-    if (hasPrecompute(import)){
+    if (hasPrecompute(&import)){
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
-        importSPT(carsSPT, bikeSPT, import, world);
+        importSPT(&carsSPT, &bikeSPT, &import, &world);
         stopMeasureTime(start);
     } else {
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
@@ -67,54 +67,46 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "Car Tree" << std::endl;
-    for (int i = 0; i < carsSPT.size; i++){
-        for (int j = 0; j < carsSPT.size; j++){
-            std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
+    printSPT(&carsSPT);
     std::cout << "Bike Tree" <<std::endl;
-    for (int i = 0; i < bikeSPT.size; i++){
-        for (int j = 0; j < bikeSPT.size; j++){
-            std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
+    printSPT(&bikeSPT);
 
 	start = startMeasureTime("creating random actors");
 
     if (agentsFile != nullptr){
 
         nlohmann::json agents;
-        if (!loadFile(agentsFile, agents)) {
+        if (!loadFile(agentsFile, &agents)) {
             return -1;
         }
 
-        importAgents(world, agents, carsSPT, bikeSPT);
+        importAgents(&world, &agents, &carsSPT, &bikeSPT);
     } else {
         world.actors = std::vector<Actor*>(randomCars + randomBikes);
-        createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, static_cast<int>(runtime * 0.5));
+        createRandomActors(&world, &carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, static_cast<int>(runtime * 0.5));
 //        createRandomActors(world, carsSPT, ActorTypes::Car, 70, 120, randomBikes, randomCars, 4.5f, 0.0f);
-        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, static_cast<int>(runtime * 0.5));
+        createRandomActors(&world, &bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, static_cast<int>(runtime * 0.5));
 //        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 15, 0, randomBikes, 1.5f, 0.0f);
     }
 
 	stopMeasureTime(start);
 
     nlohmann::json output;
-    if (hasPrecompute(import)){
-	    output = exportWorld(world, runtime, deltaTime, import["world"]["peripherals"]["map"]);
+    if (hasPrecompute(&import)){
+	    output = exportWorld(&world, runtime, deltaTime, &import["world"]["peripherals"]["map"]);
     } else {
-        output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+        output = exportWorld(&world, runtime, deltaTime, &import["peripherals"]["map"]);
     }
 
+    start = startMeasureTime("sorting actors in intersections");
     for (intersection_t& iter : world.intersections){
         std::sort(iter.waitingToBeInserted.begin(), iter.waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
             return a->insertAfter < b->insertAfter;
         });
     }
+    stopMeasureTime(start);
 
-	start = startMeasureTime(
+    start = startMeasureTime(
 		"running simulation with\n\t" +
 		std::to_string(world.intersections.size()) + " intersections\n\t" +
 		std::to_string(world.streets.size()) + " streets\n\t" +
@@ -129,9 +121,9 @@ int main(int argc, char* argv[]) {
 //    bool current_emptyness = false;
 	while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, stupidIntersections, runtime - maxTime);
-		if  (!updateStreets(&world, deltaTime)) {
+		if  (!updateStreets(&world, deltaTime) && runtime - maxTime > 4*deltaTime) {
 //            resolveDeadLocks(&world, maxTime);
-            std::cout << "Deadlock detected" << std::endl;
+            std::cout << "Deadlock detected at " << maxTime << std::endl;
         }
 		maxTime -= deltaTime;
 
@@ -140,7 +132,7 @@ int main(int argc, char* argv[]) {
             lastStatusTime = maxTime;
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
         }
-		addFrame(world, output);
+		addFrame(&world, &output);
 
         /*mptyness = emptynessOfStreets(&world);
         if (emptyness != current_emptyness){
@@ -149,12 +141,12 @@ int main(int argc, char* argv[]) {
         }*/
 	}
     // Committing final state of simulation to output, required for the start and stop time.
-    addFrame(world, output, true);
+    addFrame(&world, &output, true);
 	stopMeasureTime(start);
 
 	start = startMeasureTime("saving simulation");
 
-	save(outputFile, output);
+	save(outputFile, &output);
 
 	stopMeasureTime(start);
 

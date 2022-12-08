@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <string>
 #include <chrono>
+#include <iomanip>
 
 #include "actors.hpp"
 #include "routing.hpp"
@@ -20,7 +21,7 @@
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
 
-    if (argc < 6) {
+    if (argc < 9) {
         std::cerr << "Intended for large scale simulations, no visualization is produced!" << std::endl;
         std::cerr << "Usage CSSMALG <mapIn> <carTreeIn> <bikeTreeIn> <agentsIn> <stats-log-interval> <agentsOut> <statsDirOut> <runtime> <timedelta>" << std::endl;
         std::cerr << "Make sure statsDirOut hsa a / as it's last character. AND DIRECTORY MUST EXIST" << std::endl;
@@ -42,13 +43,13 @@ int main(int argc, char* argv[]) {
     world_t world;
     nlohmann::json import;
 
-    if (!loadFile(map, import)) {
+    if (!loadFile(map, &import)) {
         return -1;
     }
 
     // Import Map
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
-    importMap(world, import);
+    importMap(&world, &import);
     stopMeasureTime(start);
 
     // Import the SPTs
@@ -60,13 +61,22 @@ int main(int argc, char* argv[]) {
 
     start = startMeasureTime("importing shortest path trees");
     // Don't continue if loading fails.
-    if (!binLoadTree(carsSPT, carTree, world)){
+    if (!binLoadTree(&carsSPT, carTree, &world)){
         return -1;
     }
-    if (!binLoadTree(bikeSPT, bikeTree, world)){
+    if (!binLoadTree(&bikeSPT, bikeTree, &world)){
         return -1;
     }
     stopMeasureTime(start);
+
+    for (auto iter : world.string_to_int){
+        std::cout << iter.first << " " << iter.second << std::endl;
+    }
+    std::cout <<  std::endl;
+    for (auto iter : world.int_to_string){
+        std::cout << iter.first << " " << iter.second << std::endl;
+    }
+
 // TODO parallelize import
 //#pragma omp parallel for default(none) shared(SPTs, SPTFiles, world, succsss)
 //    for (int i = 0; i < 2; ++i){
@@ -79,29 +89,19 @@ int main(int argc, char* argv[]) {
 
     // DEBUGGING PRINT
     std::cout << "Car Tree" << std::endl;
-    for (int i = 0; i < carsSPT.size; i++){
-        for (int j = 0; j < carsSPT.size; j++){
-            std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
+    printSPT(&carsSPT);
     std::cout << "Bike Tree" <<std::endl;
-    for (int i = 0; i < bikeSPT.size; i++){
-        for (int j = 0; j < bikeSPT.size; j++){
-            std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
-        }
-        std::cout << std::endl;
-    }
+    printSPT(&bikeSPT);
 
     // Scope so json gets destroyed.
     // Import the agents.
     {
         nlohmann::json agents;
         start = startMeasureTime("importing actors");
-        if (!loadFile(agentsIn, agents)) {
+        if (!loadFile(agentsIn, &agents)) {
             return -1;
         }
-        importAgents(world, agents, carsSPT, bikeSPT);
+        importAgents(&world, &agents, &carsSPT, &bikeSPT);
         stopMeasureTime(start);
     }
 
@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
 
     // Export the world.
     nlohmann::json output;
-    output = exportWorld(world, runtime, deltaTime, import["peripherals"]["map"]);
+    output = exportWorld(&world, runtime, deltaTime, &import["peripherals"]["map"]);
 
     // Sort the Cars in the intersections
     start = startMeasureTime("sorting actors in intersections");
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
             std::to_string(deltaTime) + " seconds precision time step"
     );
 
-    float maxTime = runtime;
+	float maxTime = runtime;
     float lastStatusTime = runtime;
     float lastStatsTime = runtime;
 //    bool emptyness = false;
@@ -147,26 +147,26 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, USE_STUPID_INTERSECTIONS, runtime - maxTime);
-        if  (!updateStreets(&world, deltaTime)) {
+        if  (!updateStreets(&world, deltaTime) && runtime - maxTime > 4*deltaTime) {
 //            resolveDeadLocks(&world, maxTime);
             std::cout << "Deadlock detected" << std::endl;
         }
-        maxTime -= deltaTime;
+		maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
         if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
             std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
         }
-        addFrame(world, output, false);
+        addFrame(&world, &output, false);
 
         // Dump stats to file if time has passed
         if (lastStatsTime - maxTime > statsLogInterval){
             lastStatsTime = maxTime;
             std::string statsFile = statsDirOut + std::to_string(runtime - maxTime) + ".json";
             nlohmann::json stats;
-            jsonDumpStats(statsLogInterval, stats, world, false);
-            save(statsFile, stats);
+            jsonDumpStats(statsLogInterval, &stats, &world, false);
+            save(statsFile, &stats);
         }
 
         /*mptyness = emptynessOfStreets(&world);
@@ -174,21 +174,21 @@ int main(int argc, char* argv[]) {
             current_emptyness = emptyness;
             std::cout << "Emptyness of streets: " << emptyness << std::endl;
         }*/
-    }
+	}
     // Committing final state of simulation to output, required for the start and stop time.
-    addFrame(world, output, true);
-    stopMeasureTime(start);
+    addFrame(&world, &output, true);
+	stopMeasureTime(start);
 
     start = startMeasureTime("saving agents");
-    save(agentsOut, output);
+    save(agentsOut, &output);
 
     // Saving final state of the map.
     std::string statsFile = std::string(statsDirOut) + "final.json";
     nlohmann::json stats;
-    jsonDumpStats(statsLogInterval, stats, world, true);
-    save(statsFile, stats);
+    jsonDumpStats(statsLogInterval, &stats, &world, true);
+    save(statsFile, &stats);
 
-    stopMeasureTime(start);
+	stopMeasureTime(start);
 
-    return 0;
+	return 0;
 }
