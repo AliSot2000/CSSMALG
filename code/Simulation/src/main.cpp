@@ -27,13 +27,9 @@ int main(int argc, char* argv[]) {
 	const auto runtime = (float)std::atof(argv[5]); // 60.0f;
 	const auto deltaTime = (float)std::atof(argv[6]); // 0.25f;
     bool stupidIntersections = false;
-    char* agentsFile = nullptr;
+    const char* agentsFile = ((argc == 8)) ? argv[8] : nullptr;
 
-    if (argc == 7){
-        agentsFile = argv[7];
-    }
-
-    if (argc == 8){
+    if (argc == 9){
         stupidIntersections = (*argv[8] == '1');
     }
 
@@ -70,12 +66,27 @@ int main(int argc, char* argv[]) {
         stopMeasureTime(start);
     }
 
+    std::cout << "Car Tree" << std::endl;
+    for (int i = 0; i < carsSPT.size; i++){
+        for (int j = 0; j < carsSPT.size; j++){
+            std::cout << carsSPT.array[i * carsSPT.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Bike Tree" <<std::endl;
+    for (int i = 0; i < bikeSPT.size; i++){
+        for (int j = 0; j < bikeSPT.size; j++){
+            std::cout << bikeSPT.array[i * bikeSPT.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+
 	start = startMeasureTime("creating random actors");
 
     if (agentsFile != nullptr){
 
         nlohmann::json agents;
-        if (!loadFile(importFile, agents)) {
+        if (!loadFile(agentsFile, agents)) {
             return -1;
         }
 
