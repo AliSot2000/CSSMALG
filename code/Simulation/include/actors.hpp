@@ -42,6 +42,9 @@ typedef struct Actor {
     float start_time = -1.0f;
     float end_time = -1.0f;
     float time_spent_waiting = 0.0f;
+
+    int start_id = -1;
+    int end_id = -1;
 } actor_t;
 
 enum StreetTypes {
@@ -75,7 +78,8 @@ typedef struct Street {
 typedef struct Intersection {
 	int id;
 	std::vector<Street*> inbound;
-	std::map<int, Street*> outbound;
+	std::map<int, Street*> outboundCar;
+	std::map<int, Street*> outboundBike;
 	float greenPhaseDuration = 5.0f;
 	float currentPhase = 5.0f;
 	int32_t green = 0;
@@ -91,9 +95,10 @@ typedef struct Intersection {
 typedef struct World {
 	std::vector<Intersection> intersections;
 	std::vector<Street> streets;
-	std::vector<Actor> actors;
+	std::vector<Actor*> actors;
     std::map<std::string, int> string_to_int;
     std::map<int, std::string> int_to_string;
     std::vector<Intersection*> IntersectionPtr;
     std::vector<Street*> StreetPtr;
+    Street empty;
 } world_t;

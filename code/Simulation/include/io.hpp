@@ -58,7 +58,7 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
  *
  * @returns json marshalling.
  */
-json exportWorld(world_t& world, const float& time, const float& timeDelta, const json& originMap);
+json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap);
 
 /*
  * Adds a frame to the output json.
@@ -111,3 +111,5 @@ bool binDumpSpt(spt_t Tree, const char* file_name);
 void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final);
 
 bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world);
+
+void exportAgents(json& out, const world_t& world);

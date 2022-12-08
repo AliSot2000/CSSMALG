@@ -10,9 +10,10 @@
 
 #include "actors.hpp"
 #include "routing.hpp"
+#include <cassert>
 // #include <omp.h>
 
-
+// TODO Parallel actor generation is generating a segfault when inserting the actors into the intersections.
 int randint(int min, int max) {
     return std::rand() % (max - min + 1) + min;
 }
@@ -25,40 +26,42 @@ void choseRandomPath(const world_t& world, spt_t& spt, int& start, int& end) {
     start = randint(0, world.intersections.size() - 1);
     end = start;
     int antiInfinitLoop = 0;
-    while (end == start && antiInfinitLoop < 100) {
+    while (end == start && antiInfinitLoop < 1000) {
         end = randint(0, world.intersections.size() - 1);
         ++antiInfinitLoop;
     }
+    if (start == end){
+        end = (start + 1) & spt.size;
+    }
 }
 
-void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
-                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length, const int max_start_time) {
-// #pragma omp parallel for
-    for (std::vector<Actor>::iterator iter = start; iter != end; iter++) {
-        Actor actor = {
-                .type = type,
-                .distanceToIntersection = 0.0f,
-                .distanceToRight = 0,
-                .length = length,
-                .max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f, // 30km/h to 80km/h
-                //.width = 1.5f,
-                .insertAfter = static_cast<float>(randint(0, max_start_time)),
-                .id = std::to_string(std::rand())
-        };
+void createRandomActors(world_t& world, spt_t& spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
+                        const int& start, const int& numberOfActors, const float& length, const int& max_start_time) {
+// #pragma omp parallel for default(none) shared(world, spt, type, minSpeed, maxSpeed, start, numberOfActors, length, max_start_time)
+    for (int i = start;  i < start + numberOfActors; ++i) {
+        Actor* actor = new Actor();
+        actor->type = type;
+        actor->distanceToIntersection = 0.0f;
+        actor->distanceToRight = 0;
+        actor->length = length;
+        actor->max_velocity = static_cast<float>(randint(minSpeed, maxSpeed)) * 0.277778f; // 30km/h to 80km/h
+//        actor->width = 1.5f;
+        actor->insertAfter = static_cast<float>(randint(0, max_start_time));
+        actor->id = std::to_string(std::rand());
 
+        // Filling start and end id via choose Random Path
+        choseRandomPath(world, spt, actor->start_id, actor->end_id);
+        assert(actor->start_id != actor->end_id && "start_id and end_id are the same");
 
-        int start_id;
-        int end_id;
-        choseRandomPath(world, spt, start_id, end_id);
-        actor.path = retrievePath(spt, start_id, end_id);
+        actor->path = retrievePath(spt, actor->start_id, actor->end_id, spt.size);
 
         for (auto& intersection : world.intersections) {
-            if (intersection.id == start_id) {
-                intersection.waitingToBeInserted.push_back(&(*iter));
+            if (intersection.id == actor->start_id) {
+                intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
         }
-        *iter = actor;
+        world.actors.at(i) = actor;
     }
 }
 
