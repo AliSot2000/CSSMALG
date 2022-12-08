@@ -61,11 +61,11 @@ void trafficInDrivingDistance(Street* street, const float& minDistance, const fl
  * @returns Returns a FrontVehicle struct containing the front vehicle, the front vehicle to the left and the front vehicle to the right.
 
 */
-FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd);
+FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd);
 /*
  * Gives the three vehicles which could collide with our actor
  */
-FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, const TrafficIterator start);
+FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, const TrafficIterator start);
 /*
  * Finds the optimal Lane to drive for the vehicle and moves it to said lane. It then returns the
  * vehicle in front if there is one.
