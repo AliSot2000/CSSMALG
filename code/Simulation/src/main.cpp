@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 
 	world_t world;
 	nlohmann::json import;
-	
+
 	if (!loadFile(importFile, import)) {
 		return -1;
 	}
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
         }
 		addFrame(world, output);
 
-        e/*mptyness = emptynessOfStreets(&world);
+        /*mptyness = emptynessOfStreets(&world);
         if (emptyness != current_emptyness){
             current_emptyness = emptyness;
             std::cout << "Emptyness of streets: " << emptyness << std::endl;
