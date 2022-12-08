@@ -16,7 +16,7 @@
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-        std::cerr << "Usage CSSMALG <map-in> <n-random-cars> <n-random-bikes> <agents-file>" << std::endl;
+        std::cerr << "Usage CSSMALG <map-in> <n-random-cars> <n-random-bikes> <agents-file> <max-random-time>" << std::endl;
         return -1;
     }
 
@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
     const char* outputFile = argv[4];
     const int randomCars = std::atoi(argv[2]);
     const int randomBikes = std::atoi(argv[3]);
+    const int maxRandomTime = std::atoi(argv[5]);
 
     world_t world;
     nlohmann::json import;
@@ -64,8 +65,8 @@ int main(int argc, char* argv[]) {
     }
     start = startMeasureTime("creating random actors");
     world.actors = std::vector<Actor*>(randomCars + randomBikes);
-    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, 0, randomBikes, 1.5f, static_cast<int>(1000 * 0.5));
-    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, randomBikes, randomCars, 4.5f, static_cast<int>(1000 * 0.5));
+    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, 0, randomBikes, 1.5f, maxRandomTime);
+    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, randomBikes, randomCars, 4.5f, maxRandomTime);
     stopMeasureTime(start);
 
     json actorOut;
