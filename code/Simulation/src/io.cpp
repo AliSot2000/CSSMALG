@@ -106,6 +106,8 @@ void importMap(world_t& world, json& map) {
             .speedlimit = 0,
             .id = "NO_ROUT",
     };
+    world.string_to_int["NO_ROUT"] = -1;
+    world.int_to_string[-1] = "NO_ROUT";
 }
 
 void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
@@ -132,37 +134,19 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         actor->acceleration_exp = data["acceleration_exponent"];
 
         actor->insertAfter = data["waiting_period"];
-
-//        actor->width = 1.5f;
         actor->id = name;
-//      Actor actor = {
-//                .type = ActorTypes::Bike,
-//                .distanceToIntersection = 0.0f,
-//                .distanceToRight = 0,
-//                .length = data["length"],
-//
-//                .max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f, // Convert km/h to m/s
-//                .target_velocity = 50 / 3.6f,
-//
-//                .acceleration = data["acceleration"],
-//                .deceleration = data["deceleration"],
-//                .acceleration_exp = data["acceleration_exponent"],
-//
-//                .insertAfter = data["waiting_period"],
-//
-//                //.width = 1.5f,
-//                .id = name,
-//        };
 
-        int startIntersectionId = world.string_to_int[data["start_id"]];
-        int endIntersectionId = world.string_to_int[data["end_id"]];
+        actor->start_id = world.string_to_int[data["start_id"]];
+        actor->end_id = world.string_to_int[data["end_id"]];
 
-        actor->path = retrievePath(bikeSPT, startIntersectionId, endIntersectionId, bikeSPT.size);
+        actor->path = retrievePath(bikeSPT, actor->start_id, actor->end_id, bikeSPT.size);
 
-        for (auto& intersection : world.intersections) {
-            if (intersection.id == startIntersectionId) {
-                intersection.waitingToBeInserted.push_back(actor);
-                break;
+        if (actor->start_id == -1 || actor->end_id == -1){
+            for (auto& intersection : world.intersections) {
+                if (intersection.id == actor->start_id) {
+                    intersection.waitingToBeInserted.push_back(actor);
+                    break;
+                }
             }
         }
 
@@ -186,35 +170,16 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         actor->acceleration_exp = data["acceleration_exponent"];
 
         actor->insertAfter = data["waiting_period"];
-
-//        actor->width = 1.5f;
         actor->id = name;
-//        Actor actor = {
-//                .type = ActorTypes::Car,
-//                .distanceToIntersection = 0.0f,
-//                .distanceToRight = 0,
-//                .length = data["length"],
-//
-//                .max_velocity = static_cast<float>(data["max_velocity"]) / 3.6f, // Convert km/h to m/s
-//                .target_velocity = 50 / 3.6f,
-//
-//                .acceleration = data["acceleration"],
-//                .deceleration = data["deceleration"],
-//                .acceleration_exp = data["acceleration_exponent"],
-//
-//                .insertAfter = data["waiting_period"],
-//
-//                //.width = 1.5f,
-//                .id = name,
-//        };
 
-        int startIntersectionId = world.string_to_int[data["start_id"]];
-        int endIntersectionId = world.string_to_int[data["end_id"]];
 
-        actor->path = retrievePath(carsSPT, startIntersectionId, endIntersectionId, carsSPT.size);
+        actor->start_id = world.string_to_int[data["start_id"]];
+        actor->end_id = world.string_to_int[data["end_id"]];
+
+        actor->path = retrievePath(carsSPT, actor->start_id, actor->end_id, carsSPT.size);
 
         for (auto& intersection : world.intersections) {
-            if (intersection.id == startIntersectionId) {
+            if (intersection.id == actor->start_id) {
                 intersection.waitingToBeInserted.push_back(actor);
                 break;
             }
@@ -514,8 +479,11 @@ void exportAgents(json& out, const world_t& world){
     out["bikes"] = {};
     out["cars"] = {};
 
+    int empty = 0;
+
     for (auto& agent : world.actors) {
         if (agent->path.empty()){
+            empty++;
             continue;
         }
 
@@ -535,4 +503,5 @@ void exportAgents(json& out, const world_t& world){
             out["bikes"][agent->id] = obj;
         }
     }
+    std::cout << "Number of Actors with empty Path: " << empty << std::endl;
 }
