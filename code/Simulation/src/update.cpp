@@ -411,7 +411,6 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
 
 bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int stride, const int offset) {
     bool actorMoved = false;
-    bool empty = true;
 
     // Move so no thread is colliding with another thread.
 //    std::vector<Street>::iterator start_iter = world->streets.begin();
@@ -420,23 +419,22 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 //    #pragma omp parallel for private(empty, actorMoved)
     for (int32_t x = offset; x < world->streets.size(); x+=stride){
 //    for (auto& street : world->streets) {
-        Street street = world->streets[x];
-        empty = empty && street.traffic.empty();
-        street.density_accumulate += static_cast<float>(street.traffic.size()) / street.length;
-        street.flow_accumulate += static_cast<float>(street.traffic.size()) / timeDelta;
+        Street *street = &world->streets.at(x);
+        street->density_accumulate += static_cast<float>(street->traffic.size()) / street->length;
+        street->flow_accumulate += static_cast<float>(street->traffic.size()) / timeDelta;
 
-        for (int32_t i = 0; i < street.traffic.size(); i++) {
-			Actor* actor = street.traffic[i];
+        for (int32_t i = 0; i < street->traffic.size(); i++) {
+			Actor* actor = street->traffic[i];
 
 			const float distance = actor->current_velocity * timeDelta;
-//			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
-//			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
+			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
-//			TrafficIterator start;
-//			TrafficIterator end;
+			TrafficIterator start;
+			TrafficIterator end;
 
-			// Find all traffic which could be colliding with vehicle TODO FIX TRAFFIC IN DRIVING DISTANCE
-//			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
+			// Find all traffic which could be colliding with vehicle
+			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
             float maxDrivableDistance = actor->distanceToIntersection;
@@ -500,9 +498,9 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 actor->current_velocity = 0.0f;
             }
             // Will make sure traffic is still sorted
-			sortStreet(street.traffic);
+			sortStreet(start, end);
 
-            assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
+/*            assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
                 // Lexicographical order, starting with distanceToIntersection and then distanceToRight
                 if (a->distanceToIntersection == b->distanceToIntersection) {
                     // this if statement make sure that no vehicles have the same ordering
@@ -513,7 +511,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                     return a->distanceToRight < b->distanceToRight;
                 }
                 return a->distanceToIntersection < b->distanceToIntersection;
-            }) && "Street is sorted");
+            }) && "Street is sorted");*/
 
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
             // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
@@ -523,7 +521,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
         }
 	}
 
-    return actorMoved || empty;
+    return actorMoved;
 }
 
 bool updateStreets(world_t* world, const float timeDelta){
