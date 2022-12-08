@@ -496,6 +496,11 @@ void exportAgents(json& out, const world_t& world){
         obj["waiting_period"] = agent->insertAfter;
         obj["start_id"] = world.int_to_string.at(agent->start_id);
         obj["end_id"] = world.int_to_string.at(agent->end_id);
+        obj["path"] = std::vector<int>();
+        for (int i = 0; i < agent->path.size(); i++){
+            obj["path"].push_back(agent->path.front());
+            agent->path.pop();
+        }
         if (agent->type == ActorTypes::Car)
         {
             out["cars"][agent->id] = obj;
