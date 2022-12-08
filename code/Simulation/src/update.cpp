@@ -531,7 +531,8 @@ bool updateStreets(world_t* world, const float timeDelta){
     for (int32_t i = 0; i < 128; i++) {
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
-    return actorMoved;
+
+    return actorMoved || emptynessOfStreets(world);
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
@@ -563,3 +564,11 @@ void resolveDeadLocks(world_t* world, const float current_time) {
     }
 }
 
+bool emptynessOfStreets(world_t* world){
+    bool empty = true;
+    #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
+    for (int32_t i = 0; i < world->streets.size(); i++) {
+        empty = world->streets.at(i).traffic.empty() && empty;
+    }
+    return empty;
+}
