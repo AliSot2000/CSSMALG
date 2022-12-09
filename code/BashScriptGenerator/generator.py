@@ -128,3 +128,8 @@ def file_exists(path: str):
     :return:
     """
     return os.path.exists(path) and os.path.isfile(path)
+
+
+if __name__ == '__main__':
+    gen = BashScriptGenerator()
+    gen.generate_bash_script()
