@@ -80,7 +80,7 @@ void addFrame(world_t* world, nlohmann::json* out, const bool final = false);
  *
  * @returns void
  */
-void save(const std::string& file, const nlohmann::json& out);
+void save(const std::string file, const nlohmann::json* out);
 
 /*
  * Exports the Shortest Path Tree as well as the current world of the simulation to one json file.
