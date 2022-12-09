@@ -13,12 +13,11 @@
 #include "update.hpp"
 #include "io.hpp"
 #include "utils.hpp"
-#include <omp.h>
 
 #define STATUS_UPDATAE_INTERVAL 60
 #define USE_STUPID_INTERSECTIONS false
-#define ADD_INCREMENTS
-#define DDEBUG
+//#define ADD_INCREMENTS
+//#define DDEBUG
 
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
