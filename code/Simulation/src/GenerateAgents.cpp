@@ -10,8 +10,7 @@
 #include "routing.hpp"
 #include "io.hpp"
 #include "utils.hpp"
-
-#define STATUS_UPDATAE_INTERVAL 3600
+#define DDEBUG
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
@@ -55,6 +54,7 @@ int main(int argc, char* argv[]) {
         stopMeasureTime(start);
     }
 
+#ifdef DDEBUG
     // DEBUGGING PRINT
     std::cout << "Car Tree" << std::endl;
     printSPT(&carsSPT);
@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
     for (auto iter : world.int_to_string){
         std::cout << iter.first << " " << iter.second << std::endl;
     }
+#endif
     start = startMeasureTime("creating random actors");
     world.actors = std::vector<Actor*>(randomCars + randomBikes);
     createRandomActors(&world, &bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, maxRandomTime);
