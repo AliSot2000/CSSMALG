@@ -147,7 +147,6 @@ class AgentGenerator
                         $secondCounter += 60;
                     }
                 }
-
                 $this->writeJSON(array("bikes" => $bikeAgents, "cars" => $carAgents), $this->prefix . "_sim_" . $repetitions, strval($bikePercentage * 100) . "_percentBikes");
             }
         }
