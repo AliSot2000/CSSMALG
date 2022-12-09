@@ -16,7 +16,7 @@ using nlohmann::json;
  *
  * @returns True <=> the loading was successful.
 */
-bool loadFile(const std::string& file, json& input);
+bool loadFile(const std::string file, json* input);
 
 /*
  * Small wrapper to determine if the map contains a precomputed SPT.

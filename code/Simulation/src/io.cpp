@@ -10,10 +10,10 @@
 #include "base64.hpp"
 
 
-bool loadFile(const std::string& file, json& input) {
+bool loadFile(const std::string file, json* input) {
 	std::ifstream f(file);
 	if (f.is_open()) {
-		f >> input;
+		f >> *input;
 		f.close();
 		return true;
 	}
