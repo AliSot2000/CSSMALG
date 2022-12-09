@@ -35,7 +35,7 @@ def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, age
         {delta}
     echo "Computation of {agents_in} file finished"
     """
-    name = os.path.join(script_dir, f"{bash_file_name}.sh")
+    name = os.path.join(script_dir, f"{bash_file_name.replace('/', '-')}.sh")
     with open(os.path.join(script_dir, name), "w") as f:
         f.write(file)
 
