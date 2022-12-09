@@ -116,4 +116,4 @@ void exportAgents(json* out, const world_t* world);
 
 void printSPT(const spt_t* SPT);
 
-int numDigits(int32_t x);
+unsigned int GetNumberOfDigits (unsigned int i);
