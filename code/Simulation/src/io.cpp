@@ -429,6 +429,7 @@ void jsonDumpStats(const float& avgTime, json* output, world_t* world, const boo
         obj["id"] = world->int_to_string.at(intersection.id);
         obj["bikeFlow"] = intersection.bike_flow_accumulate / avgTime;
         obj["carFlow"] = intersection.car_flow_accumulate / avgTime;
+        obj["id"] = world->int_to_string.at(intersection.id);
         intersection.car_flow_accumulate = 0.0f;
         intersection.bike_flow_accumulate = 0.0f;
         output->at("intersections").push_back(obj);
@@ -440,6 +441,7 @@ void jsonDumpStats(const float& avgTime, json* output, world_t* world, const boo
         obj["id"] = street.id;
         obj["flow"] = street.flow_accumulate / avgTime;
         obj["density"] = street.density_accumulate / avgTime;
+        obj["id"] = street.id;
         if (final) {
             obj["total_passing_traffic"] = street.total_traffic_count;
         }
