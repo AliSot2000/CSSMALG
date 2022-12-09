@@ -25,7 +25,7 @@ bool loadFile(const std::string file, json* input);
  *
  * @returns bool, weather the map contains precomputed SPTs.
  */
-bool hasPrecompute(const json& map);
+bool hasPrecompute(const json* map);
 
 /*
  * Imports a json object into the c++ data structure.

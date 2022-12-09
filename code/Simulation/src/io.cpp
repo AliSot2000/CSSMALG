@@ -21,8 +21,8 @@ bool loadFile(const std::string file, json* input) {
 	return false;
 }
 
-bool hasPrecompute(const json& map){
-    return map.contains("world") && map.contains("carTree") && map.contains("bikeTree");
+bool hasPrecompute(const json* map){
+    return map->contains("world") && map->contains("carTree") && map->contains("bikeTree");
 }
 
 void importMap(world_t& world, json& map) {
