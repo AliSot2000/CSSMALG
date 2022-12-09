@@ -8,6 +8,7 @@
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
 #include "io.hpp"
+#define DDEBUG
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
@@ -39,15 +40,19 @@ int main(int argc, char* argv[]) {
     time = startMeasureTime("calculating shortest path tree with floyd warshall");
     {
         spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
+#ifdef DDEBUG
         std::cout << std::endl << "Car Tree" << std::endl;
         printSPT(&carsSPT);
+#endif
         binDumpSpt(&carsSPT, carFile);
     }
     {
         spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
         binDumpSpt(&bikeSPT, bikeFile);
+#ifdef DDEBUG
         std::cout << std::endl << "Bike Tree" <<std::endl;
         printSPT(&bikeSPT);
+#endif
     }
     stopMeasureTime(time);
 
