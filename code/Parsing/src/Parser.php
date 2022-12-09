@@ -83,6 +83,7 @@ class Parser
                 }
             }
         }
+
         // filter out unconnected streets
         foreach ($this->rawStreets AS $roadId => $streetData) {
             $sum = 0;
@@ -137,7 +138,6 @@ class Parser
                     }
                 }
             }
-
             // go through segments and check the properties
             foreach ($segments AS $segment) {
                 $startTrafficController = "NONE";
@@ -150,7 +150,12 @@ class Parser
                     $endTrafficController = "traffic_signal";
                 }
 
-                if (isset($streetData["tags"]["oneway"]) && $streetData["tags"]["oneway"] == "yes") {
+                if (isset($streetData["tags"]["oneway"]) && $streetData["tags"]["oneway"] === "yes") {
+                    $splittedRoads[$this->streetCount] = array("id" => strval($this->streetCount), "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => "-1");
+                    $this->parsedNodes[$segment["start"]]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "outgoing");
+                    $this->parsedNodes[$segment["end"]]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => $endTrafficController);
+                    $this->streetCount++;
+                } else {
                     $splittedRoads[$this->streetCount] = array("id" => strval($this->streetCount), "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => strval($this->streetCount + 1));
                     $splittedRoads[$this->streetCount + 1] = array("id" => strval($this->streetCount + 1), "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["end"], "endNodeId" => $segment["start"], "oppositeStreetId" => strval($this->streetCount));
                     $this->parsedNodes[$segment["start"]]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "outgoing");
@@ -158,11 +163,6 @@ class Parser
                     $this->parsedNodes[$segment["end"]]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "outgoing");
                     $this->parsedNodes[$segment["start"]]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => $startTrafficController);
                     $this->streetCount += 2;
-                } else {
-                    $splittedRoads[$this->streetCount] = array("id" => strval($this->streetCount), "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => $segment["start"], "endNodeId" => $segment["end"], "oppositeStreetId" => "-1");
-                    $this->parsedNodes[$segment["start"]]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "outgoing");
-                    $this->parsedNodes[$segment["end"]]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => $endTrafficController);
-                    $this->streetCount++;
                 }
             }
         }
