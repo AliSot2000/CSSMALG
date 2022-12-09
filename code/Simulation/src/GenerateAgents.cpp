@@ -26,35 +26,40 @@ int main(int argc, char* argv[]) {
     const int randomBikes = std::atoi(argv[3]);
     const int maxRandomTime = std::atoi(argv[5]);
 
-    world_t world;
-    nlohmann::json import;
+	world_t world;
+	nlohmann::json import;
 
-    if (!loadFile(importFile, import)) {
-        return -1;
-    }
+	if (!loadFile(importFile, &import)) {
+		return -1;
+	}
 
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
-    if (hasPrecompute(import)){
-        importMap(world, import["world"]);
+    if (hasPrecompute(&import)){
+        importMap(&world, &import["world"]);
     } else {
-        importMap(world, import);
+        importMap(&world, &import);
     }
-    stopMeasureTime(start);
+	stopMeasureTime(start);
 
     spt_t carsSPT;
     spt_t bikeSPT;
 
-    if (hasPrecompute(import)){
+    if (hasPrecompute(&import)){
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
-        importSPT(carsSPT, bikeSPT, import, world);
+        importSPT(&carsSPT, &bikeSPT, &import, &world);
         stopMeasureTime(start);
     } else {
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
-        bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
         carsSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyCar});
+        bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
         stopMeasureTime(start);
     }
 
+    // DEBUGGING PRINT
+    std::cout << "Car Tree" << std::endl;
+    printSPT(&carsSPT);
+    std::cout << "Bike Tree" <<std::endl;
+    printSPT(&bikeSPT);
 
     for (auto iter : world.string_to_int){
         std::cout << iter.first << " " << iter.second << std::endl;
@@ -65,12 +70,12 @@ int main(int argc, char* argv[]) {
     }
     start = startMeasureTime("creating random actors");
     world.actors = std::vector<Actor*>(randomCars + randomBikes);
-    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, 0, randomBikes, 1.5f, maxRandomTime);
-    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, randomBikes, randomCars, 4.5f, maxRandomTime);
+    createRandomActors(&world, &bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, maxRandomTime);
+    createRandomActors(&world, &carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, maxRandomTime);
     stopMeasureTime(start);
 
     json actorOut;
-    exportAgents(actorOut, world);
-    save(outputFile, actorOut);
+    exportAgents(&actorOut, &world);
+    save(outputFile, &actorOut);
     return 0;
 }
