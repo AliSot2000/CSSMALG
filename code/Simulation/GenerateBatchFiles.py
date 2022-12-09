@@ -69,7 +69,7 @@ if __name__ == "__main__":
     simOutDir: str = "/home/asotoude/CSSMALG_DATA/"
     batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
     executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
-    map_path: str = "/home/asotoude/CSSMALG/Parsing/data/tiny_map.tsim"
+    map_path: str = "/home/asotoude/CSSMALG/Parsing/data/tinyMapExport.tsim"
     car_path: str = "/home/asotoude/CSSMALG_DATA/tinyCarTree.spt"
     bike_path: str = "/home/asotoude/CSSMALG_DATA/tinyBikeTree.spt"
     stats_interval: int = 60
