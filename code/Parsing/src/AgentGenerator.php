@@ -4,7 +4,7 @@ class AgentGenerator
 {
     private array $center;
     private int $radius;
-
+    private string $prefix;
     private array $coordinates;
     private array $nodesIn = array();
     private array $nodesOut = array();
@@ -16,13 +16,16 @@ class AgentGenerator
      * @param float $lon2
      * @param float $lat1
      * @param float $lat2
+     * @param string $prefix
      */
-    public function __construct(float $lon1, float $lon2, float $lat1, float $lat2)
+    public function __construct(float $lon1, float $lon2, float $lat1, float $lat2, string $prefix)
     {
         $this->coordinates = array("lon1" => $lon1, "lon2" => $lon2, "lat1" => $lat1, "lat2" => $lat2);;
         $this->center = array("lon" => ($lon1 + $lon2) / 2, "lat" => ($lat1 + $lat2) / 2);
 
         $this->radius = round(min($this->distance($this->center["lon"], $this->center["lat"], $lon1,  $this->center["lat"]), $this->distance($this->center["lon"], $this->center["lat"], $this->center["lon"],  $lat1)) / 3);
+
+        $this->prefix = $prefix;
     }
 
     /**
@@ -145,7 +148,7 @@ class AgentGenerator
                     }
                 }
 
-                $this->writeJSON(array("bikes" => $bikeAgents, "cars" => $carAgents), "sim_$repetitions", strval($bikePercentage * 100) . "_percentBikes");
+                $this->writeJSON(array("bikes" => $bikeAgents, "cars" => $carAgents), $this->prefix . "_sim_" . $repetitions, strval($bikePercentage * 100) . "_percentBikes");
             }
         }
     }
@@ -193,7 +196,7 @@ class AgentGenerator
      * @return void
      */
     private function readData(): void {
-        $data = json_decode(file_get_contents("../data/fullMapExport.tsim"), true)["intersections"];
+        $data = json_decode(file_get_contents("../data/" . $this->prefix . "MapExport.tsim"), true)["intersections"];
 
         foreach ($data AS $intersection) {
             if ($this->distance($intersection["coordinates"]["lon"], $intersection["coordinates"]["lat"], $this->center["lon"], $this->center["lat"]) > $this->radius) {

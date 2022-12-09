@@ -6,6 +6,7 @@
 class Parser
 {
     private array $coordinates;
+    private string $prefix;
     private array $rawNodes = array();
     private array $rawStreets = array();
     private array $parsedNodes = array();
@@ -18,10 +19,12 @@ class Parser
      * @param float $lon2
      * @param float $lat1
      * @param float $lat2
+     * @param string $prefix
      */
-    public function __construct(float $lon1, float $lon2, float $lat1, float $lat2)
+    public function __construct(float $lon1, float $lon2, float $lat1, float $lat2, string $prefix)
     {
         $this->coordinates = array("lon1" => $lon1, "lon2" => $lon2, "lat1" => $lat1, "lat2" => $lat2);
+        $this->prefix = $prefix;
     }
 
 
@@ -80,7 +83,6 @@ class Parser
                 }
             }
         }
-
         // filter out unconnected streets
         foreach ($this->rawStreets AS $roadId => $streetData) {
             $sum = 0;
@@ -100,7 +102,7 @@ class Parser
 
         // if node is only used once or not at all, delete it since it is unnecessary in the middle of a road
         foreach ($this->rawNodes AS $nodeData) {
-            if (isset($nodeCounter[$nodeData["id"]]) && ($nodeCounter[$nodeData["id"]] > 1 || (isset($nodeData["tags"]["highway"]) && $nodeData["tags"]["highway"] == "traffic_signals"))) {
+            if (isset($nodeCounter[$nodeData["id"]]) && $nodeCounter[$nodeData["id"]] > 1) {
                 $this->parsedNodes[$nodeData["id"]]["id"] = strval($nodeData["id"]);
                 $this->parsedNodes[$nodeData["id"]]["coordinates"] = array("lon" => $nodeData["lon"], "lat" => $nodeData["lat"]);
                 $this->parsedNodes[$nodeData["id"]]["roads"] = array();
@@ -109,7 +111,6 @@ class Parser
                 $this->parsedNodes[$nodeData["id"]]["roundabout"] = false;
             }
         }
-
         unset($this->rawNodes);
     }
 
@@ -127,9 +128,6 @@ class Parser
             $segments[] = array("start" => $nodes[0]);
             $current = 0;
 
-            if ($streetData["tags"]["highway"] == "traffic_signals") {
-                print_r("yay");
-            }
             // split roads at intersections
             for ($i = 1; $i < count($nodes); $i++) {
                 if (isset($this->parsedNodes[$nodes[$i]])) {
@@ -228,7 +226,7 @@ class Parser
      * @return void
      */
     private function writeJSON(): void {
-        $handle = fopen("../data/fullMapExport.tsim", 'w+');
+        $handle = fopen("../data/" . $this->prefix . "MapExport.tsim", 'w+');
         $toWrite = array("peripherals" => array("type" => "to-be-simulated", "date" => date("Y-m-d_H-i-s")), "intersections" => array_values($this->parsedNodes), "roads" => array_values($this->parsedStreets));
 
         unset($this->parsedNodes);
