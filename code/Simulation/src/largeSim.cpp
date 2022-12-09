@@ -17,6 +17,8 @@
 
 #define STATUS_UPDATAE_INTERVAL 60
 #define USE_STUPID_INTERSECTIONS false
+#define ADD_INCREMENTS
+#define DDEBUG
 
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
@@ -69,6 +71,7 @@ int main(int argc, char* argv[]) {
     }
     stopMeasureTime(start);
 
+#ifdef DDEBUG
     for (auto iter : world.string_to_int){
         std::cout << iter.first << " " << iter.second << std::endl;
     }
@@ -76,7 +79,7 @@ int main(int argc, char* argv[]) {
     for (auto iter : world.int_to_string){
         std::cout << iter.first << " " << iter.second << std::endl;
     }
-
+#endif
 // TODO parallelize import
 //#pragma omp parallel for default(none) shared(SPTs, SPTFiles, world, succsss)
 //    for (int i = 0; i < 2; ++i){
@@ -88,11 +91,12 @@ int main(int argc, char* argv[]) {
 //    }
 
     // DEBUGGING PRINT
+#ifdef DDBEUG
     std::cout << "Car Tree" << std::endl;
     printSPT(&carsSPT);
     std::cout << "Bike Tree" <<std::endl;
     printSPT(&bikeSPT);
-
+#endif
     // Scope so json gets destroyed.
     // Import the agents.
     {
@@ -121,8 +125,6 @@ int main(int argc, char* argv[]) {
     #pragma omp parallel for shared(world) default(none)
     for (int i = 0; i < world.intersections.size(); ++i){
         Intersection *iter = &world.intersections.at(i);
-//#pragma omp parallel for shared(world) default(none)
-//    for (auto& iter : world.intersections){
         std::sort(iter->waitingToBeInserted.begin(), iter->waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
             return a->insertAfter < b->insertAfter;
         });
@@ -142,14 +144,19 @@ int main(int argc, char* argv[]) {
 	float maxTime = runtime;
     float lastStatusTime = runtime;
     float lastStatsTime = runtime;
+    float lastDeadLockTime = runtime;
 //    bool emptyness = false;
 //    bool current_emptyness = false;
     std::cout << std::endl;
     while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, USE_STUPID_INTERSECTIONS, runtime - maxTime);
-        if  (!updateStreets(&world, deltaTime) && runtime - maxTime > 4*deltaTime) {
-//            resolveDeadLocks(&world, maxTime);
-            std::cout << "Deadlock detected" << std::endl;
+        lastDeadLockTime = (updateStreets(&world, deltaTime)) ? maxTime : lastDeadLockTime;
+
+        // Longer than 20s so every road should have had green once
+        if  (lastDeadLockTime - maxTime > 20.0f){
+            std::cerr << "Deadlock detected at Time " << maxTime << std::endl;
+            resolveDeadLocks(&world, maxTime);
+            lastDeadLockTime = maxTime;
         }
 		maxTime -= deltaTime;
 
@@ -158,8 +165,9 @@ int main(int argc, char* argv[]) {
             lastStatusTime = maxTime;
             std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
         }
+#ifdef ADD_INCREMENTS
         addFrame(&world, &output, false);
-
+#endif
         // Dump stats to file if time has passed
         if (lastStatsTime - maxTime > statsLogInterval){
             lastStatsTime = maxTime;
