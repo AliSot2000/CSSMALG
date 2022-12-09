@@ -189,11 +189,11 @@ class AgentGenerator
     }
 
     /**
-     * reads node data from mapExport.tsim
+     * reads node data from fullMapExport.tsim
      * @return void
      */
     private function readData(): void {
-        $data = json_decode(file_get_contents("../data/mapExport.tsim"), true)["intersections"];
+        $data = json_decode(file_get_contents("../data/fullMapExport.tsim"), true)["intersections"];
 
         foreach ($data AS $intersection) {
             if ($this->distance($intersection["coordinates"]["lon"], $intersection["coordinates"]["lat"], $this->center["lon"], $this->center["lat"]) > $this->radius) {
