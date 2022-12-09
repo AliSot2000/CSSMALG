@@ -69,7 +69,7 @@ json exportWorld(const world_t* world, const float& time, const float& timeDelta
  * @returns void
  *
  */
-void addFrame(world_t& world, nlohmann::json& out, const bool final = false);
+void addFrame(world_t* world, nlohmann::json* out, const bool final = false);
 
 /*
  * Exports the c++ data structure into a json object.
