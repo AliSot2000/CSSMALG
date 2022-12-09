@@ -192,10 +192,10 @@ void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
     }
 }
 
-json exportWorld(const world_t& world, const float& time, const float& timeDelta, const json& originMap) {
+json exportWorld(const world_t* world, const float& time, const float& timeDelta, const json* originMap) {
 	json output;
 
-	output["setup"]["map"] = originMap;
+	output["setup"]["map"] = *originMap;
 
 	output["peripherals"] = {};
 	output["peripherals"]["date"] = "Ich weiss doch ned wie mer date in c++ bechunt?"; // TODO Figure this out
@@ -206,7 +206,7 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
 	output["simulation"] = std::vector<json>();
     int no_path = 0;
 
-	for (const auto& actor : world.actors) {
+	for (const auto& actor : world->actors) {
 		output["setup"]["agents"][actor->id] = {};
 		json& obj = output["setup"]["agents"][actor->id];
 		obj["id"] = actor->id;
@@ -221,8 +221,8 @@ json exportWorld(const world_t& world, const float& time, const float& timeDelta
             obj["start_crossing_id"] = "NO_PATH_FOUND";
             obj["end_crossing_id"] = "NO_PATH_FOUND";
         } else {
-            obj["start_crossing_id"] = world.int_to_string.at(actor->start_id);
-            obj["end_crossing_id"] = world.int_to_string.at(actor->end_id);
+            obj["start_crossing_id"] = world->int_to_string.at(actor->start_id);
+            obj["end_crossing_id"] = world->int_to_string.at(actor->end_id);
         }
         no_path += actor->path.empty() ? 1 : 0;
 	}
