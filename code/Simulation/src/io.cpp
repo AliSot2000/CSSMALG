@@ -25,34 +25,34 @@ bool hasPrecompute(const json* map){
     return map->contains("world") && map->contains("carTree") && map->contains("bikeTree");
 }
 
-void importMap(world_t& world, json& map) {
-	assert(world.streets.size() == 0 && "Streets is not empty");
+void importMap(world_t* world, json* map) {
+	assert(world->streets.size() == 0 && "Streets is not empty");
     // Data will be packed more neatly when first creating array with given size
-    world.intersections = std::vector<Intersection>(map["intersections"].size());
-    world.IntersectionPtr = std::vector<Intersection*>(map["intersections"].size());
+    world->intersections = std::vector<Intersection>(map->at("intersections").size());
+    world->IntersectionPtr = std::vector<Intersection*>(map->at("intersections").size());
 
 	int32_t index = 0;
-	for (const auto& [_, data] : map["intersections"].items()) {
+	for (const auto& [_, data] : map->at("intersections").items()) {
         // Filling look up tables
-		world.string_to_int[data["id"]] = index;
-        world.int_to_string[index] = data["id"];
+		world->string_to_int[data["id"]] = index;
+        world->int_to_string[index] = data["id"];
 
-        Intersection& intersection = world.intersections[index];
+        Intersection& intersection = world->intersections[index];
 		intersection.id = index;
         if (data.contains("trafficLight")){
             intersection.hasTrafficLight = data["trafficLight"];
         }
 
-        world.IntersectionPtr[index] = &world.intersections[index];
+        world->IntersectionPtr[index] = &world->intersections[index];
 		index++;
 	}
 
 	// Data will be packed more neatly when first creating array with given size
-	world.streets = std::vector<Street>(map["roads"].size());
-	world.StreetPtr = std::vector<Street*>(map["roads"].size());
+	world->streets = std::vector<Street>(map->at("roads").size());
+	world->StreetPtr = std::vector<Street*>(map->at("roads").size());
 	index = 0;
-	for (const auto& [_, data] : map["roads"].items()) {
-		Street& street = world.streets[index];
+	for (const auto& [_, data] : map->at("roads").items()) {
+		Street& street = world->streets[index];
 		street.id = data["id"];
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
@@ -82,22 +82,22 @@ void importMap(world_t& world, json& map) {
             }
 		}
 
-		street.start = world.string_to_int[data["intersections"]["start"]["id"]];
-		street.end = world.string_to_int[data["intersections"]["end"]["id"]];
+		street.start = world->string_to_int[data["intersections"]["start"]["id"]];
+		street.end = world->string_to_int[data["intersections"]["end"]["id"]];
 
         if (street.type != StreetTypes::OnlyCar){
-		    world.intersections[street.start].outboundBike[street.end] = &street;
+		    world->intersections[street.start].outboundBike[street.end] = &street;
         }
         if (street.type != StreetTypes::OnlyBike){
-            world.intersections[street.start].outboundCar[street.end] = &street;
+            world->intersections[street.start].outboundCar[street.end] = &street;
         }
-		world.intersections[street.end].inbound.push_back(&street);
+		world->intersections[street.end].inbound.push_back(&street);
 
-        world.StreetPtr[index] = &world.streets[index];
+        world->StreetPtr[index] = &world->streets[index];
 		index++;
     }
 
-    world.empty = {
+    world->empty = {
             .start = -1,
             .end = -1,
             .type = StreetTypes::Both,
@@ -106,8 +106,8 @@ void importMap(world_t& world, json& map) {
             .speedlimit = 0,
             .id = "NO_ROUT",
     };
-    world.string_to_int["NO_ROUT"] = -1;
-    world.int_to_string[-1] = "NO_ROUT";
+    world->string_to_int["NO_ROUT"] = -1;
+    world->int_to_string[-1] = "NO_ROUT";
 }
 
 void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
