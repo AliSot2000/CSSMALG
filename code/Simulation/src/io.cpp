@@ -335,15 +335,44 @@ void save(const std::string file, const json* out) {
 	}
 }
 
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world){
     void* carTreePtr =  carTree.array;
     unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
     void* bikePtr =  bikeTree.array;
     unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
 
-    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
-    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
+    std::map<std::string, std::map<std::string, bool>> carReachable = {};
+    std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
+
+    for (int i = 0; i < carTree.size; i++){
+        carReachable.at(world->int_to_string.at(i)) = {};
+    }
+
+#pragma omp parallel for default(none) shared(carTree, carReachable, world)
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
+            carReachable.at(world->int_to_string.at(i)).at(world->int_to_string.at(j)) = carTree.array[i * carTree.size + j] != -1;
+        }
+    }
+
+    for (int i = 0; i < carTree.size; i++){
+        carReachable.at(world->int_to_string.at(i)) = {};
+    }
+
+#pragma omp parallel for default(none) shared(bikeTree, bikeReachable, world)
+    for (int i = 0; i < bikeTree.size; i++){
+        for (int j = 0; j < bikeTree.size; j++){
+            bikeReachable.at(world->int_to_string.at(i)).at(world->int_to_string.at(j)) = bikeTree.array[i * bikeTree.size + j] != -1;
+        }
+    }
+
+
+//    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
+//    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
+    output["carTree"] = carReachable;
+    output["bikeTree"] = bikeReachable;
     output["world"] = input;
+
 }
 
 void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* world){

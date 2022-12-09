@@ -93,7 +93,7 @@ void save(const std::string file, const nlohmann::json* out);
  *
  * @returns void
 */
-void exportSPT(const spt_t* carTree, const spt_t* bikeTree, const json* input, json* output);
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world);
 
 /*
  * Imports the Shortest Path Trees from a json object.
