@@ -352,8 +352,12 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
 #pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
     for (int i = 0; i < carTree.size; i++){
         for (int j = 0; j < carTree.size; j++){
-            carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
-            bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
+            if (carTree.array[i * carTree.size + j] == -1){
+                carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = false;
+            }
+            if (bikeTree.array[i * bikeTree.size + j] == -1){
+                bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = false;
+            }
         }
     }
 
@@ -366,7 +370,7 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
 //    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
     output["carTree"] = carReachable;
     output["bikeTree"] = bikeReachable;
-    output["world"] = input;
+    // output["world"] = input;
 
 }
 
