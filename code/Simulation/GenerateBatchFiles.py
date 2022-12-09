@@ -7,13 +7,13 @@ def generate_dirs(root, dirs):
         os.makedirs(os.path.join(root, d), exist_ok=True)
 
 
-def recursive_list(path: str, prefix: str):
+def recursive_list(root_path: str, prefix: str):
     results = []
-    for files in os.listdir(path):
-        if os.path.isfile(os.path.join(path, files)):
+    for files in os.listdir(root_path):
+        if os.path.isfile(os.path.join(root_path, files)):
             continue
-        if os.path.isdir(os.path.join(path, files)):
-            for agents in os.listdir(os.path.join(path, files)):
+        if os.path.isdir(os.path.join(root_path, files)):
+            for agents in os.listdir(os.path.join(root_path, files)):
                 if prefix in agents:
                     results.append(os.path.join(files, agents))
     return results
@@ -71,14 +71,14 @@ if __name__ == "__main__":
     # car_path: str = "~/CSSMALG_DATA/tinyCarTree.spt"
     # bike_path: str = "~/CSSMALG_DATA/tinyBikeTree.spt"
 
-    agentsDir: str = "/home/asotoudeh/CSSMALG/code/Parsing/data/"
+    agentsDir: str = "/home/asotoude/CSSMALG/code/Parsing/data/"
     agentsPrefix: str = "tiny_sim"
-    simOutDir: str = "/home/asotoudeh/CSSMALG_DATA/"
-    batchFileDir: str = "/home/asotoudeh/CSSMALG_BATCH"
-    executable_path: str = "/home/asotoudeh/CSSMALG/code/Simulation/build/Simulate"
-    map_path: str = "/home/asotoudeh/CSSMALG_DATA/tiny_map.tsim"
-    car_path: str = "/home/asotoudeh/CSSMALG_DATA/tinyCarTree.spt"
-    bike_path: str = "/home/asotoudeh/CSSMALG_DATA/tinyBikeTree.spt"
+    simOutDir: str = "/home/asotoude/CSSMALG_DATA/"
+    batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
+    executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
+    map_path: str = "/home/asotoude/CSSMALG_DATA/tiny_map.tsim"
+    car_path: str = "/home/asotoude/CSSMALG_DATA/tinyCarTree.spt"
+    bike_path: str = "/home/asotoude/CSSMALG_DATA/tinyBikeTree.spt"
     stats_interval: int = 60
     runtime = 95000
     delta = 0.25
