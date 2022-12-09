@@ -230,7 +230,7 @@ json exportWorld(const world_t* world, const float& time, const float& timeDelta
 	return output;
 }
 
-void addFrame(world_t& world, json& out, const bool final) {
+void addFrame(world_t* world, json* out, const bool final) {
 	json frame;
     json actorFrame;
     json intersectionFrame;
@@ -272,20 +272,20 @@ void addFrame(world_t& world, json& out, const bool final) {
     };
 
     // Iterate through the actors on the street and update its distance.
-	for (const auto& street : world.streets) {
+	for (const auto& street : world->streets) {
 		for (const auto& actor : street.traffic) {
 			const float percent = 1.0f - (actor->distanceToIntersection / street.length);
 			a(actor, &street, percent, true);
 		}
 	}
 
-	for (auto& intersection : world.intersections) {
+	for (auto& intersection : world->intersections) {
         // Initial output so the simulation knows how many actors there are
 		for (const auto& actor : intersection.waitingToBeInserted) {
 //            assert(actor->start_id == intersection.id && "Actor start id does not match intersection id");
             Street* street;
             if (actor->path.empty()){
-                street = &world.empty;
+                street = &world->empty;
             } else {
                 int first = actor->path.front();
                 if (actor->type == ActorTypes::Car){
@@ -319,7 +319,7 @@ void addFrame(world_t& world, json& out, const bool final) {
     frame["intersections"] = intersectionFrame;
 
 	if (frame.size() > 0) {
-		out["simulation"].push_back(frame);
+		out->at("simulation").push_back(frame);
 	}
 }
 
