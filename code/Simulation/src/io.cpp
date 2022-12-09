@@ -418,24 +418,24 @@ bool binDumpSpt(spt_t* Tree, const char* file_name) {
 //    return true;
 }
 
-void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final){
-    output["avgTime"] = avgTime;
-    output["intersections"] = std::vector<json>();
-    output["streets"] = std::vector<json>();
+void jsonDumpStats(const float& avgTime, json* output, world_t* world, const bool final){
+    (*output)["avgTime"] = avgTime;
+    (*output)["intersections"] = std::vector<json>();
+    (*output)["streets"] = std::vector<json>();
 
     // Get data from intersections
-    for (auto& intersection : world.intersections) {
+    for (auto& intersection : world->intersections) {
         json obj = {};
-        obj["id"] = world.int_to_string.at(intersection.id);
+        obj["id"] = world->int_to_string.at(intersection.id);
         obj["bikeFlow"] = intersection.bike_flow_accumulate / avgTime;
         obj["carFlow"] = intersection.car_flow_accumulate / avgTime;
         intersection.car_flow_accumulate = 0.0f;
         intersection.bike_flow_accumulate = 0.0f;
-        output["intersections"].push_back(obj);
+        output->at("intersections").push_back(obj);
     }
 
     // Get data from streets
-    for (auto& street : world.streets) {
+    for (auto& street : world->streets) {
         json obj = {};
         obj["id"] = street.id;
         obj["flow"] = street.flow_accumulate / avgTime;
@@ -445,7 +445,7 @@ void jsonDumpStats(const float& avgTime, json& output, world_t& world, const boo
         }
         street.flow_accumulate = 0.0f;
         street.density_accumulate = 0.0f;
-        output["streets"].push_back(obj);
+        output->at("streets").push_back(obj);
     }
 }
 

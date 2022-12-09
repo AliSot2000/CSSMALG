@@ -108,7 +108,7 @@ void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* worl
 
 bool binDumpSpt(spt_t* Tree, const char* file_name);
 
-void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final);
+void jsonDumpStats(const float& avgTime, json* output, world_t* world, const bool final);
 
 bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world);
 
