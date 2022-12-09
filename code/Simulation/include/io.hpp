@@ -45,7 +45,7 @@ void importMap(world_t* world, nlohmann::json* map);
  *
  * @returns void
  */
-void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT);
+void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT);
 
 /*
  * Exports the world to json format. It is the static part of the simulation. The simulation is added step by step with
