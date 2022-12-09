@@ -450,7 +450,7 @@ void jsonDumpStats(const float& avgTime, json* output, world_t* world, const boo
 }
 
 
-bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world) {
+bool binLoadTree(spt_t* SPT, const char* file_name, const world_t* world) {
     std::ifstream f(file_name);
     if (!f.is_open()) {
         std::cerr << "Failed to load " << file_name << std::endl;
@@ -468,11 +468,11 @@ bool binLoadTree(spt_t& SPT, const char* file_name, const world_t& world) {
     void* voidPtr = static_cast<void*>(charPtr);
     int* tempVectorPtr = static_cast<int*>(voidPtr);
 
-    SPT.size = static_cast<int>(world.intersections.size());
-    SPT.array = new int[SPT.size * SPT.size];
+    SPT->size = static_cast<int>(world->intersections.size());
+    SPT->array = new int[SPT->size * SPT->size];
 
     // Copy data to non-temporary memory
-    std::copy(tempVectorPtr, tempVectorPtr + SPT.size * SPT.size, SPT.array);
+    std::copy(tempVectorPtr, tempVectorPtr + SPT->size * SPT->size, SPT->array);
     f.close();
     return true;
 }
