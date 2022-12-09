@@ -35,7 +35,8 @@ def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, age
         {delta}
     echo "Computation of {agents_in} file finished"
     """
-    with open(os.path.join(script_dir, agents_in.replace("/", "-")), "w") as f:
+    name = os.path.join(script_dir, agents_in.replace("/", "-").replace(".json", ".sh"))
+    with open(os.path.join(script_dir, name), "w") as f:
         f.write(file)
 
 
@@ -45,8 +46,9 @@ def write_enqueue_file(script_dir: str, file_list: list, slurm_command: str):
         print("Removed old enqueue.sh file")
     file = "!/bin/bash\n"
 
-    for f in file_list:
-        file += f"{slurm_command}{os.path.join(script_dir, f)}\n"
+    for file_nama in file_list:
+        name = os.path.join(script_dir, file_nama.replace("/", "-").replace(".json", ".sh"))
+        file += f"{slurm_command}{os.path.join(script_dir, name)}\n"
 
     file += "echo \"All jobs submitted\"\n"
 
