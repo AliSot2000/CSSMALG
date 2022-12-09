@@ -146,6 +146,7 @@ int main(int argc, char* argv[]) {
         }*/
 	}
     // Committing final state of simulation to output, required for the start and stop time.
+    std::cout << std::endl;
     addFrame(&world, &output, true);
 	stopMeasureTime(start);
 
