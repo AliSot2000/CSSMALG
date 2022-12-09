@@ -65,12 +65,12 @@ int main(int argc, char* argv[]) {
         bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
         stopMeasureTime(start);
     }
-
+#ifdef DDBUG
     std::cout << "Car Tree" << std::endl;
     printSPT(&carsSPT);
     std::cout << "Bike Tree" <<std::endl;
     printSPT(&bikeSPT);
-
+#endif
 	start = startMeasureTime("creating random actors");
 
     if (agentsFile != nullptr){
@@ -117,13 +117,18 @@ int main(int argc, char* argv[]) {
 
 	float maxTime = runtime;
     float lastStatusTime = runtime;
+    float lastDeadLockTime = runtime;
 //    bool emptyness = false;
 //    bool current_emptyness = false;
 	while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, stupidIntersections, runtime - maxTime);
-		if  (!updateStreets(&world, deltaTime) && runtime - maxTime > 4*deltaTime) {
-//            resolveDeadLocks(&world, maxTime);
-            std::cout << "Deadlock detected at " << maxTime << std::endl;
+        lastDeadLockTime = (updateStreets(&world, deltaTime)) ? maxTime : lastDeadLockTime;
+
+        // Longer than 20s so every road should have had green once
+        if  (lastDeadLockTime - maxTime > 20.0f){
+            std::cerr << "Deadlock detected at Time " << maxTime << std::endl;
+            resolveDeadLocks(&world, maxTime);
+            lastDeadLockTime = maxTime;
         }
 		maxTime -= deltaTime;
 
