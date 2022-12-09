@@ -106,7 +106,7 @@ void exportSPT(const spt_t* carTree, const spt_t* bikeTree, const json* input, j
  * */
 void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* world);
 
-bool binDumpSpt(spt_t Tree, const char* file_name);
+bool binDumpSpt(spt_t* Tree, const char* file_name);
 
 void jsonDumpStats(const float& avgTime, json& output, world_t& world, const bool final);
 
