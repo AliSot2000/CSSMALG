@@ -115,3 +115,5 @@ bool binLoadTree(spt_t* SPT, const char* file_name, const world_t* world);
 void exportAgents(json* out, const world_t* world);
 
 void printSPT(const spt_t* SPT);
+
+unsigned int GetNumberOfDigits (unsigned int i);

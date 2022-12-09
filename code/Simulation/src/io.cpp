@@ -514,24 +514,31 @@ void exportAgents(json* out, const world_t* world){
 }
 
 void printSPT(const spt_t* SPT){
-    std::cout << std::left << std::setw(5) << std::setfill(' ') << " ";
+    int temp = SPT->size;
+    temp = GetNumberOfDigits(temp) + 3;
+    std::cout << std::left << std::setw(temp) << std::setfill(' ') << " ";
     std::cout << "| ";
 
     for (int i = 0; i < SPT->size; ++i){
-        std::cout << std::left << std::setw(5) << std::setfill(' ') <<  i;
+        std::cout << std::left << std::setw(temp) << std::setfill(' ') <<  i;
     }
     std::cout << std::endl;
     for (int i = 0; i < SPT->size + 1; ++i){
-        std::cout << std::left << std::setw(5) << std::setfill('-') << "-";
+        std::cout << std::left << std::setw(temp) << std::setfill('-') << "-";
     }
 
     std::cout << std::endl;
     for (int i = 0; i < SPT->size; i++){
-        std::cout << std::left << std::setw(5) << std::setfill(' ') << i;
+        std::cout << std::left << std::setw(temp) << std::setfill(' ') << i;
         std::cout << "| ";
         for (int j = 0; j < SPT->size; j++){
-            std::cout << std::left << std::setw(5) << std::setfill(' ') <<  SPT->array[i * SPT->size + j];
+            std::cout << std::left << std::setw(temp) << std::setfill(' ') <<  SPT->array[i * SPT->size + j];
         }
         std::cout << std::endl;
     }
+}
+
+unsigned int GetNumberOfDigits (unsigned int i)
+{
+    return i > 0 ? (int) log10 ((double) i) + 1 : 1;
 }
