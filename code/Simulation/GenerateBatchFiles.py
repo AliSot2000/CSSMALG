@@ -62,14 +62,23 @@ if __name__ == "__main__":
     # path = args.path
     # num = args.num
 
-    agentsDir: str = "~/CSSMALG/code/Parsing/data/"
+    # agentsDir: str = "~/CSSMALG/code/Parsing/data/"
+    # agentsPrefix: str = "tiny_sim"
+    # simOutDir: str = "~/CSSMALG_DATA/"
+    # batchFileDir: str = "~/CSSMALG_BATCH"
+    # executable_path: str = "~/CSSMALG/code/Simulation/build/Simulate"
+    # map_path: str = "~/CSSMALG_DATA/tiny_map.tsim"
+    # car_path: str = "~/CSSMALG_DATA/tinyCarTree.spt"
+    # bike_path: str = "~/CSSMALG_DATA/tinyBikeTree.spt"
+
+    agentsDir: str = "/home/asotoudeh/CSSMALG/code/Parsing/data/"
     agentsPrefix: str = "tiny_sim"
-    simOutDir: str = "~/CSSMALG_DATA/"
-    batchFileDir: str = "~/CSSMALG_BATCH"
-    executable_path: str = "~/CSSMALG/code/Simulation/build/Simulate"
-    map_path: str = "~/CSSMALG_DATA/tiny_map.tsim"
-    car_path: str = "~/CSSMALG_DATA/tinyCarTree.spt"
-    bike_path: str = "~/CSSMALG_DATA/tinyBikeTree.spt"
+    simOutDir: str = "/home/asotoudeh/CSSMALG_DATA/"
+    batchFileDir: str = "/home/asotoudeh/CSSMALG_BATCH"
+    executable_path: str = "/home/asotoudeh/CSSMALG/code/Simulation/build/Simulate"
+    map_path: str = "/home/asotoudeh/CSSMALG_DATA/tiny_map.tsim"
+    car_path: str = "/home/asotoudeh/CSSMALG_DATA/tinyCarTree.spt"
+    bike_path: str = "/home/asotoudeh/CSSMALG_DATA/tinyBikeTree.spt"
     stats_interval: int = 60
     runtime = 95000
     delta = 0.25
