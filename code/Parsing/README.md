@@ -45,7 +45,7 @@ The results of cleaning and generating the data according to specifications of `
 
 ### AgentGenerator
 
-From the given coordinates, the AgentGenerator computes the center of the map and the radius of the "center-circle". It checks which intersections in `mapExport.tsim` are in the center and which are not. It then generates different agent files and saves them into the `data` directory. For each entry in the `bikePercentages` array, it generates 10 agent files, where `bikePercentages[i]` percent of agents are bikes. All agent files are generated according to the standard in `agents-input-json-spec.md`. All agent files with the same amount of bike percentage x is saved into the subdirectory `data/x_percentBikes`.
+From the given coordinates, the AgentGenerator computes the center of the map and the radius of the "center-circle". It checks which intersections in `mapExport.tsim` are in the center and which are not. It then generates different agent files and saves them into the `data` directory. For each entry in the `bikePercentages` array, it generates 10 agent files, where `bikePercentages[i]` percent of agents are bikes. All agent files are generated according to the standard in `agents-input-json-spec.md`. All agent files with the same amount of bike percentage x is saved into the subdirectory `data/xpercent_bikes`.
 
 ### Main
 
