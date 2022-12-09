@@ -35,7 +35,7 @@ bool hasPrecompute(const json* map);
  *
  * @returns void
  */
-void importMap(world_t& world, nlohmann::json& map);
+void importMap(world_t* world, nlohmann::json* map);
 
 /*
  * Imports a json object into the c++ data structure.
