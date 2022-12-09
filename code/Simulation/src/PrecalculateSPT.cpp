@@ -8,10 +8,10 @@
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
 #include "io.hpp"
-#define DDEBUG
+//#define DDEBUG
 
 int main(int argc, char* argv[]) {
-    if (argc < 3) {
+    if (argc < 4) {
         std::cerr << "Usage PrecalculateSPT <map-in> <car-out> <bike-out> <jan-out>" << std::endl;
         std::cerr << "Function precalculates the spt" << std::endl;
         return -1;
@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
     const char* importFile = argv[1];
     const char* carFile = argv[2];
     const char* bikeFile = argv[3];
+    const char* janFile = argv[4];
 
     world_t world;
     nlohmann::json import;
@@ -59,7 +60,7 @@ int main(int argc, char* argv[]) {
     time = startMeasureTime("Exporting to file");
     nlohmann::json spts;
     exportSPT(carsSPT, bikeSPT, import, spts, &world);
-    save(carFile, &spts);
+    save(janFile, &spts);
     stopMeasureTime(time);
 }
 
