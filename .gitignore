@@ -114,3 +114,4 @@ fabric.properties
 /code/mpi_testing/mpich-4.0.3/
 
 .vscode/
+/code/Parsing/data/
