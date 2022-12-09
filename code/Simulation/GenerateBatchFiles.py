@@ -23,7 +23,7 @@ def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, age
     file = f"""
 !/bin/bash
 echo "Running Simulation of {agents_in} file"
-{executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir} {runtime} {delta}
+{executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir+'/'} {runtime} {delta}
 echo "Computation of {agents_in} file finished"
 """
     print(output_dir)
