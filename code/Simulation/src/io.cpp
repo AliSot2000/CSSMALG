@@ -515,7 +515,7 @@ void exportAgents(json* out, const world_t* world){
 
 void printSPT(const spt_t* SPT){
     int temp = SPT->size;
-    temp = GetNumberOfDigits(temp);
+    temp = GetNumberOfDigits(temp) + 3;
     std::cout << std::left << std::setw(temp) << std::setfill(' ') << " ";
     std::cout << "| ";
 
