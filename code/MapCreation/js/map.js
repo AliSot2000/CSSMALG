@@ -394,6 +394,7 @@ class Map {
         for (let id in this._intersections) { // Loop through the intersections
             this.removeIntersection(id); // Remove the intersection
         }
+        this.recheckSize(); // Recheck the size of the map
         return this;
     }
 

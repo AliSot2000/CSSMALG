@@ -15,7 +15,7 @@ The Graphical User Interface for:
 The simulation of a map. Maps created by the GUI can be exported and viewed again in the GUI.
 
 ## Parser
-Data parser to parse the raw OSM data 
+Data parser to parse the raw OSM data and generate agents for the map.
 
 
 ## Running on Racklette

@@ -528,17 +528,22 @@ function calculatePercent(value, total) {
     return (value / total) * 100; // Return the percentage
 }
 
+/**
+ * Sanitizes the road ids given by the simulation
+ * @param {Array.<String>} roadIds The road ids
+ * @returns {Array.<String>} The sanitized road ids
+ */
 function sanitiseRoadIds(roadIds) {
-    for (let i = 0; i < roadIds.length; i++) {
-        if (roadIds[i].charAt(0) === '!') {
-            roadIds[i] = roadIds[i].substring(1);
+    for (let i = 0; i < roadIds.length; i++) { // Loop through the road ids
+        if (roadIds[i].charAt(0) === '!') { // Check if the road id starts with a !
+            roadIds[i] = roadIds[i].substring(1); // Remove the !
         }
     }
     return roadIds;
 }
 
 /**
- * Calculates the cubic control points
+ * Creates a good-looking position of the cubic control points
  * @param {Point} p The start point
  * @param {Point} q The end point
  * @returns {{qm: Point, pm: Point}}
@@ -548,16 +553,24 @@ function calculateCubicPoints(p, q) {
 
     return {
         pm: new Point(
-            p.x - offset * Math.sin(p.angle),
-            p.y - offset * Math.cos(p.angle)
+            p.x - offset * Math.sin(p.angle), // Calculate the x coordinate
+            p.y - offset * Math.cos(p.angle) // Calculate the y coordinate
         ),
         qm: new Point(
-            q.x - offset * Math.sin(q.angle),
-            q.y - offset * Math.cos(q.angle)
+            q.x - offset * Math.sin(q.angle), // Calculate the x coordinate
+            q.y - offset * Math.cos(q.angle) // Calculate the y coordinate
         )
     }
 }
 
+/**
+ * Maps a percentage space to a new percentage space
+ * @param {number} newTotalLength The new total length
+ * @param {number} oldTotalLength The old total length
+ * @param {number} offset The offset
+ * @param {number} percent The percentage value
+ * @returns {number}
+ */
 function offsetPercent(newTotalLength, oldTotalLength, offset, percent) {
     return (offset + (percent * newTotalLength)) / oldTotalLength;
 }
