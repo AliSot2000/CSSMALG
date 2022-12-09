@@ -335,30 +335,47 @@ void save(const std::string file, const json* out) {
 	}
 }
 
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world){
-    void* carTreePtr =  carTree.array;
-    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
-    void* bikePtr =  bikeTree.array;
-    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world, const std::string bikeFile, const std::string carFile) {
+//    void* carTreePtr =  carTree.array;
+//    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
+//    void* bikePtr =  bikeTree.array;
+//    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
 
     std::map<std::string, std::map<std::string, bool>> carReachable = {};
     std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
 
+    /*
     for (int i = 0; i < carTree.size; i++){
         carReachable[world->int_to_string.at(i)]= {};
         bikeReachable[world->int_to_string.at(i)]= {};
     }
-
-#pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
+     */
+// #pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
+#pragma omp parallel for default(none) shared(carTree, bikeFile, world, bikeTree, carFile) private(carReachable, bikeReachable)
     for (int i = 0; i < carTree.size; i++){
+        // Determine File Name and create a struct
+        std::string intCarfile = carFile + "car_" + world->int_to_string.at(i) + ".json";
+        std::string intBikeFile = bikeFile + "bike_" + world->int_to_string.at(i) + ".json";
+
+        carReachable[world->int_to_string.at(i)] = {};
+        bikeReachable[world->int_to_string.at(i)] = {};
+
         for (int j = 0; j < carTree.size; j++){
-            if (carTree.array[i * carTree.size + j] != -1){
-                carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = true;
-            }
-            if (bikeTree.array[i * bikeTree.size + j] != -1){
-                bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = true;
-            }
+            //if (carTree.array[i * carTree.size + j] != -1){
+                carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
+            //}
+            //if (bikeTree.array[i * bikeTree.size + j] != -1){
+                bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
+            //}
         }
+        nlohmann::json carJson;
+        carJson["carTree"] = carReachable;
+        nlohmann::json bikeJson;
+        bikeJson["bikeTree"]= bikeReachable;
+
+        // Save the struct to a file
+        save(intCarfile, &carJson);
+        save(intBikeFile, &bikeJson);
     }
 
 
@@ -368,8 +385,8 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
 
 //    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
 //    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
-    output["carTree"] = carReachable;
-    output["bikeTree"] = bikeReachable;
+//    output["carTree"] = carReachable;
+//    output["bikeTree"] = bikeReachable;
     // output["world"] = input;
 
 }
