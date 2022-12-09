@@ -352,7 +352,7 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
     }
      */
 // #pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
-#pragma omp parallel for default(none) shared(carTree, dir, world, bikeTree) private(carReachable, bikeReachable)
+//#pragma omp parallel for default(none) shared(carTree, dir, world, bikeTree) private(carReachable, bikeReachable)
     for (int i = 0; i < carTree.size; i++){
         // Determine File Name and create a struct
         std::string intCarfile = dir + "car_" + world->int_to_string.at(i) + ".json";
