@@ -108,6 +108,11 @@ class Simulation {
         return this;
     }
 
+
+    /**
+     * Sets up the simulation. This includes the loading of the map, the creation of the agents and the precalculation of the simulation
+     * @returns {Simulation} Self Reference for chaining
+     */
     setupSimulation() {
         this._map.clear(); // Clear the map
         this._map.load(this._sim_map, false); // Load the map
@@ -124,14 +129,19 @@ class Simulation {
         this._intersections = this._map.getIntersections(); // Get the intersections from the map
 
         this._map._loading.setSubHeader('Precalculating Simulation'); // Set the sub header of the loading screen
-        this.precalculateSimulation() // Precalculate the simulation
+        setTimeout(() => { // Wait for the map to load
+            this.precalculateSimulation() // Precalculate the simulation
 
-        this._slider.attr('max', this._agent_simulation.length); // Set the maximum value of the slider
-        this._slider.val(0); // Set the value of the slider to 0
+            this._slider.attr('max', this._agent_simulation.length); // Set the maximum value of the slider
+            this._slider.val(0); // Set the value of the slider to 0
 
-        this._step = 0; // Set the step to 0
-        this.jumpToStep(0); // Jump to step 0
-        this._map._loading.setSubHeader('Simulation Ready').setPercent(100).hide(); // Hide the loading screen
+            this._step = 0; // Set the step to 0
+            this.jumpToStep(0); // Jump to step 0
+            this._map._loading.setSubHeader('Simulation Ready').setPercent(100);
+            setTimeout(() => {
+                this._map._loading.hide(); // Hide the loading screen
+            }, 100);
+        }, 100);
 
         return this;
     }
@@ -256,12 +266,10 @@ class Simulation {
             }
 
             let intersection_new_step = {same: {}, changed: {}}; // The new step that will be added to the simulation
+            let intersection_step = this._pre_simulation[step_num].intersections; // The current step
+            let intersection_empty_step = isEmpty(intersection_step); // If the step is empty
             for (let id in this._intersections) { // For each intersection
-                let intersection_step = this._pre_simulation[step_num].intersections; // The current step
-                if (isEmpty(intersection_step)) {
-                    continue;
-                }
-                if (id in intersection_step) { // If the intersection is in the pre-simulation
+                if (!intersection_empty_step && id in intersection_step) { // If the intersection is in the pre-simulation
                     intersection_new_step.changed[id] = {
                         green: sanitiseRoadIds(intersection_step[id].green),
                         red: sanitiseRoadIds(intersection_step[id].red)
