@@ -110,14 +110,14 @@ void importMap(world_t* world, json* map) {
     world->int_to_string[-1] = "NO_ROUT";
 }
 
-void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
-    assert(world.actors.size() == 0 && "Agents is not empty");
-    world.actors = std::vector<Actor*>(agents["bikes"].size() + agents["cars"].size());
-    std::cout << "importing " << agents["bikes"].size() << " bikes and " << agents["cars"].size() << " cars" << std::endl;
+void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
+    assert(world->actors.size() == 0 && "Agents is not empty");
+    world->actors = std::vector<Actor*>(agents->at("bikes").size() + agents->at("cars").size());
+    std::cout << "importing " << agents->at("bikes").size() << " bikes and " << agents->at("cars").size() << " cars" << std::endl;
     int index = 0;
 
     // Import Bikes
-    for (const auto& [name, data] : agents["bikes"].items()) {
+    for (const auto& [name, data] : agents->at("bikes").items()) {
         Actor* actor = new Actor();
 
         // Set that shit
@@ -136,13 +136,13 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         actor->insertAfter = data["waiting_period"];
         actor->id = name;
 
-        actor->start_id = world.string_to_int[data["start_id"]];
-        actor->end_id = world.string_to_int[data["end_id"]];
+        actor->start_id = world->string_to_int[data["start_id"]];
+        actor->end_id = world->string_to_int[data["end_id"]];
 
-        actor->path = retrievePath(bikeSPT, actor->start_id, actor->end_id, bikeSPT.size);
+        actor->path = retrievePath(bikeSPT, actor->start_id, actor->end_id);
 
-        if (actor->start_id == -1 || actor->end_id == -1){
-            for (auto& intersection : world.intersections) {
+        if (actor->start_id != -1 && actor->end_id != -1){ // Well this is also a stupid mistace to have it to == and ||
+            for (auto& intersection : world->intersections) {
                 if (intersection.id == actor->start_id) {
                     intersection.waitingToBeInserted.push_back(actor);
                     break;
@@ -150,14 +150,14 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
             }
         }
 
-        world.actors.at(index) = actor;
+        world->actors.at(index) = actor;
         index++;
     }
-    for (const auto& [name, data] : agents["cars"].items()) {
+    for (const auto& [name, data] : agents->at("cars").items()) {
         Actor* actor = new Actor();
 
         // Set that shit
-        actor->type = ActorTypes::Bike;
+        actor->type = ActorTypes::Car; // TODO THIS FUCKING LINE OF MY IDIOT BRAIN WAS IT
         actor->distanceToIntersection = 0.0f;
         actor->distanceToRight = 0;
         actor->length = data["length"];
@@ -172,20 +172,22 @@ void importAgents(world_t& world, json& agents, spt_t& carsSPT, spt_t& bikeSPT){
         actor->insertAfter = data["waiting_period"];
         actor->id = name;
 
+        actor->start_id = world->string_to_int[data["start_id"]];
+        actor->end_id = world->string_to_int[data["end_id"]];
 
-        actor->start_id = world.string_to_int[data["start_id"]];
-        actor->end_id = world.string_to_int[data["end_id"]];
+        actor->path = retrievePath(carsSPT, actor->start_id, actor->end_id);
 
-        actor->path = retrievePath(carsSPT, actor->start_id, actor->end_id, carsSPT.size);
-
-        for (auto& intersection : world.intersections) {
-            if (intersection.id == actor->start_id) {
-                intersection.waitingToBeInserted.push_back(actor);
-                break;
+        // Make sure the path exists.
+        if (actor->start_id != -1 && actor->end_id != -1) {
+            for (auto &intersection: world->intersections) {
+                if (intersection.id == actor->start_id) {
+                    intersection.waitingToBeInserted.push_back(actor);
+                    break;
+                }
             }
         }
 
-        world.actors.at(index) = actor;
+        world->actors.at(index) = actor;
         index++;
     }
 }
