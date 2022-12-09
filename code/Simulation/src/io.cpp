@@ -477,13 +477,13 @@ bool binLoadTree(spt_t* SPT, const char* file_name, const world_t* world) {
     return true;
 }
 
-void exportAgents(json& out, const world_t& world){
-    out["bikes"] = {};
-    out["cars"] = {};
+void exportAgents(json* out, const world_t* world){
+    (*out)["bikes"] = {};
+    (*out)["cars"] = {};
 
     int empty = 0;
 
-    for (auto& agent : world.actors) {
+    for (auto& agent : world->actors) {
         if (agent->path.empty()){
             empty++;
             continue;
@@ -496,8 +496,8 @@ void exportAgents(json& out, const world_t& world){
         obj["deceleration"] = agent->deceleration;
         obj["acceleration_exponent"] = agent->acceleration_exp;
         obj["waiting_period"] = agent->insertAfter;
-        obj["start_id"] = world.int_to_string.at(agent->start_id);
-        obj["end_id"] = world.int_to_string.at(agent->end_id);
+        obj["start_id"] = world->int_to_string.at(agent->start_id);
+        obj["end_id"] = world->int_to_string.at(agent->end_id);
         obj["path"] = std::vector<int>();
         for (int i = 0; i < agent->path.size(); i++){
             obj["path"].push_back(agent->path.front());
@@ -505,10 +505,66 @@ void exportAgents(json& out, const world_t& world){
         }
         if (agent->type == ActorTypes::Car)
         {
-            out["cars"][agent->id] = obj;
-        } else {
-            out["bikes"][agent->id] = obj;
+            out->at("cars")[agent->id] = obj;
+        } else if (agent->type == ActorTypes::Bike) {
+            out->at("bikes")[agent->id] = obj;
         }
     }
     std::cout << "Number of Actors with empty Path: " << empty << std::endl;
+}
+
+void printSPT(const spt_t* SPT){
+    int temp = SPT->size;
+    temp = numDigits(temp);
+    std::cout << std::left << std::setw(temp) << std::setfill(' ') << " ";
+    std::cout << "| ";
+
+    for (int i = 0; i < SPT->size; ++i){
+        std::cout << std::left << std::setw(temp) << std::setfill(' ') <<  i;
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < SPT->size + 1; ++i){
+        std::cout << std::left << std::setw(temp) << std::setfill('-') << "-";
+    }
+
+    std::cout << std::endl;
+    for (int i = 0; i < SPT->size; i++){
+        std::cout << std::left << std::setw(temp) << std::setfill(' ') << i;
+        std::cout << "| ";
+        for (int j = 0; j < SPT->size; j++){
+            std::cout << std::left << std::setw(temp) << std::setfill(' ') <<  SPT->array[i * SPT->size + j];
+        }
+        std::cout << std::endl;
+    }
+}
+
+int numDigits(int32_t x)
+{
+    if (x == INT32_MIN) return 10 + 1;
+    if (x < 0) return numDigits(-x) + 1;
+
+    if (x >= 10000) {
+        if (x >= 10000000) {
+            if (x >= 100000000) {
+                if (x >= 1000000000)
+                    return 10;
+                return 9;
+            }
+            return 8;
+        }
+        if (x >= 100000) {
+            if (x >= 1000000)
+                return 7;
+            return 6;
+        }
+        return 5;
+    }
+    if (x >= 100) {
+        if (x >= 1000)
+            return 4;
+        return 3;
+    }
+    if (x >= 10)
+        return 2;
+    return 1;
 }
