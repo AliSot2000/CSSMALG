@@ -387,10 +387,10 @@ void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* worl
     }
 }
 
-bool binDumpSpt(spt_t Tree, const char* file_name) {
-    void *carTreePtr = Tree.array;
+bool binDumpSpt(spt_t* Tree, const char* file_name) {
+    void *carTreePtr = Tree->array;
     unsigned char *carTreeChar = static_cast<unsigned char *>(carTreePtr);
-    std::string ostring = base64_encode(carTreeChar, Tree.size * Tree.size * sizeof(int));
+    std::string ostring = base64_encode(carTreeChar, Tree->size * Tree->size * sizeof(int));
 
     std::ofstream f(file_name);
     f << ostring;
