@@ -19,7 +19,7 @@ def recursive_list(root_path: str, prefix: str):
     return results
 
 
-def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str):
+def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str):
     file = f"""
     !/bin/bash
     echo "Running Simulation of {agents_in} file"
@@ -35,7 +35,7 @@ def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, age
         {delta}
     echo "Computation of {agents_in} file finished"
     """
-    name = os.path.join(script_dir, agents_in.replace("/", "-").replace(".json", ".sh"))
+    name = os.path.join(script_dir, f"{bash_file_name}.sh")
     with open(os.path.join(script_dir, name), "w") as f:
         f.write(file)
 
@@ -113,7 +113,8 @@ if __name__ == "__main__":
                         output_dir=os.path.join(simOutDir, agent_dirs[i]),
                         runtime=runtime,
                         delta=delta,
-                        script_dir=batchFileDir)
+                        script_dir=batchFileDir,
+                        bash_file_name=agent_dirs[i])
     print("Generated Batch Files")
 
     # generate enqueue file
