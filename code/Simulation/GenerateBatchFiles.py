@@ -26,7 +26,6 @@ echo "Running Simulation of {agents_in} file"
 {executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir+'/'} {runtime} {delta}
 echo "Computation of {agents_in} file finished"
 """
-    print(output_dir)
     name = os.path.join(script_dir, f"{bash_file_name.replace('/', '-')}.sh")
     with open(os.path.join(script_dir, name), "w") as f:
         f.write(file)
@@ -70,7 +69,7 @@ if __name__ == "__main__":
     simOutDir: str = "/home/asotoude/CSSMALG_DATA/"
     batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
     executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
-    map_path: str = "/home/asotoude/CSSMALG_DATA/tiny_map.tsim"
+    map_path: str = "/home/asotoude/CSSMALG/Parsing/data/tiny_map.tsim"
     car_path: str = "/home/asotoude/CSSMALG_DATA/tinyCarTree.spt"
     bike_path: str = "/home/asotoude/CSSMALG_DATA/tinyBikeTree.spt"
     stats_interval: int = 60
