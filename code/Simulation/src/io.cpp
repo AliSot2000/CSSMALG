@@ -346,28 +346,28 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
     output["world"] = input;
 }
 
-void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& world){
-    carTree = {
+void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* world){
+    *carTree = {
             .array = nullptr,
-            .size = static_cast<int>(world.intersections.size()),
+            .size = static_cast<int>(world->intersections.size()),
             };
     // Creating empty SPT.
-    bikeTree = {
+    *bikeTree = {
             .array = nullptr,
-            .size = static_cast<int>(world.intersections.size()),
+            .size = static_cast<int>(world->intersections.size()),
     };
 
     // Get the String
-    std::string carTreeB64 = input["carTree"];
-    std::string bikeTreeB64 = input["bikeTree"];
+    std::string carTreeB64 = input->at("carTree");
+    std::string bikeTreeB64 = input->at("bikeTree");
 
     // Convert to std::vector<unsigned char>
     std::vector<BYTE> carTreeBytes = base64_decode(carTreeB64);
     std::vector<BYTE> bikeTreeBytes = base64_decode(bikeTreeB64);
 
     // Allocate Memory for copying
-    BYTE* carTreePtr = new BYTE[carTree.size * carTree.size * sizeof(int)];
-    BYTE* bikeTreePtr = new BYTE[bikeTree.size * bikeTree.size * sizeof(int)];
+    BYTE* carTreePtr = new BYTE[carTree->size * carTree->size * sizeof(int)];
+    BYTE* bikeTreePtr = new BYTE[bikeTree->size * bikeTree->size * sizeof(int)];
 
     // Copy to allocated Memory
     std::copy(carTreeBytes.begin(), carTreeBytes.end(), carTreePtr);
@@ -376,12 +376,12 @@ void importSPT(spt_t& carTree, spt_t& bikeTree, const json& input, world_t& worl
     void* carTreeVoidPtr = static_cast<void*>(carTreePtr);
     void* bikeTreeVoidPtr = static_cast<void*>(bikeTreePtr);
 
-    carTree.array = static_cast<int*>(carTreeVoidPtr);
-    bikeTree.array = static_cast<int*>(bikeTreeVoidPtr);
+    carTree->array = static_cast<int*>(carTreeVoidPtr);
+    bikeTree->array = static_cast<int*>(bikeTreeVoidPtr);
 
-    for (int i = 0; i < carTree.size; i++){
-        for (int j = 0; j < carTree.size; j++){
-            std::cout << carTree.array[i * carTree.size + j] << " ";
+    for (int i = 0; i < carTree->size; i++){
+        for (int j = 0; j < carTree->size; j++){
+            std::cout << carTree->array[i * carTree->size + j] << " ";
         }
         std::cout << std::endl;
     }
