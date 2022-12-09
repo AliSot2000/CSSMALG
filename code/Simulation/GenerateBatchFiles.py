@@ -21,20 +21,12 @@ def recursive_list(root_path: str, prefix: str):
 
 def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str):
     file = f"""
-    !/bin/bash
-    echo "Running Simulation of {agents_in} file"
-    {executable} \
-        {map_in} \
-        {car_in} \
-        {bike_in} \
-        {agents_in} \
-        {stats_interval} \ 
-        {os.path.join(output_dir, "agents.json")} \
-        {output_dir} \
-        {runtime} \
-        {delta}
-    echo "Computation of {agents_in} file finished"
-    """
+!/bin/bash
+echo "Running Simulation of {agents_in} file"
+{executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir} {runtime} {delta}
+echo "Computation of {agents_in} file finished"
+"""
+    print(output_dir)
     name = os.path.join(script_dir, f"{bash_file_name.replace('/', '-')}.sh")
     with open(os.path.join(script_dir, name), "w") as f:
         f.write(file)
