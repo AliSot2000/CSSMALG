@@ -323,11 +323,11 @@ void addFrame(world_t* world, json* out, const bool final) {
 	}
 }
 
-void save(const std::string& file, const json& out) {
+void save(const std::string file, const json* out) {
 	std::ofstream f(file);
 
 	if (f.is_open()) {
-		f << std::setw(4) << out << std::endl;
+		f << std::setw(4) << *out << std::endl;
 		f.close();
 	}
 	else {
