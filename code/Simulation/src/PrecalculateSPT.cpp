@@ -10,6 +10,7 @@
 #include "io.hpp"
 //#define DDEBUG
 
+
 int main(int argc, char* argv[]) {
     if (argc < 4) {
         std::cerr << "Usage PrecalculateSPT <map-in> <car-out> <bike-out> <jan-out>" << std::endl;
@@ -58,9 +59,13 @@ int main(int argc, char* argv[]) {
     stopMeasureTime(time);
 
     time = startMeasureTime("Exporting to file");
+#ifdef SINGLE_FILE_EXPORT
+    exportSPT(carsSPT, bikeSPT, import, &world, janFile);
+#else
     nlohmann::json spts;
-    exportSPT(carsSPT, bikeSPT, import, spts, &world, janFile);
-    //save(janFile, &spts);
+    exportSPT(carsSPT, bikeSPT, import, spts, &world);
+    save(janFile, &spts);
+#endif
     stopMeasureTime(time);
 }
 

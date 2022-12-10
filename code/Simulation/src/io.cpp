@@ -9,7 +9,6 @@
 // #include <omp.h>
 #include "base64.hpp"
 
-
 bool loadFile(const std::string file, json* input) {
 	std::ifstream f(file);
 	if (f.is_open()) {
@@ -335,24 +334,8 @@ void save(const std::string file, const json* out) {
 	}
 }
 
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world, const std::string dir) {
-// void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world) {
-//    void* carTreePtr =  carTree.array;
-//    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
-//    void* bikePtr =  bikeTree.array;
-//    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
-
-//    std::map<std::string, std::map<std::string, bool>> carReachable = {};
-//    std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
-
-    /*
-    for (int i = 0; i < carTree.size; i++){
-        carReachable[world->int_to_string.at(i)]= {};
-        bikeReachable[world->int_to_string.at(i)]= {};
-    }
-     */
-// #pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
-//#pragma omp parallel for default(none) shared(carTree, dir, world, bikeTree) private(carReachable, bikeReachable)
+#ifdef SINGLE_FILE_EXPORT
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input,  const world_t* world, const std::string dir) {
     for (int i = 0; i < carTree.size; i++){
         // Determine File Name and create a struct
         std::string intCarfile = dir + "car_" + world->int_to_string.at(i) + ".json";
@@ -364,12 +347,8 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
         bikeReachable[world->int_to_string.at(i)] = {};
 
         for (int j = 0; j < carTree.size; j++){
-            //if (carTree.array[i * carTree.size + j] != -1){
-                carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
-            //}
-            //if (bikeTree.array[i * bikeTree.size + j] != -1){
-                bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
-            //}
+            carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
+            bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
         }
         nlohmann::json carJson;
         carJson["carTree"] = carReachable;
@@ -380,19 +359,45 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
         save(intCarfile, &carJson);
         save(intBikeFile, &bikeJson);
     }
+}
+#else
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world) {
+//    void* carTreePtr =  carTree.array;
+//    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
+//    void* bikePtr =  bikeTree.array;
+//    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
+
+    std::map<std::string, std::map<std::string, bool>> carReachable = {};
+    std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
 
 
+    for (int i = 0; i < carTree.size; i++){
+        carReachable[world->int_to_string.at(i)]= {};
+        bikeReachable[world->int_to_string.at(i)]= {};
+    }
 
-
-
-
+#pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
+            if (carTree.array[i * carTree.size + j] == -1){
+                carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
+            }
+            if (bikeTree.array[i * bikeTree.size + j] == -1){
+                bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
+            }
+        }
+    }
 //    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
 //    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
-//    output["carTree"] = carReachable;
-//    output["bikeTree"] = bikeReachable;
+    output["carTree"] = carReachable;
+    output["bikeTree"] = bikeReachable;
     // output["world"] = input;
 
 }
+#endif
+
+
+
 
 void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* world){
     *carTree = {
