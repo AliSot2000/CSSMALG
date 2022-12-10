@@ -342,8 +342,8 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
 //    void* bikePtr =  bikeTree.array;
 //    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
 
-    std::map<std::string, std::map<std::string, bool>> carReachable = {};
-    std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
+//    std::map<std::string, std::map<std::string, bool>> carReachable = {};
+//    std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
 
     /*
     for (int i = 0; i < carTree.size; i++){
@@ -358,6 +358,8 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
         std::string intCarfile = dir + "car_" + world->int_to_string.at(i) + ".json";
         std::string intBikeFile = dir + "bike_" + world->int_to_string.at(i) + ".json";
 
+        std::map<std::string, std::map<std::string, bool>> carReachable = {};
+        std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
         carReachable[world->int_to_string.at(i)] = {};
         bikeReachable[world->int_to_string.at(i)] = {};
 
