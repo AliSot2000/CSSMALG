@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 
+
 class BoxPlot:
     def __init__(self, data):
         self.data = data
+        self.fig, self.ax = plt.subplots()
 
     def plot(self):
-        plt.boxplot(self.data)
+        self.ax.boxplot(self.data)
 
     def show(self):
         plt.show()
@@ -13,17 +15,17 @@ class BoxPlot:
     def save(self, path):
         plt.savefig(path)
 
-    def setTitle(self, title):
-        plt.title(title)
+    def set_title(self, title):
+        self.ax.title(title)
 
-    def setXLabel(self, label):
-        plt.xlabel(label)
+    def set_x_label(self, label):
+        self.ax.xlabel(label)
 
-    def setYLabel(self, label):
-        plt.ylabel(label)
+    def set_y_label(self, label):
+        self.ax.ylabel(label)
 
-    def setYGrid(self, grid):
-        plt.yaxis.grid(grid)
+    def set_y_axis_grid(self, grid):
+        self.ax.yaxis.grid(grid)
 
-    def setXLabels(self, labels):
-        plt.xticks(range(1, len(labels) + 1), labels)
+    def set_x_ticks(self, labels):
+        self.ax.xticks(range(1, len(labels) + 1), labels)
