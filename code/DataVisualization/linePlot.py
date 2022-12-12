@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 
-class BoxPlot:
+class LinePlot:
     def __init__(self, data):
         self.data = data
 
     def plot(self):
-        plt.boxplot(self.data)
+        plt.plot(self.data)
 
     def show(self):
         plt.show()
@@ -24,6 +24,3 @@ class BoxPlot:
 
     def setYGrid(self, grid):
         plt.yaxis.grid(grid)
-
-    def setXLabels(self, labels):
-        plt.xticks(range(1, len(labels) + 1), labels)
