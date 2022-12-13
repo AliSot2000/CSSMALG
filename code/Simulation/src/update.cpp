@@ -180,6 +180,14 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
     });
 }
 
+void teleportActor(Actor* actor, Street* target, int distanceToRight){
+    target->traffic.push_back(actor);
+    actor->path.pop();
+    actor->distanceToRight = distanceToRight;
+    actor->distanceToIntersection = target->length - actor->length;
+    actor->target_velocity = target->speedlimit;
+}
+
 // Updated Version of Alex to handle zero velocity vehicles.
 bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world) {
     // TODO UNSAFE SHOULD BE DONE IN chose_optimal_lane_or_sth
@@ -188,11 +196,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
 
     // Empty, insert immediately and return
     if (target->traffic.empty()){
-        target->traffic.push_back(actor);
-        actor->path.pop();
-        actor->distanceToRight = 0;
-        actor->distanceToIntersection = target->length - actor->length;
-        actor->target_velocity = target->speedlimit;
+        teleportActor(actor, target, 0);
         target->total_traffic_count++;
         return true;
     }
@@ -211,11 +215,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
                  * -----------------------------------------------------------------------------------------------------
                  */
                 if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
-                    actor->path.pop();
-                    target->traffic.push_back(actor);
-                    actor->distanceToRight = 0;
-                    actor->distanceToIntersection = target->length - actor->length;
-                    actor->target_velocity = target->speedlimit;
+                    teleportActor(actor, target, 0);
                     target->total_traffic_count++;
                     return true;
                 }
@@ -227,11 +227,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
         }
 
         // If unexpectedly the right most street is empty. Insert into right, and update the actor
-        actor->path.pop();
-        target->traffic.push_back(actor);
-        actor->distanceToRight = 0;
-        actor->distanceToIntersection = target->length - actor->length;
-        actor->target_velocity = target->speedlimit;
+        teleportActor(actor, target, 0);
         target->total_traffic_count++;
         return true;
     }
@@ -263,11 +259,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
         // Space in a lane, we can insert the actor and return true
         if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
             // Insert and update the actor.
-            actor->path.pop();
-            target->traffic.push_back(actor);
-            actor->distanceToRight = other->distanceToRight;
-            actor->distanceToIntersection = target->length - actor->length;
-            actor->target_velocity = target->speedlimit;
+            teleportActor(actor, target, other->distanceToRight);
             target->total_traffic_count++;
             return true;
         } else {
