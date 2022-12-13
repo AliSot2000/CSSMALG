@@ -45,6 +45,8 @@ typedef struct Actor {
 
     int start_id = -1;
     int end_id = -1;
+    bool Teleport = false;
+    bool arrived = false;
 } actor_t;
 
 enum StreetTypes {
