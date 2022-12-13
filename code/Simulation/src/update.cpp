@@ -318,7 +318,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
         if (intersection->hasTrafficLight){
             updateIntersectionPhase(intersection, timeDelta, stupidIntersections);
 
-            Street* street = intersection->inbound[intersection->green];
+            Street* street = intersection->inbound.at(intersection->green);
             for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
                 Actor* actor = *iter;
                 if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
