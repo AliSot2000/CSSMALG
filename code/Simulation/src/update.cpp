@@ -183,17 +183,7 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
 // Updated Version of Alex to handle zero velocity vehicles.
 bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world) {
     // TODO UNSAFE SHOULD BE DONE IN chose_optimal_lane_or_sth
-    if (actor->path.empty()){
-        // Storing the Actor as arrived
-        intersection->arrivedFrom.push_back({actor, &world->empty});
-        actor->outputFlag = false; // make sure new active status is outputted once
-        actor->end_time = -10.0f;
-        actor->start_time = -10.0f;
-        // I hope that's right, removing the actor from the traffic waiting to be inserted and putting it to
-        intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
-        return false;
-    }
-
+    assert(!actor->path.empty() && "tryInsertInNextStreet may not be called with an Actor that has an empty path!");
     Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
 
     // Empty, insert immediately and return
@@ -257,7 +247,6 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
 
     // If the vehicle is a car on a both road, and on a car road, it can move to any lane. Also, a bicycle can switch
     // lanes in a pure bike road.
-
     for (auto iter = target->traffic.rbegin(); iter != target->traffic.rend(); iter++) {
         // If the number of available lanes is 0, return false
         if (avlLanes == 0) {
@@ -323,12 +312,7 @@ void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool s
 
 void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset) {
     // Move so no thread is colliding with another thread.
-//    std::vector<Intersection*>::iterator start_iter = world->IntersectionPtr.begin();
-//    std::advance(start_iter, offset);
-
     for (int32_t x = offset; x < world->intersections.size(); x += stride) {
-      //    for (auto& intersection : world->intersections) {
-//        Intersection* intersection = &world->intersections.at(x);
         Intersection* intersection = world->IntersectionPtr.at(x);
 
         if (intersection->hasTrafficLight){
@@ -393,9 +377,6 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                }
            }
         }
-
-
-
 
         // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
         if (intersection->waitingToBeInserted.size() > 0) {
