@@ -18,7 +18,7 @@ After generating the map data, `AgentGenerator.php` is called and generates diff
 
 ### Assumptions
 - Assumption Regarding Agent Generation: 
-    - At a maximum, there will be one vehicle spawned per hour per $4000 m^2$ of the map. This can be changed by adjusting the value $4000$ in `AgentGenerator.php` in the `calculateAgentAmount()` method
+    - At a maximum, there will be one vehicle spawned per hour per $2000 m^2$ of the map. This can be changed by adjusting the value $2000$ in `AgentGenerator.php` in the `calculateAgentAmount()` method
     - In the `calculateAgentAmount()` method in the `AgentGenerator.php` class there is an array `agentDistribution`, which contains the distribution of amount cars spawned. The value of entry $i$ means, that $maxAgentAmount \cdot agentDistribution[i]$ cars are spawned between $i$ and $(i+1)$ o'clock. This distribution is based on [Autofahren im Kanton Zürich](https://www.web.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00000266_00001307.pdf) Grafik 9.
     - In the `direction` array in the `generateAgents()` method of `AgentGenerator.php` class, we save the relative amount of agents for each hour, that goes into the center of the city. Here we assume, that a circle with $\frac{1}{3}$ radius of the map is the center, where most people work. Of the people going into the center, $\frac{1}{4}$ is assumed to be center $\leftrightarrow$ center traffic, where as of the res $\frac{1}{4}$ is non-center $\leftrightarrow$ non-center traffic.
     - Public transport is ignored
