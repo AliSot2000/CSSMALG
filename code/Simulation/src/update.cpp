@@ -325,6 +325,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                     // No vehicle is close enough to change street
                     break;
 
+                // Everything that can be done in parallel, executed in parallel
                 if (actor->path.empty()) {
                     // Actor has arrived at its target
                     actor->outputFlag = false; // make sure new active status is outputted once
