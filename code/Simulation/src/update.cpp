@@ -402,14 +402,14 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 			Actor* actor = street->traffic[i];
 
 			const float distance = actor->current_velocity * timeDelta;
-			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
-			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+//			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
+//			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
 
-			TrafficIterator start;
-			TrafficIterator end;
+//			TrafficIterator start;
+//			TrafficIterator end;
 
 			// Find all traffic which could be colliding with vehicle
-			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
+//			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
             float maxDrivableDistance = actor->distanceToIntersection;
@@ -473,20 +473,29 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 actor->current_velocity = 0.0f;
             }
             // Will make sure traffic is still sorted
-			sortStreet(start, end);
-
-/*            assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
+//			sortStreet(start, end);
+            std::sort(street->traffic.begin(), street->traffic.end(), [](const Actor* a, const Actor* b) {
                 // Lexicographical order, starting with distanceToIntersection and then distanceToRight
                 if (a->distanceToIntersection == b->distanceToIntersection) {
                     // this if statement make sure that no vehicles have the same ordering
                     if (a->distanceToRight == b->distanceToRight) {
-                        //throw std::runtime_error("Two Vehicles with identical position");
                         return a < b;
                     }
                     return a->distanceToRight < b->distanceToRight;
                 }
                 return a->distanceToIntersection < b->distanceToIntersection;
-            }) && "Street is sorted");*/
+            });
+            assert(std::is_sorted(street->traffic.begin(), street->traffic.end(), [](const Actor* a, const Actor* b) {
+                // Lexicographical order, starting with distanceToIntersection and then distanceToRight
+                if (a->distanceToIntersection == b->distanceToIntersection) {
+                    // this if statement make sure that no vehicles have the same ordering
+                    if (a->distanceToRight == b->distanceToRight) {
+                        return a < b;
+                    }
+                    return a->distanceToRight < b->distanceToRight;
+                }
+                return a->distanceToIntersection < b->distanceToIntersection;
+            }) && "Street is sorted");
 
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
             // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
