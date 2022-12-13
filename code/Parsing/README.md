@@ -13,6 +13,7 @@
 ### General
 
 The `Parser.php` is here to generate data for the simulation. With an API request using Overpass API we retrieve data from OSM. It gets parsed and cleaned. Afterwards it gets saved to `mapExport.tsim` in the data folder. The JSON is formatted according to the specifications in `map-input-json-spec.md`. 
+The data directory is not included due to the size of the generated data. However it is generated when `main-php` is run.
 
 After generating the map data, `AgentGenerator.php` is called and generates different agent files to run on this map based on a few assumptions noted in [Assumptions](#assumptions). In the `data` directory, there are several subdirectories where data is stored. For more on this, see [Code Structure](#code-structure). The generated files follow the format given in  `agents-input-json-spec.md`.
 
