@@ -65,12 +65,12 @@ class AgentGenerator
                     $amountPerMinute = max(round($amount / 60), 1);
 
                     // number of agents going from out to center (+ center to center (+ center to out (+ out to out)))
-                    $directionAmount = array(round($direction[$hour] * $amountPerMinute * 0.75), round($direction[$hour] * $amountPerMinute), round($amountPerMinute - $amountPerMinute * (1 - $direction[$hour]) * 0.25));
+                    $directionAmount = array($direction[$hour] * $amountPerMinute * 0.75, $direction[$hour] * $amountPerMinute, $amountPerMinute - $amountPerMinute * (1 - $direction[$hour]) * 0.25);
 
                     for ($i = 0; $i < 60; $i++) {
 
                         // create car agents
-                        for ($j = 0; $j < round($amountPerMinute * (1 - $bikePercentage)); $j++) {
+                        for ($j = 0; $j < $amountPerMinute * (1 - $bikePercentage); $j++) {
                             // pseudo random length in m
                             $length = rand(7, 10) / 2;
                             // pseudo random max velocity in km/h
@@ -84,17 +84,17 @@ class AgentGenerator
 
                             $startId = $endId = 0;
 
-                            if ($j < round($directionAmount[0] * (1 - $bikePercentage))) {
+                            if ($j < $directionAmount[0] * (1 - $bikePercentage)) {
                                 do {
                                     $startId = $this->nodesOut[rand(0, $numOutNodes)];
                                     $endId = $this->nodesIn[rand(0, $numInNodes)];
                                 } while (isset($this->unreachable["carTree"][$startId][$endId]));
-                            } else if ($j < round($directionAmount[1] * (1 - $bikePercentage))) {
+                            } else if ($j < $directionAmount[1] * (1 - $bikePercentage)) {
                                 do {
                                     $startId = $this->nodesIn[rand(0, $numInNodes)];
                                     $endId = $this->nodesIn[rand(0, $numInNodes)];
                                 } while ($startId == $endId || isset($this->unreachable["carTree"][$startId][$endId]));
-                            } else if ($j < round($directionAmount[2] * (1 - $bikePercentage))) {
+                            } else if ($j < $directionAmount[2] * (1 - $bikePercentage)) {
                                 do {
                                     $startId = $this->nodesIn[rand(0, $numInNodes)];
                                     $endId = $this->nodesOut[rand(0, $numOutNodes)];
@@ -111,7 +111,7 @@ class AgentGenerator
                         }
 
                         // create cyclists
-                        for ($j = 0; $j < round($amountPerMinute * $bikePercentage); $j++) {
+                        for ($j = 0; $j < $amountPerMinute * $bikePercentage; $j++) {
                             // pseudo random length in m
                             $length = rand(3, 5) / 2;
                             // pseudo random max velocity in km/h
@@ -124,17 +124,17 @@ class AgentGenerator
                             $accExp = rand(80, 120) / 10;
 
 
-                            if ($j < round($directionAmount[0] * $bikePercentage)) {
+                            if ($j < $directionAmount[0] * $bikePercentage) {
                                 do {
                                     $startId = $this->nodesOut[rand(0, $numOutNodes)];
                                     $endId = $this->nodesIn[rand(0, $numInNodes)];
                                 } while (isset($this->unreachable["bikeTree"][$startId][$endId]));
-                            } else if ($j < round($directionAmount[1] * $bikePercentage)) {
+                            } else if ($j < $directionAmount[1] * $bikePercentage) {
                                 do {
                                     $startId = $this->nodesIn[rand(0, $numInNodes)];
                                     $endId = $this->nodesIn[rand(0, $numInNodes)];
                                 } while ($startId == $endId || isset($this->unreachable["bikeTree"][$startId][$endId]));
-                            } else if ($j < round($directionAmount[2] * $bikePercentage)) {
+                            } else if ($j < $directionAmount[2] * $bikePercentage) {
                                 do {
                                     $startId = $this->nodesIn[rand(0, $numInNodes)];
                                     $endId = $this->nodesOut[rand(0, $numOutNodes)];
