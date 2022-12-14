@@ -186,6 +186,14 @@ void teleportActor(Actor* actor, Street* target, int distanceToRight){
     actor->target_velocity = target->speedlimit;
 }
 
+void updateCount(Street* street, Actor* actor){
+    if (actor->type == ActorTypes::Bike){
+        street->total_traffic_count_bike++;
+    } else {
+        street->total_traffic_count_car++;
+    }
+}
+
 // Updated Version of Alex to handle zero velocity vehicles.
 bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world) {
     assert(!actor->path.empty() && "tryInsertInNextStreet may not be called with an Actor that has an empty path!");
@@ -194,7 +202,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
     // Empty, insert immediately and return
     if (target->traffic.empty()){
         teleportActor(actor, target, 0);
-        target->total_traffic_count++;
+        updateCount(target, actor);
         return true;
     }
 
@@ -213,7 +221,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
                  */
                 if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
                     teleportActor(actor, target, 0);
-                    target->total_traffic_count++;
+                    updateCount(target, actor);
                     return true;
                 }
                 else {
@@ -225,7 +233,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
 
         // If unexpectedly the right most street is empty. Insert into right, and update the actor
         teleportActor(actor, target, 0);
-        target->total_traffic_count++;
+        updateCount(target, actor);
         return true;
     }
 
@@ -257,7 +265,7 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
         if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
             // Insert and update the actor.
             teleportActor(actor, target, other->distanceToRight);
-            target->total_traffic_count++;
+            updateCount(target, actor);
             return true;
         } else {
             // Lane has been checked, number of availalbe lanes are rerduced
@@ -481,11 +489,17 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
     for (int32_t x = offset; x < world->streets.size(); x+=stride){
 //    for (auto& street : world->streets) {
         Street *street = world->StreetPtr.at(x);
-        street->density_accumulate += static_cast<float>(street->traffic.size()) / street->length;
-        street->flow_accumulate += static_cast<float>(street->traffic.size()) / timeDelta;
+        int bikes = 0;
+        int cars = 0;
 
         for (int32_t i = 0; i < street->traffic.size(); i++) {
 			Actor* actor = street->traffic[i];
+
+            if (actor->type == ActorTypes::Bike) {
+                bikes++;
+            } else {
+                cars++;
+            }
 
 			const float distance = actor->current_velocity * timeDelta;
 //			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
@@ -590,6 +604,10 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 //            }
             actor->distanceToFront = maxDrivableDistance;
         }
+        street->density_accumulate_bike += static_cast<float>(bikes) / street->length;
+        street->flow_accumulate_bike += static_cast<float>(bikes) / timeDelta;
+        street->density_accumulate_car += static_cast<float>(cars) / street->length;
+        street->flow_accumulate_car += static_cast<float>(cars) / timeDelta;
 	}
 
     return actorMoved;
