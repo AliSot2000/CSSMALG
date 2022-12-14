@@ -588,6 +588,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 //            if (actor->distanceToIntersection <= 1.0f && actor->distanceToIntersection > 0.0f) {
 //                assert(actor->current_velocity >= 0.01f && "Acceleration needs to be >= -10.0f");
 //            }
+            actor->distanceToFront = maxDrivableDistance;
         }
 	}
 
