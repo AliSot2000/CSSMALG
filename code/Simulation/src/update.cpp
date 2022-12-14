@@ -310,6 +310,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
             Street* street = intersection->inbound.at(intersection->green);
             for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
                 Actor* actor = *iter;
+
                 if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
                     // No vehicle is close enough to change street
                     break;
@@ -319,13 +320,14 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                     // Actor has arrived at its target
                     actor->outputFlag = false; // make sure new active status is outputted once
                     actor->end_time = current_time;
-                    street->traffic.erase(iter);
-                    intersection->arrivedFrom.push_back({actor, street});
+                    actor->arrived = true;
+                    intersection->needsUpdate = true;
                     break;
                 }
 
                 if (tryInsertInNextStreet(intersection, actor, world)) {
-                    street->traffic.erase(iter);
+                    actor->Teleport = true;
+                    intersection->needsUpdate = true;
                     intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
                     intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
                     break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
@@ -353,13 +355,14 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                    // Actor has arrived at its target
                    actor->outputFlag = false; // make sure new active status is outputted once
                    actor->end_time = current_time;
-                   street->traffic.erase(street->traffic.begin());
-                   intersection->arrivedFrom.push_back({actor, street});
+                   actor->arrived = true;
+                   intersection->needsUpdate = true;
                    break;
                }
 
                if (tryInsertInNextStreet(intersection, actor, world)) {
-                   street->traffic.erase(street->traffic.begin());
+                   actor->Teleport = true;
+                   intersection->needsUpdate = true;
                    intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
                    intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
                    intersection->green = index;
