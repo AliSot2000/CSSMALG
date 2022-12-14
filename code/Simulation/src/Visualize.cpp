@@ -12,6 +12,7 @@
 
 #define STATUS_UPDATAE_INTERVAL 60
 //#define SLURM_OUTPUT
+//DO_TRAFFIC_SIGNALS
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {

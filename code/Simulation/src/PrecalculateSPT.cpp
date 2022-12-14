@@ -9,6 +9,7 @@
 #include "utils.hpp"
 #include "io.hpp"
 //#define DDEBUG
+//DO_TRAFFIC_SIGNALS
 
 
 int main(int argc, char* argv[]) {
