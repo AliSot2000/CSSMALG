@@ -76,7 +76,10 @@ int main(int argc, char* argv[]) {
     }
     std::cout <<  std::endl;
     for (auto iter : world.int_to_string){
-        std::cout << iter.first << " " << iter.second << std::endl;
+        std::cout << iter.first << " " << iter.second  << std::endl;
+    }
+    for (auto iter : world.streets){
+        std::cout << iter.start << " " << iter.end << " " << iter.length  << std::endl;
     }
 #endif
 // TODO parallelize import
