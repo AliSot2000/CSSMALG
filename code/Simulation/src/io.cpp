@@ -499,8 +499,8 @@ void jsonDumpStats(const float& avgTime, json* output, world_t* world, const boo
     for (auto& street : world->streets) {
         json obj = {};
         obj["id"] = street.id;
-        obj["flow"] = street.flow_accumulate / avgTime;
-        obj["density"] = street.density_accumulate / avgTime;
+        obj["flow"] = street.flow_accumulate / (avgTime * (street.width / LANE_WIDTH));
+        obj["density"] = street.density_accumulate / (avgTime * (street.width / LANE_WIDTH));
         obj["id"] = street.id;
         if (final) {
             obj["total_passing_traffic"] = street.total_traffic_count;
