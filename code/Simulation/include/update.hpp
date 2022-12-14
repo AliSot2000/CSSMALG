@@ -164,3 +164,5 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
 bool emptynessOfStreets(world_t* world);
 
 void teleportActor(Actor* actor, Street* target, int distanceToRight);
+
+void updateData(world_t* world);

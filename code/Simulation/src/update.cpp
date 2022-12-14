@@ -378,7 +378,93 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
             if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor, world)) {
                 actor->start_time = current_time * static_cast<float>(actor->start_time == -1.0f)
                         + actor->start_time * static_cast<float>(actor->start_time != -1.0f); // only set the start time if the if the start time
+                actor->Teleport = true;
+                intersection->needsUpdate = true;
+            }
+        }
+    }
+}
+
+void updateData(world_t* world){
+    for (int32_t x = 0; x < world->intersections.size(); ++x) {
+        Intersection* intersection = world->IntersectionPtr.at(x);
+
+        // Skipping intersection that don't need to be updated
+        if (!intersection->needsUpdate){
+            continue;
+        }
+
+        // Resetting the needsUpdate flag
+        intersection->needsUpdate = false;
+
+        if (intersection->hasTrafficLight){
+
+            Street* street = intersection->inbound.at(intersection->green);
+            for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
+                Actor* actor = *iter;
+                // Everything that can be done in parallel, executed in parallel
+                if (actor->arrived) {
+                    // Actor has arrived at its target
+                    actor->arrived = false;
+                    street->traffic.erase(iter);
+                    intersection->arrivedFrom.push_back({actor, street});
+                    break;
+                }
+
+                if (actor->Teleport) {
+                    actor->Teleport = false;
+                    actor->distanceToRight = actor->tempDistanceToRight;
+                    street->traffic.erase(iter);
+                    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                    target->traffic.push_back(actor);
+                    actor->path.pop();
+                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
+                }
+            }
+        } else {
+            for (int i = 0; i < intersection->inbound.size(); i++){
+                Street* street = intersection->inbound.at(i);
+
+                // Ignore empty streets
+                if (street->traffic.size() == 0){
+                    continue;
+                }
+
+                Actor* actor = street->traffic.front();
+
+                // Actor has arrived at its destination
+                if (actor->arrived) {
+                    // Actor has arrived at its target
+                    actor->arrived = false; // make sure new active status is outputted once
+                    street->traffic.erase(street->traffic.begin());
+                    intersection->arrivedFrom.push_back({actor, street});
+                    break;
+                }
+
+                if (actor->Teleport) {
+                    actor->Teleport = false;
+                    actor->distanceToRight = actor->tempDistanceToRight;
+                    street->traffic.erase(street->traffic.begin());
+                    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                    target->traffic.push_back(actor);
+                    actor->path.pop();
+                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
+                }
+            }
+        }
+
+        // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
+        if (intersection->waitingToBeInserted.size() > 0) {
+            Actor* actor = intersection->waitingToBeInserted[0];
+            // Ignoring the actor if it is not it's start time yet.
+            if (actor->Teleport) {
+
+                actor->Teleport = false;
+                actor->distanceToRight = actor->tempDistanceToRight;
                 intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
+                Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                target->traffic.push_back(actor);
+                actor->path.pop();
             }
         }
     }
