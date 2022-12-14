@@ -181,16 +181,13 @@ Actor* moveToOptimalLane(Street* street, Actor* actor) {
 }*/
 
 void teleportActor(Actor* actor, Street* target, int distanceToRight){
-    target->traffic.push_back(actor);
-    actor->path.pop();
-    actor->distanceToRight = distanceToRight;
+    actor->tempDistanceToRight = distanceToRight;
     actor->distanceToIntersection = target->length - actor->length;
     actor->target_velocity = target->speedlimit;
 }
 
 // Updated Version of Alex to handle zero velocity vehicles.
 bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world) {
-    // TODO UNSAFE SHOULD BE DONE IN chose_optimal_lane_or_sth
     assert(!actor->path.empty() && "tryInsertInNextStreet may not be called with an Actor that has an empty path!");
     Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
 
