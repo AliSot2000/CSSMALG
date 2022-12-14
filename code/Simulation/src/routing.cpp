@@ -6,6 +6,7 @@
 #include "fastFW.cuh"
 #include "routing.hpp"
 #include <cassert>
+//#define SLURM_OUTPUT
 
 
 // Idea: If a road has multiple turning lanes, split a intersection into sets of identical turn options and split the single
@@ -42,7 +43,11 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
     int V = sopatree.size;
     float newDistance;
 	for (int32_t k = 0; k < sopatree.size; k++) {
-        std::cout << "\rComputing " << k + 1<< " of " << sopatree.size << std::flush;
+        #ifdef SLURM_OUTPUT
+        std::cout << "k: " << (k + 1) << " of " << V << std::cout;
+#else
+        std::cout << "\rk: " << (k + 1) << " of " << V << std::flush;
+#endif
 
         for (int32_t i = 0; i < sopatree.size; i++) {
 
