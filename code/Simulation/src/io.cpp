@@ -38,8 +38,8 @@ void importMap(world_t* world, json* map) {
 
         Intersection& intersection = world->intersections[index];
 		intersection.id = index;
-        if (data.contains("trafficLight")){
-            intersection.hasTrafficLight = data["trafficLight"];
+        if (data.contains("trafficSignal")){
+            intersection.hasTrafficLight = data["trafficSignal"];
         }
 
         world->IntersectionPtr[index] = &world->intersections[index];
@@ -49,6 +49,8 @@ void importMap(world_t* world, json* map) {
 	// Data will be packed more neatly when first creating array with given size
 	world->streets = std::vector<Street>(map->at("roads").size());
 	world->StreetPtr = std::vector<Street*>(map->at("roads").size());
+    std::map<std::string, street_t*> street_map;
+
 	index = 0;
 	for (const auto& [_, data] : map->at("roads").items()) {
 		Street& street = world->streets[index];
@@ -56,6 +58,9 @@ void importMap(world_t* world, json* map) {
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
         street.speedlimit = static_cast<float>(data["speed_limit"]) / 3.6f;
+        if (data.contains("oppositeStreetId")){
+            street.opposite_id = data["oppositeStreetId"];
+        }
 
 		if (data["lanes"].empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
@@ -92,6 +97,7 @@ void importMap(world_t* world, json* map) {
         }
 		world->intersections[street.end].inbound.push_back(&street);
 
+        street_map[street.id] = &street;
         world->StreetPtr[index] = &world->streets[index];
 		index++;
     }
@@ -107,6 +113,8 @@ void importMap(world_t* world, json* map) {
     };
     world->string_to_int["NO_ROUT"] = -1;
     world->int_to_string[-1] = "NO_ROUT";
+
+    connectOpposite(world, street_map);
 }
 
 void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
