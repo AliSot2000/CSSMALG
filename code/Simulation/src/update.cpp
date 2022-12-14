@@ -8,22 +8,22 @@
 #include "update.hpp"
 #include <omp.h>
 
-void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
-
-	auto& traffic = street->traffic;
-	
-	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
-	// Lower bound binary search (traffic must always be sorted!)
-	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
-		[](const Actor* a, const float& b) {
-			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
-	});
-
-	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
-		[](const float& b, const Actor* a) {
-			return a->distanceToIntersection > b;
-	});
-}
+//void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
+//
+//	auto& traffic = street->traffic;
+//
+//	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
+//	// Lower bound binary search (traffic must always be sorted!)
+//	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
+//		[](const Actor* a, const float& b) {
+//			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
+//	});
+//
+//	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
+//		[](const float& b, const Actor* a) {
+//			return a->distanceToIntersection > b;
+//	});
+//}
 
 FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd) {
     FrontVehicles f;
@@ -165,7 +165,7 @@ Actor* moveToOptimalLane(Street* street, Actor* actor) {
     actor->distanceToRight = distanceToRight;
     return OptimalFrontActor;
 }
-void sortStreet(TrafficIterator& start, TrafficIterator& end) {
+/*void sortStreet(TrafficIterator& start, TrafficIterator& end) {
     std::sort(start, end, [](const Actor* a, const Actor* b) {
         // Lexicographical order, starting with distanceToIntersection and then distanceToRight
         if (a->distanceToIntersection == b->distanceToIntersection) {
@@ -178,7 +178,7 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
         }
         return a->distanceToIntersection < b->distanceToIntersection;
     });
-}
+}*/
 
 void teleportActor(Actor* actor, Street* target, int distanceToRight){
     target->traffic.push_back(actor);
