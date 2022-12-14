@@ -18,6 +18,7 @@
 #define USE_STUPID_INTERSECTIONS false
 //#define ADD_INCREMENTS
 //#define DDEBUG
+//#define SLURM_OUTPUT
 
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
@@ -165,7 +166,11 @@ int main(int argc, char* argv[]) {
         // Status messsage to tell me how far the simulation  has come along
         if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
+#ifdef SLURM_OUTPUT
+            std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
+#else
             std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
+#endif
         }
 #ifdef ADD_INCREMENTS
         addFrame(&world, &output, false);
