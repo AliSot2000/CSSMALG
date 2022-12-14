@@ -125,63 +125,76 @@ class Visualizer:
                            'Intersection Bike Flow',
                            'Time (min)',
                            'Flow (veh/s)',
-                           os.path.join(self.output_dir, name + '_intersection_bike_flow.png'))
+                           os.path.join(self.output_dir, 'intersection_bike_flow.png'))
 
         plot_and_save_data(minutes,
                            intersection_car_flow_data,
                            'Intersection Car Flow',
                            'Time (min)',
                            'Flow (veh/s)',
-                           os.path.join(self.output_dir, name + '_intersection_car_flow.png'))
+                           os.path.join(self.output_dir, 'intersection_car_flow.png'))
 
         plot_and_save_data(minutes,
                            intersection_agent_flow_data,
                            'Intersection Agent Flow',
                            'Time (min)',
                            'Flow (veh/s)',
-                           os.path.join(self.output_dir, name + '_intersection_agent_flow.png'))
+                           os.path.join(self.output_dir, 'intersection_agent_flow.png'))
 
         plot_and_save_data(minutes,
                            road_bike_flow_data,
                            'Road Bike Flow',
                            'Time (min)',
                            'Flow (veh/s)',
-                           os.path.join(self.output_dir, name + '_road_bike_flow.png'))
+                           os.path.join(self.output_dir, 'road_bike_flow.png'))
 
         plot_and_save_data(minutes,
                            road_car_flow_data,
                            'Road Car Flow',
                            'Time (min)',
                            'Flow (veh/s)',
-                           os.path.join(self.output_dir, name + '_road_car_flow.png'))
+                           os.path.join(self.output_dir, 'road_car_flow.png'))
 
         plot_and_save_data(minutes,
                            road_agent_flow_data,
                            'Road Agent Flow',
                            'Time (min)',
                            'Flow (veh/s)',
-                           os.path.join(self.output_dir, name + '_road_agent_flow.png'))
+                           os.path.join(self.output_dir, 'road_agent_flow.png'))
 
         plot_and_save_data(minutes,
                            road_bike_density_data,
                            'Road Bike Density',
                            'Time (min)',
                            'Density (veh/m)',
-                           os.path.join(self.output_dir, name + '_road_bike_density.png'))
+                           os.path.join(self.output_dir, 'road_bike_density.png'))
 
         plot_and_save_data(minutes,
                            road_car_density_data,
                            'Road Car Density',
                            'Time (min)',
                            'Density (veh/m)',
-                           os.path.join(self.output_dir, name + '_road_car_density.png'))
+                           os.path.join(self.output_dir, 'road_car_density.png'))
 
         plot_and_save_data(minutes,
                            road_agent_density_data,
                            'Road Agent Density',
                            'Time (min)',
                            'Density (veh/m)',
-                           os.path.join(self.output_dir, name + '_road_agent_density.png'))
+                           os.path.join(self.output_dir, 'road_agent_density.png'))
+
+        with open(os.path.join(self.output_dir, 'data.json'), 'w') as f:
+            json.dump({
+                'intersection_bike_flow': intersection_bike_flow_data,
+                'intersection_car_flow': intersection_car_flow_data,
+                'intersection_agent_flow': intersection_agent_flow_data,
+                'road_bike_flow': road_bike_flow_data,
+                'road_car_flow': road_car_flow_data,
+                'road_agent_flow': road_agent_flow_data,
+                'road_bike_density': road_bike_density_data,
+                'road_car_density': road_car_density_data,
+                'road_agent_density': road_agent_density_data
+            }, f)
 
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
