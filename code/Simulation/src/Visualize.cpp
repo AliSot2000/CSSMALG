@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
 		maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
-        if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
+        if (lastStatusTime - maxTime >= STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
 #ifdef SLURM_OUTPUT
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
