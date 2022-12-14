@@ -120,10 +120,71 @@ class Visualizer:
             road_agent_density = road_car_density[i] + road_bike_density[i]
             calculate_data(road_agent_density_data, road_agent_density)
 
-        plot_and_save_data(minutes, intersection_bike_flow_data, 'Intersection Bike Flow')
+        plot_and_save_data(minutes,
+                           intersection_bike_flow_data,
+                           'Intersection Bike Flow',
+                           'Time (min)',
+                           'Flow (veh/s)',
+                           os.path.join(self.output_dir, name + '_intersection_bike_flow.png'))
+
+        plot_and_save_data(minutes,
+                           intersection_car_flow_data,
+                           'Intersection Car Flow',
+                           'Time (min)',
+                           'Flow (veh/s)',
+                           os.path.join(self.output_dir, name + '_intersection_car_flow.png'))
+
+        plot_and_save_data(minutes,
+                           intersection_agent_flow_data,
+                           'Intersection Agent Flow',
+                           'Time (min)',
+                           'Flow (veh/s)',
+                           os.path.join(self.output_dir, name + '_intersection_agent_flow.png'))
+
+        plot_and_save_data(minutes,
+                           road_bike_flow_data,
+                           'Road Bike Flow',
+                           'Time (min)',
+                           'Flow (veh/s)',
+                           os.path.join(self.output_dir, name + '_road_bike_flow.png'))
+
+        plot_and_save_data(minutes,
+                           road_car_flow_data,
+                           'Road Car Flow',
+                           'Time (min)',
+                           'Flow (veh/s)',
+                           os.path.join(self.output_dir, name + '_road_car_flow.png'))
+
+        plot_and_save_data(minutes,
+                           road_agent_flow_data,
+                           'Road Agent Flow',
+                           'Time (min)',
+                           'Flow (veh/s)',
+                           os.path.join(self.output_dir, name + '_road_agent_flow.png'))
+
+        plot_and_save_data(minutes,
+                           road_bike_density_data,
+                           'Road Bike Density',
+                           'Time (min)',
+                           'Density (veh/m)',
+                           os.path.join(self.output_dir, name + '_road_bike_density.png'))
+
+        plot_and_save_data(minutes,
+                           road_car_density_data,
+                           'Road Car Density',
+                           'Time (min)',
+                           'Density (veh/m)',
+                           os.path.join(self.output_dir, name + '_road_car_density.png'))
+
+        plot_and_save_data(minutes,
+                           road_agent_density_data,
+                           'Road Agent Density',
+                           'Time (min)',
+                           'Density (veh/m)',
+                           os.path.join(self.output_dir, name + '_road_agent_density.png'))
 
 
-def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow'):
+def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
     p = LinePlot()
     p.plot(x, y['mean'], 'Mean')
     p.plot(x, y['95percentile'], '95th Percentile', '#5b5b5b', 'dashed')
