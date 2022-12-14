@@ -127,6 +127,18 @@ void connectOpposite(world_t* world, const std::map<std::string, street_t*> look
                 std::cerr << "Opposite street not found: " << street.opposite_id << std::endl;
             }
         }
+
+        // Compute overtaking part
+        // Overtaking on a street is possible iff:
+        // - The street is one lane wide
+        // - The street accommodates both bikes and cars
+        // - The opposite Street is given
+        // - The Speed limit is greater than 30km/h
+        if (street.width / LANE_WIDTH == 1 && street.type == StreetTypes::Both && street.opposite != nullptr && street.speedlimit > 8.3f){
+            street.allowOvertake = true;
+        } else {
+            street.allowOvertake = false;
+        }
     }
 }
 
