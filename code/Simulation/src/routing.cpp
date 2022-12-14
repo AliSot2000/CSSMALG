@@ -157,3 +157,44 @@ Path retrievePath(spt_t* spt, const int &start, const int &end) {
 	}
 	return p;
 }
+
+float distanceFromPath(const world_t* world, actor_t* actor){
+    Path p;
+
+    // Initialize the path
+    int u = actor->start_id;
+    int v = actor->path.front();
+    float distance = 0.0f;
+    Street* street = nullptr;
+
+    // Walk along the Path
+    while (v != actor->end_id){
+        p.push(v);
+        actor->path.pop();
+
+        if (actor->type == ActorTypes::Bike){
+            street = world->intersections.at(u).outboundBike.at(v);
+        } else {
+            street = world->intersections.at(u).outboundCar.at(v);
+        }
+        distance += street->length;
+        u = v;
+        v = actor->path.front();
+    }
+
+    // Do the last iteration
+    p.push(v);
+    actor->path.pop();
+
+    if (actor->type == ActorTypes::Bike){
+        street = world->intersections.at(u).outboundBike.at(v);
+    } else {
+        street = world->intersections.at(u).outboundCar.at(v);
+    }
+    distance += street->length;
+
+    // Move the new path to the actor and hope the old path get's deleted
+    actor->path = p;
+
+    return distance;
+}

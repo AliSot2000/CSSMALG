@@ -74,3 +74,5 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
  * @return The path from start to end.
  */
 Path retrievePath(spt_t* spt, const int &start, const int &end);
+
+float distanceFromPath(const world_t* world, actor_t* actor);
