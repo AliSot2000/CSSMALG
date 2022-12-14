@@ -518,7 +518,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 
             actor->distanceToIntersection -= movement_distance;
             actorMoved = actorMoved || movement_distance > 0.0f;
-            actor->time_spent_waiting += static_cast<float>(movement_distance > 0.0f) * timeDelta;
+            actor->time_spent_waiting += static_cast<float>(movement_distance == 0.0f) * timeDelta;
             // Clamping distance
             if (actor->distanceToIntersection < 0.01f){actor->distanceToIntersection = 0;}
 
