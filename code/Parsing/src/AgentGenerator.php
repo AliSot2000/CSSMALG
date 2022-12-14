@@ -65,7 +65,7 @@ class AgentGenerator
                     $amountPerMinute = max(round($amount / 60), 1);
 
                     // number of agents going from out to center (+ center to center (+ center to out (+ out to out)))
-                    $directionAmount = array(round($direction[$hour] * $amount * 0.75), round($direction[$hour] * $amount), round($amount - $amount * (1 - $direction[$hour]) * 0.25));
+                    $directionAmount = array(round($direction[$hour] * $amountPerMinute * 0.75), round($direction[$hour] * $amountPerMinute), round($amountPerMinute - $amountPerMinute * (1 - $direction[$hour]) * 0.25));
 
                     for ($i = 0; $i < 60; $i++) {
 
@@ -163,8 +163,8 @@ class AgentGenerator
      */
     private function calculateAgentAmount(): array {
         $area = round($this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon2"], $this->coordinates["lat1"]) *  $this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon1"], $this->coordinates["lat2"]));
-        // assumption: at rush hour one new agent per 2000m^2 on the whole area of the map per hour
-        $maxAgentAmount = $area / 2000;
+        // assumption: at rush hour one new agent per 4000m^2 on the whole area of the map per hour
+        $maxAgentAmount = $area / 4000;
         // assumption with at what hour will there be what percentage of $maxAgentAmount spawned
         // increased at morning rush hour, lunch and evening rush hour
         $agentDistribution = array(0.05, 0.05, 0.06, 0.75, 0.1, 0.25, 0.4, 0.7, 0.65, 0.6, 0.6, 0.6, 0.6, 0.6, 0.65, 0.7, 0.8, 1, 0.8, 0.5, 0.3, 0.1, 0.075, 0.05);
