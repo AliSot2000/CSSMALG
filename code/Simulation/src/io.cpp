@@ -38,10 +38,11 @@ void importMap(world_t* world, json* map) {
 
         Intersection& intersection = world->intersections[index];
 		intersection.id = index;
+#ifdef DO_TRAFFIC_SIGNALS
         if (data.contains("trafficSignal")){
             intersection.hasTrafficLight = data["trafficSignal"];
         }
-
+#endif
         world->IntersectionPtr[index] = &world->intersections[index];
 		index++;
 	}
