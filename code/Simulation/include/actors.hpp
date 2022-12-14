@@ -45,8 +45,10 @@ typedef struct Actor {
 
     int start_id = -1;
     int end_id = -1;
+
     bool Teleport = false;
     bool arrived = false;
+    int tempDistanceToRight = 0;
 } actor_t;
 
 enum StreetTypes {
@@ -92,6 +94,7 @@ typedef struct Intersection {
     bool hasTrafficLight = false;
     float car_flow_accumulate = 0.0f;
     float bike_flow_accumulate = 0.0f;
+    bool needsUpdate = false;
 } intersection_t;
 
 typedef struct World {
