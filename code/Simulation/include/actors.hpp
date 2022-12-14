@@ -77,9 +77,12 @@ typedef struct Street {
 	// These values are not used by the simulation itself, just for the visulisation later
 	// start and end position
 	std::string id;
-    float density_accumulate = 0.0f;
-    uint64_t total_traffic_count = 0;
-    float flow_accumulate = 0.0f;
+    float density_accumulate_bike = 0.0f;
+    uint64_t total_traffic_count_bike = 0;
+    float flow_accumulate_bike = 0.0f;
+    float density_accumulate_car = 0.0f;
+    uint64_t total_traffic_count_car = 0;
+    float flow_accumulate_car = 0.0f;
     bool allowOvertake = false;
 } street_t;
 

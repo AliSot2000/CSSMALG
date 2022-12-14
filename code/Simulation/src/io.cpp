@@ -533,14 +533,19 @@ void jsonDumpStats(const float& avgTime, json* output, world_t* world, const boo
     for (auto& street : world->streets) {
         json obj = {};
         obj["id"] = street.id;
-        obj["flow"] = street.flow_accumulate / (avgTime * (street.width / LANE_WIDTH));
-        obj["density"] = street.density_accumulate / (avgTime * (street.width / LANE_WIDTH));
+        obj["bikeFlow"] = street.flow_accumulate_bike / (street.width / LANE_WIDTH);
+        obj["bikeDensity"] = street.density_accumulate_bike / (street.width / LANE_WIDTH);
+        obj["carFlow"] = street.flow_accumulate_car / (street.width / LANE_WIDTH);
+        obj["carDensity"] = street.density_accumulate_car / (street.width / LANE_WIDTH);
         obj["id"] = street.id;
         if (final) {
-            obj["total_passing_traffic"] = street.total_traffic_count;
+            obj["total_passing_traffic_bike"] = street.total_traffic_count_bike;
+            obj["total_passing_traffic_car"] = street.total_traffic_count_car;
         }
-        street.flow_accumulate = 0.0f;
-        street.density_accumulate = 0.0f;
+        street.flow_accumulate_bike = 0.0f;
+        street.density_accumulate_bike = 0.0f;
+        street.flow_accumulate_car = 0.0f;
+        street.density_accumulate_car = 0.0f;
         output->at("streets").push_back(obj);
     }
 }
