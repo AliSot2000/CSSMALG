@@ -4,15 +4,9 @@ import os
 
 class Visualizer:
     path_to_data = ''
-    data = []
 
     def __init__(self, path_to_data: str):
         self.path_to_data = os.path.normcase(path_to_data)
-
-    def get_data(self):
-        for name in os.listdir(self.path_to_data):
-            if os.path.isdir(os.path.join(self.path_to_data, name)):
-                self.data.append(name)
 
     def get_simulations(self, name: str):
         simulations = []
