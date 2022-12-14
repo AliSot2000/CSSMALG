@@ -26,7 +26,7 @@ typedef std::vector<Actor*>::iterator TrafficIterator;
  * @param end Pointer where first vehicle which does not satisfy conditions is stored
  * Street is not allowed to be constant here, because we will use these iterators to sort the algorithm later
 */
-void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end);
+//void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end);
 
 /*
  * Finds maximum distance a car can drive forward in given street.
@@ -97,7 +97,7 @@ Actor* moveToOptimalLane(Street* street, Actor* actor);
  * @param start Where to begin sorting
  * @param end Where to stop sorting
 */
-void sortStreet(TrafficIterator& start, TrafficIterator& end);
+//void sortStreet(TrafficIterator& start, TrafficIterator& end);
 
 /*
  * Updates all vehicles in all streets
