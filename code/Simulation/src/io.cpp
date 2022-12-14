@@ -117,6 +117,19 @@ void importMap(world_t* world, json* map) {
     connectOpposite(world, street_map);
 }
 
+void connectOpposite(world_t* world, const std::map<std::string, street_t*> lookupVector){
+# pragma omp parallel for default(none) shared(world, lookupVector, std::cerr)
+    for (auto& street : world->streets){
+        if (street.opposite_id != "empty"){
+            try {
+                street.opposite = lookupVector.at(street.opposite_id);
+            } catch (const std::out_of_range& oor) {
+                std::cerr << "Opposite street not found: " << street.opposite_id << std::endl;
+            }
+        }
+    }
+}
+
 void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
     assert(world->actors.size() == 0 && "Agents is not empty");
     world->actors = std::vector<Actor*>(agents->at("bikes").size() + agents->at("cars").size());
