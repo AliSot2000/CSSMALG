@@ -175,7 +175,7 @@ void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
 
         actor->path = retrievePath(bikeSPT, actor->start_id, actor->end_id);
 
-        if (actor->start_id != -1 && actor->end_id != -1){ // Well this is also a stupid mistace to have it to == and ||
+        if ((actor->start_id != -1 && actor->end_id != -1) || actor->path.empty()){ // Well this is also a stupid mistace to have it to == and ||
             for (auto& intersection : world->intersections) {
                 if (intersection.id == actor->start_id) {
                     intersection.waitingToBeInserted.push_back(actor);
