@@ -156,7 +156,11 @@ Path retrievePath(spt_t* spt, const int &start, const int &end) {
 	int u = start;
 //    p.push(u);
 	while (u != end) {
-        assert(u < spt->size);
+        assert(u < spt->size && "Overflow of the spt array");
+        assert(p.size() < spt->size && "Overflow of the path array" && "Overflow of the spt array");
+        if (u == -1){
+            return {};
+        }
 		u = spt->array[u * spt->size + end];
 		p.push(u);
 	}
