@@ -18,7 +18,7 @@
 #define USE_STUPID_INTERSECTIONS false
 //#define ADD_INCREMENTS
 //#define DDEBUG
-//#define SLURM_OUTPUT
+#define SLURM_OUTPUT
 //define DO_TRAFFIC_SIGNALS
 
 int main(int argc, char* argv[]) {
