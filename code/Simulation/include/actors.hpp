@@ -62,6 +62,7 @@ typedef struct Street {
 	int end = -1;
 
 	struct Street* opposite = nullptr;
+    std::string opposite_id = "empty";
 	StreetTypes type = StreetTypes::Both;
 	size_t width = 2;
 	float length = 100.0f;
