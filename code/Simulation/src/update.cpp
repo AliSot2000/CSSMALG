@@ -606,10 +606,12 @@ bool updateStreets(world_t* world, const float timeDelta){
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
-//    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
+    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
     for (int32_t i = 0; i < 128; i++){
         singleIntersectionStrideUpdate(world, timeDelta, stupidIntersections, current_time, 128, i);
     }
+
+    updateData(world);
 }
 
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
