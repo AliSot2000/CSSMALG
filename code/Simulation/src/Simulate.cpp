@@ -19,7 +19,7 @@
 //#define ADD_INCREMENTS
 //#define DDEBUG
 //#define SLURM_OUTPUT
-//DO_TRAFFIC_SIGNALS
+//define DO_TRAFFIC_SIGNALS
 
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
