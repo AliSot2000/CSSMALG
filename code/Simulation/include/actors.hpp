@@ -49,6 +49,8 @@ typedef struct Actor {
     bool Teleport = false;
     bool arrived = false;
     int tempDistanceToRight = 0;
+    float overtaking_distance = 0;
+    float distanceToFront = 0;
 } actor_t;
 
 enum StreetTypes {
@@ -78,6 +80,7 @@ typedef struct Street {
     float density_accumulate = 0.0f;
     uint64_t total_traffic_count = 0;
     float flow_accumulate = 0.0f;
+    bool allowOvertake = false;
 } street_t;
 
 typedef struct Intersection {
