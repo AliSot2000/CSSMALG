@@ -19,3 +19,50 @@ class Ingest:
 
         return simulations
 
+    def combine_simulations(self, name: str):
+        simulations = self.get_simulations(name)
+
+        if len(simulations) < 1:
+            raise Exception('No simulations found')
+
+        for simulation in simulations:
+            sim_dir = os.path.join(self.path_to_data, name, simulation)
+
+            for time_step in os.listdir(sim_dir):
+                if time_step == 'agents.json':
+                    continue
+                if time_step == 'final.log':
+                    continue
+
+                intersection_bike_flow = []
+                intersection_car_flow = []
+
+                road_bike_flow = []
+                road_car_flow = []
+                road_bike_density = []
+                road_car_density = []
+
+                time = int(time_step.split('.')[0])
+
+                with open(os.path.join(sim_dir, time_step)) as f:
+                    data = json.load(f)
+
+                    for intersection in data['intersections']:
+                        intersection_bike_flow.append(intersection['bikeFlow'])
+                        intersection_car_flow.append(intersection['carFlow'])
+                    for road in data['streets']:
+                        road_bike_flow.append(road['bikeFlow'])
+                        road_car_flow.append(road['carFlow'])
+                        road_bike_density.append(road['bikeDensity'])
+                        road_car_density.append(road['carDensity'])
+
+                self.mongo.insert_one(name, {
+                    'time': time,
+                    'time_step': time_step,
+                    'intersection_bike_flow': intersection_bike_flow,
+                    'intersection_car_flow': intersection_car_flow,
+                    'road_bike_flow': road_bike_flow,
+                    'road_car_flow': road_car_flow,
+                    'road_bike_density': road_bike_density,
+                    'road_car_density': road_car_density
+                })

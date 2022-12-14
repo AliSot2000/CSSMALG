@@ -208,7 +208,6 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
 def approx_equal(a, b, epsilon: int = 10):
     return abs(a - b) < epsilon
 
-
 def calculate_data(calculated_data: dict, data: list):
     m = mean(data)
     calculated_data['mean'].append(m)
