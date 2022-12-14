@@ -21,7 +21,7 @@ def recursive_list(root_path: str, prefix: str):
 
 def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str):
     file = f"""
-!/bin/bash
+#!/bin/bash
 echo "Running Simulation of {agents_in} file"
 {executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir+'/'} {runtime} {delta}
 echo "Computation of {agents_in} file finished"
@@ -64,16 +64,16 @@ if __name__ == "__main__":
     # car_path: str = "~/CSSMALG_DATA/tinyCarTree.spt"
     # bike_path: str = "~/CSSMALG_DATA/tinyBikeTree.spt"
 
-    agentsDir: str = "/home/asotoude/CSSMALG/code/Parsing/data/"
-    agentsPrefix: str = "tiny_sim"
-    simOutDir: str = "/home/asotoude/CSSMALG_DATA/"
+    agentsDir: str = "/home/asotoude/Input-Large/"
+    agentsPrefix: str = "full_sim_"
+    simOutDir: str = "/home/asotoude/LARGE_NO_TRAFFIC_SIG/"
     batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
     executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
-    map_path: str = "/home/asotoude/CSSMALG/code/Parsing/data/tinyMapExport.tsim"
-    car_path: str = "/home/asotoude/CSSMALG_DATA/tinyCarTree.spt"
-    bike_path: str = "/home/asotoude/CSSMALG_DATA/tinyBikeTree.spt"
-    stats_interval: int = 60
-    runtime = 95000
+    map_path: str = "/home/asotoude/Input-Large/fullMapExport.tsim"
+    car_path: str = "/home/asotoude/PrecomputedMaps/fullCarTree.spt"
+    bike_path: str = "/home/asotoude/PrecomputedMaps/fullBikeTree.spt"
+    stats_interval: int = 900
+    runtime = 100000
     delta = 0.25
     slurm_command = "sbatch -n 16 --wrap="
 
