@@ -24,7 +24,7 @@ find_package(OpenMP REQUIRED)
 #add_definitions(-DDEBUG)
 
     # Add source to this project's executable.
-add_executable (Visualize "src/main.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp" "src/fastFW.cu" "src/base64.cpp")
+add_executable (Visualize "src/Visualize.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp" "src/fastFW.cu" "src/base64.cpp")
 #add_executable (Visualize "src/main.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp" "src/base64.cpp")
 target_link_libraries(Visualize PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(Visualize PRIVATE CUDA::cudart)
@@ -45,7 +45,7 @@ set_property(TARGET PrecalcSPT PROPERTY CXX_STANDARD 20)
 
 
 
-add_executable (Simulate "src/largeSim.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp"  "src/base64.cpp" "src/fastFW.cu")
+add_executable (Simulate "src/Simulate.cpp"  "src/routing.cpp" "src/update.cpp" "src/io.cpp" "src/utils.cpp"  "src/base64.cpp" "src/fastFW.cu")
 target_link_libraries(Simulate PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(Simulate PRIVATE CUDA::cudart)
 target_compile_options(Simulate PUBLIC ${OpenMP_CXX_FLAGS})
