@@ -121,3 +121,6 @@ void exportAgents(json* out, const world_t* world);
 void printSPT(const spt_t* SPT);
 
 unsigned int GetNumberOfDigits (unsigned int i);
+
+
+void connectOpposite(world_t* world, const std::map<std::string, street_t*> lookupVector);
