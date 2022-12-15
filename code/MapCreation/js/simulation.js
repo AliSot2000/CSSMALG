@@ -103,6 +103,10 @@ class Simulation {
         this._agents = sim.setup.agents; // The agents of the simulation
         this._time_interval = sim.peripherals.time_step; // The time interval at which to read the positions of the agents
         this._pre_simulation = sim.simulation; // The simulation that is loaded from the simulation file
+        if (isEmpty(sim.setup.map)) { // If there is no map
+            alert('No map was given, so the simulation will not be loaded'); // Alert the user
+            return this;
+        }
         this._sim_map = sim.setup.map; // The map exported that belongs to the simulation
         this.setupSimulation(); // Setup the simulation
         return this;
@@ -116,10 +120,8 @@ class Simulation {
     setupSimulation() {
         this._map.clear(); // Clear the map
         this._map.load(this._sim_map, false); // Load the map
-        this._map._loading.show().setMainHeader('Precalculating Simulation').setSubHeader('Precalculating Simulation Points').setPercent(0); // Show the loading screen
         this._map.simulationMode(true); // Set the map to simulation mode
 
-        this._map._loading.setSubHeader('Creating Agents'); // Set the sub header of the loading screen
         for (let id in this._agents) { // For each agent
             let a = new Agent(id, this._agents[id].type, this._map); // Create the agent
             this._map.addAgent(a); // Add the agent to the map
@@ -128,7 +130,7 @@ class Simulation {
         this._agents = this._map.getAgents(); // Get the agents from the map
         this._intersections = this._map.getIntersections(); // Get the intersections from the map
 
-        this._map._loading.setSubHeader('Precalculating Simulation'); // Set the sub header of the loading screen
+        $(document.body).toggleClass('calculating'); // Toggle the loading class
         setTimeout(() => { // Wait for the map to load
             this.precalculateSimulation() // Precalculate the simulation
 
@@ -137,9 +139,8 @@ class Simulation {
 
             this._step = 0; // Set the step to 0
             this.jumpToStep(0); // Jump to step 0
-            this._map._loading.setSubHeader('Simulation Ready').setPercent(100);
             setTimeout(() => {
-                this._map._loading.hide(); // Hide the loading screen
+                $(document.body).toggleClass('calculating'); // Hide the loading screen
             }, 100);
         }, 100);
 
@@ -202,8 +203,13 @@ class Simulation {
             return this; // Return
         }
 
+        let percentage = 0; // The percentage of the simulation that has been precalculated
         for (let step_num = 1; step_num < total_steps; step_num++) { // For each step in the pre-simulation
-            this._map._loading.setPercent(Math.floor((step_num / total_steps) * 100)); // Update the loading screen
+            let new_percentage = snap(Math.floor((step_num / total_steps) * 100), 5); // Calculate the percentage of the simulation that has been precalculated
+            if (percentage !== new_percentage) {
+                percentage = new_percentage; // Set the percentage to the new percentage
+                console.log('Precalculating: ' + percentage + '%');
+            }
             let agent_step = this._pre_simulation[step_num].agents; // The current step
 
             let agent_new_steps = []; // The new steps that will be added to the simulation
