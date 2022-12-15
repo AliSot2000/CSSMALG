@@ -12,7 +12,7 @@
 
 #define STATUS_UPDATAE_INTERVAL 60
 //#define SLURM_OUTPUT
-//define DO_TRAFFIC_SIGNALS
+#define DO_TRAFFIC_SIGNALS true
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
     if (hasPrecompute(&import)){
-        importMap(&world, &import["world"]);
+        importMap(&world, &import["world"], DO_TRAFFIC_SIGNALS);
     } else {
         importMap(&world, &import);
     }
