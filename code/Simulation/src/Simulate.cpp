@@ -46,6 +46,8 @@ int main(int argc, char* argv[]) {
         do_traffic_signals = (*argv[10] == '1');
     }
 
+    std::cout << "Simulaton is doing traffic signals? " << do_traffic_signals << std::endl;
+
     // Declare the world
     world_t world;
     nlohmann::json import;
