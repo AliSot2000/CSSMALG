@@ -19,7 +19,6 @@
 //#define ADD_INCREMENTS
 //#define DDEBUG
 #define SLURM_OUTPUT
-#define DO_TRAFFIC_SIGNALS
 
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
@@ -41,6 +40,11 @@ int main(int argc, char* argv[]) {
     const char* statsDirOut = argv[7];
     const float runtime = std::atof(argv[8]);
     const float deltaTime = std::atof(argv[9]);
+    bool do_traffic_signals = false;
+
+    if (argc > 9){
+        do_traffic_signals = (*argv[10] == '1');
+    }
 
     // Declare the world
     world_t world;
@@ -52,7 +56,7 @@ int main(int argc, char* argv[]) {
 
     // Import Map
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
-    importMap(&world, &import);
+    importMap(&world, &import, do_traffic_signals);
     stopMeasureTime(start);
 
     // Import the SPTs
