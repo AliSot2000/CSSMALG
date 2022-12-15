@@ -209,3 +209,24 @@ float distanceFromPath(const world_t* world, actor_t* actor){
 
     return distance;
 }
+
+std::vector<int> getPath(actor_t* actor){
+    std::vector<int> path;
+    Path replacement;
+
+    int u = actor->start_id;
+    int v = actor->path.front();
+    path.push_back(u);
+
+    while (v != actor->end_id){
+        path.push_back(v);
+        replacement.push(v);
+        actor->path.pop();
+        u = v;
+        v = actor->path.front();
+    }
+    path.push_back(v);
+    replacement.push(v);
+    actor->path = replacement;
+    return path;
+}
