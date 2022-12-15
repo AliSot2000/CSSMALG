@@ -19,11 +19,11 @@ def recursive_list(root_path: str, prefix: str):
     return results
 
 
-def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str):
+def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str, traffic_sig: bool):
     file = f"""
 #!/bin/bash
 echo "Running Simulation of {agents_in} file"
-{executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir+'/'} {runtime} {delta}
+{executable} {map_in} {car_in} {bike_in} {agents_in} {stats_interval} {os.path.join(output_dir, "agents.json")} {output_dir+'/'} {runtime} {delta} {traffic_sig}
 echo "Computation of {agents_in} file finished"
 """
     name = os.path.join(script_dir, f"{bash_file_name.replace('/', '-')}.sh")
@@ -70,6 +70,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--delta', type=float, help='Set the time step size for the simulation', required=False,
                         default=0.25)
     parser.add_argument('-t', '--slurmCommand', type=str, help='Set the slurm command for the simulation', required=False, default="sbatch -n 16 --wrap=")
+    parser.add_argument('-f', '--trafficSignal', type=bool, help='Set the traffic signal flag for the simulation', required=False, default=False)
 
     args = parser.parse_args()
 
@@ -107,6 +108,8 @@ if __name__ == "__main__":
     delta: float = args.delta
     slurm_command: str = args.slurmCommand
 
+    traffic_sig: bool = args.trafficSignal
+
     # get all the agents
     agentsFiles = recursive_list(agentsDir, agentsPrefix)
     agent_dirs = []
@@ -135,7 +138,8 @@ if __name__ == "__main__":
                         runtime=runtime,
                         delta=delta,
                         script_dir=batchFileDir,
-                        bash_file_name=agent_dirs[i])
+                        bash_file_name=agent_dirs[i],
+                        traffic_sig=traffic_sig)
     print("Generated Batch Files")
 
     # generate enqueue file
