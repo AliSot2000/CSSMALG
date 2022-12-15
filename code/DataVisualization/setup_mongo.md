@@ -95,4 +95,10 @@ Restart the MongoDB service.
 sudo systemctl restart mongod
 ```
 
+Note that you now need to authenticate to access the database.
+
+```bash
+mongosh -u Admin
+```
+
 ![Congratulations](../../other/congratulations.jpeg)
