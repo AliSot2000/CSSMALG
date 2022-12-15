@@ -209,8 +209,12 @@ class AgentGenerator
                 $this->nodesIn[] = $intersection["id"];
             }
         }
-
-        $this->unreachable = json_decode(file_get_contents("../data/reachability/" . $this->prefix . "Reachability.json"), true);
+        
+        $reachabilityData = file_get_contents("../data/reachability/" . $this->prefix . "Reachability.json");
+        // check if reachability file exists
+        if ($reachabilityData !== false) {
+            $this->unreachable = json_decode($reachabilityData, true);
+        }
     }
 
     /**
