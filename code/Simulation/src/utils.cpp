@@ -26,12 +26,13 @@ void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end) {
     start = randint(0, static_cast<int>(world->intersections.size()) - 1);
     end = start;
     int antiInfinitLoop = 0;
-    while (end == start && antiInfinitLoop < 1000) {
+    while (end == start && antiInfinitLoop < 1000 && spt->array[start * spt->size + end] == -1.0f) {
+        end = randint(0, static_cast<int>(world->intersections.size()) - 1);
         end = randint(0, static_cast<int>(world->intersections.size()) - 1);
         ++antiInfinitLoop;
     }
     if (start == end){
-        end = (start + 1) & spt->size;
+        end = (start + 1) % spt->size;
     }
 }
 
