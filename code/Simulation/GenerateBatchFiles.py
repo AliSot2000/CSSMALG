@@ -35,7 +35,7 @@ def write_enqueue_file(script_dir: str, file_list: list, slurm_command: str):
     if os.path.exists(os.path.join(script_dir, "enqueue.sh")):
         os.remove(os.path.join(script_dir, "enqueue.sh"))
         print("Removed old enqueue.sh file")
-    file = "!/bin/bash\n"
+    file = "#!/bin/bash\n"
 
     for file_nama in file_list:
         name = os.path.join(script_dir, file_nama.replace("/", "-").replace(".json", ".sh"))
