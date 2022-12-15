@@ -35,7 +35,7 @@ class MongoAPI:
     def collection(self, db_name, collection: str):
         return self.client[db_name][collection]
 
-    def find_one(self, db_name, collection: str, filter_dict: dict = None, projection_dict: dict = None, sort: dict = None):
+    def find_one(self, db_name, collection: str, filter_dict: dict = None, projection_dict: dict = None, sort: list = None):
         """
         Query the database.
         :param db_name: Database name string
@@ -50,7 +50,7 @@ class MongoAPI:
 
         return col.find_one(filter=filter_dict, projection=projection_dict, sort=sort)
 
-    def find(self, db_name, collection: str, filter_dict: dict = None, projection_dict: dict = None, sort: dict = None, skip:int = 0, limit: int = 0):
+    def find(self, db_name, collection: str, filter_dict: dict = None, projection_dict: dict = None, sort: list = None, skip:int = 0, limit: int = 0):
         """
         Query the database.
         :param db_name: Database name string

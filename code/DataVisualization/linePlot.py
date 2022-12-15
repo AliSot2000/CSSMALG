@@ -18,13 +18,13 @@ class LinePlot:
         plt.savefig(path)
 
     def set_title(self, title):
-        self.ax.title(title)
+        self.ax.set_title(title)
 
     def set_x_label(self, label):
-        self.ax.xlabel(label)
+        self.ax.set_xlabel(label)
 
     def set_y_label(self, label):
-        self.ax.ylabel(label)
+        self.ax.set_ylabel(label)
 
     def set_y_axis_grid(self, grid):
         self.ax.yaxis.grid(grid)
