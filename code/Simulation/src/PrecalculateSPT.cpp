@@ -49,6 +49,7 @@ int main(int argc, char* argv[]) {
 #endif
     binDumpSpt(&carsSPT, carFile);
 
+    std::cout << std::endl << std::endl << std::endl;
 
     spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
     binDumpSpt(&bikeSPT, bikeFile);
