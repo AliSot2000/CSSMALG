@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     agentsDir: str = "/home/asotoude/input-large/"
     agentsPrefix: str = "full_sim_"
-    simOutDir: str = "/home/asotoude/LARGE_NO_TRAFFIC_SIG/"
+    simOutDir: str = "/home/asotoude/LARGE_TRAFFIC_SIG/"
     batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
     executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
     map_path: str = "/home/asotoude/FINAL_MAPS/fullMapExport.tsim"
