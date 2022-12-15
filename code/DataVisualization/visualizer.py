@@ -89,6 +89,8 @@ class Visualizer:
                            attribute.title(),
                            os.path.join(self.output_path, f'{tracked_attribute}.png'))
 
+#    def visualize_over_multiple_sims(self, agent_type: str ):
+
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
     p = LinePlot()
