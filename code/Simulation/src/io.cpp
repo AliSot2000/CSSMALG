@@ -24,7 +24,7 @@ bool hasPrecompute(const json* map){
     return map->contains("world") && map->contains("carTree") && map->contains("bikeTree");
 }
 
-void importMap(world_t* world, json* map) {
+void importMap(world_t* world, json* map, bool doTrafficLights) {
 	assert(world->streets.size() == 0 && "Streets is not empty");
     // Data will be packed more neatly when first creating array with given size
     world->intersections = std::vector<Intersection>(map->at("intersections").size());
@@ -38,11 +38,9 @@ void importMap(world_t* world, json* map) {
 
         Intersection& intersection = world->intersections[index];
 		intersection.id = index;
-#ifdef DO_TRAFFIC_SIGNALS
-        if (data.contains("trafficSignal")){
+        if (data.contains("trafficSignal") && doTrafficLights) {
             intersection.hasTrafficLight = data["trafficSignal"];
         }
-#endif
         world->IntersectionPtr[index] = &world->intersections[index];
 		index++;
 	}
