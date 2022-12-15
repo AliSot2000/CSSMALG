@@ -33,7 +33,8 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 	for (const auto& street : world->streets) {
 		if (std::find(include.begin(), include.end(), street.type) != include.end()) {
             // Access the matrix as a 1D array.
-			*(minimumDistance + street.start * sopatree.size + street.end) = std::min(static_cast<float>(street.length),
+            double streetDistance = street.length / (street.speedlimit * street.width);
+			*(minimumDistance + street.start * sopatree.size + street.end) = std::min(streetDistance,
                                                                                       *(minimumDistance + street.start * sopatree.size + street.end));
 			*(sopatree.array + street.start * sopatree.size + street.end) = street.end;
 		}
@@ -105,7 +106,8 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
             int start = street.start;
             int end = street.end;
             // Take the shortest street in case there are multiple (for what ever reason there should be multiple
-            *(distance + start * size + end) = std::min(static_cast<double>(street.length), *(distance + start * size + end));
+            double streetDistance = street.length / (street.speedlimit * street.width);
+            *(distance + start * size + end) = std::min(streetDistance, *(distance + start * size + end));
             *(neighbour + start * size + end) = end;
         }
     }
