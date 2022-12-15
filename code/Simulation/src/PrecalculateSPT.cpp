@@ -49,8 +49,9 @@ int main(int argc, char* argv[]) {
 #endif
     binDumpSpt(&carsSPT, carFile);
 
+//#ifdef DDEBUG
     std::cout << std::endl << std::endl << std::endl;
-
+//#endif
     spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
     binDumpSpt(&bikeSPT, bikeFile);
 #ifdef DDEBUG
@@ -64,7 +65,6 @@ int main(int argc, char* argv[]) {
 #ifdef SINGLE_FILE_EXPORT
     exportSPT(carsSPT, bikeSPT, import, &world, janFile);
 #else
-    exit(0);
     nlohmann::json spts;
     exportSPT(carsSPT, bikeSPT, import, spts, &world);
     save(janFile, &spts);
