@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
 #ifdef SINGLE_FILE_EXPORT
     exportSPT(carsSPT, bikeSPT, import, &world, janFile);
 #else
+    exit(0);
     nlohmann::json spts;
     exportSPT(carsSPT, bikeSPT, import, spts, &world);
     save(janFile, &spts);
