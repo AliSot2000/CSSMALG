@@ -39,6 +39,10 @@ body.grabbing * {
     cursor: grabbing !important;
 }
 
+body.calculating * {
+    cursor: wait !important;
+}
+
 .roads {
     position: absolute;
     top: 0;
