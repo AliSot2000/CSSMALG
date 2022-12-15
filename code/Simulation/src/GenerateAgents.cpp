@@ -16,7 +16,7 @@
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-        std::cerr << "Usage CSSMALG <map-in> <n-random-cars> <n-random-bikes> <agents-file> <max-random-time>" << std::endl;
+        std::cerr << "Usage CSSMALG <map-in> <n-random-cars> <n-random-bikes> <agents-file> <max-random-time> <carSPT> <bikeSPT>" << std::endl;
         return -1;
     }
 
@@ -47,6 +47,16 @@ int main(int argc, char* argv[]) {
     if (hasPrecompute(&import)){
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
         importSPT(&carsSPT, &bikeSPT, &import, &world);
+        stopMeasureTime(start);
+    } else if (argc > 6) {
+        start = startMeasureTime("importing shortest path trees");
+        // Don't continue if loading fails.
+        if (!binLoadTree(&carsSPT, argv[6], &world)){
+            return -1;
+        }
+        if (!binLoadTree(&bikeSPT, argv[7], &world)){
+            return -1;
+        }
         stopMeasureTime(start);
     } else {
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
