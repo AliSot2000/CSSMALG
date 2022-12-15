@@ -1,85 +1,35 @@
 import json
 import os
-
 from linePlot import LinePlot
-
+from mongo_api import MongoAPI
+from database import db_username, db_password, db_ip
 
 class Visualizer:
-    path_to_data = ''
-    output_dir = ''
+    def __int__(self, output_path):
+        self.mongo = MongoAPI(db_ip, db_username, db_password)
+        self.output_path = output_path
 
-    def __init__(self, path_to_data: str, output_dir: str):
-        self.path_to_data = os.path.normcase(path_to_data)
-        self.output_dir = os.path.normcase(output_dir)
+    def visualize_percent_variance(self, simulation: str, road_type: str = 'intersection', agent_type: str = 'car', attribute: str = 'flow'):
+        all_collections = self.mongo.get_collections(simulation)
 
-    def get_simulations(self, name: str):
-        simulations = []
-        sim_dir = os.path.join(self.path_to_data, name)
-        for simulation in sim_dir:
-            if os.path.isdir(os.path.join(sim_dir, simulation)):
-                simulations.append(simulation)
+        collections = []
+        for collection in all_collections:
+            if '_timesteps' in collection:
+                collections.append(collection)
 
-        return simulations
+        data = []
 
-    def combine_simulations(self, name: str):
-        log_time_interval = 15
-        simulations = self.get_simulations(name)
-        sim_count = len(simulations)
+        for collection in collections:
+            data.append(self.mongo.find(simulation,
+                                        collection,
+                                        {'$exists':{f'{road_type}_{agent_type}_{attribute}': True}},
+                                        {f'{road_type}_{agent_type}_{attribute}': 1},
+                                        {'time': 1}))
 
-        intersection_bike_flow = []
-        intersection_car_flow = []
+        time_steps = 0
+        if len(data) < 1:
+            raise Exception('')
 
-        road_bike_flow = []
-        road_car_flow = []
-        road_bike_density = []
-        road_car_density = []
-
-        if sim_count < 1:
-            raise Exception('No simulations found')
-
-        sim_dir = os.path.join(self.path_to_data, name, simulations[0])
-
-        for file in os.listdir(sim_dir):
-            if os.path.isfile(os.path.join(sim_dir, file)):
-                if file == 'agents.json':
-                    continue
-                if file == 'final.log':
-                    continue
-
-                intersection_car_flow.append([])
-                intersection_bike_flow.append([])
-                road_car_flow.append([])
-                road_bike_flow.append([])
-                road_car_density.append([])
-                road_bike_density.append([])
-
-        for simulation in simulations:
-            sim_dir = os.path.join(self.path_to_data, name, simulation)
-
-            time_steps = sort_time_steps(os.listdir(sim_dir))
-
-            minute = log_time_interval
-            for time_step in time_steps:
-                if not approx_equal(time_step['timestep'], minute * 60):
-                    raise Exception('Time steps are not equal')
-
-                with open(os.path.join(sim_dir, time_step['file_name'])) as f:
-                    data = json.load(f)
-
-                    index = minute // log_time_interval - 1
-
-                    for intersection in data['intersections']:
-                        intersection_bike_flow[index].append(intersection['bikeFlow'])
-                        intersection_car_flow[index].append(intersection['carFlow'])
-                    for road in data['streets']:
-                        road_bike_flow[index].append(road['bikeFlow'])
-                        road_car_flow[index].append(road['carFlow'])
-                        road_bike_density[index].append(road['bikeDensity'])
-                        road_car_density[index].append(road['carDensity'])
-
-                minute += log_time_interval
-
-        return intersection_bike_flow, intersection_car_flow, road_bike_flow, road_car_flow, road_bike_density, road_car_density
 
     def calculate_and_plot_data(self, name: str):
         intersection_bike_flow, intersection_car_flow, road_bike_flow, road_car_flow, road_bike_density, road_car_density = self.combine_simulations(name)
