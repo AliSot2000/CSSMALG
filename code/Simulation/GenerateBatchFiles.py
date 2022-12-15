@@ -48,34 +48,64 @@ def write_enqueue_file(script_dir: str, file_list: list, slurm_command: str):
 
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description='Generate batch files for simulation')
-    # parser.add_argument('--path', type=str, help='Path to the simulation folder')
-    # parser.add_argument('--num', type=int, help='Number of batch files to generate')
-    # args = parser.parse_args()
-    # path = args.path
-    # num = args.num
+    parser = argparse.ArgumentParser(description='Generate batch files for simulation. This script is '
+                                                 'intended to run with SLURM.')
+    parser.add_argument('-e', '--executable', type=str, help='Path to the executable', required=True)
+    parser.add_argument('-m', '--map', type=str, help='Path to the map (.tsim file) file', required=True)
+    parser.add_argument('-c', '--carSPT', type=str, help='Path to the car (.spt file) file', required=True)
+    parser.add_argument('-b', '--bikeSPT', type=str, help='Path to the bike (.spt file) file', required=True)
+    parser.add_argument('-a', '--agents', type=str, help='Path to the pre-generated agents file (.json file) file',
+                        required=True)
+    parser.add_argument('-p', '--agentPrefix', type=str, help='Set the prefix for the agent. The agents directory might '
+                                                              'contain agents for different simulation. Should be unique '
+                                                              'in folder. if "full_sim_X.json" and "tiny_sim_X.json" are '
+                                                              'available, a suitable prefix would be full_sim_"', required=True)
+    parser.add_argument('-o', '--output', type=str, help='Set the root output directory for the simulations', required=True)
+    parser.add_argument('-s', '--batchDir', type=str, help='Set the directory where the generated shell files are going '
+                                                           'to be stored', required=True)
+    parser.add_argument('-i', '--statsInterval', type=int, help='Set the interval for the stats output', required=False,
+                        default=600)
+    parser.add_argument('-r', '--runtime', type=float, help='Set the runtime for the simulation', required=False,
+                        default=100000)
+    parser.add_argument('-d', '--delta', type=float, help='Set the time step size for the simulation', required=False,
+                        default=0.25)
+    parser.add_argument('-t', '--slurmCommand', type=str, help='Set the slurm command for the simulation', required=False, default="sbatch -n 16 --wrap=")
 
-    # agentsDir: str = "~/CSSMALG/code/Parsing/data/"
-    # agentsPrefix: str = "tiny_sim"
-    # simOutDir: str = "~/CSSMALG_DATA/"
-    # batchFileDir: str = "~/CSSMALG_BATCH"
-    # executable_path: str = "~/CSSMALG/code/Simulation/build/Simulate"
-    # map_path: str = "~/CSSMALG_DATA/tiny_map.tsim"
-    # car_path: str = "~/CSSMALG_DATA/tinyCarTree.spt"
-    # bike_path: str = "~/CSSMALG_DATA/tinyBikeTree.spt"
+    args = parser.parse_args()
 
-    agentsDir: str = "/home/asotoude/input-large/"
-    agentsPrefix: str = "full_sim_"
-    simOutDir: str = "/home/asotoude/LARGE_TRAFFIC_SIG/"
-    batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
-    executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
-    map_path: str = "/home/asotoude/FINAL_MAPS/fullMapExport.tsim"
-    car_path: str = "/home/asotoude/PrecomputedMaps/fullCarTree.spt"
-    bike_path: str = "/home/asotoude/PrecomputedMaps/fullBikeTree.spt"
-    stats_interval: int = 900
-    runtime = 100000
-    delta = 0.25
-    slurm_command = "sbatch -n 16 --wrap="
+    # executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
+    #
+    # map_path: str = "/home/asotoude/FINAL_MAPS/fullMapExport.tsim"
+    # bike_path: str = "/home/asotoude/PrecomputedMaps/fullBikeTree.spt"
+    # car_path: str = "/home/asotoude/PrecomputedMaps/fullCarTree.spt"
+    #
+    # agentsDir: str = "/home/asotoude/input-large/"
+    # agentsPrefix: str = "full_sim_"
+    #
+    # simOutDir: str = "/home/asotoude/LARGE_TRAFFIC_SIG/"
+    # batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
+    #
+    # stats_interval: int = 900
+    # runtime = 100000
+    # delta = 0.25
+    # slurm_command = "sbatch -n 16 --wrap="
+
+    executable_path: str = args.executable
+
+    map_path: str = args.map
+    bike_path: str = args.bikeSPT
+    car_path: str = args.carSPT
+
+    agentsDir: str = args.agents
+    agentsPrefix: str = args.agentPrefix
+
+    simOutDir: str = args.output
+    batchFileDir: str = args.batchDir
+
+    stats_interval: int = args.statsInterval
+    runtime: float = args.runtime
+    delta: float = args.delta
+    slurm_command: str = args.slurmCommand
 
     # get all the agents
     agentsFiles = recursive_list(agentsDir, agentsPrefix)
