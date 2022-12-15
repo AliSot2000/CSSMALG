@@ -107,7 +107,10 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
             int end = street.end;
             // Take the shortest street in case there are multiple (for what ever reason there should be multiple
             double streetDistance = street.length / (street.speedlimit * street.width);
-            if (*(distance + start * size + end) < 1e30){ std::cout << "Road twice in graph" << std::endl; }
+            if (*(distance + start * size + end) < 1e30){
+                std::cout << "Road twice in graph" << std::endl;
+                std::cout << "Start: " << world->int_to_string.at(start) << " End: " << world->int_to_string.at(end) << std::endl;
+            }
             *(distance + start * size + end) = std::min(streetDistance, *(distance + start * size + end));
             *(neighbour + start * size + end) = end;
         }
@@ -127,6 +130,7 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         std::cout << std::endl;
     }
 */
+    return sopatree;
     FloydWarshal(distance, neighbour, size);
     std::cout << std::endl;
 /*
