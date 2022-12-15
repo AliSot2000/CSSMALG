@@ -130,7 +130,6 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         std::cout << std::endl;
     }
 */
-    return sopatree;
     FloydWarshal(distance, neighbour, size);
     std::cout << std::endl;
 /*
