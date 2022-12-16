@@ -61,7 +61,7 @@ class Intersection {
 
         // Create the snap points
         for (let i = 0; i < this._directions.length; i++) {
-            this._traffic_controllers[this._directions[i]] = {type: 'traffic_light', element: null};
+            this._traffic_controllers[this._directions[i]] = {type: 'right_of_way', element: null};
             let point = $('<div class="snap_point ' + this._directions[i] + '"></div>'); // Create the snap point
             point.data('link', this).data('type', this._directions[i]); // Set the data
             this._snap_points[this._directions[i]] = {snap_point: point, connected: false}; // Add the snap point to the snap points
