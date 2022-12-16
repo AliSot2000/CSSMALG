@@ -4,6 +4,8 @@
 1. [MapCreation](#mapcreation)
 2. [Simulation](#simulation)
 3. [Parsing](#parsing)
+4. [BashScriptGenerator](#bashscriptgenerator)
+5. [DataVisualization](#datavisualization)
 
 ## MapCreation
 The Graphical User Interface for:
@@ -17,9 +19,8 @@ The simulation of a map. Maps created by the GUI can be exported and viewed agai
 ## Parser
 Data parser to parse the raw OSM data and generate agents for the map.
 
+## BashScriptGenerator
+Generates bash scripts to run the simulation on a super computer.
 
-## Running on Racklette
-slurm, cudatoolkit, cmake, gcc, cmake
-export OMP_PROC_BIND=true
-export OMP_PLACES=threads
-export OMP_NUM_THREADS=64 # or 32
+## DataVisualization
+Visualizes the data from the simulation.
