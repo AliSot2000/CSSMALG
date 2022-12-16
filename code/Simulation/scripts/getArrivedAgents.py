@@ -26,7 +26,7 @@ def print_stats(sim_out: dict):
             done += 1
         if a["end_time"] == -1 and a["distance_to_side"] == -10000.0:
             waiting += 1
-        if a["start_time"] != -1:
+        if a["start_time"] == -1:
             held_back += 1
 
     print(f"Total Actors {total}")
