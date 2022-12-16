@@ -29,6 +29,23 @@
 The Map-Creation-Interface allows users to create maps for the simulation. The interface can after the simulation has be
 calculated also display the results of the simulation.
 
+### Important Notes
+Since the interface was started before the simulations, there are some things that you can not simulate and some things
+that can be simulated but not yet displayed in the interface. Most of them will go unnoticed to the user.
+
+Overall most notably are:
+- On the interface you can create intersections with yield signs, stop signs and roundabouts. All of these were too
+difficult to implement in the timeframe.
+- The simulation expects a road to either be a bike road, car road or a shared road. It cannot be a road with multiple
+lanes of different types.
+- On the interface you can place agents on roads for their initial position. This was thought to be needed for testing
+however it was never implemented on the simulation side. The simulation will place it's own agents in the simulation.
+- The interface allows you to create a road with the directions 1,-1,1,-1. However once simulated this road would look
+wrong. The simulation will always place the agents from the right border in the direction of travel. It also only knows
+all the lanes in one direction. So the agents would be placed 1,1,-1,-1.
+- The simulation allows for intersections to have more than 4 connecting roads. This was simply too hard to implement in
+the interface. The interface was also thought more as a bugfixing and testing tool, so this feature was never thought about.
+
 ### History
 #### Original Idea
 The Map-Creation-Interface was originally thought as a way to create maps for the simulation. This would have been for
