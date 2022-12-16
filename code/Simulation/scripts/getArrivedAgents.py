@@ -42,11 +42,11 @@ def build_new_imput(allowed: list, all_agents: dict) -> dict:
     result = {"bikes": {}, "cars": {}}
 
     # go through bikes and add the bikes which are in the allowed list to the new output dict
-    for key, value in bikes:
+    for key, value in bikes.items():
         if key in allowed:
             result["bikes"][key] = value
 
-    for key, value in cars:
+    for key, value in cars.items():
         if key in allowed:
             result["cars"][key] = value
 
@@ -76,7 +76,7 @@ def load_json(path):
 
 def write_json(path, data):
     with open(path, "w") as file:
-        json.dump(data, path)
+        json.dump(data, file)
 
 
 if __name__ == "__main__":
