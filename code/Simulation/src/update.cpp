@@ -378,6 +378,13 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                }
            }
         }
+    }
+}
+
+void singleIntersectionStrideUpdateInsert(world_t* world, const float current_time, const int stride, const int offset) {
+    // Move so no thread is colliding with another thread.
+    for (int32_t x = offset; x < world->intersections.size(); x += stride) {
+        Intersection* intersection = world->IntersectionPtr.at(x);
 
         // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
         if (intersection->waitingToBeInserted.size() > 0) {
@@ -385,7 +392,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
             // Ignoring the actor if it is not it's start time yet.
             if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor, world)) {
                 actor->start_time = current_time * static_cast<float>(actor->start_time == -1.0f)
-                        + actor->start_time * static_cast<float>(actor->start_time != -1.0f); // only set the start time if the if the start time
+                                    + actor->start_time * static_cast<float>(actor->start_time != -1.0f); // only set the start time if the if the start time
                 actor->Teleport = true;
                 intersection->needsUpdate = true;
             }
@@ -393,6 +400,34 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
     }
 }
 
+void updatetInsertData(world_t* world){
+    for (int32_t x = 0; x < world->intersections.size(); ++x) {
+        Intersection* intersection = world->IntersectionPtr.at(x);
+
+        // Skipping intersection that don't need to be updated
+        if (!intersection->needsUpdate){
+            continue;
+        }
+
+        // Resetting the needsUpdate flag
+        intersection->needsUpdate = false;
+
+        // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
+        if (intersection->waitingToBeInserted.size() > 0) {
+            Actor* actor = intersection->waitingToBeInserted[0];
+            // Ignoring the actor if it is not it's start time yet.
+            if (actor->Teleport) {
+
+                actor->Teleport = false;
+                actor->distanceToRight = actor->tempDistanceToRight;
+                intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
+                Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                target->traffic.push_back(actor);
+                actor->path.pop();
+            }
+        }
+    }
+}
 void updateData(world_t* world){
     for (int32_t x = 0; x < world->intersections.size(); ++x) {
         Intersection* intersection = world->IntersectionPtr.at(x);
@@ -458,21 +493,6 @@ void updateData(world_t* world){
                     actor->path.pop();
                     break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
                 }
-            }
-        }
-
-        // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
-        if (intersection->waitingToBeInserted.size() > 0) {
-            Actor* actor = intersection->waitingToBeInserted[0];
-            // Ignoring the actor if it is not it's start time yet.
-            if (actor->Teleport) {
-
-                actor->Teleport = false;
-                actor->distanceToRight = actor->tempDistanceToRight;
-                intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
-                Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
-                target->traffic.push_back(actor);
-                actor->path.pop();
             }
         }
     }
@@ -632,6 +652,13 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
     }
 
     updateData(world);
+
+    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
+    for (int32_t i = 0; i < 128; i++){
+        singleIntersectionStrideUpdateInsert(world, current_time, 128, i);
+    }
+
+    updatetInsertData(world);
 }
 
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
