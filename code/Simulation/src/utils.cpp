@@ -13,9 +13,19 @@
 #include <cassert>
 // #include <omp.h>
 
+static unsigned long long
+        x=1234567890987654321ULL,c=123456123456123456ULL,
+        y=362436362436362436ULL,z=1066149217761810ULL,t;
+
+#define MWC (t=(x<<58)+c, c=(x>>6), x+=t, c+=(x<t), x)
+#define XSH ( y^=(y<<13), y^=(y>>17), y^=(y<<43) )
+#define CNG ( z=6906969069LL*z+1234567 )
+#define KISS (MWC+XSH+CNG)
+
+
 // TODO Parallel actor generation is generating a segfault when inserting the actors into the intersections.
 int randint(int min, int max) {
-    return std::rand() % (max - min + 1) + min;
+    return static_cast<int>(KISS % (max - min + 1) + min);
 }
 
 void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end) {
@@ -26,7 +36,8 @@ void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end) {
     start = randint(0, static_cast<int>(world->intersections.size()) - 1);
     end = start;
     int antiInfinitLoop = 0;
-    while (end == start && antiInfinitLoop < 1000 && spt->array[start * spt->size + end] == -1.0f) {
+    while (antiInfinitLoop < 1000 && (start == end || spt->array[start * spt->size + end] == -1)) {
+        start = randint(0, static_cast<int>(world->intersections.size()) - 1);
         end = randint(0, static_cast<int>(world->intersections.size()) - 1);
         ++antiInfinitLoop;
     }
@@ -54,6 +65,10 @@ void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, cons
         assert(actor->start_id != actor->end_id && "start_id and end_id are the same");
 
         actor->path = retrievePath(spt, actor->start_id, actor->end_id);
+        if (actor->path.empty()){
+            std::cerr << "Path is empty" << (actor->type == ActorTypes::Bike) << std::endl;
+            continue;
+        }
 
         for (auto& intersection : world->intersections) {
             if (intersection.id == actor->start_id) {
