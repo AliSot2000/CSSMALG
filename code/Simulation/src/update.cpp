@@ -639,6 +639,7 @@ float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
 }
 
 void resolveDeadLocks(world_t* world, const float current_time) {
+    int removed = 0;
     for (auto& intersection : world->intersections) {
         for (auto& iter : intersection.inbound){
             if (iter->traffic.empty()){
@@ -650,10 +651,12 @@ void resolveDeadLocks(world_t* world, const float current_time) {
                 intersection.waitingToBeInserted.insert(intersection.waitingToBeInserted.begin(), actor);
                 actor->insertAfter = current_time + 5.0f;
                 iter->traffic.erase(iter->traffic.begin());
+                removed++;
             }
 
         }
     }
+    std::cout << "Removed " << removed << " vehicles" << std::endl;
 }
 
 bool emptynessOfStreets(world_t* world){
