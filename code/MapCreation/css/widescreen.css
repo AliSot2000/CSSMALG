@@ -39,6 +39,10 @@ body.grabbing * {
     cursor: grabbing !important;
 }
 
+body.grabbing .snap_point {
+    pointer-events: all !important;
+}
+
 body.calculating * {
     cursor: wait !important;
 }
@@ -198,6 +202,7 @@ body.calculating * {
     position: absolute;
     transform: translate(-25px, -25px);
     z-index: 10;
+    pointer-events: none;
 }
 
 .interface {
