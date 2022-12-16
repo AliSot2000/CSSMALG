@@ -109,6 +109,77 @@ class Visualizer:
                            attribute.title(),
                            os.path.join(self.output_path, f'{tracked_attribute}.png'))
 
+    def visualize_seperated_agents(self, simulation: str, road_type: str = 'intersection', attribute: str = 'flow'):
+        """
+        Visualize the data seperated by agents.
+        :param simulation: Simulation name
+        :param road_type: road type (intersection, road)
+        :param attribute: attribute (flow, density - only for roads)
+        :return:
+        """
+        print(f'Visualizing {simulation} {road_type} {attribute}')
+
+        all_collections = self.mongo.get_collections(simulation)  # Get all collections
+
+        collections = []
+        for collection in all_collections:  # Filter out the collections that are not needed
+            if '_timesteps' in collection:  # Only get the timesteps
+                collections.append(collection)  # Add the collection to the list
+
+        data = []  # Initialize the data list
+
+        for collection in collections:
+            data.append(self.mongo.find(simulation,
+                                        collection,
+                                        {f'{road_type}_car_{attribute}': {'$exists': True},
+                                         f'{road_type}_bike_{attribute}': {'$exists': True}},
+                                        {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
+                                        [('time', 1)]))
+
+        data_length = len(data)  # Get the length of the data
+        if data_length < 1:  # If the data length is less than 1
+            raise Exception('No valid data found')  # Raise an exception
+
+        time_steps = len(data[0])  # Get the number of time steps
+
+        tracked_data = {  # Initialize the tracked data
+            'cars': [],
+            'bikes': [],
+            'total': []
+        }
+
+        for time_step in range(time_steps):  # Loop over all time steps
+            cars = []
+            bikes = []
+            for data_point in range(data_length):  # Loop over all data points
+                cars.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'])
+                bikes.extend(data[data_point][time_step][f'{road_type}_bike_{attribute}'])
+
+            car_mean = mean(cars)
+            bike_mean = mean(bikes)
+
+            tracked_data['cars'].append(car_mean)
+            tracked_data['bikes'].append(bike_mean)
+            tracked_data['total'].append(car_mean + bike_mean)
+
+        minutes = []  # Initialize the minutes list
+
+        current_minute = 10  # Set the current minute to 15
+        for i in range(time_steps):  # Loop over all time steps
+            minutes.append(current_minute)  # Add the current minute to the minutes list
+            current_minute += 10  # Add 15 to the current minute
+
+        p = LinePlot()
+        p.plot(minutes, tracked_data['cars'], 'c', '#003dd6', 'dashed')
+        p.plot(minutes, tracked_data['bikes'], 'b', '#e60022', 'dashed')
+        p.plot(minutes, tracked_data['total'], 't', '#5b5b5b')
+        p.set_x_label('Minutes')
+        p.set_y_label(attribute.title())
+        p.set_title(f'{int("".join(x for x in simulation if x.isdigit()))}% Bikes - {attribute.title()} Comparison')
+        p.annotate_lines()
+        p.save(os.path.join(self.output_path, f'{road_type}_{attribute}_comparison.png'))
+        p.close()
+
     def visualize_avg_speed_multiple_sims(self, simulations, agent_type: str):
         """
         Visualize the average speed over multiple simulations.
@@ -156,6 +227,7 @@ class Visualizer:
         box_plot.set_y_label('Speed (m/s)')
         box_plot.set_x_ticks(pretty_names)
         box_plot.save(os.path.join(self.output_path, f'avg_speed_{agent_type}.png'))
+        box_plot.close()
 
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
@@ -170,9 +242,9 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     :return:
     """
     p = LinePlot()
-    p.plot(x, y['mean'], 'Mean')
-    p.plot(x, y['95percentile'], '95th Percentile', '#5b5b5b', 'dashed')
-    p.plot(x, y['5percentile'], '5th Percentile', '#5b5b5b', 'dashed')
+    p.plot(x, y['mean'], 'm')
+    p.plot(x, y['95percentile'], '95%', '#5b5b5b', 'dashed')
+    p.plot(x, y['5percentile'], '5%', '#5b5b5b', 'dashed')
     # p.plot(x, y['mean+variance'], 'Variance', '#5b5b5b', 'dashed')
     # p.plot(x, y['mean-variance'], 'Variance', '#5b5b5b', 'dashed')
     p.set_x_label(x_label)
@@ -180,6 +252,7 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     p.set_title(name)
     p.annotate_lines()
     p.save(output_name)
+    p.close()
 
 
 def approx_equal(a, b, epsilon: int = 10):
