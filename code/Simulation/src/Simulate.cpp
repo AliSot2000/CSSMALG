@@ -18,6 +18,8 @@
 #define USE_STUPID_INTERSECTIONS false
 //#define ADD_INCREMENTS
 //#define DDEBUG
+#define SLURM_OUTPUT
+#define DO_TRAFFIC_SIGNALS
 
 int main(int argc, char* argv[]) {
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
@@ -76,7 +78,10 @@ int main(int argc, char* argv[]) {
     }
     std::cout <<  std::endl;
     for (auto iter : world.int_to_string){
-        std::cout << iter.first << " " << iter.second << std::endl;
+        std::cout << iter.first << " " << iter.second  << std::endl;
+    }
+    for (auto iter : world.streets){
+        std::cout << iter.start << " " << iter.end << " " << iter.length  << std::endl;
     }
 #endif
 // TODO parallelize import
@@ -160,9 +165,13 @@ int main(int argc, char* argv[]) {
 		maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
-        if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
+        if (lastStatusTime - maxTime >= STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
+#ifdef SLURM_OUTPUT
+            std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
+#else
             std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
+#endif
         }
 #ifdef ADD_INCREMENTS
         addFrame(&world, &output, false);

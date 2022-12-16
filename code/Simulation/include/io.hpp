@@ -5,6 +5,7 @@
 
 #include "actors.hpp"
 #include "routing.hpp"
+//#define SINGLE_FILE_EXPORT
 
 using nlohmann::json;
 
@@ -93,8 +94,11 @@ void save(const std::string file, const nlohmann::json* out);
  *
  * @returns void
 */
-void exportSPT(const spt_t* carTree, const spt_t* bikeTree, const json* input, json* output);
-
+#ifdef SINGLE_FILE_EXPORT
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, const world_t* world, const std::string dir);
+#else
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world);
+#endif
 /*
  * Imports the Shortest Path Trees from a json object.
  *
@@ -117,3 +121,6 @@ void exportAgents(json* out, const world_t* world);
 void printSPT(const spt_t* SPT);
 
 unsigned int GetNumberOfDigits (unsigned int i);
+
+
+void connectOpposite(world_t* world, const std::map<std::string, street_t*> lookupVector);

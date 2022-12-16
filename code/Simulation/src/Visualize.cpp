@@ -11,6 +11,8 @@
 #include "utils.hpp"
 
 #define STATUS_UPDATAE_INTERVAL 60
+//#define SLURM_OUTPUT
+//define DO_TRAFFIC_SIGNALS
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
@@ -133,9 +135,13 @@ int main(int argc, char* argv[]) {
 		maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
-        if (lastStatusTime - maxTime > STATUS_UPDATAE_INTERVAL){
+        if (lastStatusTime - maxTime >= STATUS_UPDATAE_INTERVAL){
             lastStatusTime = maxTime;
+#ifdef SLURM_OUTPUT
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
+#else
+            std::cout << "\rTime to simulate:  " << maxTime << " remaining seconds" << std::flush;
+#endif
         }
 		addFrame(&world, &output);
 

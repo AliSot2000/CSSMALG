@@ -9,7 +9,6 @@
 // #include <omp.h>
 #include "base64.hpp"
 
-
 bool loadFile(const std::string file, json* input) {
 	std::ifstream f(file);
 	if (f.is_open()) {
@@ -39,10 +38,11 @@ void importMap(world_t* world, json* map) {
 
         Intersection& intersection = world->intersections[index];
 		intersection.id = index;
-        if (data.contains("trafficLight")){
-            intersection.hasTrafficLight = data["trafficLight"];
+#ifdef DO_TRAFFIC_SIGNALS
+        if (data.contains("trafficSignal")){
+            intersection.hasTrafficLight = data["trafficSignal"];
         }
-
+#endif
         world->IntersectionPtr[index] = &world->intersections[index];
 		index++;
 	}
@@ -50,6 +50,8 @@ void importMap(world_t* world, json* map) {
 	// Data will be packed more neatly when first creating array with given size
 	world->streets = std::vector<Street>(map->at("roads").size());
 	world->StreetPtr = std::vector<Street*>(map->at("roads").size());
+    std::map<std::string, street_t*> street_map;
+
 	index = 0;
 	for (const auto& [_, data] : map->at("roads").items()) {
 		Street& street = world->streets[index];
@@ -57,6 +59,9 @@ void importMap(world_t* world, json* map) {
 		street.length = data["distance"];
 		street.width = LANE_WIDTH * data["lanes"].size();
         street.speedlimit = static_cast<float>(data["speed_limit"]) / 3.6f;
+        if (data.contains("oppositeStreetId")){
+            street.opposite_id = data["oppositeStreetId"];
+        }
 
 		if (data["lanes"].empty()) {
 			std::cerr << "Street has no lanes? Default type will be both car & bike allowed." << std::endl;
@@ -93,6 +98,7 @@ void importMap(world_t* world, json* map) {
         }
 		world->intersections[street.end].inbound.push_back(&street);
 
+        street_map[street.id] = &street;
         world->StreetPtr[index] = &world->streets[index];
 		index++;
     }
@@ -108,6 +114,33 @@ void importMap(world_t* world, json* map) {
     };
     world->string_to_int["NO_ROUT"] = -1;
     world->int_to_string[-1] = "NO_ROUT";
+
+    connectOpposite(world, street_map);
+}
+
+void connectOpposite(world_t* world, const std::map<std::string, street_t*> lookupVector){
+# pragma omp parallel for default(none) shared(world, lookupVector, std::cerr)
+    for (auto& street : world->streets){
+        if (street.opposite_id != "empty"){
+            try {
+                street.opposite = lookupVector.at(street.opposite_id);
+            } catch (const std::out_of_range& oor) {
+                std::cerr << "Opposite street not found: " << street.opposite_id << std::endl;
+            }
+        }
+
+        // Compute overtaking part
+        // Overtaking on a street is possible iff:
+        // - The street is one lane wide
+        // - The street accommodates both bikes and cars
+        // - The opposite Street is given
+        // - The Speed limit is greater than 30km/h
+        if (street.width / LANE_WIDTH == 1 && street.type == StreetTypes::Both && street.opposite != nullptr && street.speedlimit > 8.3f){
+            street.allowOvertake = true;
+        } else {
+            street.allowOvertake = false;
+        }
+    }
 }
 
 void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
@@ -142,7 +175,7 @@ void importAgents(world_t* world, json* agents, spt_t* carsSPT, spt_t* bikeSPT){
 
         actor->path = retrievePath(bikeSPT, actor->start_id, actor->end_id);
 
-        if (actor->start_id != -1 && actor->end_id != -1){ // Well this is also a stupid mistace to have it to == and ||
+        if ((actor->start_id != -1 && actor->end_id != -1) || actor->path.empty()){ // Well this is also a stupid mistace to have it to == and ||
             for (auto& intersection : world->intersections) {
                 if (intersection.id == actor->start_id) {
                     intersection.waitingToBeInserted.push_back(actor);
@@ -224,6 +257,7 @@ json exportWorld(const world_t* world, const float& time, const float& timeDelta
         obj["deceleration"] = actor->deceleration;
         obj["acceleration_exponent"] = actor->acceleration_exp;
         obj["waiting_period"] = actor->insertAfter;
+        obj["travel_distance"] = distanceFromPath(world, actor);
         if (actor->path.empty()){
             obj["start_crossing_id"] = "NO_PATH_FOUND";
             obj["end_crossing_id"] = "NO_PATH_FOUND";
@@ -342,16 +376,70 @@ void save(const std::string file, const json* out) {
 	}
 }
 
-void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output){
-    void* carTreePtr =  carTree.array;
-    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
-    void* bikePtr =  bikeTree.array;
-    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
+#ifdef SINGLE_FILE_EXPORT
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input,  const world_t* world, const std::string dir) {
+    for (int i = 0; i < carTree.size; i++){
+        // Determine File Name and create a struct
+        std::string intCarfile = dir + "car_" + world->int_to_string.at(i) + ".json";
+        std::string intBikeFile = dir + "bike_" + world->int_to_string.at(i) + ".json";
 
-    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
-    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
-    output["world"] = input;
+        std::map<std::string, std::map<std::string, bool>> carReachable = {};
+        std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
+        carReachable[world->int_to_string.at(i)] = {};
+        bikeReachable[world->int_to_string.at(i)] = {};
+
+        for (int j = 0; j < carTree.size; j++){
+            carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
+            bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
+        }
+        nlohmann::json carJson;
+        carJson["carTree"] = carReachable;
+        nlohmann::json bikeJson;
+        bikeJson["bikeTree"]= bikeReachable;
+
+        // Save the struct to a file
+        save(intCarfile, &carJson);
+        save(intBikeFile, &bikeJson);
+    }
 }
+#else
+void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world) {
+//    void* carTreePtr =  carTree.array;
+//    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
+//    void* bikePtr =  bikeTree.array;
+//    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
+
+    std::map<std::string, std::map<std::string, bool>> carReachable = {};
+    std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
+
+
+    for (int i = 0; i < carTree.size; i++){
+        carReachable[world->int_to_string.at(i)]= {};
+        bikeReachable[world->int_to_string.at(i)]= {};
+    }
+
+#pragma omp parallel for default(none) shared(carTree, carReachable, world, bikeTree, bikeReachable)
+    for (int i = 0; i < carTree.size; i++){
+        for (int j = 0; j < carTree.size; j++){
+            if (carTree.array[i * carTree.size + j] == -1){
+                carReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = carTree.array[i * carTree.size + j] != -1;
+            }
+            if (bikeTree.array[i * bikeTree.size + j] == -1){
+                bikeReachable[world->int_to_string.at(i)][world->int_to_string.at(j)] = bikeTree.array[i * bikeTree.size + j] != -1;
+            }
+        }
+    }
+//    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
+//    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
+    output["carTree"] = carReachable;
+    output["bikeTree"] = bikeReachable;
+    // output["world"] = input;
+
+}
+#endif
+
+
+
 
 void importSPT(spt_t* carTree, spt_t* bikeTree, const json* input, world_t* world){
     *carTree = {
@@ -446,14 +534,19 @@ void jsonDumpStats(const float& avgTime, json* output, world_t* world, const boo
     for (auto& street : world->streets) {
         json obj = {};
         obj["id"] = street.id;
-        obj["flow"] = street.flow_accumulate / avgTime;
-        obj["density"] = street.density_accumulate / avgTime;
+        obj["bikeFlow"] = street.flow_accumulate_bike / (street.width / LANE_WIDTH);
+        obj["bikeDensity"] = street.density_accumulate_bike / (street.width / LANE_WIDTH);
+        obj["carFlow"] = street.flow_accumulate_car / (street.width / LANE_WIDTH);
+        obj["carDensity"] = street.density_accumulate_car / (street.width / LANE_WIDTH);
         obj["id"] = street.id;
         if (final) {
-            obj["total_passing_traffic"] = street.total_traffic_count;
+            obj["total_passing_traffic_bike"] = street.total_traffic_count_bike;
+            obj["total_passing_traffic_car"] = street.total_traffic_count_car;
         }
-        street.flow_accumulate = 0.0f;
-        street.density_accumulate = 0.0f;
+        street.flow_accumulate_bike = 0.0f;
+        street.density_accumulate_bike = 0.0f;
+        street.flow_accumulate_car = 0.0f;
+        street.density_accumulate_car = 0.0f;
         output->at("streets").push_back(obj);
     }
 }

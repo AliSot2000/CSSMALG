@@ -8,11 +8,13 @@
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
 #include "io.hpp"
-#define DDEBUG
+//#define DDEBUG
+//DO_TRAFFIC_SIGNALS
+
 
 int main(int argc, char* argv[]) {
-    if (argc < 3) {
-        std::cerr << "Usage PrecalculateSPT <map-in> <spt-out>" << std::endl;
+    if (argc < 4) {
+        std::cerr << "Usage PrecalculateSPT <map-in> <car-out> <bike-out> <jan-out>" << std::endl;
         std::cerr << "Function precalculates the spt" << std::endl;
         return -1;
     }
@@ -20,6 +22,7 @@ int main(int argc, char* argv[]) {
     const char* importFile = argv[1];
     const char* carFile = argv[2];
     const char* bikeFile = argv[3];
+    const char* janFile = argv[4];
 
     world_t world;
     nlohmann::json import;
@@ -38,28 +41,32 @@ int main(int argc, char* argv[]) {
     stopMeasureTime(time);
 
     time = startMeasureTime("calculating shortest path tree with floyd warshall");
-    {
-        spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
+
+    spt_t carsSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyCar});
 #ifdef DDEBUG
-        std::cout << std::endl << "Car Tree" << std::endl;
-        printSPT(&carsSPT);
+    std::cout << std::endl << "Car Tree" << std::endl;
+    printSPT(&carsSPT);
 #endif
-        binDumpSpt(&carsSPT, carFile);
-    }
-    {
-        spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
-        binDumpSpt(&bikeSPT, bikeFile);
+    binDumpSpt(&carsSPT, carFile);
+
+
+    spt_t bikeSPT = calculateShortestPathTree(&world, { StreetTypes::Both, StreetTypes::OnlyBike });
+    binDumpSpt(&bikeSPT, bikeFile);
 #ifdef DDEBUG
-        std::cout << std::endl << "Bike Tree" <<std::endl;
-        printSPT(&bikeSPT);
+    std::cout << std::endl << "Bike Tree" <<std::endl;
+    printSPT(&bikeSPT);
 #endif
-    }
+
     stopMeasureTime(time);
 
-//    time = startMeasureTime("Exporting to file");
-//    nlohmann::json spts;
-    // exportSPT(carsSPT, bikeSPT, import, spts);
-    // save(carFile, spts);
-//    stopMeasureTime(time);
+    time = startMeasureTime("Exporting to file");
+#ifdef SINGLE_FILE_EXPORT
+    exportSPT(carsSPT, bikeSPT, import, &world, janFile);
+#else
+    nlohmann::json spts;
+    exportSPT(carsSPT, bikeSPT, import, spts, &world);
+    save(janFile, &spts);
+#endif
+    stopMeasureTime(time);
 }
 

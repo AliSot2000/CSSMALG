@@ -72,9 +72,9 @@ float length = 4.5f; // For cars
 float length = 1.5f; // For bikes
 
 // Velocity
-float current_velocity = 0.0f; // m/s
-float max_velocity = 8.7f; // m/s
-float target_velocity = 8.7f; // m/s
+float current_velocity = 0.0f; // km/h
+float max_velocity = 8.7f; // km/h
+float target_velocity = 8.7f; // km/h
 
 // Acceleration
 float current_acceleration = 0; // m/s^2

@@ -6,6 +6,7 @@
 #include "fastFW.cuh"
 #include "routing.hpp"
 #include <cassert>
+//#define SLURM_OUTPUT
 
 
 // Idea: If a road has multiple turning lanes, split a intersection into sets of identical turn options and split the single
@@ -42,7 +43,11 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
     int V = sopatree.size;
     float newDistance;
 	for (int32_t k = 0; k < sopatree.size; k++) {
-        std::cout << "\rComputing " << k + 1<< " of " << sopatree.size << std::flush;
+        #ifdef SLURM_OUTPUT
+        std::cout << "k: " << (k + 1) << " of " << V << std::cout;
+#else
+        std::cout << "\rk: " << (k + 1) << " of " << V << std::flush;
+#endif
 
         for (int32_t i = 0; i < sopatree.size; i++) {
 
@@ -104,7 +109,7 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
             *(neighbour + start * size + end) = end;
         }
     }
-
+    /*
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
             std::cout << distance[i * size + j] << " ";
@@ -118,10 +123,10 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
         }
         std::cout << std::endl;
     }
-
+*/
     FloydWarshal(distance, neighbour, size);
     std::cout << std::endl;
-
+/*
     for (int i = 0; i < sopatree.size; i++){
         for (int j = 0; j < sopatree.size; j++){
             std::cout << sopatree.array[i * sopatree.size + j] << " ";
@@ -135,7 +140,7 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
             std::cout << distance[i * size + j] << " ";
         }
         std::cout << std::endl;
-    }
+    }*/
     return sopatree;
 }
 
@@ -151,9 +156,54 @@ Path retrievePath(spt_t* spt, const int &start, const int &end) {
 	int u = start;
 //    p.push(u);
 	while (u != end) {
-        assert(u < spt->size);
+        assert(u < spt->size && "Overflow of the spt array");
+        assert(p.size() < spt->size && "Overflow of the path array" && "Overflow of the spt array");
+        if (u == -1){
+            return {};
+        }
 		u = spt->array[u * spt->size + end];
 		p.push(u);
 	}
 	return p;
+}
+
+float distanceFromPath(const world_t* world, actor_t* actor){
+    Path p;
+
+    // Initialize the path
+    int u = actor->start_id;
+    int v = actor->path.front();
+    float distance = 0.0f;
+    Street* street = nullptr;
+
+    // Walk along the Path
+    while (v != actor->end_id){
+        p.push(v);
+        actor->path.pop();
+
+        if (actor->type == ActorTypes::Bike){
+            street = world->intersections.at(u).outboundBike.at(v);
+        } else {
+            street = world->intersections.at(u).outboundCar.at(v);
+        }
+        distance += street->length;
+        u = v;
+        v = actor->path.front();
+    }
+
+    // Do the last iteration
+    p.push(v);
+    actor->path.pop();
+
+    if (actor->type == ActorTypes::Bike){
+        street = world->intersections.at(u).outboundBike.at(v);
+    } else {
+        street = world->intersections.at(u).outboundCar.at(v);
+    }
+    distance += street->length;
+
+    // Move the new path to the actor and hope the old path get's deleted
+    actor->path = p;
+
+    return distance;
 }

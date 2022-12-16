@@ -1,7 +1,5 @@
 # TODOS, Alex puts them here.
 - TODO feature: Overtaking if opposite street is free
-- TODO feature: writing to disk at certain size
-- TODO parallelize updates of crossing, street and createRandomActor    
 
 ### CONSTRAINTS:
 Generation on my side will need to do this when importing the map.

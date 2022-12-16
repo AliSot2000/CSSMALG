@@ -45,6 +45,12 @@ typedef struct Actor {
 
     int start_id = -1;
     int end_id = -1;
+
+    bool Teleport = false;
+    bool arrived = false;
+    int tempDistanceToRight = 0;
+    float overtaking_distance = 0;
+    float distanceToFront = 0;
 } actor_t;
 
 enum StreetTypes {
@@ -58,6 +64,7 @@ typedef struct Street {
 	int end = -1;
 
 	struct Street* opposite = nullptr;
+    std::string opposite_id = "empty";
 	StreetTypes type = StreetTypes::Both;
 	size_t width = 2;
 	float length = 100.0f;
@@ -70,9 +77,13 @@ typedef struct Street {
 	// These values are not used by the simulation itself, just for the visulisation later
 	// start and end position
 	std::string id;
-    float density_accumulate = 0.0f;
-    uint64_t total_traffic_count = 0;
-    float flow_accumulate = 0.0f;
+    float density_accumulate_bike = 0.0f;
+    uint64_t total_traffic_count_bike = 0;
+    float flow_accumulate_bike = 0.0f;
+    float density_accumulate_car = 0.0f;
+    uint64_t total_traffic_count_car = 0;
+    float flow_accumulate_car = 0.0f;
+    bool allowOvertake = false;
 } street_t;
 
 typedef struct Intersection {
@@ -90,6 +101,7 @@ typedef struct Intersection {
     bool hasTrafficLight = false;
     float car_flow_accumulate = 0.0f;
     float bike_flow_accumulate = 0.0f;
+    bool needsUpdate = false;
 } intersection_t;
 
 typedef struct World {

@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <assert.h>
+#define CUDA_SCALAR 4
 
 __global__
 void GPUInnerLoops(double *dis, int *next, int k, int V) {
@@ -59,8 +60,13 @@ void FloydWarshal(double* dis, int* next, int V){
     std::cout << std::endl;
     for (int k = 0; k < V; k++)
     {
-        std::cout << "\rk: " << (k + 1) << " of " << V;
-        GPUInnerLoops<<<dim3(2,1,1),dim3(1024,1,1)>>>(distance,neighbour,k,V);
+#ifdef SLURM_OUTPUT
+        std::cout << "k: " << (k + 1) << " of " << V << std::cout;
+#else
+        std::cout << "\rk: " << (k + 1) << " of " << V << std::flush;
+#endif
+
+        GPUInnerLoops<<<dim3(CUDA_SCALAR,1,1),dim3(1024,1,1)>>>(distance,neighbour,k,V);
         alresult = cudaGetLastError();
         assert(alresult == cudaSuccess && "Failed to launch GPUInnerLoops kernel");
         result = cudaDeviceSynchronize();

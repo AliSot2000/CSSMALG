@@ -8,22 +8,22 @@
 #include "update.hpp"
 #include <omp.h>
 
-void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
-
-	auto& traffic = street->traffic;
-	
-	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
-	// Lower bound binary search (traffic must always be sorted!)
-	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
-		[](const Actor* a, const float& b) {
-			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
-	});
-
-	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
-		[](const float& b, const Actor* a) {
-			return a->distanceToIntersection > b;
-	});
-}
+//void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
+//
+//	auto& traffic = street->traffic;
+//
+//	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
+//	// Lower bound binary search (traffic must always be sorted!)
+//	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
+//		[](const Actor* a, const float& b) {
+//			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
+//	});
+//
+//	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
+//		[](const float& b, const Actor* a) {
+//			return a->distanceToIntersection > b;
+//	});
+//}
 
 FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd) {
     FrontVehicles f;
@@ -165,7 +165,7 @@ Actor* moveToOptimalLane(Street* street, Actor* actor) {
     actor->distanceToRight = distanceToRight;
     return OptimalFrontActor;
 }
-void sortStreet(TrafficIterator& start, TrafficIterator& end) {
+/*void sortStreet(TrafficIterator& start, TrafficIterator& end) {
     std::sort(start, end, [](const Actor* a, const Actor* b) {
         // Lexicographical order, starting with distanceToIntersection and then distanceToRight
         if (a->distanceToIntersection == b->distanceToIntersection) {
@@ -178,32 +178,31 @@ void sortStreet(TrafficIterator& start, TrafficIterator& end) {
         }
         return a->distanceToIntersection < b->distanceToIntersection;
     });
+}*/
+
+void teleportActor(Actor* actor, Street* target, int distanceToRight){
+    actor->tempDistanceToRight = distanceToRight;
+    actor->distanceToIntersection = target->length - actor->length;
+    actor->target_velocity = target->speedlimit;
+}
+
+void updateCount(Street* street, Actor* actor){
+    if (actor->type == ActorTypes::Bike){
+        street->total_traffic_count_bike++;
+    } else {
+        street->total_traffic_count_car++;
+    }
 }
 
 // Updated Version of Alex to handle zero velocity vehicles.
 bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world) {
-    // TODO UNSAFE SHOULD BE DONE IN chose_optimal_lane_or_sth
-    if (actor->path.empty()){
-        // Storing the Actor as arrived
-        intersection->arrivedFrom.push_back({actor, &world->empty});
-        actor->outputFlag = false; // make sure new active status is outputted once
-        actor->end_time = -10.0f;
-        actor->start_time = -10.0f;
-        // I hope that's right, removing the actor from the traffic waiting to be inserted and putting it to
-        intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
-        return false;
-    }
-
+    assert(!actor->path.empty() && "tryInsertInNextStreet may not be called with an Actor that has an empty path!");
     Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
 
     // Empty, insert immediately and return
     if (target->traffic.empty()){
-        target->traffic.push_back(actor);
-        actor->path.pop();
-        actor->distanceToRight = 0;
-        actor->distanceToIntersection = target->length - actor->length;
-        actor->target_velocity = target->speedlimit;
-        target->total_traffic_count++;
+        teleportActor(actor, target, 0);
+        updateCount(target, actor);
         return true;
     }
 
@@ -221,12 +220,8 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
                  * -----------------------------------------------------------------------------------------------------
                  */
                 if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
-                    actor->path.pop();
-                    target->traffic.push_back(actor);
-                    actor->distanceToRight = 0;
-                    actor->distanceToIntersection = target->length - actor->length;
-                    actor->target_velocity = target->speedlimit;
-                    target->total_traffic_count++;
+                    teleportActor(actor, target, 0);
+                    updateCount(target, actor);
                     return true;
                 }
                 else {
@@ -237,12 +232,8 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
         }
 
         // If unexpectedly the right most street is empty. Insert into right, and update the actor
-        actor->path.pop();
-        target->traffic.push_back(actor);
-        actor->distanceToRight = 0;
-        actor->distanceToIntersection = target->length - actor->length;
-        actor->target_velocity = target->speedlimit;
-        target->total_traffic_count++;
+        teleportActor(actor, target, 0);
+        updateCount(target, actor);
         return true;
     }
 
@@ -257,7 +248,6 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
 
     // If the vehicle is a car on a both road, and on a car road, it can move to any lane. Also, a bicycle can switch
     // lanes in a pure bike road.
-
     for (auto iter = target->traffic.rbegin(); iter != target->traffic.rend(); iter++) {
         // If the number of available lanes is 0, return false
         if (avlLanes == 0) {
@@ -274,12 +264,8 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
         // Space in a lane, we can insert the actor and return true
         if (target->length - ((*iter)->distanceToIntersection + (*iter)->length + MIN_DISTANCE_BETWEEN_VEHICLES + actor->length) > 0.0f) {
             // Insert and update the actor.
-            actor->path.pop();
-            target->traffic.push_back(actor);
-            actor->distanceToRight = other->distanceToRight;
-            actor->distanceToIntersection = target->length - actor->length;
-            actor->target_velocity = target->speedlimit;
-            target->total_traffic_count++;
+            teleportActor(actor, target, other->distanceToRight);
+            updateCount(target, actor);
             return true;
         } else {
             // Lane has been checked, number of availalbe lanes are rerduced
@@ -323,35 +309,33 @@ void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool s
 
 void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset) {
     // Move so no thread is colliding with another thread.
-//    std::vector<Intersection*>::iterator start_iter = world->IntersectionPtr.begin();
-//    std::advance(start_iter, offset);
-
     for (int32_t x = offset; x < world->intersections.size(); x += stride) {
-      //    for (auto& intersection : world->intersections) {
-//        Intersection* intersection = &world->intersections.at(x);
         Intersection* intersection = world->IntersectionPtr.at(x);
 
         if (intersection->hasTrafficLight){
             updateIntersectionPhase(intersection, timeDelta, stupidIntersections);
 
-            Street* street = intersection->inbound[intersection->green];
+            Street* street = intersection->inbound.at(intersection->green);
             for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
                 Actor* actor = *iter;
+
                 if (actor->distanceToIntersection >= DISTANCE_TO_CROSSING_FOR_TELEPORT)
                     // No vehicle is close enough to change street
                     break;
 
+                // Everything that can be done in parallel, executed in parallel
                 if (actor->path.empty()) {
                     // Actor has arrived at its target
                     actor->outputFlag = false; // make sure new active status is outputted once
                     actor->end_time = current_time;
-                    street->traffic.erase(iter);
-                    intersection->arrivedFrom.push_back({actor, street});
+                    actor->arrived = true;
+                    intersection->needsUpdate = true;
                     break;
                 }
 
                 if (tryInsertInNextStreet(intersection, actor, world)) {
-                    street->traffic.erase(iter);
+                    actor->Teleport = true;
+                    intersection->needsUpdate = true;
                     intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
                     intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
                     break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
@@ -379,13 +363,14 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
                    // Actor has arrived at its target
                    actor->outputFlag = false; // make sure new active status is outputted once
                    actor->end_time = current_time;
-                   street->traffic.erase(street->traffic.begin());
-                   intersection->arrivedFrom.push_back({actor, street});
+                   actor->arrived = true;
+                   intersection->needsUpdate = true;
                    break;
                }
 
                if (tryInsertInNextStreet(intersection, actor, world)) {
-                   street->traffic.erase(street->traffic.begin());
+                   actor->Teleport = true;
+                   intersection->needsUpdate = true;
                    intersection->car_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Car);
                    intersection->bike_flow_accumulate += 1.0f * static_cast<float>(actor->type == ActorTypes::Bike);
                    intersection->green = index;
@@ -394,9 +379,6 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
            }
         }
 
-
-
-
         // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
         if (intersection->waitingToBeInserted.size() > 0) {
             Actor* actor = intersection->waitingToBeInserted[0];
@@ -404,7 +386,93 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
             if (actor->insertAfter <= current_time && tryInsertInNextStreet(intersection, actor, world)) {
                 actor->start_time = current_time * static_cast<float>(actor->start_time == -1.0f)
                         + actor->start_time * static_cast<float>(actor->start_time != -1.0f); // only set the start time if the if the start time
+                actor->Teleport = true;
+                intersection->needsUpdate = true;
+            }
+        }
+    }
+}
+
+void updateData(world_t* world){
+    for (int32_t x = 0; x < world->intersections.size(); ++x) {
+        Intersection* intersection = world->IntersectionPtr.at(x);
+
+        // Skipping intersection that don't need to be updated
+        if (!intersection->needsUpdate){
+            continue;
+        }
+
+        // Resetting the needsUpdate flag
+        intersection->needsUpdate = false;
+
+        if (intersection->hasTrafficLight){
+
+            Street* street = intersection->inbound.at(intersection->green);
+            for (TrafficIterator iter = street->traffic.begin(); iter != street->traffic.end(); iter++) {
+                Actor* actor = *iter;
+                // Everything that can be done in parallel, executed in parallel
+                if (actor->arrived) {
+                    // Actor has arrived at its target
+                    actor->arrived = false;
+                    street->traffic.erase(iter);
+                    intersection->arrivedFrom.push_back({actor, street});
+                    break;
+                }
+
+                if (actor->Teleport) {
+                    actor->Teleport = false;
+                    actor->distanceToRight = actor->tempDistanceToRight;
+                    street->traffic.erase(iter);
+                    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                    target->traffic.push_back(actor);
+                    actor->path.pop();
+                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
+                }
+            }
+        } else {
+            for (int i = 0; i < intersection->inbound.size(); i++){
+                Street* street = intersection->inbound.at(i);
+
+                // Ignore empty streets
+                if (street->traffic.size() == 0){
+                    continue;
+                }
+
+                Actor* actor = street->traffic.front();
+
+                // Actor has arrived at its destination
+                if (actor->arrived) {
+                    // Actor has arrived at its target
+                    actor->arrived = false; // make sure new active status is outputted once
+                    street->traffic.erase(street->traffic.begin());
+                    intersection->arrivedFrom.push_back({actor, street});
+                    break;
+                }
+
+                if (actor->Teleport) {
+                    actor->Teleport = false;
+                    actor->distanceToRight = actor->tempDistanceToRight;
+                    street->traffic.erase(street->traffic.begin());
+                    Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                    target->traffic.push_back(actor);
+                    actor->path.pop();
+                    break; // I don't know if removing an element from a vector during iteration would lead to good code, hence break
+                }
+            }
+        }
+
+        // Adding new traffic to street needs to happen last, to reduce the likelihood of deadlocks with too many cars.
+        if (intersection->waitingToBeInserted.size() > 0) {
+            Actor* actor = intersection->waitingToBeInserted[0];
+            // Ignoring the actor if it is not it's start time yet.
+            if (actor->Teleport) {
+
+                actor->Teleport = false;
+                actor->distanceToRight = actor->tempDistanceToRight;
                 intersection->waitingToBeInserted.erase(intersection->waitingToBeInserted.begin());
+                Street* target = (actor->type == ActorTypes::Bike) ? intersection->outboundBike.at(actor->path.front()) : intersection->outboundCar.at(actor->path.front());
+                target->traffic.push_back(actor);
+                actor->path.pop();
             }
         }
     }
@@ -421,21 +489,27 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
     for (int32_t x = offset; x < world->streets.size(); x+=stride){
 //    for (auto& street : world->streets) {
         Street *street = world->StreetPtr.at(x);
-        street->density_accumulate += static_cast<float>(street->traffic.size()) / street->length;
-        street->flow_accumulate += static_cast<float>(street->traffic.size()) / timeDelta;
+        int bikes = 0;
+        int cars = 0;
 
         for (int32_t i = 0; i < street->traffic.size(); i++) {
 			Actor* actor = street->traffic[i];
 
-			const float distance = actor->current_velocity * timeDelta;
-			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
-			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+            if (actor->type == ActorTypes::Bike) {
+                bikes++;
+            } else {
+                cars++;
+            }
 
-			TrafficIterator start;
-			TrafficIterator end;
+			const float distance = actor->current_velocity * timeDelta;
+//			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
+//			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
+
+//			TrafficIterator start;
+//			TrafficIterator end;
 
 			// Find all traffic which could be colliding with vehicle
-			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
+//			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
             float maxDrivableDistance = actor->distanceToIntersection;
@@ -458,7 +532,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 
             actor->distanceToIntersection -= movement_distance;
             actorMoved = actorMoved || movement_distance > 0.0f;
-            actor->time_spent_waiting += static_cast<float>(movement_distance > 0.0f) * timeDelta;
+            actor->time_spent_waiting += static_cast<float>(movement_distance == 0.0f) * timeDelta;
             // Clamping distance
             if (actor->distanceToIntersection < 0.01f){actor->distanceToIntersection = 0;}
 
@@ -499,27 +573,41 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 actor->current_velocity = 0.0f;
             }
             // Will make sure traffic is still sorted
-			sortStreet(start, end);
-
-/*            assert(std::is_sorted(street.traffic.begin(), street.traffic.end(), [](const Actor* a, const Actor* b) {
+//			sortStreet(start, end);
+            std::sort(street->traffic.begin(), street->traffic.end(), [](const Actor* a, const Actor* b) {
                 // Lexicographical order, starting with distanceToIntersection and then distanceToRight
                 if (a->distanceToIntersection == b->distanceToIntersection) {
                     // this if statement make sure that no vehicles have the same ordering
                     if (a->distanceToRight == b->distanceToRight) {
-                        //throw std::runtime_error("Two Vehicles with identical position");
                         return a < b;
                     }
                     return a->distanceToRight < b->distanceToRight;
                 }
                 return a->distanceToIntersection < b->distanceToIntersection;
-            }) && "Street is sorted");*/
+            });
+            assert(std::is_sorted(street->traffic.begin(), street->traffic.end(), [](const Actor* a, const Actor* b) {
+                // Lexicographical order, starting with distanceToIntersection and then distanceToRight
+                if (a->distanceToIntersection == b->distanceToIntersection) {
+                    // this if statement make sure that no vehicles have the same ordering
+                    if (a->distanceToRight == b->distanceToRight) {
+                        return a < b;
+                    }
+                    return a->distanceToRight < b->distanceToRight;
+                }
+                return a->distanceToIntersection < b->distanceToIntersection;
+            }) && "Street is sorted");
 
             // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
             // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
 //            if (actor->distanceToIntersection <= 1.0f && actor->distanceToIntersection > 0.0f) {
 //                assert(actor->current_velocity >= 0.01f && "Acceleration needs to be >= -10.0f");
 //            }
+            actor->distanceToFront = maxDrivableDistance;
         }
+        street->density_accumulate_bike += static_cast<float>(bikes) / street->length;
+        street->flow_accumulate_bike += static_cast<float>(bikes) / timeDelta;
+        street->density_accumulate_car += static_cast<float>(cars) / street->length;
+        street->flow_accumulate_car += static_cast<float>(cars) / timeDelta;
 	}
 
     return actorMoved;
@@ -528,7 +616,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 bool updateStreets(world_t* world, const float timeDelta){
     bool actorMoved = false;
 
-//    #pragma omp parallel for reduction(||:actorMoved)  default(none) shared(world, timeDelta)
+    #pragma omp parallel for reduction(||:actorMoved)  default(none) shared(world, timeDelta)
     for (int32_t i = 0; i < 128; i++) {
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
@@ -537,10 +625,12 @@ bool updateStreets(world_t* world, const float timeDelta){
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
-//    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
+    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
     for (int32_t i = 0; i < 128; i++){
         singleIntersectionStrideUpdate(world, timeDelta, stupidIntersections, current_time, 128, i);
     }
+
+    updateData(world);
 }
 
 float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
@@ -567,7 +657,7 @@ void resolveDeadLocks(world_t* world, const float current_time) {
 
 bool emptynessOfStreets(world_t* world){
     bool empty = true;
-//    #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
+    #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
     for (int32_t i = 0; i < world->streets.size(); i++) {
         empty = world->streets.at(i).traffic.empty() && empty;
     }
