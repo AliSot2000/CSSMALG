@@ -13,6 +13,7 @@
 #define STATUS_UPDATAE_INTERVAL 60
 //#define SLURM_OUTPUT
 #define DO_TRAFFIC_SIGNALS true
+#define DDEBUG
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
@@ -67,7 +68,7 @@ int main(int argc, char* argv[]) {
         bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
         stopMeasureTime(start);
     }
-#ifdef DDBUG
+#ifdef DDEBUG
     std::cout << "Car Tree" << std::endl;
     printSPT(&carsSPT);
     std::cout << "Bike Tree" <<std::endl;
