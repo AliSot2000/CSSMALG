@@ -46,7 +46,7 @@ class AgentGenerator
         $agentAmount = $this->calculateAgentAmount();
         // distribution of cars going into the city center
         // 1/4 of going into city center we assume inter city travel and for 1/4 of rest we assume outer city travel
-        $direction = array(0.5, 0.5, 0.5, 0.5, 0.55, 0.65, 0.75, 0.85, 0.8, 0.75, 0.65, 0.5, 0.5, 0.5, 0.5, 0.35, 0.3, 0.2, 0.2, 0.25, 0.35, 0.5, 0.5, 0.5);
+        $direction = array(0.5, 0.5, 0.5, 0.5, 0.55, 0.65, 0.7, 0.7, 0.7, 0.6, 0.55, 0.5, 0.5, 0.5, 0.5, 0.35, 0.3, 0.3, 0.3, 0.35, 0.4, 0.5, 0.5, 0.5);
 
         $numInNodes = count($this->nodesIn) - 1;
         $numOutNodes = count($this->nodesOut) - 1;
