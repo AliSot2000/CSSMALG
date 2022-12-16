@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
         lastDeadLockTime = (updateStreets(&world, deltaTime)) ? maxTime : lastDeadLockTime;
 
         // Longer than 20s so every road should have had green once
-        if  (lastDeadLockTime - maxTime > 10.0f){
+        if  (lastDeadLockTime - maxTime > 15.0f){
             std::cerr << "Deadlock detected at Time " << maxTime << std::endl;
             resolveDeadLocks(&world, maxTime);
             lastDeadLockTime = maxTime;
