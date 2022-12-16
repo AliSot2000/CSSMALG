@@ -7,8 +7,7 @@
 
 Traffic Jams and road congestions are one of the most prominent problems in travel. Congestions lead to higher levels of harmful emissions, 
 adverse health effects and higher cost burdens. In an effort to reduce the enviromental effect of cars, the city of Zurich is actively campaigning 
-for more bicycles. This is further pushed by the post-Covid popularity. This raises the question whether more bicycles will disrupt the flow of traffic by
-overtaking cars, or whether the higher percentage of bicycles will relieve the burden of cars on the roads.
+for more bicycles. This is further pushed by the post-Covid popularity. This raises the question whether more bicycles will disrupt the flow of traffic or whether the higher percentage of bicycles will relieve the burden of cars on the roads.
 
 ## The Model
 
@@ -19,7 +18,6 @@ overtaking cars, or whether the higher percentage of bicycles will relieve the b
 
 - How will the change in percentage of bicycles to cars influence the travel time of the remaining cars?
 - How will the change in percentage of bicycles to cars influence the travel time of the remaining bicycles?
-- Will the ability of bicycles to overtake cars result in shorter travel times for bicycles, and longer times for cars?
 - How will traffic density be affected?
 
 
