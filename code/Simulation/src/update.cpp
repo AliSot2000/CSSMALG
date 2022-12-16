@@ -546,8 +546,8 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                                                       + frontVehicle->distanceToIntersection
                                                       + MIN_DISTANCE_BETWEEN_VEHICLES));
 
-                assert(frontVehicle->distanceToIntersection + frontVehicle->length <
-                       actor->distanceToIntersection - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
+                assert(frontVehicle->distanceToIntersection + frontVehicle->length + MIN_DISTANCE_BETWEEN_VEHICLES <
+                       actor->distanceToIntersection - movement_distance);
             }
 
             // Make sure there's enough distance between actor and front actor
