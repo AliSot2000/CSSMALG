@@ -156,6 +156,7 @@ class Visualizer:
         box_plot.set_y_label('Speed (m/s)')
         box_plot.set_x_ticks(pretty_names)
         box_plot.save(os.path.join(self.output_path, f'avg_speed_{agent_type}.png'))
+        box_plot.close()
 
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
@@ -180,6 +181,7 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     p.set_title(name)
     p.annotate_lines()
     p.save(output_name)
+    p.close()
 
 
 def approx_equal(a, b, epsilon: int = 10):
