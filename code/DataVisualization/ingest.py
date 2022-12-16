@@ -70,8 +70,8 @@ class Ingest:
                         for road in data['streets']:  # For each road
                             road_bike_flow.append(road['bikeFlow'])  # Add the bike flow to the list
                             road_car_flow.append(road['carFlow'])  # Add the car flow to the list
-                            road_bike_density.append(road['bikeDensity'] if road['bikeDensity'] is None else 0)  # Add the bike density to the list
-                            road_car_density.append(road['carDensity'] if road['carDensity'] is None else 0)  # Add the car density to the list
+                            road_bike_density.append(road['bikeDensity'] if road['bikeDensity'] is not None else 0)  # Add the bike density to the list
+                            road_car_density.append(road['carDensity'] if road['carDensity'] is not None else 0)  # Add the car density to the list
 
                         time_steps.append({  # Add the time step to the list
                             'time': time,  # Add the time
