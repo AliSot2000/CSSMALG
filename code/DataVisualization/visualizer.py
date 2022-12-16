@@ -164,10 +164,10 @@ class Visualizer:
 
         minutes = []  # Initialize the minutes list
 
-        current_minute = 15  # Set the current minute to 15
+        current_minute = 10  # Set the current minute to 15
         for i in range(time_steps):  # Loop over all time steps
             minutes.append(current_minute)  # Add the current minute to the minutes list
-            current_minute += 15  # Add 15 to the current minute
+            current_minute += 10  # Add 15 to the current minute
 
         p = LinePlot()
         p.plot(minutes, tracked_data['cars'], 'c', '#003dd6', 'dashed')
