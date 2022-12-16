@@ -368,8 +368,8 @@ function getCookie(name) {
  */
 function getSnappedMiddleOfScreen() {
     let point = new Point();
-    point.x = snap((window.innerWidth / 2) + $(document).scrollLeft());
-    point.y = snap((window.innerHeight / 2) + $(document).scrollTop());
+    point.x = snap((window.innerWidth / 2) + $(document.body).scrollLeft());
+    point.y = snap((window.innerHeight / 2) + $(document.body).scrollTop());
     return point;
 }
 
