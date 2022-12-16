@@ -10,8 +10,8 @@
 #include "routing.hpp"
 #include "io.hpp"
 #include "utils.hpp"
-#define DDEBUG
-//DO_TRAFFIC_SIGNALS
+// #define DDEBUG
+
 
 // TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
