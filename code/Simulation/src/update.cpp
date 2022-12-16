@@ -621,7 +621,7 @@ bool updateStreets(world_t* world, const float timeDelta){
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
     bool return_val = actorMoved || emptynessOfStreets(world);
-    std::cout << "Actor Moved " <<  actorMoved << " Empty " << (return_val && !actorMoved) << std::endl;
+    //std::cout << "Actor Moved " <<  actorMoved << " Empty " << (return_val && !actorMoved) << std::endl;
     return return_val;
 }
 
