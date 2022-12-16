@@ -1,4 +1,3 @@
-
 # Code edited to fit needs for the CSSMALG Project
 
 # Original Repository:
@@ -27,13 +26,19 @@ class MongoAPI:
                                           f"&appName=mongosh+1.6.1&authSource=admin")
 
     def get_databases(self):
+        """
+        Get all databases
+        :return:
+        """
         return self.client.list_database_names()
 
     def get_collections(self, db_name):
+        """
+        Get all collections in a database
+        :param db_name: Database name string
+        :return:
+        """
         return self.client[db_name].list_collection_names()
-
-    def collection(self, db_name, collection: str):
-        return self.client[db_name][collection]
 
     def find_one(self, db_name, collection: str, filter_dict: dict = None, projection_dict: dict = None, sort: list = None):
         """
