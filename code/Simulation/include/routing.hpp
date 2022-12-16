@@ -3,6 +3,7 @@
 #include <map>
 #include "actors.hpp"
 #define USE_CUDA
+//#define ALTFW
 
 /*
 	Inspired by https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm#Path_reconstruction
