@@ -171,9 +171,9 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     :return:
     """
     p = LinePlot()
-    p.plot(x, y['mean'], 'Mean')
-    p.plot(x, y['95percentile'], '95th Percentile', '#5b5b5b', 'dashed')
-    p.plot(x, y['5percentile'], '5th Percentile', '#5b5b5b', 'dashed')
+    p.plot(x, y['mean'], 'm')
+    p.plot(x, y['95percentile'], '95%', '#5b5b5b', 'dashed')
+    p.plot(x, y['5percentile'], '5%', '#5b5b5b', 'dashed')
     # p.plot(x, y['mean+variance'], 'Variance', '#5b5b5b', 'dashed')
     # p.plot(x, y['mean-variance'], 'Variance', '#5b5b5b', 'dashed')
     p.set_x_label(x_label)
