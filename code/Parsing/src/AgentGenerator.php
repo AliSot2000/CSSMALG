@@ -167,7 +167,7 @@ class AgentGenerator
         $maxAgentAmount = $area / 4000;
         // assumption with at what hour will there be what percentage of $maxAgentAmount spawned
         // increased at morning rush hour, lunch and evening rush hour
-        $agentDistribution = array(0.05, 0.05, 0.06, 0.75, 0.1, 0.25, 0.4, 0.7, 0.65, 0.6, 0.6, 0.6, 0.6, 0.6, 0.65, 0.7, 0.8, 1, 0.8, 0.5, 0.3, 0.1, 0.075, 0.05);
+        $agentDistribution = array(0.05, 0.05, 0.06, 0.075, 0.1, 0.25, 0.4, 0.7, 0.65, 0.5, 0.45, 0.4, 0.4, 0.4, 0.5, 0.65, 0.8, 1, 0.8, 0.5, 0.3, 0.1, 0.075, 0.05);
 
         foreach ($agentDistribution AS &$amount) {
             $amount = round($amount * $maxAgentAmount);
