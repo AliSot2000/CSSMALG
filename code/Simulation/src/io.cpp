@@ -281,7 +281,7 @@ void addFrame(world_t* world, json* out, const bool final) {
         actorFrame[actor->id] = {};
 		json& obj = actorFrame[actor->id];
 		obj["road"] = street->id;
-		obj["percent_to_end"] = percent; t
+		obj["percent_to_end"] = percent;
 		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
 		obj["active"] = active;
         if (final){
