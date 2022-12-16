@@ -688,7 +688,7 @@ void resolveDeadLocks(world_t* world, const float current_time) {
 
 bool emptynessOfStreets(world_t* world){
     bool empty = true;
-    #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
+    //#pragma omp parallel for reduction(&&:empty) default(none) shared(world)
     for (int32_t i = 0; i < world->streets.size(); i++) {
         empty = world->streets.at(i).traffic.empty() && empty;
     }
