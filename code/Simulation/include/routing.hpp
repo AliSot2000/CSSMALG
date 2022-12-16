@@ -77,4 +77,4 @@ Path retrievePath(spt_t* spt, const int &start, const int &end);
 
 float distanceFromPath(const world_t* world, actor_t* actor);
 
-std::vector<int> getPath(actor_t* actor);
+std::vector<std::string> getPath(actor_t* actor, const world_t* world);
