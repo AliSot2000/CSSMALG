@@ -1,13 +1,14 @@
 # Agent-Based Modeling and Social System Simulation 2022
 > * Group Name: BBAG (Big Brain Algorithm Group)
 > * Group participants names: Nils Egger, Sophia Herrmann, Jan Hochstrasser, Jannick Schröer, Alexander Sotoudeh
-> * Project Title: (can be changed later)
+> * Project Title: An Agent Based Model to Investigate the Influence of Varying Numbers of Cyclists on the Average Travel Time of Motorists
 
 ## General Introduction
 
-(States your motivation clearly: why is it important / interesting to solve this problem?)
-(Add real-world examples, if any)
-(Put the problem into a historical context, from what does it originate? Are there already some proposed solutions?)
+Traffic Jams and road congestions are one of the most prominent problems in travel. Congestions lead to higher levels of harmful emissions, 
+adverse health effects and higher cost burdens. In an effort to reduce the enviromental effect of cars, the city of Zurich is actively campaigning 
+for more bicycles. This is further pushed by the post-Covid popularity. This raises the question whether more bicycles will disrupt the flow of traffic by
+overtaking cars, or whether the higher percentage of bicycles will relieve the burden of cars on the roads.
 
 ## The Model
 
@@ -16,27 +17,25 @@
 
 ## Fundamental Questions
 
-(At the end of the project you want to find the answer to these questions)
-(Formulate a few, clear questions. Articulate them in sub-questions, from the more general to the more specific. )
+- How will the change in percentage of bicycles to cars influence the travel time of the remaining cars?
+- How will the change in percentage of bicycles to cars influence the travel time of the remaining bicycles?
+- Will the ability of bicycles to overtake cars result in shorter travel times for bicycles, and longer times for cars?
+- How will traffic density be affected?
 
 
 ## Expected Results
 
-(What are the answers to the above questions that you expect to find before starting your research?)
-
+We assume that the travel time for cars will get longer, and will get shorter for bikes. We assume that the traffic desity will rise, as bicycles take less space, so therefore more can use the same space.
 
 ## References 
 
-(Add the bibliographic references you intend to use)
-(Explain possible extension to the above models)
-(Code / Projects Reports of the previous year)
+The model could be extended by adding further kinds of agents, to account for busses, trams and other forms of public transit.
 
 
 ## Research Methods
 
-(Cellular Automata, Agent-Based Model, Continuous Modeling...) (If you are not sure here: 1. Consult your colleagues, 2. ask the teachers, 3. remember that you can change it afterwards)
-
+Agent Based Model 
 
 ## Other
 
-(mention datasets you are going to use)
+We are using data from OpenStreetMap. Furthermore we optimized the code to be run on HPC Clusters.
