@@ -22,3 +22,5 @@ If between nodes there exists two streets like
 -> this could lead to unknown behaviour while doing the route planning. 
    There should always only be one street between two intersections for each actor type
 
+
+
