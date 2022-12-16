@@ -89,3 +89,10 @@ class LinePlot:
                              textcoords='offset points',  # The text coordinates are relative to the text
                              size=14,  # The size of the text
                              va="center")  # The vertical alignment of the text
+
+    def close (self):
+        """
+        Close the plot.
+        :return:
+        """
+        plt.close()
