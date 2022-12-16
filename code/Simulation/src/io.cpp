@@ -55,6 +55,7 @@ void importMap(world_t* world, json* map, bool doTrafficLights) {
 		Street& street = world->streets[index];
 		street.id = data["id"];
 		street.length = data["distance"];
+        assert(street.length > 20 && "Street is too short");
 		street.width = LANE_WIDTH * data["lanes"].size();
         street.speedlimit = static_cast<float>(data["speed_limit"]) / 3.6f;
         if (data.contains("oppositeStreetId")){
@@ -280,7 +281,7 @@ void addFrame(world_t* world, json* out, const bool final) {
         actorFrame[actor->id] = {};
 		json& obj = actorFrame[actor->id];
 		obj["road"] = street->id;
-		obj["percent_to_end"] = percent; 
+		obj["percent_to_end"] = percent; t
 		obj["distance_to_side"] = actor->distanceToRight * 10.0f;
 		obj["active"] = active;
         if (final){
