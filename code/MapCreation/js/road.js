@@ -547,7 +547,7 @@ class Road {
      */
     exportToBeSimulatedData() {
         let pixels_per_meter = getConfig('pixels_to_meter'); // The pixels per meter
-        let roads = {}; // The roads
+        let roads = []; // The roads
 
         let forward = this.getLanesInDirection(1); // Get the forward lanes
         let backward = this.getLanesInDirection(-1); // Get the backward lanes
@@ -567,14 +567,21 @@ class Road {
         }
 
         if (!isEmpty(forward)) {
-            roads.forward = { // Set the forward road
-                id: this._id, // The id of the road
-                lanes: forward, // The lanes of the road
-                intersections: intersections, // The intersections of the road
-                distance: this._distance * pixels_per_meter, // The distance of the road
-                speed_limit: this._speed_limit // The speed limit of the road
-            };
-            if (!isEmpty(backward)) roads.forward.oppositeStreetId = '!' + this._id; // If the road has backward lanes, set the opposite street id
+            let types = split_by_type(forward); // Split the lanes by type
+
+            for (let type in types) { // Loop through the types
+                let lanes = types[type]; // The lanes of the type
+
+                let road = { // Set the forward road
+                    id: this._id, // The id of the road
+                    lanes: lanes, // The lanes of the road
+                    intersections: intersections, // The intersections of the road
+                    distance: this._distance * pixels_per_meter, // The distance of the road
+                    speed_limit: this._speed_limit // The speed limit of the road
+                };
+                if (!isEmpty(backward)) road.oppositeStreetId = '!' + this._id; // If the road has backward lanes, set the opposite street id
+                roads.push(road);
+            }
         }
         if (!isEmpty(backward)) {
             let reverse_intersections = {}; // The reverse intersections
@@ -584,14 +591,22 @@ class Road {
             if (!isEmpty(intersections.end)) { // If the end of the road is connected to an intersection
                 reverse_intersections.start = intersections.end; // Set the start intersection
             }
-            roads.backward = { // Set the backward road
-                id: '!' + this._id, // The id of the road. The id is prefixed with a '!' to indicate that it is a reverse road
-                lanes: backward, // The lanes of the road
-                intersections: reverse_intersections, // The intersections of the road
-                distance: this._distance * pixels_per_meter, // The distance of the road
-                speed_limit: this._speed_limit // The speed limit of the road
-            };
-            if (!isEmpty(forward)) roads.backward.oppositeStreetId = this._id; // If the road has forward lanes, set the opposite street id
+
+            let types = split_by_type(backward); // Split the lanes by type
+
+            for (let type in types) { // Loop through the types
+                let lanes = types[type]; // The lanes of the type
+
+                let road = { // Set the backward road
+                    id: '!' + this._id, // The id of the road. The id is prefixed with a '!' to indicate that it is a reverse road
+                    lanes: lanes, // The lanes of the road
+                    intersections: reverse_intersections, // The intersections of the road
+                    distance: this._distance * pixels_per_meter, // The distance of the road
+                    speed_limit: this._speed_limit // The speed limit of the road
+                };
+                if (!isEmpty(forward)) road.oppositeStreetId = this._id; // If the road has forward lanes, set the opposite street id
+                roads.push(road);
+            }
         }
 
         return roads;

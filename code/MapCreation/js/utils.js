@@ -575,3 +575,15 @@ function offsetPercent(newTotalLength, oldTotalLength, offset, percent) {
     return (offset + (percent * newTotalLength)) / oldTotalLength;
 }
 
+function split_by_type(data) {
+    let split_data = {};
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].type in split_data) {
+            split_data[data[i].type].push(data[i]);
+        } else {
+            split_data[data[i].type] = [data[i]];
+        }
+    }
+    return split_data;
+}
+
