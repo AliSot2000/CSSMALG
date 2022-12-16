@@ -1,261 +1,226 @@
-import json
 import os
-
 from linePlot import LinePlot
+from boxPlot import BoxPlot
+from mongo_api import MongoAPI  # Import API for MongoDB
+from database import db_username, db_password, db_ip  # Import username and password from database.py
 
 
 class Visualizer:
-    path_to_data = ''
-    output_dir = ''
+    """
+    This class is used to visualize the data from the database.
+    """
 
-    def __init__(self, path_to_data: str, output_dir: str):
-        self.path_to_data = os.path.normcase(path_to_data)
-        self.output_dir = os.path.normcase(output_dir)
+    def __init__(self, output_path):
+        """
+        Initialize the visualizer.
+        :param output_path: path to the output folder
+        """
+        self.mongo = MongoAPI(db_ip, db_username, db_password)  # Connect to the database
+        self.output_path = output_path  # Set the output path
 
-    def get_simulations(self, name: str):
-        simulations = []
-        sim_dir = os.path.join(self.path_to_data, name)
-        for simulation in sim_dir:
-            if os.path.isdir(os.path.join(sim_dir, simulation)):
-                simulations.append(simulation)
+    def change_path(self, output_path):
+        """
+        Change the output path.
+        :param output_path: path to the output folder
+        :return: None
+        """
+        self.output_path = output_path
 
-        return simulations
+    def visualize_over_different_runs(self, simulation: str, road_type: str = 'intersection', agent_type: str = 'car', attribute: str = 'flow'):
+        """
+        Visualize the data over different runs.
+        :param simulation: Simulation name
+        :param road_type: road type (intersection, road)
+        :param agent_type: agent type (car, bike, agent)
+        :param attribute: attribute (flow, density - only for roads)
+        :return:
+        """
+        print(f'Visualizing {simulation} {road_type} {agent_type} {attribute}')
+        all_collections = self.mongo.get_collections(simulation)  # Get all collections
 
-    def combine_simulations(self, name: str):
-        log_time_interval = 15
-        simulations = self.get_simulations(name)
-        sim_count = len(simulations)
+        collections = []
+        for collection in all_collections:  # Filter out the collections that are not needed
+            if '_timesteps' in collection:  # Only get the timesteps
+                collections.append(collection)  # Add the collection to the list
 
-        intersection_bike_flow = []
-        intersection_car_flow = []
+        data = []  # Initialize the data list
 
-        road_bike_flow = []
-        road_car_flow = []
-        road_bike_density = []
-        road_car_density = []
+        tracked_attribute = f'{road_type}_{agent_type}_{attribute}'  # Set the tracked attribute
 
-        if sim_count < 1:
-            raise Exception('No simulations found')
+        is_agent = agent_type == 'agent'  # Check if the agent type is agent
 
-        sim_dir = os.path.join(self.path_to_data, name, simulations[0])
+        if is_agent:  # If the agent type is agent
+            for collection in collections:
+                data.append(self.mongo.find(simulation,
+                                            collection,
+                                            {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}},
+                                            {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
+                                            [('time', 1)]))
+        else:  # If the agent type is not agent
+            for collection in collections:
+                data.append(self.mongo.find(simulation,
+                                            collection,
+                                            {tracked_attribute: {'$exists': True}},
+                                            {tracked_attribute: 1},
+                                            [('time', 1)]))
 
-        for file in os.listdir(sim_dir):
-            if os.path.isfile(os.path.join(sim_dir, file)):
-                if file == 'agents.json':
-                    continue
-                if file == 'final.log':
-                    continue
+        data_length = len(data)  # Get the length of the data
+        if data_length < 1:  # If the data length is less than 1
+            raise Exception('No valid data found')  # Raise an exception
 
-                intersection_car_flow.append([])
-                intersection_bike_flow.append([])
-                road_car_flow.append([])
-                road_bike_flow.append([])
-                road_car_density.append([])
-                road_bike_density.append([])
+        time_steps = len(data[0])  # Get the number of time steps
 
-        for simulation in simulations:
-            sim_dir = os.path.join(self.path_to_data, name, simulation)
+        tracked_data = {  # Initialize the tracked data
+            'mean': [],
+            '95percentile': [],
+            '5percentile': [],
+            'mean+variance': [],
+            'mean-variance': []
+        }
 
-            time_steps = sort_time_steps(os.listdir(sim_dir))
+        for time_step in range(time_steps):  # Loop over all time steps
+            data_points = []
+            for data_point in range(data_length):  # Loop over all data points
+                if is_agent:
+                    data_points.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'])
+                    data_points.extend(data[data_point][time_step][f'{road_type}_bike_{attribute}'])
+                else:
+                    data_points.extend(data[data_point][time_step][tracked_attribute])
+            # Calculate all the data we might want to display
+            m = mean(data_points)
+            tracked_data['mean'].append(m)
+            tracked_data['95percentile'].append(percentile(data_points, 95))
+            tracked_data['5percentile'].append(percentile(data_points, 5))
+            v = variance(data_points, m)
+            tracked_data['mean+variance'].append(m + v)
+            tracked_data['mean-variance'].append(m - v)
 
-            minute = log_time_interval
-            for time_step in time_steps:
-                if not approx_equal(time_step['timestep'], minute * 60):
-                    raise Exception('Time steps are not equal')
+        minutes = []  # Initialize the minutes list
 
-                with open(os.path.join(sim_dir, time_step['file_name'])) as f:
-                    data = json.load(f)
-
-                    index = minute // log_time_interval - 1
-
-                    for intersection in data['intersections']:
-                        intersection_bike_flow[index].append(intersection['bikeFlow'])
-                        intersection_car_flow[index].append(intersection['carFlow'])
-                    for road in data['streets']:
-                        road_bike_flow[index].append(road['bikeFlow'])
-                        road_car_flow[index].append(road['carFlow'])
-                        road_bike_density[index].append(road['bikeDensity'])
-                        road_car_density[index].append(road['carDensity'])
-
-                minute += log_time_interval
-
-        return intersection_bike_flow, intersection_car_flow, road_bike_flow, road_car_flow, road_bike_density, road_car_density
-
-    def calculate_and_plot_data(self, name: str):
-        intersection_bike_flow, intersection_car_flow, road_bike_flow, road_car_flow, road_bike_density, road_car_density = self.combine_simulations(name)
-        time_steps = len(intersection_bike_flow)
-        minutes = [i * 15 for i in range(1, time_steps + 1)]
-
-        intersection_bike_flow_data = tracked_data()
-        intersection_car_flow_data = tracked_data()
-        intersection_agent_flow_data = tracked_data()
-
-        road_bike_flow_data = tracked_data()
-        road_car_flow_data = tracked_data()
-        road_agent_flow_data = tracked_data()
-
-        road_bike_density_data = tracked_data()
-        road_car_density_data = tracked_data()
-        road_agent_density_data = tracked_data()
-
-        for i in range(time_steps):
-            calculate_data(intersection_bike_flow_data, intersection_bike_flow[i])
-            calculate_data(intersection_car_flow_data, intersection_car_flow[i])
-            intersection_agent_flow = intersection_car_flow[i] + intersection_bike_flow[i]
-            calculate_data(intersection_agent_flow_data, intersection_agent_flow)
-
-            calculate_data(road_bike_flow_data, road_bike_flow[i])
-            calculate_data(road_car_flow_data, road_car_flow[i])
-            road_agent_flow = road_car_flow[i] + road_bike_flow[i]
-            calculate_data(road_agent_flow_data, road_agent_flow)
-
-            calculate_data(road_bike_density_data, road_bike_density[i])
-            calculate_data(road_car_density_data, road_car_density[i])
-            road_agent_density = road_car_density[i] + road_bike_density[i]
-            calculate_data(road_agent_density_data, road_agent_density)
+        current_minute = 15  # Set the current minute to 15
+        for i in range(time_steps):  # Loop over all time steps
+            minutes.append(current_minute)  # Add the current minute to the minutes list
+            current_minute += 15  # Add 15 to the current minute
 
         plot_and_save_data(minutes,
-                           intersection_bike_flow_data,
-                           'Intersection Bike Flow',
-                           'Time (min)',
-                           'Flow (veh/s)',
-                           os.path.join(self.output_dir, 'intersection_bike_flow.png'))
+                           tracked_data,
+                           f'{int("".join(x for x in simulation if x.isdigit()))}% Bikes - {tracked_attribute.title().replace("_", " ")}',
+                           'Minutes',
+                           attribute.title(),
+                           os.path.join(self.output_path, f'{tracked_attribute}.png'))
 
-        plot_and_save_data(minutes,
-                           intersection_car_flow_data,
-                           'Intersection Car Flow',
-                           'Time (min)',
-                           'Flow (veh/s)',
-                           os.path.join(self.output_dir, 'intersection_car_flow.png'))
+    def visualize_avg_speed_multiple_sims(self, simulations, agent_type: str):
+        """
+        Visualize the average speed over multiple simulations.
+        :param simulations: List of simulations
+        :param agent_type: Agent type (car, bike, agent)
+        :return:
+        """
+        print(f'Visualizing {agent_type} AVG Speed over all Simulations')
+        data = []
 
-        plot_and_save_data(minutes,
-                           intersection_agent_flow_data,
-                           'Intersection Agent Flow',
-                           'Time (min)',
-                           'Flow (veh/s)',
-                           os.path.join(self.output_dir, 'intersection_agent_flow.png'))
+        simulations.sort()  # Sort the simulations
 
-        plot_and_save_data(minutes,
-                           road_bike_flow_data,
-                           'Road Bike Flow',
-                           'Time (min)',
-                           'Flow (veh/s)',
-                           os.path.join(self.output_dir, 'road_bike_flow.png'))
+        is_agent = agent_type == 'agent'  # Check if the agent type is agent
+        pretty_names = []  # Initialize the pretty names list
 
-        plot_and_save_data(minutes,
-                           road_car_flow_data,
-                           'Road Car Flow',
-                           'Time (min)',
-                           'Flow (veh/s)',
-                           os.path.join(self.output_dir, 'road_car_flow.png'))
+        for simulation in simulations:  # Loop over all simulations
+            pretty_names.append(f'{int("".join(x for x in simulation if x.isdigit()))}%')  # Add the pretty name to the list
+            all_runs = self.mongo.get_collections(simulation)  # Get all the collections
+            data_point = []  # Initialize the data point list
+            runs = []  # Initialize the runs list
+            for run in all_runs:  # Loop over all runs
+                if '_agents' in run:  # If the run is an agent run
+                    runs.append(run)  # Add the run to the runs list
 
-        plot_and_save_data(minutes,
-                           road_agent_flow_data,
-                           'Road Agent Flow',
-                           'Time (min)',
-                           'Flow (veh/s)',
-                           os.path.join(self.output_dir, 'road_agent_flow.png'))
+            for run in runs:  # Loop over all runs
+                if is_agent:  # If the agent type is agent
+                    results = self.mongo.find(simulation,
+                                              run,
+                                              {'end_time': {'$gt': 0}},
+                                              {'end_time': 1, 'start_time': 1, 'travel_distance': 1})
+                else:  # If the agent type is not agent
+                    results = self.mongo.find(simulation,
+                                              run,
+                                              {'end_time': {'$gt': 0}, 'type': agent_type},
+                                              {'end_time': 1, 'start_time': 1, 'travel_distance': 1})
 
-        plot_and_save_data(minutes,
-                           road_bike_density_data,
-                           'Road Bike Density',
-                           'Time (min)',
-                           'Density (veh/m)',
-                           os.path.join(self.output_dir, 'road_bike_density.png'))
+                for agent in results:  # Loop over all agents
+                    data_point.append(agent['travel_distance'] / (agent['end_time'] - agent['start_time']))
 
-        plot_and_save_data(minutes,
-                           road_car_density_data,
-                           'Road Car Density',
-                           'Time (min)',
-                           'Density (veh/m)',
-                           os.path.join(self.output_dir, 'road_car_density.png'))
+            data.append(data_point)  # Add the data point to the data list
 
-        plot_and_save_data(minutes,
-                           road_agent_density_data,
-                           'Road Agent Density',
-                           'Time (min)',
-                           'Density (veh/m)',
-                           os.path.join(self.output_dir, 'road_agent_density.png'))
-
-        with open(os.path.join(self.output_dir, 'data.json'), 'w') as f:
-            json.dump({
-                'intersection_bike_flow': intersection_bike_flow_data,
-                'intersection_car_flow': intersection_car_flow_data,
-                'intersection_agent_flow': intersection_agent_flow_data,
-                'road_bike_flow': road_bike_flow_data,
-                'road_car_flow': road_car_flow_data,
-                'road_agent_flow': road_agent_flow_data,
-                'road_bike_density': road_bike_density_data,
-                'road_car_density': road_car_density_data,
-                'road_agent_density': road_agent_density_data
-            }, f)
+        box_plot = BoxPlot(data)   # Create a box plot
+        box_plot.set_title(f'Average Speed of {agent_type.title()}s')
+        box_plot.set_x_label('Simulations')
+        box_plot.set_y_label('Speed (m/s)')
+        box_plot.set_x_ticks(pretty_names)
+        box_plot.save(os.path.join(self.output_path, f'avg_speed_{agent_type}.png'))
 
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
+    """
+    Plot and save the data.
+    :param x: X data
+    :param y: Y data
+    :param name: Name of the plot
+    :param x_label: X Axis label
+    :param y_label: Y Axis label
+    :param output_name: output file path/name
+    :return:
+    """
     p = LinePlot()
     p.plot(x, y['mean'], 'Mean')
     p.plot(x, y['95percentile'], '95th Percentile', '#5b5b5b', 'dashed')
     p.plot(x, y['5percentile'], '5th Percentile', '#5b5b5b', 'dashed')
-    p.plot(x, y['mean+variance'], 'Variance', '#5b5b5b', 'dashed')
-    p.plot(x, y['mean-variance'], 'Variance', '#5b5b5b', 'dashed')
+    # p.plot(x, y['mean+variance'], 'Variance', '#5b5b5b', 'dashed')
+    # p.plot(x, y['mean-variance'], 'Variance', '#5b5b5b', 'dashed')
     p.set_x_label(x_label)
     p.set_y_label(y_label)
     p.set_title(name)
     p.annotate_lines()
-    p.save()
+    p.save(output_name)
 
 
 def approx_equal(a, b, epsilon: int = 10):
+    """
+    Check if two numbers are approximately equal.
+    :param a: Number 1
+    :param b: Number 2
+    :param epsilon: Epsilon
+    :return: If the numbers are approximately equal
+    """
     return abs(a - b) < epsilon
 
-def calculate_data(calculated_data: dict, data: list):
-    m = mean(data)
-    calculated_data['mean'].append(m)
-    calculated_data['95percentile'].append(percentile(data, 95))
-    calculated_data['5percentile'].append(percentile(data, 5))
-    v = variance(data, m)
-    calculated_data['mean+variance'].append(m + v)
-    calculated_data['mean-variance'].append(m - v)
 
-
-def sort_time_steps(time_steps):
-    new_time_steps = []
-    agent_file_name = 'agents.json'
-    final_file_name = 'final.json'
-    for time_step in time_steps:
-        if time_step == agent_file_name or time_step == final_file_name:
-            continue
-
-        new_time_steps.append({
-            'time_step': int(time_step.partition('.')[0]),
-            'file_name': time_step
-        })
-
-    new_time_steps.sort(key=lambda x: x['time_step'])
-    return new_time_steps
-
-
-def tracked_data():
-    return {
-        'mean': [],
-        '95percentile': [],
-        '5percentile': [],
-        'mean+variance': [],
-        'mean-variance': []
-    }
-
-
-def mean(data):
+def mean(data: list = None):
+    """
+    Calculate the mean of a list of numbers.
+    :param data: All the data points
+    :return: Mean
+    """
     return sum(data) / len(data)
 
 
 def variance(data, m: float = None):
-    if mean is None:
-        m = mean(data)
+    """
+    Calculate the variance of a list of numbers.
+    :param data: All the data points
+    :param m: Mean
+    :return: Variance
+    """
+    if mean is None:  # If the mean is not given
+        m = mean(data)  # Calculate the mean
     return sum((x - m) ** 2 for x in data) / len(data)
 
 
-def percentile(data, percent: int):
+def percentile(data: list = None, percent: int = 50):
+    """
+    Calculate the percentile of a list of numbers.
+    :param data: All the data points
+    :param percent: Percentile between 0 and 100
+    :return: Percentile
+    """
     data.sort()
     index = int(len(data) * percent / 100)
     return data[index]
