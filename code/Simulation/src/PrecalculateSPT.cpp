@@ -10,6 +10,7 @@
 #include "io.hpp"
 //#define DDEBUG
 //DO_TRAFFIC_SIGNALS
+#define SLURM_OUTPUT
 
 
 int main(int argc, char* argv[]) {

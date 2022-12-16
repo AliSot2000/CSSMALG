@@ -183,7 +183,7 @@ int main(int argc, char* argv[]) {
         addFrame(&world, &output, false);
 #endif
         // Dump stats to file if time has passed
-        if (lastStatsTime - maxTime > statsLogInterval){
+        if (lastStatsTime - maxTime >= statsLogInterval){
             lastStatsTime = maxTime;
             std::string statsFile = statsDirOut + std::to_string(runtime - maxTime) + ".json";
             nlohmann::json stats;
