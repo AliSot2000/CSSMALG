@@ -45,7 +45,7 @@ class AgentGenerator
     private function generateAgents(): void {
         $agentAmount = $this->calculateAgentAmount();
         // distribution of cars going into the city center
-        // 1/4 of going into city center we assume inter city travel and for 1/4 of rest we assume outer city travel
+        // 1/3 of going into city center we assume inter city travel and for 1/3 of rest we assume outer city travel
         $direction = array(0.5, 0.5, 0.5, 0.5, 0.55, 0.65, 0.7, 0.7, 0.7, 0.6, 0.55, 0.5, 0.5, 0.5, 0.5, 0.35, 0.3, 0.3, 0.3, 0.35, 0.4, 0.5, 0.5, 0.5);
 
         $numInNodes = count($this->nodesIn) - 1;
@@ -65,7 +65,7 @@ class AgentGenerator
                     $amountPerMinute = max(round($amount / 60), 1);
 
                     // number of agents going from out to center (+ center to center (+ center to out (+ out to out)))
-                    $directionAmount = array($direction[$hour] * $amountPerMinute * 0.75, $direction[$hour] * $amountPerMinute, $amountPerMinute - $amountPerMinute * (1 - $direction[$hour]) * 0.25);
+                    $directionAmount = array($direction[$hour] * $amountPerMinute * (2/3), $direction[$hour] * $amountPerMinute, $amountPerMinute - $amountPerMinute * (1 - $direction[$hour]) / 3);
 
                     for ($i = 0; $i < 60; $i++) {
 
@@ -163,8 +163,8 @@ class AgentGenerator
      */
     private function calculateAgentAmount(): array {
         $area = round($this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon2"], $this->coordinates["lat1"]) *  $this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon1"], $this->coordinates["lat2"]));
-        // assumption: at rush hour one new agent per 4000m^2 on the whole area of the map per hour
-        $maxAgentAmount = $area / 4000;
+        // assumption: at rush hour one new agent per 32000m^2 on the whole area of the map per hour
+        $maxAgentAmount = $area / 32000;
         // assumption with at what hour will there be what percentage of $maxAgentAmount spawned
         // increased at morning rush hour, lunch and evening rush hour
         $agentDistribution = array(0.05, 0.05, 0.06, 0.075, 0.1, 0.25, 0.4, 0.7, 0.65, 0.5, 0.45, 0.4, 0.4, 0.4, 0.5, 0.65, 0.8, 1, 0.8, 0.5, 0.3, 0.1, 0.075, 0.05);
