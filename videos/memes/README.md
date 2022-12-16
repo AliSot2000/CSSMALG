@@ -7,4 +7,3 @@ memes lol
 
 ![](74hyph.png)
 
-![](74hz1n.jpg)
