@@ -6,13 +6,14 @@ class LinePlot:
     LinePlot because I want to plot lines.
     """
 
-    lines = []  # List of all the lines
+    lines = None  # List of all the lines
 
     def __init__(self):
         """
         Initialize the plot.
         """
         self.fig, self.ax = plt.subplots()
+        self.lines = []
 
     def plot(self, x, y, label, color='Black', dash_style='solid'):
         """

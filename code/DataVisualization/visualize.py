@@ -44,6 +44,10 @@ class Visualize:
             self.visualizer.visualize_over_different_runs(simulation, 'road', 'bike', 'density')
             self.visualizer.visualize_over_different_runs(simulation, 'road', 'agent', 'density')
 
+            self.visualizer.visualize_seperated_agents(simulation, 'intersection', 'flow')
+            self.visualizer.visualize_seperated_agents(simulation, 'road', 'flow')
+            self.visualizer.visualize_seperated_agents(simulation, 'road', 'density')
+
         # Visualize the data for all simulations
         self.visualizer.change_path(self.output_path)
         self.visualizer.visualize_avg_speed_multiple_sims(simulations, 'car')
