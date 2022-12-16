@@ -620,8 +620,9 @@ bool updateStreets(world_t* world, const float timeDelta){
     for (int32_t i = 0; i < 128; i++) {
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
-
-    return actorMoved || emptynessOfStreets(world);
+    bool return_val = actorMoved || emptynessOfStreets(world);
+    std::cout << "Actor Moved " <<  actorMoved << " Empty " << (return_val && !actorMoved) << std::endl;
+    return return_val;
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
