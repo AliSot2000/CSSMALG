@@ -242,3 +242,44 @@ std::vector<std::string> getPath(actor_t* actor, const world_t* world){
     actor->path = replacement;
     return path;
 }
+
+std::vector<std::string> StreetPath(actor_t* actor, const world_t* world){
+    Path p;
+
+    // Initialize the path
+    int u = actor->start_id;
+    int v = actor->path.front();
+    std::vector<std::string> strPath = {};
+    Street* street = nullptr;
+
+    // Walk along the Path
+    while (v != actor->end_id){
+        p.push(v);
+        actor->path.pop();
+
+        if (actor->type == ActorTypes::Bike){
+            street = world->intersections.at(u).outboundBike.at(v);
+        } else {
+            street = world->intersections.at(u).outboundCar.at(v);
+        }
+        strPath.push_back(street->id);
+        u = v;
+        v = actor->path.front();
+    }
+
+    // Do the last iteration
+    p.push(v);
+    actor->path.pop();
+
+    if (actor->type == ActorTypes::Bike){
+        street = world->intersections.at(u).outboundBike.at(v);
+    } else {
+        street = world->intersections.at(u).outboundCar.at(v);
+    }
+    strPath.push_back(street->id);
+
+    // Move the new path to the actor and hope the old path get's deleted
+    actor->path = p;
+
+    return strPath;
+}
