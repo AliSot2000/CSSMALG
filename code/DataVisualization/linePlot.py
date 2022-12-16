@@ -6,13 +6,14 @@ class LinePlot:
     LinePlot because I want to plot lines.
     """
 
-    lines = []  # List of all the lines
+    lines = None  # List of all the lines
 
     def __init__(self):
         """
         Initialize the plot.
         """
         self.fig, self.ax = plt.subplots()
+        self.lines = []
 
     def plot(self, x, y, label, color='Black', dash_style='solid'):
         """
@@ -89,3 +90,10 @@ class LinePlot:
                              textcoords='offset points',  # The text coordinates are relative to the text
                              size=14,  # The size of the text
                              va="center")  # The vertical alignment of the text
+
+    def close (self):
+        """
+        Close the plot.
+        :return:
+        """
+        plt.close()

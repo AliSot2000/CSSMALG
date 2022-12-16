@@ -67,3 +67,11 @@ class BoxPlot:
         :return:
         """
         self.ax.set_xticks(range(1, len(labels) + 1), labels)  # Set the x ticks
+
+    def close(self):
+        """
+        Close the plot.
+        :return:
+        """
+        plt.close()
+
