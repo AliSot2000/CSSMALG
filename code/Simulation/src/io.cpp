@@ -257,7 +257,7 @@ json exportWorld(const world_t* world, const float& time, const float& timeDelta
         obj["acceleration_exponent"] = actor->acceleration_exp;
         obj["waiting_period"] = actor->insertAfter;
         obj["travel_distance"] = distanceFromPath(world, actor);
-        obj["path"] = getPath(actor, world);
+        obj["path"] = StreetPath(actor, world);
         if (actor->path.empty()){
             obj["start_crossing_id"] = "NO_PATH_FOUND";
             obj["end_crossing_id"] = "NO_PATH_FOUND";
