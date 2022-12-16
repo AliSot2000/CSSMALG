@@ -85,7 +85,7 @@ if __name__ == "__main__":
                                                  "or only the ones that didn't arrive.")
 
     parser.add_argument("-o", "--output", type=str, help="The output from a simulation", required=True)
-    parser.add_argument("-i", "--input", type=str, help="The original input of the simulation", required=True)
+    parser.add_argument("-i", "--input", type=str, help="The original input of the simulation", default=None)
     parser.add_argument("-a", "--arrived", type=str, help="Output file containing only the arrived agents", default=None)
     parser.add_argument("-s", "--stuck", type=str, help="Output file containing only the not arrived agents", default=None)
 
@@ -102,6 +102,8 @@ if __name__ == "__main__":
     print_stats(data)
 
     if arrived is not None or stuck is not None:
+        if sim_in is None:
+            raise ValueError("To compute new stuff, a input file needs to be specified.")
         # split the agents
         print("Splitting Agents")
         arrived_agents, stuck_agents = split_arrived_stuck(data)
