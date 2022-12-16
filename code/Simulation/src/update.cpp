@@ -550,6 +550,9 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                        actor->distanceToIntersection - movement_distance + MIN_DISTANCE_BETWEEN_VEHICLES);
             }
 
+            // Make sure there's enough distance between actor and front actor
+            assert(actor->distanceToIntersection > frontVehicle->distanceToIntersection + frontVehicle->length + MIN_DISTANCE_BETWEEN_VEHICLES && "Two vehicles colliding");
+
             actor->distanceToIntersection -= movement_distance;
             actorMoved = actorMoved || maxDrivableDistance > 0.0f;
             actor->time_spent_waiting += static_cast<float>(movement_distance == 0.0f) * timeDelta;
