@@ -162,10 +162,10 @@ int main(int argc, char* argv[]) {
         updateIntersections(&world, deltaTime, USE_STUPID_INTERSECTIONS, runtime - maxTime);
         lastDeadLockTime = (updateStreets(&world, deltaTime)) ? maxTime : lastDeadLockTime;
 
-        // Longer than 20s so every road should have had green once
+        // Longer than 20s so every road should havruntime - maxTimee had green once
         if  (lastDeadLockTime - maxTime > 15.0f){
             std::cerr << "Deadlock detected at Time " << maxTime << std::endl;
-            resolveDeadLocks(&world, maxTime);
+            resolveDeadLocks(&world, runtime - maxTime);
             lastDeadLockTime = maxTime;
         }
 		maxTime -= deltaTime;
