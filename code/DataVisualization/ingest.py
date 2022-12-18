@@ -35,7 +35,7 @@ class Ingest:
                 sim_data = json.load(sim_agents)['simulation'][0]['agents']  # Load the simulation data
 
                 for agent in sim_data:  # For each agent in the simulation data
-                    a = sim_data[agent] | {'sim_id': agent, 'travel_distance': setup_data[agent]['travel_distance'], 'type': setup_data[agent]['type']}
+                    a = {**sim_data[agent], **{'sim_id': agent, 'travel_distance': setup_data[agent]['travel_distance'], 'type': setup_data[agent]['type']}}
                     agents.append(a)  # Add the agent to the list
                     print(f' - Inserted Agent: {agent}', end='\r')  # Print the agent
 
