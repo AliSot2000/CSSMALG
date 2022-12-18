@@ -26,7 +26,7 @@ int randint(int min, int max);
     @returns void, Everything over passed by reference.
 
 */
-void choseRandomPath(const world_t& world, SPT& spt, std::string& start, std::string& end);
+void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end);
 /*
     Function populates the actors of the world.
 
@@ -42,8 +42,8 @@ void choseRandomPath(const world_t& world, SPT& spt, std::string& start, std::st
 
     @returns void, everything over reference
 */
-void createRandomActors(world_t& world, SPT& spt, const ActorTypes type, const int minSpeed, const int maxSpeed,
-                        const std::vector<Actor>::iterator& start, const std::vector<Actor>::iterator& end, const float length, const int max_start_time);
+void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
+                        const int& start, const int& numberOfActors, const float& length, const int& max_start_time);
 /*
     Prints a start message to cout and returns the start time.
 

@@ -26,7 +26,7 @@ typedef std::vector<Actor*>::iterator TrafficIterator;
  * @param end Pointer where first vehicle which does not satisfy conditions is stored
  * Street is not allowed to be constant here, because we will use these iterators to sort the algorithm later
 */
-void trafficInDrivingDistance(Street& street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end);
+//void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end);
 
 /*
  * Finds maximum distance a car can drive forward in given street.
@@ -61,11 +61,11 @@ void trafficInDrivingDistance(Street& street, const float& minDistance, const fl
  * @returns Returns a FrontVehicle struct containing the front vehicle, the front vehicle to the left and the front vehicle to the right.
 
 */
-FrontVehicles GetFrontVehicles(const Street& street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd);
+FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd);
 /*
  * Gives the three vehicles which could collide with our actor
  */
-FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, const TrafficIterator start);
+FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, const TrafficIterator start);
 /*
  * Finds the optimal Lane to drive for the vehicle and moves it to said lane. It then returns the
  * vehicle in front if there is one.
@@ -75,7 +75,7 @@ FrontVehicles GetCollisionVehicles(const Street& street, const Actor* actor, con
  *
  * @returns Pointer to Vehicle in Front
  */
-Actor* moveToOptimalLane(Street& street, Actor* actor);
+Actor* moveToOptimalLane(Street* street, Actor* actor);
 /*
  * Chooses the optimal lane for a car and returns the maximal distance it is allowed to drive forward.
  * Bikes will not switch  lanes, cars will go left and right
@@ -97,7 +97,7 @@ Actor* moveToOptimalLane(Street& street, Actor* actor);
  * @param start Where to begin sorting
  * @param end Where to stop sorting
 */
-void sortStreet(TrafficIterator& start, TrafficIterator& end);
+//void sortStreet(TrafficIterator& start, TrafficIterator& end);
 
 /*
  * Updates all vehicles in all streets
@@ -118,7 +118,7 @@ bool updateStreets(world_t* world, const float timeDelta);
  *
  * @returns True <=> if the actor was inserted
 */
-bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor);
+bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* world);
 
 /*
  * Performs the update light routine of an intersection which hase a traffic light. It selects which lane currently has
@@ -130,7 +130,7 @@ bool tryInsertInNextStreet(intersection_t& intersection, Actor* actor);
  *
  * @returns void.
 */
-void updateIntersectionPhase(intersection_t& intersection, float timeDelta, bool stupidIntersections);
+void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool stupidIntersections);
 
 /*
  * Updates all Intersections in the world.
@@ -150,9 +150,23 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
  *
  * @returns The desired distance between the actor and the border of the next vehicle.
 */
-float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity);
+float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity, const bool vehicleInFront);
 
 /*
  * If no car could move
 */
 void resolveDeadLocks(world_t* world, const float current_time);
+
+bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int stride, const int offset);
+
+void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset);
+
+bool emptynessOfStreets(world_t* world);
+
+void teleportActor(Actor* actor, Street* target, int distanceToRight);
+
+void updateData(world_t* world);
+
+void singleIntersectionStrideUpdateInsert(world_t* world, const float current_time, const int stride, const int offset);
+
+void updateData(world_t* world);

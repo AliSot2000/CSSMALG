@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-typedef std::queue<std::string> Path;
+typedef std::queue<int> Path;
 
 enum ActorTypes {
 	Bike,
@@ -41,6 +41,16 @@ typedef struct Actor {
 
     float start_time = -1.0f;
     float end_time = -1.0f;
+    float time_spent_waiting = 0.0f;
+
+    int start_id = -1;
+    int end_id = -1;
+
+    bool Teleport = false;
+    bool arrived = false;
+    int tempDistanceToRight = 0;
+    float overtaking_distance = 0;
+    float distanceToFront = 0;
 } actor_t;
 
 enum StreetTypes {
@@ -50,10 +60,11 @@ enum StreetTypes {
 };
 
 typedef struct Street {
-	std::string start = "";
-	std::string end = "";
+	int start = -1;
+	int end = -1;
 
 	struct Street* opposite = nullptr;
+    std::string opposite_id = "empty";
 	StreetTypes type = StreetTypes::Both;
 	size_t width = 2;
 	float length = 100.0f;
@@ -66,12 +77,20 @@ typedef struct Street {
 	// These values are not used by the simulation itself, just for the visulisation later
 	// start and end position
 	std::string id;
+    float density_accumulate_bike = 0.0f;
+    uint64_t total_traffic_count_bike = 0;
+    float flow_accumulate_bike = 0.0f;
+    float density_accumulate_car = 0.0f;
+    uint64_t total_traffic_count_car = 0;
+    float flow_accumulate_car = 0.0f;
+    bool allowOvertake = false;
 } street_t;
 
 typedef struct Intersection {
-	std::string id;
+	int id;
 	std::vector<Street*> inbound;
-	std::map<std::string, Street*> outbound;
+	std::map<int, Street*> outboundCar;
+	std::map<int, Street*> outboundBike;
 	float greenPhaseDuration = 5.0f;
 	float currentPhase = 5.0f;
 	int32_t green = 0;
@@ -80,10 +99,18 @@ typedef struct Intersection {
 	std::vector<std::pair<Actor*, Street*>> arrivedFrom;
     bool outputFlag = true; // All intersections which have this set are added to the output.
     bool hasTrafficLight = false;
+    float car_flow_accumulate = 0.0f;
+    float bike_flow_accumulate = 0.0f;
+    bool needsUpdate = false;
 } intersection_t;
 
 typedef struct World {
 	std::vector<Intersection> intersections;
 	std::vector<Street> streets;
-	std::vector<Actor> actors;
+	std::vector<Actor*> actors;
+    std::map<std::string, int> string_to_int;
+    std::map<int, std::string> int_to_string;
+    std::vector<Intersection*> IntersectionPtr;
+    std::vector<Street*> StreetPtr;
+    Street empty;
 } world_t;

@@ -3,23 +3,11 @@
 #include <iostream>
 #include <algorithm>
 
-#include <omp.h>
-
 #include "fastFW.cuh"
-#define USE_CUDA
+#include "routing.hpp"
+#include <cassert>
+//#define SLURM_OUTPUT
 
-lookup_t BuildLookup(const world_t* world){
-    LookUp result{};
-    int index = 0;
-
-    for (auto iter : world->intersections){
-        result.int_to_string[index] = iter.id;
-        result.string_to_int[iter.id] = index;
-        index++;
-    }
-
-    return result;
-}
 
 // Idea: If a road has multiple turning lanes, split a intersection into sets of identical turn options and split the single
 // Intersection vertex into multiple vertecies representing the intersection with each new vertex only containing roads with
@@ -27,60 +15,86 @@ lookup_t BuildLookup(const world_t* world){
 
 // Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
 #ifndef USE_CUDA
-SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include) {
-	const size_t n = world->intersections.size();
+spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include) {
+    spt_t sopatree = {
+            .array = new int[world->intersections.size() * world->intersections.size()],
+            .size = static_cast<int>(world->intersections.size()),
+    };
+	float* minimumDistance = new float[sopatree.size * sopatree.size];
 
-	std::map<std::string, std::map<std::string, float>> minimumDistance;
-	SPT spt;
-
-    // initialize the value of the map with empty maps.
-	for (const auto& intersection : world->intersections) {
-		minimumDistance[intersection.id] = std::map<std::string, float>();
-	}
+    // Initialize the distance and neighbour arrays
+    for (int start = 0; start < sopatree.size; start++){
+        for (int end = 0; end < sopatree.size; end++) {
+            *(minimumDistance + start * sopatree.size + end) = (start != end) * 1e30; // Initializing the default distance between nodes
+            *(sopatree.array + start * sopatree.size + end) = (start == end) * start + (start != end) * -1; // Initializing the default neighbour
+        }
+    }
 
 	for (const auto& street : world->streets) {
 		if (std::find(include.begin(), include.end(), street.type) != include.end()) {
-			minimumDistance[street.start][street.end] = street.length;
-			spt[street.start][street.end] = street.end;
+            // Access the matrix as a 1D array.
+#ifdef ALTFW
+            float streetDistance = street.length / (street.speedlimit * street.width);
+#else
+            float streetDistance = street.length;
+#endif
+			*(minimumDistance + street.start * sopatree.size + street.end) = std::min(streetDistance,
+                                                                                      *(minimumDistance + street.start * sopatree.size + street.end));
+			*(sopatree.array + street.start * sopatree.size + street.end) = street.end;
 		}
 	}
 
-	for (const auto& intersection : world->intersections) {
-		minimumDistance[intersection.id][intersection.id] = 0;
-		spt[intersection.id][intersection.id] = intersection.id;
-	}
+    std::cout << std::endl;
+    int V = sopatree.size;
+    float newDistance;
+	for (int32_t k = 0; k < sopatree.size; k++) {
+        #ifdef SLURM_OUTPUT
+        std::cout << "k: " << (k + 1) << " of " << V << std::cout;
+#else
+        std::cout << "\rk: " << (k + 1) << " of " << V << std::flush;
+#endif
 
-	for (int32_t k = 0; k < n; k++) {
-        std::cout << "Computing " << k << " of " << n << std::endl;
-		std::string ks = world->intersections[k].id;
-		for (int32_t i = 0; i < n; i++) {
-			std::string is = world->intersections[i].id;
-			for (int32_t j = 0; j < n; j++) {
-				std::string js = world->intersections[j].id;
+        for (int32_t i = 0; i < sopatree.size; i++) {
 
-				bool hasEdge = spt[is].contains(ks) && spt[ks].contains(js);
-                // Check if the two edges is-ks, ks-js are valid.
-                // If the nodes is, js are not connected, connect them, else update the value if the connections is shorter.
-				if (hasEdge && (!spt[is].contains(js) || minimumDistance[is][js] > minimumDistance[is][ks] + minimumDistance[ks][js])) {
-					minimumDistance[is][js] = minimumDistance[is][ks] + minimumDistance[ks][js];
-					spt[is][js] = spt[is][ks];
-				}
+            for (int32_t j = 0; j < sopatree.size; j++) {
+                newDistance = minimumDistance[i * sopatree.size + k] + minimumDistance[k * sopatree.size + j];
+                sopatree.array[i * V + j] = sopatree.array[i * V + k] * (newDistance < minimumDistance[i * V + j]) + sopatree.array[i * V + j] * (newDistance >= minimumDistance[i * V + j]);
+                minimumDistance[i * V + j] = newDistance * (newDistance < minimumDistance[i * V + j]) + minimumDistance[i * V + j] * (newDistance >= minimumDistance[i * V + j]);
+
 			}
 		}
+        /*
+        for (int i = 0; i < sopatree.size; i++){
+            for (int j = 0; j < sopatree.size; j++){
+                std::cout << sopatree.array[i * sopatree.size + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;*/
 	}
-
-	return spt;
+    /*
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    */
+	return sopatree;
 }
 #else
 
-SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include){
-    LookUp lu = BuildLookup(world);
-
+spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include){
     // Allocating Memory for the distance and optimal neighbour
-    int size = lu.string_to_int.size();
+    spt_t sopatree = {
+            .array = new int[world->intersections.size() * world->intersections.size()],
+            .size = static_cast<int>(world->intersections.size()),
+    };
 
+    int size = sopatree.size;
     double *distance = (double*)malloc(size * size * sizeof(double));
-    int *neighbour = (int*)malloc(size * size * sizeof(int));
+    int *neighbour = sopatree.array;
 
     // Initialize the distance and neighbour arrays
     for (int start = 0; start < size; start++){
@@ -93,72 +107,179 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
     // Add Distance of Streets to the distance array
     for (const auto& street : world->streets) {
         if (std::find(include.begin(), include.end(), street.type) != include.end()) {
-            int start = lu.string_to_int[street.start];
-            int end = lu.string_to_int[street.end];
+            int start = street.start;
+            int end = street.end;
             // Take the shortest street in case there are multiple (for what ever reason there should be multiple
-            *(distance + start * size + end) = std::min(static_cast<double>(street.length), *(distance + start * size + end));
-            // spt[street.start][street.end] = street.end;
+#ifdef ALTFW
+                double streetDistance = street.length / (street.speedlimit * street.width);
+#else
+            double streetDistance = street.length;
+#endif
+            if (*(distance + start * size + end) < 1e30){
+                std::cout << "Road twice in graph" << std::endl;
+                std::cout << "Start: " << world->int_to_string.at(start) << " End: " << world->int_to_string.at(end) << std::endl;
+            }
+            *(distance + start * size + end) = std::min(streetDistance, *(distance + start * size + end));
             *(neighbour + start * size + end) = end;
         }
     }
-
-
+    /*
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
-            std::cout << *(neighbour + i * size + j) << " ";
+            std::cout << distance[i * size + j] << " ";
         }
         std::cout << std::endl;
     }
 
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
+        }
+        std::cout << std::endl;
+    }
+*/
     FloydWarshal(distance, neighbour, size);
-
-    for (int i = 0; i < size; i++){
-        for (int j = 0; j < size; j++){
-            std::cout << *(distance + i * size + j) << " ";
+    std::cout << std::endl;
+/*
+    for (int i = 0; i < sopatree.size; i++){
+        for (int j = 0; j < sopatree.size; j++){
+            std::cout << sopatree.array[i * sopatree.size + j] << " ";
         }
         std::cout << std::endl;
     }
 
+
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
-            std::cout << *(neighbour + i * size + j) << " ";
+            std::cout << distance[i * size + j] << " ";
         }
         std::cout << std::endl;
-    }
-
-    std::cout << "Done with Floyd-Warshal - converting to map" << std::endl;
-    SPT res = SPT {};
-
-    for (int i = 0; i < size; i++) {
-        res[lu.int_to_string[i]] = std::map<std::string, std::string> ();
-    }
-    
-    #pragma omp parallel for
-    for (int i = 0; i < size; i++){
-        for (int j = 0; j < size; j++){
-            res[lu.int_to_string[i]][lu.int_to_string[j]] = lu.int_to_string[*(neighbour + i * size + j)];
-        }
-    }
-    std::cout << "Map done" << std::endl;
-
-    return res;
-
+    }*/
+    return sopatree;
 }
 
 #endif
 
-Path retrievePath(SPT& spt, const std::string &start, const std::string &end) {
-	if (!spt[start].contains(end)) {
-		return Path();
+Path retrievePath(spt_t* spt, const int &start, const int &end) {
+	if (spt->array[start * spt->size + end] == -1) {
+		return {};
 	}
 
 	Path p;
-	// p.push(start);
 
-	std::string u = start;
+	int u = start;
+//    p.push(u);
 	while (u != end) {
-		u = spt[u][end];
+        assert(u < spt->size && "Overflow of the spt array");
+        assert(p.size() < spt->size && "Overflow of the path array" && "Overflow of the spt array");
+        if (u == -1){
+            return {};
+        }
+		u = spt->array[u * spt->size + end];
 		p.push(u);
 	}
 	return p;
+}
+
+float distanceFromPath(const world_t* world, actor_t* actor){
+    Path p;
+
+    // Initialize the path
+    int u = actor->start_id;
+    int v = actor->path.front();
+    float distance = 0.0f;
+    Street* street = nullptr;
+
+    // Walk along the Path
+    while (v != actor->end_id){
+        p.push(v);
+        actor->path.pop();
+
+        if (actor->type == ActorTypes::Bike){
+            street = world->intersections.at(u).outboundBike.at(v);
+        } else {
+            street = world->intersections.at(u).outboundCar.at(v);
+        }
+        distance += street->length;
+        u = v;
+        v = actor->path.front();
+    }
+
+    // Do the last iteration
+    p.push(v);
+    actor->path.pop();
+
+    if (actor->type == ActorTypes::Bike){
+        street = world->intersections.at(u).outboundBike.at(v);
+    } else {
+        street = world->intersections.at(u).outboundCar.at(v);
+    }
+    distance += street->length;
+
+    // Move the new path to the actor and hope the old path get's deleted
+    actor->path = p;
+
+    return distance;
+}
+
+std::vector<std::string> getPath(actor_t* actor, const world_t* world){
+    std::vector<std::string> path;
+    Path replacement;
+
+    int u = actor->start_id;
+    int v = actor->path.front();
+    path.push_back(world->int_to_string.at(u));
+
+    while (v != actor->end_id){
+        path.push_back(world->int_to_string.at(v));
+        replacement.push(v);
+        actor->path.pop();
+        u = v;
+        v = actor->path.front();
+    }
+    path.push_back(world->int_to_string.at(v));
+    replacement.push(v);
+    actor->path = replacement;
+    return path;
+}
+
+std::vector<std::string> StreetPath(actor_t* actor, const world_t* world){
+    Path p;
+
+    // Initialize the path
+    int u = actor->start_id;
+    int v = actor->path.front();
+    std::vector<std::string> strPath = {};
+    Street* street = nullptr;
+
+    // Walk along the Path
+    while (v != actor->end_id){
+        p.push(v);
+        actor->path.pop();
+
+        if (actor->type == ActorTypes::Bike){
+            street = world->intersections.at(u).outboundBike.at(v);
+        } else {
+            street = world->intersections.at(u).outboundCar.at(v);
+        }
+        strPath.push_back(street->id);
+        u = v;
+        v = actor->path.front();
+    }
+
+    // Do the last iteration
+    p.push(v);
+    actor->path.pop();
+
+    if (actor->type == ActorTypes::Bike){
+        street = world->intersections.at(u).outboundBike.at(v);
+    } else {
+        street = world->intersections.at(u).outboundCar.at(v);
+    }
+    strPath.push_back(street->id);
+
+    // Move the new path to the actor and hope the old path get's deleted
+    actor->path = p;
+
+    return strPath;
 }

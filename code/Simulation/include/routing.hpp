@@ -2,7 +2,12 @@
 
 #include <map>
 #include "actors.hpp"
-
+#define USE_CUDA
+//#define ALTFW
+// The option alt fw uses a different weight for  the edges in the graph during the floyd warshall computation.
+// This was done to debug an error. It might also be useful for testing different configurations.
+// Enabeling this option changes the weight of an edge from the length of a road to the length of a road divided by the speed limit and the width of the road.
+// d = length / (velocity * width)
 /*
 	Inspired by https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm#Path_reconstruction
 
@@ -48,14 +53,10 @@
 	}
 */
 
-typedef std::map<std::string, std::map<std::string, std::string>> SPT;
-
-typedef struct LookUp {
-    std::map<std::string, int> string_to_int;
-    std::map<int, std::string> int_to_string;
-} lookup_t;
-
-lookup_t BuildLookup(const world_t* world);
+typedef struct SPT{
+    int* array;
+    int size;
+} spt_t;
 
 /*
  * Calculates the shortest path tree for the given world.
@@ -65,7 +66,7 @@ lookup_t BuildLookup(const world_t* world);
  *
  * @return The shortest path tree.
  */
-SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include);
+spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include);
 
 /*
  * Retrieves the path from start to end.
@@ -76,4 +77,10 @@ SPT calculateShortestPathTree(const world_t* world, const std::vector<StreetType
  *
  * @return The path from start to end.
  */
-Path retrievePath(SPT& spt, const std::string &start, const std::string &end);
+Path retrievePath(spt_t* spt, const int &start, const int &end);
+
+float distanceFromPath(const world_t* world, actor_t* actor);
+
+std::vector<std::string> getPath(actor_t* actor, const world_t* world);
+
+std::vector<std::string> StreetPath(actor_t* actor, const world_t* world);
