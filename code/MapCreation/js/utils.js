@@ -368,8 +368,8 @@ function getCookie(name) {
  */
 function getSnappedMiddleOfScreen() {
     let point = new Point();
-    point.x = snap((window.innerWidth / 2) + $(document).scrollLeft());
-    point.y = snap((window.innerHeight / 2) + $(document).scrollTop());
+    point.x = snap((window.innerWidth / 2) + $(document.body).scrollLeft());
+    point.y = snap((window.innerHeight / 2) + $(document.body).scrollTop());
     return point;
 }
 
@@ -573,5 +573,17 @@ function calculateCubicPoints(p, q) {
  */
 function offsetPercent(newTotalLength, oldTotalLength, offset, percent) {
     return (offset + (percent * newTotalLength)) / oldTotalLength;
+}
+
+function split_by_type(data) {
+    let split_data = {};
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].type in split_data) {
+            split_data[data[i].type].push(data[i]);
+        } else {
+            split_data[data[i].type] = [data[i]];
+        }
+    }
+    return split_data;
 }
 
