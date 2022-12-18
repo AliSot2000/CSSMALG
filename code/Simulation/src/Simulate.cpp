@@ -13,6 +13,7 @@
 #include "update.hpp"
 #include "io.hpp"
 #include "utils.hpp"
+#include <cassert>
 
 #define STATUS_UPDATAE_INTERVAL 60
 #define USE_STUPID_INTERSECTIONS false
@@ -21,6 +22,7 @@
 #define SLURM_OUTPUT
 
 int main(int argc, char* argv[]) {
+    assert(false && "Sanity checking with compiilers that asserts are still there with -O3"); // Comment for debugging
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
 
     if (argc < 9) {
