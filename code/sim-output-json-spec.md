@@ -67,3 +67,5 @@ The simulation section contains the actual simulation data.
 This is a list of all the steps in the simulation.
 Each step contains the position of all the updated agents in the simulation.
 The position of an agent is defined by the road it is on, the percent to the end of the road and the distance to the side of the road.
+
+If the Actor has a start_time and end_time == 10.0f, the simulation of the actor failed because it has not a valid path.
