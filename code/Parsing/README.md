@@ -19,7 +19,7 @@ After generating the map data, `AgentGenerator.php` is called and generates diff
 
 ### Assumptions
 - Assumptions regarding Agent Generation: 
-    - There will be one agent spawned per hour and $10000 m^2$ of the map
+    - There will be one agent spawned per hour and $4000 m^2$ of the map
     - Public transport is ignored
     - The start and end point of agents are completely random
 - Assumptions regarding Map Generation:
