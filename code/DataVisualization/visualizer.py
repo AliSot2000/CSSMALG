@@ -52,7 +52,7 @@ class Visualizer:
         if is_agent:  # If the agent type is agent
             for collection in collections:
                 data.append(self.mongo.find(simulation,
-                                            collection,
+                                            collection, # TODO: Filter is for ints. However stuff is lists
                                             {f'{road_type}_car_{attribute}': {'$gt': 0}, f'{road_type}_bike_{attribute}': {'$gt': 0}, 'time': {'$lte': 60000}},
                                             {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                             [('time', 1)]))
@@ -269,7 +269,7 @@ class Visualizer:
                 else:  # If the agent type is not agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {tracked_attribute: {'$exists': True, '$gt': 0}, 'time': {'$lte': 60000}},
+                                              {tracked_attribute: {'$gt': 0}, 'time': {'$lte': 60000}},
                                               {tracked_attribute: 1},
                                               [('time', 1)])
 
