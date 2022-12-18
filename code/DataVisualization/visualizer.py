@@ -53,14 +53,14 @@ class Visualizer:
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}},
+                                            {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 1000}},
                                             {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                             [('time', 1)]))
         else:  # If the agent type is not agent
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {tracked_attribute: {'$exists': True}},
+                                            {tracked_attribute: {'$exists': True}, 'time': {'$lte': 1000}},
                                             {tracked_attribute: 1},
                                             [('time', 1)]))
 
@@ -82,8 +82,7 @@ class Visualizer:
             data_points = []
             for data_point in range(data_length):  # Loop over all data points
                 if is_agent:
-                    data_points.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'])
-                    data_points.extend(data[data_point][time_step][f'{road_type}_bike_{attribute}'])
+                    data_points.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'] + data[data_point][time_step][f'{road_type}_bike_{attribute}'])
                 else:
                     data_points.extend(data[data_point][time_step][tracked_attribute])
             # Calculate all the data we might want to display
@@ -175,7 +174,7 @@ class Visualizer:
         p.plot(minutes, tracked_data['total'], 't', '#5b5b5b')
         p.set_x_label('Minutes')
         p.set_y_label(attribute.title())
-        p.set_title(f'{int("".join(x for x in simulation if x.isdigit()))}% Bikes - {attribute.title()} Comparison')
+        p.set_title(f'{get_number(simulation)}% Bikes - {attribute.title()} Comparison')
         p.annotate_lines()
         p.save(os.path.join(self.output_path, f'{road_type}_{attribute}_comparison.png'))
         p.close()
@@ -190,13 +189,13 @@ class Visualizer:
         print(f'Visualizing {agent_type} AVG Speed over all Simulations')
         data = []
 
-        simulations.sort()  # Sort the simulations
+        simulations.sort(key=get_number)  # Sort the simulations
 
         is_agent = agent_type == 'agent'  # Check if the agent type is agent
         pretty_names = []  # Initialize the pretty names list
 
         for simulation in simulations:  # Loop over all simulations
-            pretty_names.append(f'{int("".join(x for x in simulation if x.isdigit()))}%')  # Add the pretty name to the list
+            pretty_names.append(f'{get_number(simulation)}%')  # Add the pretty name to the list
             all_runs = self.mongo.get_collections(simulation)  # Get all the collections
             data_point = []  # Initialize the data point list
             runs = []  # Initialize the runs list
@@ -229,6 +228,58 @@ class Visualizer:
         box_plot.save(os.path.join(self.output_path, f'avg_speed_{agent_type}.png'))
         box_plot.close()
 
+    def visualize_over_different_sims(self, simulations, road_type: str = 'intersection', agent_type: str = 'car', attribute: str = 'flow'):
+        print(f'Visualizing {road_type} {agent_type} {attribute} over all Simulations')
+
+        data = []
+
+        simulations.sort(key=get_number)  # Sort the simulations
+
+        is_agent = agent_type == 'agent'  # Check if the agent type is agent
+
+        tracked_attribute = f'{road_type}_{agent_type}_{attribute}'  # Set the tracked attribute
+
+        pretty_names = []  # Initialize the pretty names list
+
+        for simulation in simulations:  # Loop over all simulations
+            pretty_names.append(f'{get_number(simulation)}%')  # Add the pretty name to the list
+            all_runs = self.mongo.get_collections(simulation)  # Get all the collections
+            data_point = []  # Initialize the data point list
+            runs = []  # Initialize the runs list
+            for run in all_runs:  # Loop over all runs
+                if '_timesteps' in run:  # If the run is an agent run
+                    runs.append(run)  # Add the run to the runs list
+
+            for run in runs:  # Loop over all runs
+                if is_agent:  # If the agent type is agent
+                    results = self.mongo.find(simulation,
+                                              run,
+                                              {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 1000}},
+                                              {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
+                                              [('time', 1)])
+                else:  # If the agent type is not agent
+                    results = self.mongo.find(simulation,
+                                              run,
+                                              {tracked_attribute: {'$exists': True}, 'time': {'$lte': 1000}},
+                                              {tracked_attribute: 1},
+                                              [('time', 1)])
+
+                for timestep in results:
+                    if is_agent:
+                        data_point.append(timestep[f'{road_type}_car_{attribute}'] + timestep[f'{road_type}_bike_{attribute}'])
+                    else:
+                        data_point.append(timestep[tracked_attribute])
+
+            data.append(data_point)  # Add the data point to the data list
+
+            box_plot = BoxPlot(data)  # Create a box plot
+            box_plot.set_title(f'{road_type.title} {attribute.title()} of {agent_type.title()}s')
+            box_plot.set_x_label('Simulations')
+            box_plot.set_y_label(f'{attribute.title()}')
+            box_plot.set_x_ticks(pretty_names)
+            box_plot.save(os.path.join(self.output_path, f'{attribute}_{agent_type}.png'))
+            box_plot.close()
+
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
     """
@@ -242,28 +293,17 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     :return:
     """
     p = LinePlot()
-    p.plot(x, y['mean'], 'm')
-    p.plot(x, y['95percentile'], '95%', '#5b5b5b', 'dashed')
-    p.plot(x, y['5percentile'], '5%', '#5b5b5b', 'dashed')
-    p.plot(x, y['mean+variance'], 'Variance', '#5b5b5b', 'dashed')
-    p.plot(x, y['mean-variance'], 'Variance', '#5b5b5b', 'dashed')
+    p.plot(x, y['mean'], 'Arithmetic Mean')
+    p.plot(x, y['95percentile'], '95% Percentile', '#5b5b5b', 'dashed')
+    p.plot(x, y['5percentile'], '5% Percentile', '#5b5b5b', 'dashed')
+    p.plot(x, y['mean+variance'], 'Mean + Variance', '#999999', 'doted')
+    p.plot(x, y['mean-variance'], 'Mean - Variance', '#999999', 'doted')
     p.set_x_label(x_label)
     p.set_y_label(y_label)
     p.set_title(name)
     p.annotate_lines()
     p.save(output_name)
     p.close()
-
-
-def approx_equal(a, b, epsilon: int = 10):
-    """
-    Check if two numbers are approximately equal.
-    :param a: Number 1
-    :param b: Number 2
-    :param epsilon: Epsilon
-    :return: If the numbers are approximately equal
-    """
-    return abs(a - b) < epsilon
 
 
 def mean(data: list = None):
@@ -297,3 +337,12 @@ def percentile(data: list = None, percent: int = 50):
     data.sort()
     index = int(len(data) * percent / 100)
     return data[index]
+
+
+def get_number(text: str):
+    """
+    Get the number from a string.
+    :param text: Text
+    :return: Number
+    """
+    return int("".join(x for x in text if x.isdigit()))

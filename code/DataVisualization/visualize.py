@@ -53,6 +53,15 @@ class Visualize:
         self.visualizer.visualize_avg_speed_multiple_sims(simulations, 'car')
         self.visualizer.visualize_avg_speed_multiple_sims(simulations, 'bike')
         self.visualizer.visualize_avg_speed_multiple_sims(simulations, 'agent')
+        self.visualizer.visualize_over_different_sims(simulations, 'intersection', 'car', 'flow')
+        self.visualizer.visualize_over_different_sims(simulations, 'intersection', 'bike', 'flow')
+        self.visualizer.visualize_over_different_sims(simulations, 'intersection', 'agent', 'flow')
+        self.visualizer.visualize_over_different_sims(simulations, 'road', 'car', 'flow')
+        self.visualizer.visualize_over_different_sims(simulations, 'road', 'bike', 'flow')
+        self.visualizer.visualize_over_different_sims(simulations, 'road', 'agent', 'flow')
+        self.visualizer.visualize_over_different_sims(simulations, 'road', 'car', 'density')
+        self.visualizer.visualize_over_different_sims(simulations, 'road', 'bike', 'density')
+        self.visualizer.visualize_over_different_sims(simulations, 'road', 'agent', 'density')
 
 
 if __name__ == '__main__':

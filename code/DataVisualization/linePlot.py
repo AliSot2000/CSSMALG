@@ -14,6 +14,7 @@ class LinePlot:
         """
         self.fig, self.ax = plt.subplots()
         self.lines = []
+        self.labels = []
 
     def plot(self, x, y, label, color='Black', dash_style='solid'):
         """
@@ -25,8 +26,8 @@ class LinePlot:
         :param dash_style: Dash style of the line
         :return:
         """
-        self.lines.append(label)  # Add the label to the list of lines
-        self.ax.plot(x, y, label=label, color=color, linestyle=dash_style)  # Plot the line
+        self.labels.append(label)  # Add the label to the list of lines
+        self.lines.append(self.ax.plot(x, y, label=label, color=color, linestyle=dash_style))  # Plot the line
 
     def show(self):
         """
@@ -80,16 +81,7 @@ class LinePlot:
         Annotate the lines.
         :return:
         """
-        lines = self.ax.get_lines()  # Get all the lines
-        for line_index in range(len(lines)):  # For each line
-            y = lines[line_index].get_ydata()[-1]  # Get the last y value
-            self.ax.annotate(self.lines[line_index],  # Annotate the line
-                             xy=(1, y),  # At the last x and y value
-                             xytext=(8, 0),  # 8 points to the right and 0 points to the top
-                             xycoords=('axes fraction', 'data'),  # The coordinates are relative to the axes
-                             textcoords='offset points',  # The text coordinates are relative to the text
-                             size=14,  # The size of the text
-                             va="center")  # The vertical alignment of the text
+        self.ax.legend(self.lines, self.labels, loc="upper right")  # Annotate the lines
 
     def close (self):
         """
