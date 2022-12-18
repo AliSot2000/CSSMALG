@@ -272,13 +272,13 @@ class Visualizer:
 
             data.append(data_point)  # Add the data point to the data list
 
-            box_plot = BoxPlot(data)  # Create a box plot
-            box_plot.set_title(f'{road_type.title} {attribute.title()} of {agent_type.title()}s')
-            box_plot.set_x_label('Simulations')
-            box_plot.set_y_label(f'{attribute.title()}')
-            box_plot.set_x_ticks(pretty_names)
-            box_plot.save(os.path.join(self.output_path, f'{attribute}_{agent_type}.png'))
-            box_plot.close()
+        box_plot = BoxPlot(data)  # Create a box plot
+        box_plot.set_title(f'{road_type.title} {attribute.title()} of {agent_type.title()}s')
+        box_plot.set_x_label('Simulations')
+        box_plot.set_y_label(f'{attribute.title()}')
+        box_plot.set_x_ticks(pretty_names)
+        box_plot.save(os.path.join(self.output_path, f'{attribute}_{agent_type}.png'))
+        box_plot.close()
 
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
