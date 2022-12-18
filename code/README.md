@@ -22,4 +22,4 @@ Data parser to parse the raw OSM data and generate agents for the map.
 slurm, cudatoolkit, cmake, gcc, cmake
 export OMP_PROC_BIND=true
 export OMP_PLACES=threads
-export OMP_NUM_THREADS=64 # or 32
+export OMP_NUM_THREADS=16 # or 32
