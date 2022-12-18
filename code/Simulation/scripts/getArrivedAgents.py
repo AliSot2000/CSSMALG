@@ -6,6 +6,20 @@ import argparse
 import json
 import os
 from typing import Tuple
+from dataclasses import dataclass
+
+
+@dataclass
+class Road:
+    identifier: str
+    agents = 0
+
+
+def fill(base: str, length: int, fill_char: str = " "):
+    if len(base) >= length:
+        return base
+
+    return base + fill_char * (length - len(base))
 
 
 def print_stats(sim_out: dict):
@@ -36,6 +50,13 @@ def print_stats(sim_out: dict):
 
 
 def build_new_imput(allowed: list, all_agents: dict) -> dict:
+    """
+    Builld new input by selecting the agents from the input file.
+
+    :param allowed: list of allowed agents
+    :param all_agents: all agents from the previous file
+    :return:
+    """
     bikes = all_agents["bikes"]
     cars = all_agents["cars"]
 
@@ -54,6 +75,12 @@ def build_new_imput(allowed: list, all_agents: dict) -> dict:
 
 
 def split_arrived_stuck(sim_out: dict) -> Tuple[list, list]:
+    """
+    Retrieves the ids of the arrived and the stuck agents.
+
+    :param sim_out: output of the simulation
+    :return: arrived agents ids, stuck agents ids.
+    """
     arrived_ids = []
     stuck_ids = []
 
@@ -69,14 +96,92 @@ def split_arrived_stuck(sim_out: dict) -> Tuple[list, list]:
 
 
 def load_json(path):
+    """
+    Load Json File from Disk
+
+    :param path: path to file
+    :return:
+    """
     with open(path, "r") as file:
         data = json.load(file)
     return data
 
 
 def write_json(path, data):
+    """
+    Write the Data to the json file
+
+    :param path: path to file
+    :param data: data to be written
+    :return:
+    """
     with open(path, "w") as file:
         json.dump(data, file)
+
+
+def get_stuck_roads(sim_out: dict, number_of_roads: int = 20):
+    """
+    List the most stuck agents.
+    :param sim_out:
+    :param number_of_roads:
+    :return:
+    """
+    agents: dict = sim_out["simulation"][0]["agents"]
+
+    waiting_streets = {}
+    traffic_streets = {}
+    overall_streets = {}
+
+    # adding the roads
+    for aid, agent in agents.items():
+        # we're only interested in the agents that don't arrive
+        if agent["end_time"] != -1:
+            continue
+
+        if agent["distance_to_side"] == -10000.0:
+            # update the waiting streets, i.e. the actors waiting to be allowed into the streets
+            if waiting_streets.get(agent["road"]) is None:
+                waiting_streets[agent["road"]] = Road(agent["road"])
+            waiting_streets[agent["road"]].agents += 1
+
+        else:
+            if traffic_streets.get(agent["road"]) is None:
+                traffic_streets[agent["road"]] = Road(agent["road"])
+            traffic_streets[agent["road"]].agents += 1
+
+        if overall_streets.get(agent["road"]) is None:
+            overall_streets[agent["road"]] = Road(agent["road"])
+        overall_streets[agent["road"]].agents += 1
+
+    # sorting and creating the output
+    waiting_streets_top = [street for street in waiting_streets.values()]
+    traffic_streets_top = [street for street in traffic_streets.values()]
+    overall_streets_top = [street for street in overall_streets.values()]
+
+    waiting_streets_top.sort(key=lambda x: x.agents, reverse=True)
+    traffic_streets_top.sort(key=lambda x: x.agents, reverse=True)
+    overall_streets_top.sort(key=lambda x: x.agents, reverse=True)
+
+    header = fill("Top", 3) + " | " + fill("Waiting", 7) + " | " + fill("Traffic", 7) + " | " + fill("General", 7)
+    print(header)
+    print(len(header) * "-")
+
+    for i in range(number_of_roads):
+        waiting = ""
+        traffic = ""
+        overall = ""
+
+        if i < len(waiting_streets_top):
+            waiting = waiting_streets_top[i].identifier
+
+        if i < len(traffic_streets_top):
+            traffic = traffic_streets_top[i].identifier
+
+        if i < len(overall_streets_top):
+            overall = overall_streets_top[i].identifier
+
+        line = fill(str(1+i), 3) + " | " + fill(waiting, 7) + " | " + fill(traffic, 7) + " | " + fill(overall, 7)
+        print(line)
 
 
 if __name__ == "__main__":
@@ -100,6 +205,7 @@ if __name__ == "__main__":
     # information
     data = load_json(sim_out)
     print_stats(data)
+    get_stuck_roads(data)
 
     if arrived is not None or stuck is not None:
         if sim_in is None:
