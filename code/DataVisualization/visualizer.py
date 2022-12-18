@@ -270,7 +270,7 @@ class Visualizer:
                         data_point.extend(timestep[f'{road_type}_car_{attribute}'])
                         data_point.extend(timestep[f'{road_type}_bike_{attribute}'])
                     else:
-                        data_point.append(timestep[tracked_attribute])
+                        data_point.extend(timestep[tracked_attribute])
 
             data.append(data_point)  # Add the data point to the data list
 
