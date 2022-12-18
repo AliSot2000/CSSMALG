@@ -107,8 +107,8 @@ class AgentGenerator
      */
     private function calculateAgentAmount(): array {
         $area = round($this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon2"], $this->coordinates["lat1"]) *  $this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon1"], $this->coordinates["lat2"]));
-        // assumption: one new agent per 10000m^2 on the whole area of the map per hour
-        $agentAmount = $area / 10000;
+        // assumption: one new agent per 4000m^2 on the whole area of the map per hour
+        $agentAmount = $area / 4000;
         $agentDistribution = array();
         
         for ($i = 0; $i < 12; $i++) {
