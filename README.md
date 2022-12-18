@@ -23,16 +23,12 @@ for more bicycles. This is further pushed by the post-Covid popularity. This rai
 
 ## Expected Results
 
-We assume that the travel time for cars will get longer, and will get shorter for bikes. We assume that the traffic desity will rise, as bicycles take less space, so therefore more can use the same space.
-
-## References 
-
-The model could be extended by adding further kinds of agents, to account for busses, trams and other forms of public transit.
+We assume that the travel time for cars will get longer, and will get shorter for bikes. We assume that the traffic density will rise, as bicycles take less space, so therefore more can use the same space.
 
 
 ## Research Methods
 
-Agent Based Model 
+Agent Based Modelling
 
 ## Other
 
