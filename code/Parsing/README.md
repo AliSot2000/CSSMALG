@@ -18,11 +18,14 @@ The data directory is not included due to the size of the generated data. Howeve
 After generating the map data, `AgentGenerator.php` is called and generates different agent files to run on this map based on a few assumptions noted in [Assumptions](#assumptions). In the `data` directory, there are several subdirectories where data is stored. For more on this, see [Code Structure](#code-structure). The generated files follow the format given in  `agents-input-json-spec.md`.
 
 ### Assumptions
-- Assumption Regarding Agent Generation: 
-    - At a maximum, there will be one vehicle spawned per hour per $4000 m^2$ of the map. This can be changed by adjusting the value $4000$ in `AgentGenerator.php` in the `calculateAgentAmount()` method
-    - In the `calculateAgentAmount()` method in the `AgentGenerator.php` class there is an array `agentDistribution`, which contains the distribution of amount cars spawned. The value of entry $i$ means, that $maxAgentAmount \cdot agentDistribution[i]$ agents are spawned between $i$ and $(i+1)$ o'clock. This distribution is based on [Autofahren im Kanton Zürich](https://www.web.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00000266_00001307.pdf) Grafik 9.
-    - In the `direction` array in the `generateAgents()` method of `AgentGenerator.php` class, we save the relative amount of agents for each hour, that goes into the center of the city. Here we assume, that a circle with $\frac{1}{3}$ radius of the map is the center, where most people work. Of the people going into the center, $\frac{1}{3}$ is assumed to be center $\leftrightarrow$ center traffic, where as of the res $\frac{1}{3}$ is non-center $\leftrightarrow$ non-center traffic.
+- Assumptions regarding Agent Generation: 
+    - There will be one agent spawned per hour and $10000 m^2$ of the map
     - Public transport is ignored
+    - The start and end point of agents are completely random
+- Assumptions regarding Map Generation:
+    - All intersections have priority for vehicles coming from the right
+    - A car can drive into all outgoing roads of an intersection
+    - There are no crossings
 
 ## Code Structure
 ### Parser
