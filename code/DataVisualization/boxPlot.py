@@ -5,14 +5,14 @@ class BoxPlot:
     """
     BoxPlot because I want to plot boxes.
     """
-    def __init__(self, data):
+    def __init__(self, data, show_outliers=True):
         """
         Initialize the plot.
         :param data: Data to plot
         """
         self.data = data  # Data to plot
         self.fig, self.ax = plt.subplots()  # Initialize the plot
-        self.ax.boxplot(self.data)  # Plot the data
+        self.ax.boxplot(self.data, showfliers=show_outliers)  # Plot the data
     def show(self):
         """
         Show the plot.
