@@ -279,7 +279,7 @@ class Visualizer:
         box_plot.set_x_label('Simulations')
         box_plot.set_y_label(f'{attribute.title()}')
         box_plot.set_x_ticks(pretty_names)
-        box_plot.save(os.path.join(self.output_path, f'{attribute}_{agent_type}.png'))
+        box_plot.save(os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}.png'))
         box_plot.close()
 
 
