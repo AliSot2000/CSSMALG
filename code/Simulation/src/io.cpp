@@ -55,7 +55,7 @@ void importMap(world_t* world, json* map, bool doTrafficLights) {
 		Street& street = world->streets[index];
 		street.id = data["id"];
 		street.length = data["distance"];
-        assert(street.length > 20 && "Street is too short");
+//        assert(street.length > 20 && "Street is too short");
 		street.width = LANE_WIDTH * data["lanes"].size();
         street.speedlimit = static_cast<float>(data["speed_limit"]) / 3.6f;
         if (data.contains("oppositeStreetId")){
