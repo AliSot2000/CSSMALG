@@ -35,7 +35,7 @@ $$ lane = \text{ number of lanes}$$
 For the first plot we only want it for the duration of the time resolution and for the second plot over the whole day.
 
 ### Vehicle Density
-$$ flow = \frac{veh}{km \cdot lane}$$
+$$ density = \frac{veh}{km \cdot lane}$$
 
 $$ veh = \text{ number of vehicles}$$
 
