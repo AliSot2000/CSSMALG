@@ -4,7 +4,10 @@
 #include "actors.hpp"
 #define USE_CUDA
 //#define ALTFW
-
+// The option alt fw uses a different weight for  the edges in the graph during the floyd warshall computation.
+// This was done to debug an error. It might also be useful for testing different configurations.
+// Enabeling this option changes the weight of an edge from the length of a road to the length of a road divided by the speed limit and the width of the road.
+// d = length / (velocity * width)
 /*
 	Inspired by https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm#Path_reconstruction
 

@@ -696,9 +696,6 @@ bool emptynessOfStreets(world_t* world){
     bool empty = true;
     // #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
     for (int32_t i = 0; i < world->streets.size(); i++) {
-        if (empty && !world->streets.at(i).traffic.empty()) {
-            std::cout << "here" << std::endl;
-        }
         empty = world->streets.at(i).traffic.empty() && empty;
     }
     return empty;
