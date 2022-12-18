@@ -275,7 +275,7 @@ class Visualizer:
             data.append(data_point)  # Add the data point to the data list
 
         box_plot = BoxPlot(data)  # Create a box plot
-        box_plot.set_title(f'{road_type.title} {attribute.title()} of {agent_type.title()}s')
+        box_plot.set_title(f'{road_type.title()} {attribute.title()} of {agent_type.title()}s')
         box_plot.set_x_label('Simulations')
         box_plot.set_y_label(f'{attribute.title()}')
         box_plot.set_x_ticks(pretty_names)
