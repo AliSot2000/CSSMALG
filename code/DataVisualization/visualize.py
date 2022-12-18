@@ -65,6 +65,6 @@ class Visualize:
 
 
 if __name__ == '__main__':
-    output_path = '/home/jannick/Desktop/visualizations'  # Set the output path
+    output_path = '/home/alisot2000/Desktop/Visualisation'  # Set the output path
     visualizer = Visualize(output_path)  # Initialize the visualizer
     visualizer.generate_all_visualizations_over_runs()  # Generate all visualizations over runs
