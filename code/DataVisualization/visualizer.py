@@ -221,13 +221,21 @@ class Visualizer:
 
             data.append(data_point)  # Add the data point to the data list
 
-        box_plot = BoxPlot(data, False)  # Create a box plot
-        box_plot.set_title(f'Average Speed of {agent_type.title()}s')
-        box_plot.set_x_label('Simulations')
-        box_plot.set_y_label('Speed (m/s)')
-        box_plot.set_x_ticks(pretty_names)
-        box_plot.save(os.path.join(self.output_path, f'avg_speed_{agent_type}.png'))
-        box_plot.close()
+        box_plot_and_save_data(data,
+                               f'Average Speed of {agent_type.title()}s',
+                               pretty_names,
+                               'Simulations',
+                               'Speed (m/s)',
+                               os.path.join(self.output_path, f'avg_speed_{agent_type}(Fliers).png'),
+                               False)
+
+        box_plot_and_save_data(data,
+                               f'Average Speed of {agent_type.title()}s',
+                               pretty_names,
+                               'Simulations',
+                               'Speed (m/s)',
+                               os.path.join(self.output_path, f'avg_speed_{agent_type}(Fliers).png'),
+                               True)
 
     def visualize_over_different_sims(self, simulations, road_type: str = 'intersection', agent_type: str = 'car', attribute: str = 'flow'):
         print(f'Visualizing {road_type} {agent_type} {attribute} over all Simulations')
@@ -274,13 +282,21 @@ class Visualizer:
 
             data.append(data_point)  # Add the data point to the data list
 
-        box_plot = BoxPlot(data, False)  # Create a box plot
-        box_plot.set_title(f'{road_type.title()} {attribute.title()} of {agent_type.title()}s')
-        box_plot.set_x_label('Simulations')
-        box_plot.set_y_label(f'{attribute.title()}')
-        box_plot.set_x_ticks(pretty_names)
-        box_plot.save(os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}.png'))
-        box_plot.close()
+        box_plot_and_save_data(data,
+                               f'{road_type.title()} {attribute.title()} of {agent_type.title()}s',
+                               pretty_names,
+                               'Simulations',
+                               f'{attribute.title()}',
+                               os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}.png'),
+                               False)
+
+        box_plot_and_save_data(data,
+                               f'{road_type.title()} {attribute.title()} of {agent_type.title()}s',
+                               pretty_names,
+                               'Simulations',
+                               f'{attribute.title()}',
+                               os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}(Fliers).png'),
+                               True)
 
 
 def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
@@ -307,6 +323,15 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     p.save(output_name)
     p.close()
 
+
+def box_plot_and_save_data(data: list, name: str, labels: list, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = '', fliers: bool = False):
+    box_plot = BoxPlot(data, fliers)  # Create a box plot
+    box_plot.set_title(name)
+    box_plot.set_x_label(x_label)
+    box_plot.set_y_label(y_label)
+    box_plot.set_x_ticks(labels)
+    box_plot.save(output_name)
+    box_plot.close()
 
 def mean(data: list = None):
     """
