@@ -27,7 +27,8 @@ class LinePlot:
         :return:
         """
         self.labels.append(label)
-        self.lines.append(self.ax.plot(x, y, color=color, linestyle=dash_style)[0])  # Plot the line
+        line, = self.ax.plot(x, y, color=color, linestyle=dash_style)
+        self.lines.append(line)  # Plot the line
 
     def show(self):
         """
