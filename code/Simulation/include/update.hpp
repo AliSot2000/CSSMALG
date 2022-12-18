@@ -150,7 +150,7 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
  *
  * @returns The desired distance between the actor and the border of the next vehicle.
 */
-float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity);
+float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity, const bool vehicleInFront);
 
 /*
  * If no car could move

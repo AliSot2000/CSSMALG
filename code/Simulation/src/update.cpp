@@ -546,7 +546,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                                                       + frontVehicle->distanceToIntersection
                                                       + MIN_DISTANCE_BETWEEN_VEHICLES));
 
-                assert(frontVehicle->distanceToIntersection + frontVehicle->length + MIN_DISTANCE_BETWEEN_VEHICLES <
+                assert(frontVehicle->distanceToIntersection + frontVehicle->length + MIN_DISTANCE_BETWEEN_VEHICLES <=
                        actor->distanceToIntersection - movement_distance);
             }
             actor->distanceToIntersection -= movement_distance;
@@ -577,14 +577,15 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                                               (1
                                                - std::pow(actor->current_velocity / actor->target_velocity,
                                                           actor->acceleration_exp)
-                                               - std::pow(dynamicBrakingDistance(actor, -1 * actor->current_velocity) /
+                                               - std::pow(dynamicBrakingDistance(actor, -1 * actor->current_velocity,
+                                                                                 false) /
                                                           maxDrivableDistance, 2.0f))
                                                                         : // Case when the actor is in the front of the queue.
                                               actor->acceleration *
                                               (1
                                                - std::pow(actor->current_velocity / actor->target_velocity,
                                                           actor->acceleration_exp)
-                                               - std::pow(dynamicBrakingDistance(actor, actor->current_velocity - frontVehicle->current_velocity) /
+                                               - std::pow(dynamicBrakingDistance(actor, actor->current_velocity - frontVehicle->current_velocity, true) /
                                                           maxDrivableDistance,
                                                           2.0f));       // Case when the actor is in the back of the queue.
             } else {
@@ -660,8 +661,14 @@ void updateIntersections(world_t* world, const float timeDelta, bool stupidInter
     updatetInsertData(world);
 }
 
-float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity) {
-    return MIN_DISTANCE_BETWEEN_VEHICLES + actor->current_velocity * SAFETY_TIME_HEADWAY + (delta_velocity * actor->current_velocity) / (2 * std::sqrt(actor->acceleration * actor->deceleration));
+float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity, const bool vehicleInFront) {
+    if (vehicleInFront) {
+        return MIN_DISTANCE_BETWEEN_VEHICLES + actor->current_velocity * SAFETY_TIME_HEADWAY +
+               (delta_velocity * actor->current_velocity) / (2 * std::sqrt(actor->acceleration * actor->deceleration));
+    } else {
+        return actor->current_velocity * SAFETY_TIME_HEADWAY +
+               (delta_velocity * actor->current_velocity) / (2 * std::sqrt(actor->acceleration * actor->deceleration));
+    }
 }
 
 void resolveDeadLocks(world_t* world, const float current_time) {
@@ -689,6 +696,9 @@ bool emptynessOfStreets(world_t* world){
     bool empty = true;
     // #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
     for (int32_t i = 0; i < world->streets.size(); i++) {
+        if (empty && !world->streets.at(i).traffic.empty()) {
+            std::cout << "here" << std::endl;
+        }
         empty = world->streets.at(i).traffic.empty() && empty;
     }
     return empty;
