@@ -639,7 +639,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
 bool updateStreets(world_t* world, const float timeDelta){
     bool actorMoved = false;
 
-    #pragma omp parallel for reduction(||:actorMoved)  default(none) shared(world, timeDelta)
+    // #pragma omp parallel for reduction(||:actorMoved)  default(none) shared(world, timeDelta)
     for (int32_t i = 0; i < 128; i++) {
         actorMoved = singleStreetStrideUpdate(world, timeDelta, 128, i) || actorMoved;
     }
@@ -649,14 +649,14 @@ bool updateStreets(world_t* world, const float timeDelta){
 }
 
 void updateIntersections(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time){
-    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
+    // #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
     for (int32_t i = 0; i < 128; i++){
         singleIntersectionStrideUpdate(world, timeDelta, stupidIntersections, current_time, 128, i);
     }
 
     updateData(world);
 
-    #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
+    // #pragma omp parallel for  default(none) shared(world, timeDelta, stupidIntersections, current_time)
     for (int32_t i = 0; i < 128; i++){
         singleIntersectionStrideUpdateInsert(world, current_time, 128, i);
     }
@@ -691,7 +691,7 @@ void resolveDeadLocks(world_t* world, const float current_time) {
 
 bool emptynessOfStreets(world_t* world){
     bool empty = true;
-    #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
+    // #pragma omp parallel for reduction(&&:empty) default(none) shared(world)
     for (int32_t i = 0; i < world->streets.size(); i++) {
         empty = world->streets.at(i).traffic.empty() && empty;
     }
