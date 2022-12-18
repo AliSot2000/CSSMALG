@@ -2,17 +2,14 @@
 
 class AgentGenerator
 {
-    private array $center;
-    private int $radius;
     private string $prefix;
     private array $coordinates;
-    private array $nodesIn = array();
-    private array $nodesOut = array();
+    private array $nodes = array();
     private array $unreachable = array();
     private array $bikePercentages = array(0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2);
 
     /**
-     * constructor generating center of field and the radius
+     * constructor
      * @param float $lon1
      * @param float $lon2
      * @param float $lat1
@@ -22,10 +19,6 @@ class AgentGenerator
     public function __construct(float $lon1, float $lon2, float $lat1, float $lat2, string $prefix)
     {
         $this->coordinates = array("lon1" => $lon1, "lon2" => $lon2, "lat1" => $lat1, "lat2" => $lat2);;
-        $this->center = array("lon" => ($lon1 + $lon2) / 2, "lat" => ($lat1 + $lat2) / 2);
-
-        $this->radius = round(min($this->distance($this->center["lon"], $this->center["lat"], $lon1,  $this->center["lat"]), $this->distance($this->center["lon"], $this->center["lat"], $this->center["lon"],  $lat1)) / 3);
-
         $this->prefix = $prefix;
     }
 
@@ -44,12 +37,7 @@ class AgentGenerator
      */
     private function generateAgents(): void {
         $agentAmount = $this->calculateAgentAmount();
-        // distribution of cars going into the city center
-        // 1/3 of going into city center we assume inter city travel and for 1/3 of rest we assume outer city travel
-        $direction = array(0.5, 0.5, 0.5, 0.5, 0.55, 0.65, 0.7, 0.7, 0.7, 0.6, 0.55, 0.5, 0.5, 0.5, 0.5, 0.35, 0.3, 0.3, 0.3, 0.35, 0.4, 0.5, 0.5, 0.5);
-
-        $numInNodes = count($this->nodesIn) - 1;
-        $numOutNodes = count($this->nodesOut) - 1;
+        $numNodes = count($this->nodes) - 1;
 
         // generate agents
         foreach ($this->bikePercentages AS $bikePercentage) {
@@ -58,13 +46,10 @@ class AgentGenerator
                 $carAgents = array();
                 $bikeAgents = array();
 
-                $secondCounter = 0;
                 $totVehicles = 0;
 
                 foreach ($agentAmount as $hour => $amount) {
-                    // number of agents going from out to center (+ center to center (+ center to out (+ out to out)))
-                    $directionAmount = array($direction[$hour] * $amount * (2/3), $direction[$hour] * $amount, $amount - $amount * (1 - $direction[$hour]) / 3);
-                    $secondStart = $hour * 3600;
+                    $timeBase = $hour * 3600;
                     
                     // create car agents
                     for ($i = 0; $i < $amount * (1 - $bikePercentage); $i++) {
@@ -78,32 +63,13 @@ class AgentGenerator
                         $deceleration = rand(200, 600) / 100;
                         // pseudo random acceleration exponent
                         $accExp = rand(80, 120) / 10;
-    
-                        $startId = $endId = 0;
 
-                        if ($i < $directionAmount[0] * (1 - $bikePercentage)) {
-                            do {
-                                $startId = $this->nodesOut[rand(0, $numOutNodes)];
-                                $endId = $this->nodesIn[rand(0, $numInNodes)];
-                            } while (isset($this->unreachable["carTree"][$startId][$endId]));
-                        } else if ($i < $directionAmount[1] * (1 - $bikePercentage)) {
-                            do {
-                                $startId = $this->nodesIn[rand(0, $numInNodes)];
-                                $endId = $this->nodesIn[rand(0, $numInNodes)];
-                            } while ($startId == $endId || isset($this->unreachable["carTree"][$startId][$endId]));
-                        } else if ($i < $directionAmount[2] * (1 - $bikePercentage)) {
-                            do {
-                               $startId = $this->nodesIn[rand(0, $numInNodes)];
-                               $endId = $this->nodesOut[rand(0, $numOutNodes)];
-                           } while (isset($this->unreachable["carTree"][$startId][$endId]));
-                        } else {
-                            do {
-                                $startId = $this->nodesOut[rand(0, $numOutNodes)];
-                                $endId = $this->nodesOut[rand(0, $numOutNodes)];
-                            }  while ($startId == $endId || isset($this->unreachable["carTree"][$startId][$endId]));
-                        }
+                        do {
+                            $startId = $this->nodes[rand(0, $numNodes)];
+                            $endId = $this->nodes[rand(0, $numNodes)];
+                         } while ($startId == $endId || isset($this->unreachable["carTree"][$startId][$endId]));
 
-                        $carAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" => $secondStart + rand(0, 35999) / 10);
+                        $carAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" => $timeBase + rand(0, 35999) / 10);
                         $totVehicles++;
                     }
 
@@ -120,29 +86,13 @@ class AgentGenerator
                         // pseudo random acceleration exponent
                         $accExp = rand(80, 120) / 10;
 
-                        if ($i < $directionAmount[0] * $bikePercentage) {
-                            do {
-                                $startId = $this->nodesOut[rand(0, $numOutNodes)];
-                                $endId = $this->nodesIn[rand(0, $numInNodes)];
-                             } while (isset($this->unreachable["bikeTree"][$startId][$endId]));
-                        } else if ($i < $directionAmount[1] * $bikePercentage) {
-                            do {
-                                $startId = $this->nodesIn[rand(0, $numInNodes)];
-                                $endId = $this->nodesIn[rand(0, $numInNodes)];
-                            } while ($startId == $endId || isset($this->unreachable["bikeTree"][$startId][$endId]));
-                        } else if ($i < $directionAmount[2] * $bikePercentage) {
-                            do {
-                                $startId = $this->nodesIn[rand(0, $numInNodes)];
-                                $endId = $this->nodesOut[rand(0, $numOutNodes)];
-                            } while (isset($this->unreachable["bikeTree"][$startId][$endId]));
-                        } else {
-                            do {
-                                $startId = $this->nodesOut[rand(0, $numOutNodes)];
-                                $endId = $this->nodesOut[rand(0, $numOutNodes)];
-                            }  while ($startId == $endId || isset($this->unreachable["bikeTree"][$startId][$endId]));
-                        }
+                        
+                        do {
+                            $startId = $this->nodes[rand(0, $numNodes)];
+                            $endId = $this->nodes[rand(0, $numNodes)];
+                         } while ($startId == $endId || isset($this->unreachable["bikeTree"][$startId][$endId]));
 
-                        $bikeAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" =>  $secondStart + rand(0, 35999) / 10);
+                        $bikeAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" =>  $timeBase + rand(0, 35999) / 10);
                         $totVehicles++;
                     }
                 }
@@ -157,14 +107,12 @@ class AgentGenerator
      */
     private function calculateAgentAmount(): array {
         $area = round($this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon2"], $this->coordinates["lat1"]) *  $this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon1"], $this->coordinates["lat2"]));
-        // assumption: at rush hour one new agent per 32000m^2 on the whole area of the map per hour
-        $maxAgentAmount = $area / 32000;
-        // assumption with at what hour will there be what percentage of $maxAgentAmount spawned
-        // increased at morning rush hour, lunch and evening rush hour
-        $agentDistribution = array(0.05, 0.05, 0.06, 0.075, 0.1, 0.25, 0.4, 0.7, 0.65, 0.5, 0.45, 0.4, 0.4, 0.4, 0.5, 0.65, 0.8, 1, 0.8, 0.5, 0.3, 0.1, 0.075, 0.05);
-
-        foreach ($agentDistribution AS &$amount) {
-            $amount = round($amount * $maxAgentAmount);
+        // assumption: one new agent per 10000m^2 on the whole area of the map per hour
+        $agentAmount = $area / 10000;
+        $agentDistribution = array();
+        
+        for ($i = 0; $i < 12; $i++) {
+            $agentDistribution[] = $agentAmount;
         }
 
         return $agentDistribution;
@@ -197,11 +145,7 @@ class AgentGenerator
         $data = json_decode(file_get_contents("../data/" . $this->prefix . "MapExport.tsim"), true)["intersections"];
 
         foreach ($data AS $intersection) {
-            if ($this->distance($intersection["coordinates"]["lon"], $intersection["coordinates"]["lat"], $this->center["lon"], $this->center["lat"]) > $this->radius) {
-                $this->nodesOut[] = $intersection["id"];
-            } else {
-                $this->nodesIn[] = $intersection["id"];
-            }
+            $this->nodes[] = $intersection["id"];
         }
         
         $reachabilityData = file_get_contents("../data/reachability/" . $this->prefix . "Reachability.json");
