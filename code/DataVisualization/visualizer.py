@@ -82,7 +82,8 @@ class Visualizer:
             data_points = []
             for data_point in range(data_length):  # Loop over all data points
                 if is_agent:
-                    data_points.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'] + data[data_point][time_step][f'{road_type}_bike_{attribute}'])
+                    data_points.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'])
+                    data_points.extend(data[data_point][time_step][f'{road_type}_bike_{attribute}'])
                 else:
                     data_points.extend(data[data_point][time_step][tracked_attribute])
             # Calculate all the data we might want to display
@@ -266,7 +267,8 @@ class Visualizer:
 
                 for timestep in results:
                     if is_agent:
-                        data_point.append(timestep[f'{road_type}_car_{attribute}'] + timestep[f'{road_type}_bike_{attribute}'])
+                        data_point.extend(timestep[f'{road_type}_car_{attribute}'])
+                        data_point.extend(timestep[f'{road_type}_bike_{attribute}'])
                     else:
                         data_point.append(timestep[tracked_attribute])
 
