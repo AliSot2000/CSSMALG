@@ -53,14 +53,14 @@ class Visualizer:
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {f'{road_type}_car_{attribute}': {'$exists': True, '$gte': 0}, f'{road_type}_bike_{attribute}': {'$exists': True, '$gte': 0}, 'time': {'$lte': 1000}},
+                                            {f'{road_type}_car_{attribute}': {'$gte': 0}, f'{road_type}_bike_{attribute}': {'$gte': 0}, 'time': {'$lte': 1000}},
                                             {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                             [('time', 1)]))
         else:  # If the agent type is not agent
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {tracked_attribute: {'$exists': True, '$gte': 0}, 'time': {'$lte': 1000}},
+                                            {tracked_attribute: {'$gte': 0}, 'time': {'$lte': 1000}},
                                             {tracked_attribute: 1},
                                             [('time', 1)]))
 
@@ -131,8 +131,8 @@ class Visualizer:
         for collection in collections:
             data.append(self.mongo.find(simulation,
                                         collection,
-                                        {f'{road_type}_car_{attribute}': {'$exists': True, '$gte': 0},
-                                         f'{road_type}_bike_{attribute}': {'$exists': True, '$gte': 0}},
+                                        {f'{road_type}_car_{attribute}': {'$gte': 0},
+                                         f'{road_type}_bike_{attribute}': {'$gte': 0}},
                                         {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                         [('time', 1)]))
 
@@ -255,13 +255,13 @@ class Visualizer:
                 if is_agent:  # If the agent type is agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {f'{road_type}_car_{attribute}': {'$exists': True, '$gte': 0}, f'{road_type}_bike_{attribute}': {'$exists': True, '$gte': 0}, 'time': {'$lte': 1000}},
+                                              {f'{road_type}_car_{attribute}': {'$gte': 0}, f'{road_type}_bike_{attribute}': {'$gte': 0}, 'time': {'$lte': 1000}},
                                               {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                               [('time', 1)])
                 else:  # If the agent type is not agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {tracked_attribute: {'$exists': True, '$gte': 0}, 'time': {'$lte': 1000}},
+                                              {tracked_attribute: {'$gte': 0}, 'time': {'$lte': 1000}},
                                               {tracked_attribute: 1},
                                               [('time', 1)])
 
