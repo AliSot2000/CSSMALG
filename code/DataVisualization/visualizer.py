@@ -52,15 +52,15 @@ class Visualizer:
         if is_agent:  # If the agent type is agent
             for collection in collections:
                 data.append(self.mongo.find(simulation,
-                                            collection, # TODO: Filter is for ints. However stuff is lists
-                                            {f'{road_type}_car_{attribute}': {'$gt': 0}, f'{road_type}_bike_{attribute}': {'$gt': 0}, 'time': {'$lte': 60000}},
+                                            collection,
+                                            {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 60000}},
                                             {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                             [('time', 1)]))
         else:  # If the agent type is not agent
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {tracked_attribute: {'$gt': 0}, 'time': {'$lte': 60000}},
+                                            {tracked_attribute: {'$exists': True}, 'time': {'$lte': 60000}},
                                             {tracked_attribute: 1},
                                             [('time', 1)]))
 
@@ -82,10 +82,10 @@ class Visualizer:
             data_points = []
             for data_point in range(data_length):  # Loop over all data points
                 if is_agent:
-                    data_points.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'])
-                    data_points.extend(data[data_point][time_step][f'{road_type}_bike_{attribute}'])
+                    data_points.extend(filter(data[data_point][time_step][f'{road_type}_car_{attribute}'], sanitise))
+                    data_points.extend(filter(data[data_point][time_step][f'{road_type}_bike_{attribute}'], sanitise))
                 else:
-                    data_points.extend(data[data_point][time_step][tracked_attribute])
+                    data_points.extend(filter(data[data_point][time_step][tracked_attribute], sanitise))
             # Calculate all the data we might want to display
             m = mean(data_points)
             tracked_data['mean'].append(m)
@@ -131,8 +131,8 @@ class Visualizer:
         for collection in collections:
             data.append(self.mongo.find(simulation,
                                         collection,
-                                        {f'{road_type}_car_{attribute}': {'$gt': 0},
-                                         f'{road_type}_bike_{attribute}': {'$gt': 0}},
+                                        {f'{road_type}_car_{attribute}': {'$exists': True},
+                                         f'{road_type}_bike_{attribute}': {'$exists': True}},
                                         {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                         [('time', 1)]))
 
@@ -152,8 +152,8 @@ class Visualizer:
             cars = []
             bikes = []
             for data_point in range(data_length):  # Loop over all data points
-                cars.extend(data[data_point][time_step][f'{road_type}_car_{attribute}'])
-                bikes.extend(data[data_point][time_step][f'{road_type}_bike_{attribute}'])
+                cars.extend(filter(data[data_point][time_step][f'{road_type}_car_{attribute}'], sanitise))
+                bikes.extend(filter(data[data_point][time_step][f'{road_type}_bike_{attribute}'], sanitise))
 
             car_mean = mean(cars)
             bike_mean = mean(bikes)
@@ -170,9 +170,9 @@ class Visualizer:
             current_minute += 10  # Add 15 to the current minute
 
         p = LinePlot()
-        p.plot(minutes, tracked_data['cars'], 'c', '#003dd6', 'dashed')
-        p.plot(minutes, tracked_data['bikes'], 'b', '#e60022', 'dashed')
-        p.plot(minutes, tracked_data['total'], 't', '#5b5b5b')
+        p.plot(minutes, tracked_data['cars'], 'Cars', '#003dd6', 'dashed')
+        p.plot(minutes, tracked_data['bikes'], 'Bikes', '#e60022', 'dashed')
+        p.plot(minutes, tracked_data['total'], 'Total', '#5b5b5b')
         p.set_x_label('Minutes')
         p.set_y_label(attribute.title())
         p.set_title(f'{get_number(simulation)}% Bikes - {attribute.title()} Comparison')
@@ -224,7 +224,7 @@ class Visualizer:
         box_plot_and_save_data(data,
                                f'Average Speed of {agent_type.title()}s',
                                pretty_names,
-                               'Simulations',
+                               'Percent Bikes over multiple Simulations',
                                'Speed (m/s)',
                                os.path.join(self.output_path, f'avg_speed_{agent_type}(Fliers).png'),
                                False)
@@ -232,7 +232,7 @@ class Visualizer:
         box_plot_and_save_data(data,
                                f'Average Speed of {agent_type.title()}s',
                                pretty_names,
-                               'Simulations',
+                               'Percent Bikes over multiple Simulations',
                                'Speed (m/s)',
                                os.path.join(self.output_path, f'avg_speed_{agent_type}(Fliers).png'),
                                True)
@@ -263,20 +263,20 @@ class Visualizer:
                 if is_agent:  # If the agent type is agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {f'{road_type}_car_{attribute}': {'$gt': 0}, f'{road_type}_bike_{attribute}': {'$gt': 0}, 'time': {'$lte': 60000}},
+                                              {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 60000}},
                                               {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                               [('time', 1)])
                 else:  # If the agent type is not agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {tracked_attribute: {'$gt': 0}, 'time': {'$lte': 60000}},
+                                              {tracked_attribute: {'$exists': True}, 'time': {'$lte': 60000}},
                                               {tracked_attribute: 1},
                                               [('time', 1)])
 
                 for timestep in results:
                     if is_agent:
-                        data_point.extend(timestep[f'{road_type}_car_{attribute}'])
-                        data_point.extend(timestep[f'{road_type}_bike_{attribute}'])
+                        data_point.extend(filter(timestep[f'{road_type}_car_{attribute}'], sanitise))
+                        data_point.extend(filter(timestep[f'{road_type}_bike_{attribute}'], sanitise))
                     else:
                         data_point.extend(timestep[tracked_attribute])
 
@@ -285,7 +285,7 @@ class Visualizer:
         box_plot_and_save_data(data,
                                f'{road_type.title()} {attribute.title()} of {agent_type.title()}s',
                                pretty_names,
-                               'Simulations',
+                               'Percent Bikes over multiple Simulations',
                                f'{attribute.title()}',
                                os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}.png'),
                                False)
@@ -293,7 +293,7 @@ class Visualizer:
         box_plot_and_save_data(data,
                                f'{road_type.title()} {attribute.title()} of {agent_type.title()}s',
                                pretty_names,
-                               'Simulations',
+                               'Percent Bikes over multiple Simulations',
                                f'{attribute.title()}',
                                os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}(Fliers).png'),
                                True)
@@ -311,11 +311,11 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     :return:
     """
     p = LinePlot()
-    p.plot(x, y['mean'], 'Arithmetic Mean')
     p.plot(x, y['95percentile'], '95% Percentile', '#5b5b5b', 'dashed')
-    p.plot(x, y['5percentile'], '5% Percentile', '#5b5b5b', 'dashed')
     p.plot(x, y['mean+variance'], 'Mean + Variance', '#999999', 'dotted')
+    p.plot(x, y['mean'], 'Arithmetic Mean')
     p.plot(x, y['mean-variance'], 'Mean - Variance', '#999999', 'dotted')
+    p.plot(x, y['5percentile'], '5% Percentile', '#5b5b5b', 'dashed')
     p.set_x_label(x_label)
     p.set_y_label(y_label)
     p.set_title(name)
@@ -373,3 +373,7 @@ def get_number(text: str):
     :return: Number
     """
     return int("".join(x for x in text if x.isdigit()))
+
+
+def sanitise(element):
+    return element >= 0
