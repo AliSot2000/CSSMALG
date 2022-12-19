@@ -153,7 +153,7 @@ class Visualizer:
             bikes = []
             for data_point in range(data_length):  # Loop over all data points
                 cars.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_car_{attribute}']))
-                bikes.extend(filter(§e, data[data_point][time_step][f'{road_type}_bike_{attribute}']))
+                bikes.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_bike_{attribute}']))
 
             car_mean = mean(cars)
             bike_mean = mean(bikes)
