@@ -4,6 +4,7 @@ from boxPlot import BoxPlot
 from mongo_api import MongoAPI  # Import API for MongoDB
 from database import db_username, db_password, db_ip  # Import username and password from database.py
 
+total_sim_time = 43200  # Total simulation time in seconds. 12 hours
 
 class Visualizer:
     """
@@ -53,14 +54,14 @@ class Visualizer:
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 60000}},
+                                            {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': total_sim_time}},
                                             {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                             [('time', 1)]))
         else:  # If the agent type is not agent
             for collection in collections:
                 data.append(self.mongo.find(simulation,
                                             collection,
-                                            {tracked_attribute: {'$exists': True}, 'time': {'$lte': 60000}},
+                                            {tracked_attribute: {'$exists': True}, 'time': {'$lte': total_sim_time}},
                                             {tracked_attribute: 1},
                                             [('time', 1)]))
 
@@ -140,7 +141,7 @@ class Visualizer:
             data.append(self.mongo.find(simulation,
                                         collection,
                                         {f'{road_type}_car_{attribute}': {'$exists': True},
-                                         f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 60000}},
+                                         f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': total_sim_time}},
                                         {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                         [('time', 1)]))
 
@@ -287,13 +288,13 @@ class Visualizer:
                 if is_agent:  # If the agent type is agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 60000}},
+                                              {f'{road_type}_car_{attribute}': {'$exists': True}, f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': total_sim_time}},
                                               {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                               [('time', 1)])
                 else:  # If the agent type is not agent
                     results = self.mongo.find(simulation,
                                               run,
-                                              {tracked_attribute: {'$exists': True}, 'time': {'$lte': 60000}},
+                                              {tracked_attribute: {'$exists': True}, 'time': {'$lte': total_sim_time}},
                                               {tracked_attribute: 1},
                                               [('time', 1)])
 
