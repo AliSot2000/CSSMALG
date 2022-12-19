@@ -82,10 +82,10 @@ class Visualizer:
             data_points = []
             for data_point in range(data_length):  # Loop over all data points
                 if is_agent:
-                    data_points.extend(filter(data[data_point][time_step][f'{road_type}_car_{attribute}'], sanitise))
-                    data_points.extend(filter(data[data_point][time_step][f'{road_type}_bike_{attribute}'], sanitise))
+                    data_points.extend(filter(sanitise, [data_point][time_step][f'{road_type}_car_{attribute}']))
+                    data_points.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_bike_{attribute}']))
                 else:
-                    data_points.extend(filter(data[data_point][time_step][tracked_attribute], sanitise))
+                    data_points.extend(filter(sanitise, data[data_point][time_step][tracked_attribute]))
             # Calculate all the data we might want to display
             m = mean(data_points)
             tracked_data['mean'].append(m)
@@ -152,8 +152,8 @@ class Visualizer:
             cars = []
             bikes = []
             for data_point in range(data_length):  # Loop over all data points
-                cars.extend(filter(data[data_point][time_step][f'{road_type}_car_{attribute}'], sanitise))
-                bikes.extend(filter(data[data_point][time_step][f'{road_type}_bike_{attribute}'], sanitise))
+                cars.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_car_{attribute}']))
+                bikes.extend(filter(§e, data[data_point][time_step][f'{road_type}_bike_{attribute}']))
 
             car_mean = mean(cars)
             bike_mean = mean(bikes)
@@ -275,10 +275,10 @@ class Visualizer:
 
                 for timestep in results:
                     if is_agent:
-                        data_point.extend(filter(timestep[f'{road_type}_car_{attribute}'], sanitise))
-                        data_point.extend(filter(timestep[f'{road_type}_bike_{attribute}'], sanitise))
+                        data_point.extend(filter(sanitise, timestep[f'{road_type}_car_{attribute}']))
+                        data_point.extend(filter(sanitise, timestep[f'{road_type}_bike_{attribute}']))
                     else:
-                        data_point.extend(timestep[tracked_attribute])
+                        data_point.extend(filter(sanitise, timestep[tracked_attribute]))
 
             data.append(data_point)  # Add the data point to the data list
 
