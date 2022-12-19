@@ -82,7 +82,7 @@ class Visualizer:
             data_points = []
             for data_point in range(data_length):  # Loop over all data points
                 if is_agent:
-                    data_points.extend(filter(sanitise, [data_point][time_step][f'{road_type}_car_{attribute}']))
+                    data_points.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_car_{attribute}']))
                     data_points.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_bike_{attribute}']))
                 else:
                     data_points.extend(filter(sanitise, data[data_point][time_step][tracked_attribute]))
@@ -97,10 +97,10 @@ class Visualizer:
 
         minutes = []  # Initialize the minutes list
 
-        current_minute = 15  # Set the current minute to 15
+        current_minute = 10  # Set the current minute to 15
         for i in range(time_steps):  # Loop over all time steps
             minutes.append(current_minute)  # Add the current minute to the minutes list
-            current_minute += 15  # Add 15 to the current minute
+            current_minute += 10  # Add 15 to the current minute
 
         plot_and_save_data(minutes,
                            tracked_data,
