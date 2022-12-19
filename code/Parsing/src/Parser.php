@@ -107,8 +107,8 @@ class Parser
                 $this->parsedNodes[strval($nodeData["id"])]["id"] = strval($nodeData["id"]);
                 $this->parsedNodes[strval($nodeData["id"])]["coordinates"] = array("lon" => $nodeData["lon"], "lat" => $nodeData["lat"]);
                 $this->parsedNodes[strval($nodeData["id"])]["roads"] = array();
-                // roundabouts and traffic signal always set to false as simplification
-                $this->parsedNodes[strval($nodeData["id"])]["trafficSignal"] = false;
+                // roundabouts and traffic signal always set to same value as simplification
+                $this->parsedNodes[strval($nodeData["id"])]["trafficSignal"] = true;
                 $this->parsedNodes[strval($nodeData["id"])]["roundabout"] = false;
             }
         }
@@ -140,20 +140,20 @@ class Parser
             }
             // go through segments and check the properties
             foreach ($segments AS $segment) {
-				// filter out reflexive streets
-				if (strval($segment["start"]) != strval($segment["end"])) {
+			// filter out reflexive streets
+			if (strval($segment["start"]) != strval($segment["end"])) {
                 	if (isset($streetData["tags"]["oneway"]) && $streetData["tags"]["oneway"] === "yes") {
                     	$splittedRoads[strval($this->streetCount)] = array("id" => strval($this->streetCount), "osmId" => $osmId, "arrayId" => $arrayId, "startNodeId" => strval($segment["start"]), "endNodeId" => strval($segment["end"]), "oppositeStreetId" => "-1");
                     	$this->parsedNodes[strval($segment["start"])]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "outgoing");
-                    	$this->parsedNodes[strval($segment["end"])]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "NONE");
+                    	$this->parsedNodes[strval($segment["end"])]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "traffic_light");
                     	$this->streetCount++;
                 	} else {
                     	$splittedRoads[strval($this->streetCount)] = array("id" => strval($this->streetCount), "osmId" => strval($osmId), "arrayId" => strval($arrayId), "startNodeId" => strval($segment["start"]), "endNodeId" => strval($segment["end"]), "oppositeStreetId" => strval($this->streetCount + 1));
                     	$splittedRoads[strval($this->streetCount + 1)] = array("id" => strval($this->streetCount + 1), "osmId" => strval($osmId), "arrayId" => strval($arrayId), "startNodeId" => strval($segment["end"]), "endNodeId" => strval($segment["start"]), "oppositeStreetId" => strval($this->streetCount));
                     	$this->parsedNodes[strval($segment["start"])]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "outgoing");
-                    	$this->parsedNodes[strval($segment["end"])]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "NONE");
+                    	$this->parsedNodes[strval($segment["end"])]["roads"][] = array("id" => strval($this->streetCount), "traffic_controller" => "traffic_light");
                         $this->parsedNodes[strval($segment["end"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "outgoing");
-                        $this->parsedNodes[strval($segment["start"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "NONE");
+                        $this->parsedNodes[strval($segment["start"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "traffic_light");
                         $this->streetCount += 2;
                	    }
 				}
@@ -196,8 +196,8 @@ class Parser
             // with these road types we assume they wide enough roads to always overtake so we add a seperate road for bicycles
             if (($rawData["tags"]["highway"] == "primary" || $rawData["tags"]["highway"] == "trunk" || $rawData["tags"]["highway"] == "secondary") && !(isset($rawData["tags"]["bicycle"]) && $rawData["tags"]["bicycle"] == "no")) {
                 $this->parsedStreets[strval($this->streetCount + 1)] = array("id" => strval($this->streetCount + 1), "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" =>  array(array("type" => "bike", "left" => true, "forward" => true, "right" => true)), "speed_limit" => $maxSpeed, "distance" => $length);
- 				$this->parsedNodes[strval($data["startNodeId"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "outgoing");
-                $this->parsedNodes[strval($data["endNodeId"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "NONE");
+ 		$this->parsedNodes[strval($data["startNodeId"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "outgoing");
+                $this->parsedNodes[strval($data["endNodeId"])]["roads"][] = array("id" => strval($this->streetCount + 1), "traffic_controller" => "traffic_light");
 	        
 		    	// count how many streets between each node pair to stop multigraph from happening
 		    	if (!isset($endPointTracker["bike"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])])) {
@@ -222,17 +222,17 @@ class Parser
                 $this->parsedStreets[strval($id)] = array("id" => strval($data["id"]), "intersections" => array("start" => array("id" => strval($data["startNodeId"])), "end" => array("id" => strval($data["endNodeId"]))), "lanes" => array_values($laneArray), "speed_limit" => $maxSpeed, "distance" => $length, "oppositeStreetId" => $data["oppositeStreetId"]);
             }
 	    
-	    	// count how many streets between node pairs to stop multiple roads of same type between to intersections
-	    	if (!isset($endPointTracker["both"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])])) {
-	    		$endPointTracker["both"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])] = 1;
-	    	} else {
-				$endPointTracker["both"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])]++;
-	    	}	
+	    // count how many streets between node pairs to stop multiple roads of same type between to intersections
+	    if (!isset($endPointTracker["both"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])])) {
+	 		$endPointTracker["both"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])] = 1;
+		} else {
+			$endPointTracker["both"][strval($data["startNodeId"]) . " " . strval($data["endNodeId"])]++;
+		}	
 		
         	$data = NULL;
-    	}
+	}
 	
-		unset($data);
+	unset($data);
     	// filter out multiple roads of same type between two nodes, if both streets are either of type both or car, filter out both firt => two iterations
 		foreach ($this->parsedStreets AS $id => $data) {
 			if ($data["lanes"][0]["type"] == "both")  {
