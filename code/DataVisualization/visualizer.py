@@ -114,7 +114,7 @@ class Visualizer:
                            tracked_data,
                            f'{int("".join(x for x in simulation if x.isdigit()))}% Bikes - {tracked_attribute.title().replace("_", " ")}',
                            'Minutes',
-                           attribute.title(),
+                           f'{attribute.title()} ({get_unit(attribute)})',
                            os.path.join(self.output_path, f'{tracked_attribute}.png'),
                            show_variance)
 
@@ -199,7 +199,7 @@ class Visualizer:
         p.plot(minutes, tracked_data['bikes'], 'Bikes', '#e60022', 'dashed')
         p.plot(minutes, tracked_data['total'], 'Total', '#5b5b5b')
         p.set_x_label('Minutes')
-        p.set_y_label(attribute.title())
+        p.set_y_label(f'{attribute.title()} ({get_unit(attribute)})',)
         p.set_title(f'{get_number(simulation)}% Bikes - {road_type.title()} {attribute.title()} Comparison')
         p.annotate_lines()
         p.save(os.path.join(self.output_path, f'{road_type}_{attribute}_comparison.png'))
@@ -311,7 +311,7 @@ class Visualizer:
                                f'{road_type.title()} {attribute.title()} of {agent_type.title()}s',
                                pretty_names,
                                'Percent Bikes over multiple Simulations',
-                               f'{attribute.title()}',
+                               f'{attribute.title()} ({get_unit(attribute)})',
                                os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}.png'),
                                False)
 
@@ -319,7 +319,7 @@ class Visualizer:
                                f'{road_type.title()} {attribute.title()} of {agent_type.title()}s',
                                pretty_names,
                                'Percent Bikes over multiple Simulations',
-                               f'{attribute.title()}',
+                               f'{attribute.title()} ({get_unit(attribute)})',
                                os.path.join(self.output_path, f'{road_type}_{attribute}_{agent_type}(Fliers).png'),
                                True)
 
@@ -413,6 +413,8 @@ def get_unit(attribute):
     elif attribute == 'time':
         return 's'
     elif attribute == 'density':
-        return 'veh / (m * lane)'
+        return 'veh/lanes'
+    elif attribute == 'flow':
+        return 'veh/s'
     else:
         return ''
