@@ -87,6 +87,13 @@ class Visualizer:
                 else:
                     data_points.extend(filter(sanitise, data[data_point][time_step][tracked_attribute]))
             # Calculate all the data we might want to display
+            if len(data_points) < 1:
+                tracked_data['mean'].append(0)
+                tracked_data['95percentile'].append(0)
+                tracked_data['5percentile'].append(0)
+                tracked_data['mean+variance'].append(0)
+                tracked_data['mean-variance'].append(0)
+                continue
             m = mean(data_points)
             tracked_data['mean'].append(m)
             tracked_data['95percentile'].append(percentile(data_points, 95))
@@ -154,6 +161,22 @@ class Visualizer:
             for data_point in range(data_length):  # Loop over all data points
                 cars.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_car_{attribute}']))
                 bikes.extend(filter(sanitise, data[data_point][time_step][f'{road_type}_bike_{attribute}']))
+
+            if len(cars) < 1:
+                if len(bikes) < 1:
+                    tracked_data['cars'].append(0)
+                    tracked_data['bikes'].append(0)
+                    tracked_data['total'].append(0)
+                    continue
+                tracked_data['cars'].append(0)
+                tracked_data['bikes'].append(mean(bikes))
+                tracked_data['total'].append(mean(bikes))
+                continue
+            if len(bikes) < 1:
+                tracked_data['cars'].append(mean(cars))
+                tracked_data['bikes'].append(0)
+                tracked_data['total'].append(mean(cars))
+                continue
 
             car_mean = mean(cars)
             bike_mean = mean(bikes)
