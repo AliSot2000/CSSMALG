@@ -403,7 +403,7 @@ def get_number(text: str):
 
 
 def sanitise(element):
-    return element >= 0
+    return element > 0
 
 def get_unit(attribute):
     if attribute == 'speed':
