@@ -132,7 +132,7 @@ class Visualizer:
             data.append(self.mongo.find(simulation,
                                         collection,
                                         {f'{road_type}_car_{attribute}': {'$exists': True},
-                                         f'{road_type}_bike_{attribute}': {'$exists': True}},
+                                         f'{road_type}_bike_{attribute}': {'$exists': True}, 'time': {'$lte': 60000}},
                                         {f'{road_type}_car_{attribute}': 1, f'{road_type}_bike_{attribute}': 1},
                                         [('time', 1)]))
 
