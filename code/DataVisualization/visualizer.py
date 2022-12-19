@@ -403,3 +403,15 @@ def get_number(text: str):
 
 def sanitise(element):
     return element >= 0
+
+def get_unit(attribute):
+    if attribute == 'speed':
+        return 'm/s'
+    elif attribute == 'distance':
+        return 'm'
+    elif attribute == 'time':
+        return 's'
+    elif attribute == 'density':
+        return 'veh / (m * lane)'
+    else:
+        return ''
