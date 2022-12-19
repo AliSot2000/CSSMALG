@@ -26,7 +26,8 @@ class AgentGenerator
      * main method of class bundling all important other methods
      * @return void
      */
-    public function execute(): void {
+    public function execute(): void
+    {
         $this->readData();
         $this->generateAgents();
     }
@@ -35,12 +36,13 @@ class AgentGenerator
      * generates the agents
      * @return void
      */
-    private function generateAgents(): void {
+    private function generateAgents(): void
+    {
         $agentAmount = $this->calculateAgentAmount();
         $numNodes = count($this->nodes) - 1;
 
         // generate agents
-        foreach ($this->bikePercentages AS $bikePercentage) {
+        foreach ($this->bikePercentages as $bikePercentage) {
             for ($repetitions = 0; $repetitions < 10; $repetitions++) {
 
                 $carAgents = array();
@@ -50,7 +52,7 @@ class AgentGenerator
 
                 foreach ($agentAmount as $hour => $amount) {
                     $timeBase = $hour * 3600;
-                    
+
                     // create car agents
                     for ($i = 0; $i < $amount * (1 - $bikePercentage); $i++) {
                         // pseudo random length in m
@@ -67,7 +69,7 @@ class AgentGenerator
                         do {
                             $startId = $this->nodes[rand(0, $numNodes)];
                             $endId = $this->nodes[rand(0, $numNodes)];
-                         } while ($startId == $endId || isset($this->unreachable["carTree"][$startId][$endId]));
+                        } while ($startId == $endId || isset($this->unreachable["carTree"][$startId][$endId]));
 
                         $carAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" => $timeBase + rand(0, 35999) / 10);
                         $totVehicles++;
@@ -86,17 +88,17 @@ class AgentGenerator
                         // pseudo random acceleration exponent
                         $accExp = rand(80, 120) / 10;
 
-                        
+
                         do {
                             $startId = $this->nodes[rand(0, $numNodes)];
                             $endId = $this->nodes[rand(0, $numNodes)];
-                         } while ($startId == $endId || isset($this->unreachable["bikeTree"][$startId][$endId]));
+                        } while ($startId == $endId || isset($this->unreachable["bikeTree"][$startId][$endId]));
 
-                        $bikeAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" =>  $timeBase + rand(0, 35999) / 10);
+                        $bikeAgents[strval($totVehicles)] = array("start_id" => strval($startId), "end_id" => strval($endId), "length" => $length, "max_velocity" => $maxVelocity, "acceleration" => $acceleration, "deceleration" => $deceleration, "acceleration_exponent" => $accExp, "waiting_period" => $timeBase + rand(0, 35999) / 10);
                         $totVehicles++;
                     }
                 }
-                $this->writeJSON(array("bikes" => $bikeAgents, "cars" => $carAgents), $this->prefix . "_sim_" . $repetitions,  $bikePercentage * 100 . "percent_bikes");
+                $this->writeJSON(array("bikes" => $bikeAgents, "cars" => $carAgents), $this->prefix . "_sim_" . $repetitions, $bikePercentage * 100 . "percent_bikes");
             }
         }
     }
@@ -105,12 +107,13 @@ class AgentGenerator
      * calculate how many agents we want to spawn per hour
      * @return array
      */
-    private function calculateAgentAmount(): array {
-        $area = round($this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon2"], $this->coordinates["lat1"]) *  $this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon1"], $this->coordinates["lat2"]));
+    private function calculateAgentAmount(): array
+    {
+        $area = round($this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon2"], $this->coordinates["lat1"]) * $this->distance($this->coordinates["lon1"], $this->coordinates["lat1"], $this->coordinates["lon1"], $this->coordinates["lat2"]));
         // assumption: one new agent per 4000m^2 on the whole area of the map per hour
         $agentAmount = $area / 4000;
         $agentDistribution = array();
-        
+
         for ($i = 0; $i < 12; $i++) {
             $agentDistribution[] = $agentAmount;
         }
@@ -125,7 +128,8 @@ class AgentGenerator
      * @param string $dir
      * @return void
      */
-    private function writeJSON(array $data, string $fileName, string $dir): void {
+    private function writeJSON(array $data, string $fileName, string $dir): void
+    {
         //create directory if needed
         if (is_dir("../data/$dir") === false) {
             mkdir("../data/$dir");
@@ -141,13 +145,14 @@ class AgentGenerator
      * reads node data from prefixMapExport.tsim and get data about unreachable nodes from /reachability/prefixReachability.json
      * @return void
      */
-    private function readData(): void {
+    private function readData(): void
+    {
         $data = json_decode(file_get_contents("../data/" . $this->prefix . "MapExport.tsim"), true)["intersections"];
 
-        foreach ($data AS $intersection) {
+        foreach ($data as $intersection) {
             $this->nodes[] = $intersection["id"];
         }
-        
+
         $reachabilityData = file_get_contents("../data/reachability/" . $this->prefix . "Reachability.json");
         // check if reachability file exists
         if ($reachabilityData !== false) {
@@ -163,7 +168,8 @@ class AgentGenerator
      * @param float $lat2
      * @return float
      */
-    private function distance(float $lon1, float $lat1, float $lon2, float $lat2): float {
+    private function distance(float $lon1, float $lat1, float $lon2, float $lat2): float
+    {
         // distance based on haversine formula
         $radius = 6371e3;
 
@@ -173,7 +179,7 @@ class AgentGenerator
         $deltaPhi = ($lat2 - $lat1) * pi() / 180;
         $deltaLambda = ($lon2 - $lon1) * pi() / 180;
 
-        $a = pow(sin($deltaPhi / 2), 2) + cos($phi1) * cos($phi2) * pow(sin($deltaLambda/2), 2);
+        $a = pow(sin($deltaPhi / 2), 2) + cos($phi1) * cos($phi2) * pow(sin($deltaLambda / 2), 2);
         $b = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $radius * $b;
