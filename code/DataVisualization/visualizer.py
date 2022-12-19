@@ -26,7 +26,7 @@ class Visualizer:
         """
         self.output_path = output_path
 
-    def visualize_over_different_runs(self, simulation: str, road_type: str = 'intersection', agent_type: str = 'car', attribute: str = 'flow'):
+    def visualize_over_different_runs(self, simulation: str, road_type: str = 'intersection', agent_type: str = 'car', attribute: str = 'flow', show_variance: bool = True):
         """
         Visualize the data over different runs.
         :param simulation: Simulation name
@@ -114,7 +114,8 @@ class Visualizer:
                            f'{int("".join(x for x in simulation if x.isdigit()))}% Bikes - {tracked_attribute.title().replace("_", " ")}',
                            'Minutes',
                            attribute.title(),
-                           os.path.join(self.output_path, f'{tracked_attribute}.png'))
+                           os.path.join(self.output_path, f'{tracked_attribute}.png'),
+                           show_variance)
 
     def visualize_seperated_agents(self, simulation: str, road_type: str = 'intersection', attribute: str = 'flow'):
         """
@@ -198,7 +199,7 @@ class Visualizer:
         p.plot(minutes, tracked_data['total'], 'Total', '#5b5b5b')
         p.set_x_label('Minutes')
         p.set_y_label(attribute.title())
-        p.set_title(f'{get_number(simulation)}% Bikes - {attribute.title()} Comparison')
+        p.set_title(f'{get_number(simulation)}% Bikes - {road_type.title()} {attribute.title()} Comparison')
         p.annotate_lines()
         p.save(os.path.join(self.output_path, f'{road_type}_{attribute}_comparison.png'))
         p.close()
@@ -249,7 +250,7 @@ class Visualizer:
                                pretty_names,
                                'Percent Bikes over multiple Simulations',
                                'Speed (m/s)',
-                               os.path.join(self.output_path, f'avg_speed_{agent_type}(Fliers).png'),
+                               os.path.join(self.output_path, f'avg_speed_{agent_type}.png'),
                                False)
 
         box_plot_and_save_data(data,
@@ -322,7 +323,7 @@ class Visualizer:
                                True)
 
 
-def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = ''):
+def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_label: str = 'Flow', output_name: str = '', show_variance: bool = True):
     """
     Plot and save the data.
     :param x: X data
@@ -335,9 +336,11 @@ def plot_and_save_data(x: list, y: dict, name: str, x_label: str = 'Time', y_lab
     """
     p = LinePlot()
     p.plot(x, y['95percentile'], '95% Percentile', '#5b5b5b', 'dashed')
-    p.plot(x, y['mean+variance'], 'Mean + Variance', '#999999', 'dotted')
+    if show_variance:
+        p.plot(x, y['mean+variance'], 'Mean + Variance', '#999999', 'dotted')
     p.plot(x, y['mean'], 'Arithmetic Mean')
-    p.plot(x, y['mean-variance'], 'Mean - Variance', '#999999', 'dotted')
+    if show_variance:
+        p.plot(x, y['mean-variance'], 'Mean - Variance', '#999999', 'dotted')
     p.plot(x, y['5percentile'], '5% Percentile', '#5b5b5b', 'dashed')
     p.set_x_label(x_label)
     p.set_y_label(y_label)
