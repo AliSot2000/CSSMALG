@@ -9,10 +9,15 @@ the problem was. It was useful but is no longer needed. It's here for the sake o
 need.
 """
 
+
 def printer(path: str) -> Tuple[float, str]:
-    # with open("/home/alisot2000/Downloads/test_only_sim.sim", "r") as file:
+    """
+    Reads an Agents.json file and retrieves the required statistics. Prints the statistics to console.
+
+    :param path: path to agents file
+    :return: percentage of arrived agents, path to agents file
+    """
     with open(path, "r") as file:
-        # with open("/media/alisot2000/DumpStuff/CSSMALG_FINAL/LARGE_TRAFFIC_SIG/14percent_bikes/full_sim_5/agents.json", "r") as file:
         data = json.load(file)
 
     not_arrived = 0
@@ -36,6 +41,12 @@ def printer(path: str) -> Tuple[float, str]:
 
 
 def reclist(path: str) -> list:
+    """
+    Recursively lists all files in a directory.
+    :param path: path of root dir to start listing from
+    :return: list of all files in the directory
+    """
+
     result = []
     for item in os.listdir(path):
         if os.path.isdir(os.path.join(path, item)):
