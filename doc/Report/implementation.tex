@@ -1,0 +1,56 @@
+\section{Implementation}
+The code created for the implementation of this simulation, as described in this section, can be found on GitHub: \href{https://github.com/AliSot2000/CSSMALG}{https://github.com/AliSot2000/CSSMALG}.
+\subsection{Data Gathering}
+\subsubsection{Map Creation}
+The first step to building our model was gathering the relevant data. The data for the road network and thus the environment came from OpenStreetMap (OSM). OSM represents the real world by storing physical objects as nodes, ways and relations, and then describing and attributing them with the help of tags. 
+OSM provides an API called Overpass API, which allows a user to fetch data based on the Overpass Query Language (Overpass QL). The language is built around the concept of creating a set of data, so consequently, the operations are also meant for sets, such as unions, intersections and complements. The following query was used to get our set of data:
+\begin{lstlisting}
+[out:json][bbox:47.36, 8.50, 47.42, 8.56];
+        (
+            way[highway=primary];
+            way[highway=secondary];
+            way[highway=trunk];
+            way[highway=tertiary];
+            way[highway=service];
+            way[highway=residential];
+        )->.a;
+        (.a;>;);
+out;
+\end{lstlisting}
+
+The map is bounded by the coordinates [47.36, 8.50, 47.42, 8.56], going from south, to west, to north, to east. It proved to be immensely difficult to efficiently filter out all roads not accessible by cars, so a level of abstraction was chosen to guarantee that no road within the environment was inaccessible to cars. This is at the cost of some smaller roads missing, that might also serve as pedestrian walkways. This is done by the different road types that are considered, which are mentioned in the ``highway" tag in the query above. \\
+After the initial data gathering, the data had to be further cleaned and converted into an input usable by the simulation. This includes the removal of not connected roads. Furthermore, if there is a node on a street, which is not connected to any other street, it is removed and not treated like an intersection. These nodes mostly symbolize things like pedestrian crossovers, and are therefore not relevant to us, as mentioned in section \ref{abstractions}.\\
+In order to achieve this, we wrote a PHP script, which takes the raw OSM data, received as a JSON file, and gives out the cleaned JSON file as an output.
+
+\subsubsection{Agent Generation}
+The agents are also generated using PHP. The nodes of the newly created map are read in. For each agent that is to be created two intersections are chosen randomly as start and end points. Furthermore, the values for the attributes are uniformly picked, as mentioned in section \ref{agentDesc}.\\
+There is an option to add in a JSON file containing node pairs, that are not reachable from one another. These are filtered out during the agent generation to not cause issues during the simulation.\\
+Agent files are generated for several percentages of bikes in traffic. The percentages increase from 0\% to 20\% in two percentage point increments. For each percentage 10 agent files are generated. Due to the random generation of the files, this should even out irregularities, enabling more reliable results.
+
+\subsection{Model Programming}
+% TODO ÜBERARBEITEN
+
+Considering the scale we wanted to achieve in our simulation, we chose the programming language C++ combined with the parallel library CUDA. The simulation is capable of simulating real world street data or artificial data created by our own web interface. Our model was programmed with modularity in mind. Different executables generate intermediate results, which can then be reused without having to recalculate all the different stages again. This reduces total computational cost.
+
+\subsubsection{Shortest Path Tree Calculation - PrecalcSPT}
+Upon receiving the cleaned map data, or an artificial map from the web interface, we calculate a shortest path tree (or SPT) with PrecalcSPT for every distinct pair of intersections. The edge weights are defined to be the length of the the street which that edge represents. We do this using the Floyd Warshall algorithm. We used it due to its simplicity of implementation. Because it is a matrix-based algorithm, it is very suitable for parallelization. For our map of Zurich, that contained approximately 19'500 edges and 9'000 nodes, the computation time was around 15 minutes. PrecalcSPT generates the SPT and exports it in a base64 file. The reason the shortest path trees are stored like this, are limitations with the JSON library used, as well as issues with the maximum size of strings.
+
+\subsubsection{Simulation - Simulate}
+Simulate is the primary work horse of our simulation. It handles the simulation in the fastest manner possible. While it can be used in conjunction with PrecalcSPT and GenerateAgents to generate a visualization, its main purpose is the generation of the traffic statistics, such as traffic density, flow, etc., from the simulation of the real world map. Simulate was specifically optimized to run as fast as possible on a multi-core CPU. \\
+All agents start out in a sorted insertion queue, waiting for the model time to match their personal insertion time. As soon as the time matches and the designated start intersection has space, an agent is moved to that intersection. On the street, the agent is able to ``see" up to the next crossing at most. Given the distance to the next obstacle and its velocity, the agent accelerates / decelerates to reduce the distance between himself and the next obstacle. If an agent cannot move (e.g. due to a congestion), he increases a counter which denotes the time it spent waiting. \\
+Once an agent arrives at an intersection, there's a threshold of 0.6m after which an intersection can decide how to route an agent. An agent can be routed in two different ways: 
+
+\paragraph*{Destination:}
+Simply picking the next street in the path designated by the SPT.
+
+\paragraph*{Yield Approximation:}
+The yield approximation is very aggressive. In every time step the intersection moves to the next inbound road in a circular fashion and sends that agent to the next road he want's to go on if there's space.\\
+\newline
+Once an agent arrives at their destination, the arrival time is stored and the agent is removed from the simulation. The arrival intersection keeps track of all the actors which have already arrived there. \\
+In order to speed up the simulation, the majority of it is parallelized. The only sequential parts are the data loading and movement. Independent updates like moving the agents, searching for available space in roads and checking for new agents that want to leave an intersection, can be done concurrently. 
+
+\subsubsection{Web Interface}
+The web interface was originally thought as a way to create maps for the simulation. This would have been for the purpose of testing the simulation and the path-finding algorithms. We decided to use the interface not only for creating maps for testing, but also for displaying the calculated simulations. This gave our team a lot of flexibility and allowed us to test the simulation with different parameters and different maps. A lot of bugs were easily found as we could see how the agents acted. The web interface was fully made with HTML, JavaScript and jQuery.
+
+\subsection{Visualizing}
+The visualizing onto graphs was fully done using the data output by the simulation. We imported the relevant data into a MongoDB Database and used MathPlotLib to visualize the data we were interested in.

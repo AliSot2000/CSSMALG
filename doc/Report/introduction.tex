@@ -1,0 +1,32 @@
+\section{Introduction}
+\subsection{Motivations}
+%% small talk
+Traffic is omnipresent in everyday societal life. The average swiss person traverses an average distance of 36,8 km per day.  \cite{mobil}
+The biggest hindrance in daily commute and travel is the emergence of traffic jams and road congestions. `The impact of personal time lost in congestion includes not only the stress disruption to family life, but perhaps even more also important it includes the opportunity cost of that lost time.' \cite{congestion}. Congested traffic has many detriments, and results in many unfavorable side effects, next to the delay to travel time. 
+
+%% accidents
+Congested traffic leads to higher accident rates. A 10\% reduction in congestion can lead to a 3.4\% reduction in car accidents. \cite{SanchGoz}  Congested traffic also leads to so called stop-and-go traffic, which increases the occurrence of rear-end collisions. \cite{golob} Collisions and accidents then further disrupt the traffic, resulting in higher congestions and more delays, essentially forming a vicious cycle.
+
+%% health detriment (+ enviromental impact?)
+Traffic jams also negatively impact the environment and human health. Higher traffic volume results in higher levels of nitrogen dioxide, in an almost linear relation. \cite{zhang} Elevated $NO_2$ concentrations pose a health risk. It has been linked to increased respiratory diseases and heart issues. \cite{goudarzia} This leads to dangers for the people living close to highly used roads, as well as for the users of said roads. The additional time spent on the road due to congested traffic further fuels the risk to the passengers' health.
+
+%% costs
+Finally, traffic congestions lead to a tangible cost, carried by the government and/or private people. This cost manifests itself in different ways. These costs can stem from accidents, which as explained above, are increased by congestion. In the EU, passenger car accidents alone resulted in 210.2 billion euros of damages. \cite{eurocomm} The aforementioned environmental impact of congestions can also be tied to a cost, produced by health effects, crop loss, biodiversity loss, and material damage. A kilogram of nitrogen dioxide produced by transport is estimated to cost 21.3 euros on average. With Switzerland having produced 35 781 tonnes through transport in 2015, one can very clearly see how the additional pollution results in higher costs \cite{swissno2}. Lastly, congestions give rise to an aptly named ``congestion cost". The publications office of the European Union organizes these into two categories; congestion costs and scarcity costs, defined as follows: `A ‘congestion cost’ arises when one scheduled service delays another.' \cite{eurocomm} and `A ‘scarcity cost’ arises where the presence of a scheduled service prevents another scheduled service from operating, or requires it to take an inferior slot.' \cite{eurocomm} respectively. Together, these resulted in a cost of 208.3 billion euros produced by passenger cars in the EU. \cite{eurocomm}
+\\
+%%zurich bicycles
+In an effort to reduce the negative effects propagated by excessive traffic usage, the city of Zurich proposed a strategy to reduce car traffic and emission titled `Stadtverkehr 2025: Strategie für eine stadtverträgliche Mobilität'. \cite{strategie25} As of 2021, regular cyclists made up 12\% of road users. \cite{bericht21} One of the primary goals of this campaign is to increase the percentage of bicycle users in regards to total traffic. This spawned further campaigns, such as the `Velostrategie 2030'. By expanding and improving the existing road network, the city of Zurich aims to promote cycling as an environment friendlier alternative to driving. \cite{velo2030}
+
+%%corona bicycles
+Bicycle usage has also seen a sharp increase due to the pandemic. With quarantines and lock downs, the usage of bicycles has seen a surge in popularity. With a 40\% increase for work related trips and a 60-80\% increase for leisure trips \cite{covid, mobis}, a trend towards the bicycle becomes clear. This raises the question of how bicycles influence traffic.
+
+%%related works
+\subsection{Related Papers}
+Related papers have already studied the effect of bicycle lanes on car traffic. \cite{bikelanes}
+This report and underlying project aim to investigate the effect varying numbers of cyclists have on the travel time of motorists with help of an Agent Based Model. Agent Based Modelling lends itself very well for traffic flow modeling. It's intuitive to model different vehicles as agents, making decisions based on environmental factors and the actions of other Agents. Other benefits of using ABM include the fact that it is a very flexible model. It is easy to add more agents or change certain behaviors, without having to redesign the entire model. \cite{bazghandi} As such, it is no surprise that ABM is already a widely spread medium for traffic simulations. The specialization for each topic then stems from the way different papers define their agents' behavior. Some papers assign drivers different driving styles, based on aggressiveness, confidence, etc \cite{abmfortraffic}, whereas other papers opt for more homogeneous driving styles. \cite{sanfran} Finally, since many decisions made by the agents happen simultaneously, ABM is very suitable for parallelism and for being run on High-Performance-Computers. \cite{cuda} Like others before us, we capitalized on this, in order to get more performance out of our model. By simulating scenarios with different levels of bike usage, our model could help policymakers and city planners better understand the potential impacts of promoting cycling as a transportation option. This information can potentially be valuable in further developing the existing strategies to encourage more people to use bicycles, which might help reduce congestion and improve the overall efficiency of the transportation system. 
+
+
+
+
+
+
+

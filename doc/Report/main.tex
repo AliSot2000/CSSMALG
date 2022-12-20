@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,left=3cm,right=3cm,top=3cm,bottom=4cm]{geometry}       
+\geometry{letterpaper}                   
+\usepackage{hyperref}
+\usepackage[official]{eurosym}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{natbib}
+\usepackage{amssymb, amsmath}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage[skip=0pt]{caption}
+\usepackage{tabularx}
+\setlength\parindent{0pt}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\usepackage[onehalfspacing]{setspace}
+\captionsetup[figure]{font=small,labelfont=small}
+\newcommand*{\captionsource}[2]{%
+  \caption[{#1}]{%
+    #1%
+    \\\hspace{\linewidth}%
+    \textbf{Source:} #2%
+  }%
+}
+
+\usepackage{float}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none
+]{biblatex}
+\addbibresource{bibliography.bib}
+
+
+%\title{Title}
+%\author{Name 1, Name 2}
+%\date{date} 
+
+\begin{document}
+
+
+\input{cover}
+\newpage
+
+\includepdf[pages=-]{AgreementSignatures-full.pdf}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% IMPORTANT
+% you MUST include the ETH declaration of originality here; it is available for download on the course website or at http://www.ethz.ch/faculty/exams/plagiarism/index_EN; it can be printed as pdf and should be filled out in handwriting
+\includepdf[pages=-]{declaration-originality-signatures-full.pdf}
+
+%%%%%%%%%% Table of content %%%%%%%%%%%%%%%%%
+
+\tableofcontents
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\input{Abstract.tex}
+
+\input{individual contributions.tex}
+
+\include{introduction.tex}
+
+\input{description.tex}
+
+\include{implementation.tex}
+
+\include{results.tex}
+
+\include{summary.tex}
+
+\section{References}
+\subsection*{Bibliography}
+\addcontentsline{toc}{subsection}{Bibliography}
+\printbibliography[heading=none]
+
+\addcontentsline{toc}{subsection}{List of Figures}
+\listoffigures
+
+\addcontentsline{toc}{subsection}{List of Tables}
+\listoftables
+
+
+\end{document}  
