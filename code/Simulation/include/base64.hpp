@@ -19,12 +19,10 @@ Encodes a byte array into a base64 string.
 */
 std::string base64_encode(BYTE const* buf, unsigned int bufLen);
 
-/*
-	Decode
-
-	@param encoded_string String to decode
-
-	@return Returns a std::vector<BYTE> containing the raw data
+/**
+Decode
+@param encoded_string String to decode
+@return Returns a std::vector<BYTE> containing the raw data
 */
 std::vector<BYTE> base64_decode(std::string const& encoded_string);
 
