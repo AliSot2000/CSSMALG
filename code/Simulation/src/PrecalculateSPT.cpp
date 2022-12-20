@@ -17,7 +17,6 @@ including the map and actors, to and from a single JSON file.
 #include "utils.hpp"
 #include "io.hpp"
 //#define DDEBUG
-//DO_TRAFFIC_SIGNALS
 #define SLURM_OUTPUT
 
 
