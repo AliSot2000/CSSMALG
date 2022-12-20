@@ -26,7 +26,8 @@ At the end of the simulation, it exports the final state of the agents and the a
 #define USE_STUPID_INTERSECTIONS false
 #define SLURM_OUTPUT
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     assert(false && "Sanity checking with compiilers that asserts are still there with -O3"); // Comment for debugging
     std::cout << "MAKE SURE THAT THE MAP MATCHES THE SPT" << std::endl;
 
@@ -49,7 +50,7 @@ int main(int argc, char* argv[]) {
     const float deltaTime = std::atof(argv[9]);
     bool do_traffic_signals = false;
 
-    if (argc > 9){
+    if (argc > 9) {
         do_traffic_signals = (*argv[10] == '1');
     }
 
@@ -74,23 +75,23 @@ int main(int argc, char* argv[]) {
 
     start = startMeasureTime("importing shortest path trees");
     // Don't continue if loading fails.
-    if (!binLoadTree(&carsSPT, carTree, &world)){
+    if (!binLoadTree(&carsSPT, carTree, &world)) {
         return -1;
     }
-    if (!binLoadTree(&bikeSPT, bikeTree, &world)){
+    if (!binLoadTree(&bikeSPT, bikeTree, &world)) {
         return -1;
     }
     stopMeasureTime(start);
 
 #ifdef DDEBUG
-    for (auto iter : world.string_to_int){
+    for (auto iter : world.string_to_int) {
         std::cout << iter.first << " " << iter.second << std::endl;
     }
     std::cout <<  std::endl;
-    for (auto iter : world.int_to_string){
+    for (auto iter : world.int_to_string) {
         std::cout << iter.first << " " << iter.second  << std::endl;
     }
-    for (auto iter : world.streets){
+    for (auto iter : world.streets) {
         std::cout << iter.start << " " << iter.end << " " << iter.length  << std::endl;
     }
 #endif
@@ -122,9 +123,9 @@ int main(int argc, char* argv[]) {
     start = startMeasureTime("sorting actors in intersections");
 
     #pragma omp parallel for shared(world) default(none)
-    for (int i = 0; i < world.intersections.size(); ++i){
+    for (int i = 0; i < world.intersections.size(); ++i) {
         Intersection *iter = &world.intersections.at(i);
-        std::sort(iter->waitingToBeInserted.begin(), iter->waitingToBeInserted.end(), [](const Actor* a, const Actor* b){
+        std::sort(iter->waitingToBeInserted.begin(), iter->waitingToBeInserted.end(), [](const Actor* a, const Actor* b) {
             return a->insertAfter < b->insertAfter;
         });
     }
@@ -132,15 +133,15 @@ int main(int argc, char* argv[]) {
 
     // Simulate everything
     start = startMeasureTime(
-            "running simulation with\n\t" +
-            std::to_string(world.intersections.size()) + " intersections\n\t" +
-            std::to_string(world.streets.size()) + " streets\n\t" +
-            std::to_string(world.actors.size()) + " actors\n\t" +
-            std::to_string(runtime) + " seconds of runtime\n\t" +
-            std::to_string(deltaTime) + " seconds precision time step"
-    );
+                "running simulation with\n\t" +
+                std::to_string(world.intersections.size()) + " intersections\n\t" +
+                std::to_string(world.streets.size()) + " streets\n\t" +
+                std::to_string(world.actors.size()) + " actors\n\t" +
+                std::to_string(runtime) + " seconds of runtime\n\t" +
+                std::to_string(deltaTime) + " seconds precision time step"
+            );
 
-	float maxTime = runtime;
+    float maxTime = runtime;
     float lastStatusTime = runtime;
     float lastStatsTime = runtime;
     float lastDeadLockTime = runtime;
@@ -152,15 +153,15 @@ int main(int argc, char* argv[]) {
         lastDeadLockTime = (updateStreets(&world, deltaTime)) ? maxTime : lastDeadLockTime;
 
         // Longer than 20s so every road should havruntime - maxTimee had green once
-        if  (lastDeadLockTime - maxTime > 15.0f){
+        if  (lastDeadLockTime - maxTime > 15.0f) {
             std::cerr << "Deadlock detected at Time " << maxTime << std::endl;
             resolveDeadLocks(&world, runtime - maxTime);
             lastDeadLockTime = maxTime;
         }
-		maxTime -= deltaTime;
+        maxTime -= deltaTime;
 
         // Status messsage to tell me how far the simulation  has come along
-        if (lastStatusTime - maxTime >= STATUS_UPDATAE_INTERVAL){
+        if (lastStatusTime - maxTime >= STATUS_UPDATAE_INTERVAL) {
             lastStatusTime = maxTime;
 #ifdef SLURM_OUTPUT
             std::cout << "Time to simulate:  " << maxTime << " remaining seconds" << std::endl;
@@ -172,7 +173,7 @@ int main(int argc, char* argv[]) {
         addFrame(&world, &output, false);
 #endif
         // Dump stats to file if time has passed
-        if (lastStatsTime - maxTime >= statsLogInterval){
+        if (lastStatsTime - maxTime >= statsLogInterval) {
             lastStatsTime = maxTime;
             std::string statsFile = statsDirOut + std::to_string(runtime - maxTime) + ".json";
             nlohmann::json stats;
@@ -180,11 +181,11 @@ int main(int argc, char* argv[]) {
             save(statsFile, &stats);
         }
 
-	}
+    }
     // Committing final state of simulation to output, required for the start and stop time.
     std::cout << std::endl;
     addFrame(&world, &output, true);
-	stopMeasureTime(start);
+    stopMeasureTime(start);
 
     start = startMeasureTime("saving agents");
     save(agentsOut, &output);
@@ -195,7 +196,7 @@ int main(int argc, char* argv[]) {
     jsonDumpStats(statsLogInterval, &stats, &world, true);
     save(statsFile, &stats);
 
-	stopMeasureTime(start);
+    stopMeasureTime(start);
 
-	return 0;
+    return 0;
 }

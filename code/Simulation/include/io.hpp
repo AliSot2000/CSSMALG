@@ -44,7 +44,7 @@ void importMap(world_t* world, nlohmann::json* map, bool doTrafficLights = true)
  * @param world: (world) of current simulation
  * @param agents: the agents loaded from the json file
  * @param carsSPT shortest path tree for cars
- * @param bikeSPT shortest path tree for bikes 
+ * @param bikeSPT shortest path tree for bikes
  *
  * @returns void
  */

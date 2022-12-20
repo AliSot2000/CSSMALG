@@ -23,7 +23,8 @@ and (optionally) the binary files for the pre-computed shortest path trees for c
 #include "utils.hpp"
 // #define DDEBUG
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     if (argc < 4) {
         std::cerr << "Usage CSSMALG <map-in> <n-random-cars> <n-random-bikes> <agents-file> <max-random-time> <carSPT> <bikeSPT>" << std::endl;
         return -1;
@@ -35,39 +36,42 @@ int main(int argc, char* argv[]) {
     const int randomBikes = std::atoi(argv[3]);
     const int maxRandomTime = std::atoi(argv[5]);
 
-	world_t world;
-	nlohmann::json import;
+    world_t world;
+    nlohmann::json import;
 
-	if (!loadFile(importFile, &import)) {
-		return -1;
-	}
+    if (!loadFile(importFile, &import)) {
+        return -1;
+    }
 
     std::chrono::high_resolution_clock::time_point start = startMeasureTime("importing map");
-    if (hasPrecompute(&import)){
+    if (hasPrecompute(&import)) {
         importMap(&world, &import["world"]);
-    } else {
+    }
+    else {
         importMap(&world, &import);
     }
-	stopMeasureTime(start);
+    stopMeasureTime(start);
 
     spt_t carsSPT;
     spt_t bikeSPT;
 
-    if (hasPrecompute(&import)){
+    if (hasPrecompute(&import)) {
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
         importSPT(&carsSPT, &bikeSPT, &import, &world);
         stopMeasureTime(start);
-    } else if (argc > 6) {
+    }
+    else if (argc > 6) {
         start = startMeasureTime("importing shortest path trees");
         // Don't continue if loading fails.
-        if (!binLoadTree(&carsSPT, argv[6], &world)){
+        if (!binLoadTree(&carsSPT, argv[6], &world)) {
             return -1;
         }
-        if (!binLoadTree(&bikeSPT, argv[7], &world)){
+        if (!binLoadTree(&bikeSPT, argv[7], &world)) {
             return -1;
         }
         stopMeasureTime(start);
-    } else {
+    }
+    else {
         start = startMeasureTime("calculating shortest path tree with floyd warshall");
         carsSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyCar});
         bikeSPT = calculateShortestPathTree(&world, {StreetTypes::Both, StreetTypes::OnlyBike});
@@ -81,11 +85,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Bike Tree" <<std::endl;
     printSPT(&bikeSPT);
 
-    for (auto iter : world.string_to_int){
+    for (auto iter : world.string_to_int) {
         std::cout << iter.first << " " << iter.second << std::endl;
     }
     std::cout <<  std::endl;
-    for (auto iter : world.int_to_string){
+    for (auto iter : world.int_to_string) {
         std::cout << iter.first << " " << iter.second << std::endl;
     }
 #endif

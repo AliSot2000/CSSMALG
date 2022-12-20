@@ -14,40 +14,41 @@
 
 // Compute Floyd-Warshal on entire graph to find the shortest path from a to b.
 #ifndef USE_CUDA
-spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include) {
+spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include)
+{
     spt_t sopatree = {
-            .array = new int[world->intersections.size() * world->intersections.size()],
-            .size = static_cast<int>(world->intersections.size()),
+        .array = new int[world->intersections.size() * world->intersections.size()],
+        .size = static_cast<int>(world->intersections.size()),
     };
-	float* minimumDistance = new float[sopatree.size * sopatree.size];
+    float* minimumDistance = new float[sopatree.size * sopatree.size];
 
     // Initialize the distance and neighbour arrays
-    for (int start = 0; start < sopatree.size; start++){
+    for (int start = 0; start < sopatree.size; start++) {
         for (int end = 0; end < sopatree.size; end++) {
             *(minimumDistance + start * sopatree.size + end) = (start != end) * 1e30; // Initializing the default distance between nodes
             *(sopatree.array + start * sopatree.size + end) = (start == end) * start + (start != end) * -1; // Initializing the default neighbour
         }
     }
 
-	for (const auto& street : world->streets) {
-		if (std::find(include.begin(), include.end(), street.type) != include.end()) {
+    for (const auto& street : world->streets) {
+        if (std::find(include.begin(), include.end(), street.type) != include.end()) {
             // Access the matrix as a 1D array.
 #ifdef ALTFW
             float streetDistance = street.length / (street.speedlimit * street.width);
 #else
             float streetDistance = street.length;
 #endif
-			*(minimumDistance + street.start * sopatree.size + street.end) = std::min(streetDistance,
-                                                                                      *(minimumDistance + street.start * sopatree.size + street.end));
-			*(sopatree.array + street.start * sopatree.size + street.end) = street.end;
-		}
-	}
+            *(minimumDistance + street.start * sopatree.size + street.end) = std::min(streetDistance,
+                    *(minimumDistance + street.start * sopatree.size + street.end));
+            *(sopatree.array + street.start * sopatree.size + street.end) = street.end;
+        }
+    }
 
     std::cout << std::endl;
     int V = sopatree.size;
     float newDistance;
-	for (int32_t k = 0; k < sopatree.size; k++) {
-        #ifdef SLURM_OUTPUT
+    for (int32_t k = 0; k < sopatree.size; k++) {
+#ifdef SLURM_OUTPUT
         std::cout << "k: " << (k + 1) << " of " << V << std::cout;
 #else
         std::cout << "\rk: " << (k + 1) << " of " << V << std::flush;
@@ -60,18 +61,19 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
                 sopatree.array[i * V + j] = sopatree.array[i * V + k] * (newDistance < minimumDistance[i * V + j]) + sopatree.array[i * V + j] * (newDistance >= minimumDistance[i * V + j]);
                 minimumDistance[i * V + j] = newDistance * (newDistance < minimumDistance[i * V + j]) + minimumDistance[i * V + j] * (newDistance >= minimumDistance[i * V + j]);
 
-			}
-		}
-	}
-	return sopatree;
+            }
+        }
+    }
+    return sopatree;
 }
 #else
 
-spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include){
+spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include)
+{
     // Allocating Memory for the distance and optimal neighbour
     spt_t sopatree = {
-            .array = new int[world->intersections.size() * world->intersections.size()],
-            .size = static_cast<int>(world->intersections.size()),
+        .array = new int[world->intersections.size() * world->intersections.size()],
+        .size = static_cast<int>(world->intersections.size()),
     };
 
     int size = sopatree.size;
@@ -79,7 +81,7 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
     int *neighbour = sopatree.array;
 
     // Initialize the distance and neighbour arrays
-    for (int start = 0; start < size; start++){
+    for (int start = 0; start < size; start++) {
         for (int end = 0; end < size; end++) {
             *(distance + start * size + end) = (start != end) * 1e30; // Initializing the default distance between nodes
             *(neighbour + start * size + end) = (start == end) * start + (start != end) * -1; // Initializing the default neighbour
@@ -93,11 +95,11 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
             int end = street.end;
             // Take the shortest street in case there are multiple (for what ever reason there should be multiple
 #ifdef ALTFW
-                double streetDistance = street.length / (street.speedlimit * street.width);
+            double streetDistance = street.length / (street.speedlimit * street.width);
 #else
             double streetDistance = street.length;
 #endif
-            if (*(distance + start * size + end) < 1e30){
+            if (*(distance + start * size + end) < 1e30) {
                 std::cout << "Road twice in graph" << std::endl;
                 std::cout << "Start: " << world->int_to_string.at(start) << " End: " << world->int_to_string.at(end) << std::endl;
             }
@@ -112,28 +114,30 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
 
 #endif
 
-Path retrievePath(spt_t* spt, const int &start, const int &end) {
-	if (spt->array[start * spt->size + end] == -1) {
-		return {};
-	}
+Path retrievePath(spt_t* spt, const int &start, const int &end)
+{
+    if (spt->array[start * spt->size + end] == -1) {
+        return {};
+    }
 
-	Path p;
+    Path p;
 
-	int u = start;
+    int u = start;
 //    p.push(u);
-	while (u != end) {
+    while (u != end) {
         assert(u < spt->size && "Overflow of the spt array");
         assert(p.size() < spt->size && "Overflow of the path array" && "Overflow of the spt array");
-        if (u == -1){
+        if (u == -1) {
             return {};
         }
-		u = spt->array[u * spt->size + end];
-		p.push(u);
-	}
-	return p;
+        u = spt->array[u * spt->size + end];
+        p.push(u);
+    }
+    return p;
 }
 
-float distanceFromPath(const world_t* world, actor_t* actor){
+float distanceFromPath(const world_t* world, actor_t* actor)
+{
     Path p;
 
     // Initialize the path
@@ -143,13 +147,14 @@ float distanceFromPath(const world_t* world, actor_t* actor){
     Street* street = nullptr;
 
     // Walk along the Path
-    while (v != actor->end_id){
+    while (v != actor->end_id) {
         p.push(v);
         actor->path.pop();
 
-        if (actor->type == ActorTypes::Bike){
+        if (actor->type == ActorTypes::Bike) {
             street = world->intersections.at(u).outboundBike.at(v);
-        } else {
+        }
+        else {
             street = world->intersections.at(u).outboundCar.at(v);
         }
         distance += street->length;
@@ -161,9 +166,10 @@ float distanceFromPath(const world_t* world, actor_t* actor){
     p.push(v);
     actor->path.pop();
 
-    if (actor->type == ActorTypes::Bike){
+    if (actor->type == ActorTypes::Bike) {
         street = world->intersections.at(u).outboundBike.at(v);
-    } else {
+    }
+    else {
         street = world->intersections.at(u).outboundCar.at(v);
     }
     distance += street->length;
@@ -174,7 +180,8 @@ float distanceFromPath(const world_t* world, actor_t* actor){
     return distance;
 }
 
-std::vector<std::string> getPath(actor_t* actor, const world_t* world){
+std::vector<std::string> getPath(actor_t* actor, const world_t* world)
+{
     std::vector<std::string> path;
     Path replacement;
 
@@ -182,7 +189,7 @@ std::vector<std::string> getPath(actor_t* actor, const world_t* world){
     int v = actor->path.front();
     path.push_back(world->int_to_string.at(u));
 
-    while (v != actor->end_id){
+    while (v != actor->end_id) {
         path.push_back(world->int_to_string.at(v));
         replacement.push(v);
         actor->path.pop();
@@ -195,7 +202,8 @@ std::vector<std::string> getPath(actor_t* actor, const world_t* world){
     return path;
 }
 
-std::vector<std::string> StreetPath(actor_t* actor, const world_t* world){
+std::vector<std::string> StreetPath(actor_t* actor, const world_t* world)
+{
     Path p;
 
     // Initialize the path
@@ -205,13 +213,14 @@ std::vector<std::string> StreetPath(actor_t* actor, const world_t* world){
     Street* street = nullptr;
 
     // Walk along the Path
-    while (v != actor->end_id){
+    while (v != actor->end_id) {
         p.push(v);
         actor->path.pop();
 
-        if (actor->type == ActorTypes::Bike){
+        if (actor->type == ActorTypes::Bike) {
             street = world->intersections.at(u).outboundBike.at(v);
-        } else {
+        }
+        else {
             street = world->intersections.at(u).outboundCar.at(v);
         }
         strPath.push_back(street->id);
@@ -223,9 +232,10 @@ std::vector<std::string> StreetPath(actor_t* actor, const world_t* world){
     p.push(v);
     actor->path.pop();
 
-    if (actor->type == ActorTypes::Bike){
+    if (actor->type == ActorTypes::Bike) {
         street = world->intersections.at(u).outboundBike.at(v);
-    } else {
+    }
+    else {
         street = world->intersections.at(u).outboundCar.at(v);
     }
     strPath.push_back(street->id);

@@ -9,7 +9,7 @@
 // Enabeling this option changes the weight of an edge from the length of a road to the length of a road divided by the speed limit and the width of the road.
 // d = length / (velocity * width)
 
-typedef struct SPT{
+typedef struct SPT {
     int* array;
     int size;
 } spt_t;

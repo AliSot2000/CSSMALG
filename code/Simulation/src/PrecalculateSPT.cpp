@@ -21,7 +21,8 @@ including the map and actors, to and from a single JSON file.
 #define SLURM_OUTPUT
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     if (argc < 4) {
         std::cerr << "Usage PrecalculateSPT <map-in> <car-out> <bike-out> <jan-out>" << std::endl;
         std::cerr << "Function precalculates the spt" << std::endl;
@@ -40,7 +41,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    if (hasPrecompute(&import)){
+    if (hasPrecompute(&import)) {
         std::cout << "File containes a Precomputed SPT. No need to compute it again.";
         return 0;
     }

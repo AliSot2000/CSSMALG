@@ -11,19 +11,21 @@
 // #include <omp.h>
 
 static unsigned long long
-        x=1234567890987654321ULL,c=123456123456123456ULL,
-        y=362436362436362436ULL,z=1066149217761810ULL,t;
+x=1234567890987654321ULL,c=123456123456123456ULL,
+y=362436362436362436ULL,z=1066149217761810ULL,t;
 
 #define MWC (t=(x<<58)+c, c=(x>>6), x+=t, c+=(x<t), x)
 #define XSH ( y^=(y<<13), y^=(y>>17), y^=(y<<43) )
 #define CNG ( z=6906969069LL*z+1234567 )
 #define KISS (MWC+XSH+CNG)
 
-int randint(int min, int max) {
+int randint(int min, int max)
+{
     return static_cast<int>(KISS % (max - min + 1) + min);
 }
 
-void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end) {
+void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end)
+{
     if (world->intersections.size() == 0) {
         std::cerr << "There are no intersections." << std::endl;
         return;
@@ -36,13 +38,14 @@ void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end) {
         end = randint(0, static_cast<int>(world->intersections.size()) - 1);
         ++antiInfinitLoop;
     }
-    if (start == end){
+    if (start == end) {
         end = (start + 1) % spt->size;
     }
 }
 
 void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
-                        const int& start, const int& numberOfActors, const float& length, const int& max_start_time) {
+                        const int& start, const int& numberOfActors, const float& length, const int& max_start_time)
+{
 // #pragma omp parallel for default(none) shared(world, spt, type, minSpeed, maxSpeed, start, numberOfActors, length, max_start_time)
     for (int i = start;  i < start + numberOfActors; ++i) {
         Actor* actor = new Actor();
@@ -60,7 +63,7 @@ void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, cons
         assert(actor->start_id != actor->end_id && "start_id and end_id are the same");
 
         actor->path = retrievePath(spt, actor->start_id, actor->end_id);
-        if (actor->path.empty()){
+        if (actor->path.empty()) {
             std::cerr << "Path is empty" << (actor->type == ActorTypes::Bike) << std::endl;
             continue;
         }
@@ -76,11 +79,13 @@ void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, cons
 }
 
 
-std::chrono::high_resolution_clock::time_point startMeasureTime(const std::string &task) {
+std::chrono::high_resolution_clock::time_point startMeasureTime(const std::string &task)
+{
     std::cout << "Starting task: " << task << std::endl;
     return std::chrono::high_resolution_clock::now();
 }
 
-void stopMeasureTime(std::chrono::high_resolution_clock::time_point start_time) {
+void stopMeasureTime(std::chrono::high_resolution_clock::time_point start_time)
+{
     std::cout << "Last task took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_time).count() / 1000.f << " seconds.\n\n" << std::endl;
 }
