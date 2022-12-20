@@ -22,6 +22,7 @@ the program saves the positions and destinations of the actors to an output file
 #include "io.hpp"
 #include "utils.hpp"
 
+#define USE_STUPID_INTERSECTIONS false
 #define STATUS_UPDATAE_INTERVAL 60
 #define DO_TRAFFIC_SIGNALS true
 #define DDEBUG
