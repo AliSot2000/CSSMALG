@@ -1,7 +1,7 @@
 # Agent-Based Modeling and Social System Simulation 2022
 > * Group Name: BBAG (Big Brain Algorithm Group)
 > * Group participants names: Nils Egger, Sophia Herrmann, Jan Hochstrasser, Jannick Schröer, Alexander Sotoudeh
-> * Project Title: An Agent Based Model to Investigate the Influence of Varying Numbers of Cyclists on the Average Travel Time of Motorists
+> * Project Title: The Influence of Cyclists on Traffic
 
 ## General Introduction
 
@@ -11,7 +11,14 @@ for more bicycles. This is further pushed by the post-Covid popularity. This rai
 
 ## The Model
 
-(Define dependent and independent variables you want to study. Say how you want to measure them.) (Why is your model a good abtraction of the problem you want to study?) (Are you capturing all the relevant aspects of the problem?)
+The full model description can be found in the report (`doc` directory). In short, we model traffic in the city of Zurich with the following main assumptions:
+- The map of Zurich bounded by the coordinates $[47.36, 8.50, 47.42, 8.56]$ ([south, west, north, east]). 
+- One agent spawns per hour for every 4'000$m^2$ of the map
+- The agents are spawned uniformly over time
+- The agent always chose the shortest path for their route
+- The start and end point of an agent's route is randomly chosen
+- Intersections are all controlled by time based traffic lights
+- There are no pedestrians or public transport
 
 
 ## Fundamental Questions
