@@ -1,3 +1,15 @@
+/*
+This is a simulation program that simulates the movement of cars and bikes on a map using the provided shortest path trees (SPT).
+The program first reads in the map file and generates the SPT for cars and bikes if it has not been precomputed.
+It then creates a specified number of random actors (cars and bikes) and assigns them to starting locations and destinations on the map.
+The program then runs a simulation for a specified runtime,
+with each step of the simulation updating the positions of the actors based on their current locations,
+destinations, and the shortest paths to their destinations. The program also tracks and outputs statistics about the simulation,
+such as the average speed of the actors and the average waiting time at traffic lights. At the end of the simulation,
+the program saves the positions and destinations of the actors to an output file.
+*/
+
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -11,11 +23,9 @@
 #include "utils.hpp"
 
 #define STATUS_UPDATAE_INTERVAL 60
-//#define SLURM_OUTPUT
 #define DO_TRAFFIC_SIGNALS true
 #define DDEBUG
 
-// TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
     if (argc < 7) {
 		std::cerr << "Usage CSSMALG <map-in> <sim-out> <n-random-cars> <n-random-bikes> <runtime> <runtime-step-time> optional <agents> <stupid_intersection>" << std::endl;
@@ -51,10 +61,6 @@ int main(int argc, char* argv[]) {
     }
 	stopMeasureTime(start);
 
-/*    for (auto& [key, value] : world.int_to_string){
-        std::cout << key << " " << value << std::endl;
-    }*/
-
     spt_t carsSPT;
     spt_t bikeSPT;
 
@@ -87,9 +93,7 @@ int main(int argc, char* argv[]) {
     } else {
         world.actors = std::vector<Actor*>(randomCars + randomBikes);
         createRandomActors(&world, &carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, static_cast<int>(runtime * 0.5));
-//        createRandomActors(world, carsSPT, ActorTypes::Car, 70, 120, randomBikes, randomCars, 4.5f, 0.0f);
         createRandomActors(&world, &bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, static_cast<int>(runtime * 0.5));
-//        createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 15, 0, randomBikes, 1.5f, 0.0f);
     }
 
 	stopMeasureTime(start);
@@ -121,8 +125,6 @@ int main(int argc, char* argv[]) {
 	float maxTime = runtime;
     float lastStatusTime = runtime;
     float lastDeadLockTime = runtime;
-//    bool emptyness = false;
-//    bool current_emptyness = false;
 	while (maxTime > 0.0f) {
         updateIntersections(&world, deltaTime, stupidIntersections, runtime - maxTime);
         lastDeadLockTime = (updateStreets(&world, deltaTime)) ? maxTime : lastDeadLockTime;
@@ -145,12 +147,6 @@ int main(int argc, char* argv[]) {
 #endif
         }
 		addFrame(&world, &output);
-
-        /*mptyness = emptynessOfStreets(&world);
-        if (emptyness != current_emptyness){
-            current_emptyness = emptyness;
-            std::cout << "Emptyness of streets: " << emptyness << std::endl;
-        }*/
 	}
     // Committing final state of simulation to output, required for the start and stop time.
     std::cout << std::endl;

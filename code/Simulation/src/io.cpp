@@ -6,7 +6,6 @@
 #include "io.hpp"
 #include "actors.hpp"
 #include "routing.hpp"
-// #include <omp.h>
 #include "base64.hpp"
 
 bool loadFile(const std::string file, json* input) {
@@ -405,11 +404,6 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input,  
 }
 #else
 void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, json& output, const world_t* world) {
-//    void* carTreePtr =  carTree.array;
-//    unsigned char* carTreeChar = static_cast<unsigned char*>(carTreePtr);
-//    void* bikePtr =  bikeTree.array;
-//    unsigned char* bikeTreeChar = static_cast<unsigned char*>(bikePtr);
-
     std::map<std::string, std::map<std::string, bool>> carReachable = {};
     std::map<std::string, std::map<std::string, bool>> bikeReachable = {};
 
@@ -430,12 +424,8 @@ void exportSPT(const spt_t& carTree, const spt_t& bikeTree, const json& input, j
             }
         }
     }
-//    output["carTree"] = base64_encode(carTreeChar,  carTree.size * carTree.size * sizeof(int) * sizeof(int));
-//    output["bikeTree"] = base64_encode(bikeTreeChar, bikeTree.size * bikeTree.size * sizeof(int) * sizeof(int));
     output["carTree"] = carReachable;
     output["bikeTree"] = bikeReachable;
-    // output["world"] = input;
-
 }
 #endif
 
@@ -492,26 +482,6 @@ bool binDumpSpt(spt_t* Tree, const char* file_name) {
     f << ostring;
     f.close();
     return true;
-
-//    /*
-//    FILE *file = fopen(fname, "wb");
-//    fwrite(Tree.array, Tree.size * Tree.size * sizeof(int) * sizeof(int), 1, file);
-//    fclose(file);
-//     */
-//
-//    std::ofstream f(fname, std::ios::out | std::ios::binary);
-//    if (!f){
-//        std::cerr << "Failed to open " << fname << std::endl;
-//        return false;
-//    }
-//    f.write(static_cast<char*>(carTreePtr), Tree.size * Tree.size);
-//    std::cout << "Dumped SPT to " << Tree.size * Tree.size << std::endl;
-//    f.close();
-//    if (!f.good()){
-//        std::cerr << "Failed to write to " << fname << std::endl;
-//        return false;
-//    }
-//    return true;
 }
 
 void jsonDumpStats(const float& avgTime, json* output, world_t* world, const bool final){

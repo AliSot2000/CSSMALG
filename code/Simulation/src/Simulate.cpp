@@ -1,6 +1,13 @@
-//
-// Created by alisot2000 on 07.12.22.
-//
+/*
+This C++ program is a traffic simulation that takes in various arguments such as the map file,
+shortest path trees for cars and bikes, and input and output files for agents and statistics.
+It starts by importing the map and shortest path trees, and then creates actors based on the input file.
+It then simulates the movement of the actors in the world for a given runtime,
+while keeping track of various statistics such as average speed and number of collisions.
+The program also has options for enabling traffic signals and for updating statistics at a specific interval.
+At the end of the simulation, it exports the final state of the agents and the accumulated statistics to the specified output files.
+*/
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -17,8 +24,6 @@
 
 #define STATUS_UPDATAE_INTERVAL 60
 #define USE_STUPID_INTERSECTIONS false
-//#define ADD_INCREMENTS
-//#define DDEBUG
 #define SLURM_OUTPUT
 
 int main(int argc, char* argv[]) {
@@ -66,9 +71,6 @@ int main(int argc, char* argv[]) {
     // Import the SPTs
     spt_t carsSPT;
     spt_t bikeSPT;
-//    std::vector<spt_t> SPTs = {carsSPT, bikeSPT};
-//    std::vector<const char*> SPTFiles = {carTree, bikeTree};
-//    std::vector<bool> succsss = {false, false};
 
     start = startMeasureTime("importing shortest path trees");
     // Don't continue if loading fails.
@@ -92,15 +94,6 @@ int main(int argc, char* argv[]) {
         std::cout << iter.start << " " << iter.end << " " << iter.length  << std::endl;
     }
 #endif
-// TODO parallelize import
-//#pragma omp parallel for default(none) shared(SPTs, SPTFiles, world, succsss)
-//    for (int i = 0; i < 2; ++i){
-//        succsss.at(i) = binLoadTree(SPTs[i], SPTFiles[i], world);
-//    }
-//
-//    if (!succsss[0] || !succsss[1]){
-//        return -1;
-//    }
 
     // DEBUGGING PRINT
 #ifdef DDBEUG
@@ -120,12 +113,6 @@ int main(int argc, char* argv[]) {
         importAgents(&world, &agents, &carsSPT, &bikeSPT);
         stopMeasureTime(start);
     }
-
-//    int randomCars = 2000;
-//    int randomBikes = 2000;
-//    world.actors = std::vector<Actor*>(randomCars + randomBikes);
-//    createRandomActors(world, carsSPT, ActorTypes::Car, 30, 120, 0, randomCars, 4.5f, static_cast<int>(runtime * 0.5));
-//    createRandomActors(world, bikeSPT, ActorTypes::Bike, 10, 25, randomCars, randomBikes, 1.5f, static_cast<int>(runtime * 0.5));
 
     // Export the world.
     nlohmann::json output;
@@ -193,11 +180,6 @@ int main(int argc, char* argv[]) {
             save(statsFile, &stats);
         }
 
-        /*mptyness = emptynessOfStreets(&world);
-        if (emptyness != current_emptyness){
-            current_emptyness = emptyness;
-            std::cout << "Emptyness of streets: " << emptyness << std::endl;
-        }*/
 	}
     // Committing final state of simulation to output, required for the start and stop time.
     std::cout << std::endl;

@@ -1,6 +1,14 @@
-//
-// Created by alisot2000 on 01.12.22.
-//
+/*
+
+This C++ program is a traffic simulation tool.
+It takes in a map of streets and intersections in JSON format,
+and generates a shortest path tree (SPT) for both cars and bikes using Floyd Warshall's algorithm.
+It also has the option to import pre-calculated SPTs from files.
+The program also has the ability to import and export the entire simulation world,
+including the map and actors, to and from a single JSON file.
+*/
+
+
 #include <iostream>
 #include <chrono>
 
