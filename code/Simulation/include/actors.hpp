@@ -83,10 +83,10 @@ typedef struct Street {
     float speedlimit = 50.0f; // km/h
 
     // Ordered by distance to end, must be reordered when actors change position
-    // Furthermore, when vehicles swap position, their position to the left of the road side must be swapped aswell
+    // Furthermore, when vehicles swap position, their position to the left of the road side must be swapped as well
     std::vector<Actor*> traffic;
 
-    // These values are not used by the simulation itself, just for the visulisation later
+    // These values are not used by the simulation itself, just for the visualization later
     // start and end position
     std::string id;
     float density_accumulate_bike = 0.0f;
