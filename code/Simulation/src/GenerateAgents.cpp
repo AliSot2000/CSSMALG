@@ -1,6 +1,17 @@
-//
-// Created by alisot2000 on 07.12.22.
-//
+/*
+
+This C++ program is a traffic simulation that imports a map,
+calculates shortest path trees for cars and bikes,
+and creates random actors (vehicles) in the simulation.
+It also has options for pre-computing the shortest path trees and importing them from binary files.
+The program also has a function for exporting the actors to a JSON file.
+The program takes in several command line arguments: the input map file,
+the number of random cars to generate, the number of random bikes to generate,
+the output file for the actors, the maximum random time for the actors,
+and (optionally) the binary files for the pre-computed shortest path trees for cars and bikes.
+*/
+
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -12,8 +23,6 @@
 #include "utils.hpp"
 // #define DDEBUG
 
-
-// TODO Add ability to output stats..
 int main(int argc, char* argv[]) {
     if (argc < 4) {
         std::cerr << "Usage CSSMALG <map-in> <n-random-cars> <n-random-bikes> <agents-file> <max-random-time> <carSPT> <bikeSPT>" << std::endl;

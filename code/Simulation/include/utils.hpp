@@ -44,6 +44,7 @@ void choseRandomPath(const world_t* world, spt_t* spt, int& start, int& end);
 */
 void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, const int& minSpeed, const int& maxSpeed,
                         const int& start, const int& numberOfActors, const float& length, const int& max_start_time);
+
 /*
     Prints a start message to cout and returns the start time.
 
@@ -52,6 +53,7 @@ void createRandomActors(world_t* world, spt_t* spt, const ActorTypes& type, cons
     @returns the start time
 */
 std::chrono::high_resolution_clock::time_point startMeasureTime(const std::string &task);
+
 /*
     Given a Start time, prints a message to cout about how long the last task took.
 

@@ -8,50 +8,6 @@
 // This was done to debug an error. It might also be useful for testing different configurations.
 // Enabeling this option changes the weight of an edge from the length of a road to the length of a road divided by the speed limit and the width of the road.
 // d = length / (velocity * width)
-/*
-	Inspired by https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm#Path_reconstruction
-
-	Demo taken from wikipedia, results in correct path being chosen.
-
-	world_t world;
-
-	world.intersections = std::vector<Intersection>(4);
-	world.streets = std::vector<Street>(5);
-
-	world.intersections[0].id = 0;
-	world.intersections[1].id = 1;
-	world.intersections[2].id = 2;
-	world.intersections[3].id = 3;
-
-	world.streets[0].start = 0;
-	world.streets[0].end = 2;
-	world.streets[0].length = -2.0f;
-
-	world.streets[1].start = 2;
-	world.streets[1].end = 3;
-	world.streets[1].length = 2.0f;
-
-	world.streets[2].start = 3;
-	world.streets[2].end = 1;
-	world.streets[2].length = -1.0f;
-
-	world.streets[3].start = 1;
-	world.streets[3].end = 0;
-	world.streets[3].length = 4.0f;
-
-	world.streets[4].start = 1;
-	world.streets[4].end = 2;
-	world.streets[4].length = 3.0f;
-
-	SPT spt = calculateShortestPathTree(&world);
-	std::queue<int32_t> path = retrievePath(spt, 3, 2);
-
-	while (!path.empty()) {
-		int32_t step = path.front();
-		std::cout << "Step: " << step << std::endl;
-		path.pop();
-	}
-*/
 
 typedef struct SPT{
     int* array;
@@ -79,8 +35,29 @@ spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTy
  */
 Path retrievePath(spt_t* spt, const int &start, const int &end);
 
+/**
+
+Calculates the distance of an actor from its path.
+@param world A pointer to the world object.
+@param actor A pointer to the actor object.
+@return The distance of the actor from its path.
+*/
 float distanceFromPath(const world_t* world, actor_t* actor);
 
+/**
+
+Calculates the path of an actor in the world.
+@param actor A pointer to the actor object.
+@param world A pointer to the world object.
+@return A vector of strings representing the IDs of the streets in the actor's path.
+*/
 std::vector<std::string> getPath(actor_t* actor, const world_t* world);
 
+/**
+
+Calculates the path of an actor on a single street.
+@param actor A pointer to the actor object.
+@param world A pointer to the world object.
+@return A vector of strings representing the IDs of the streets in the actor's path.
+*/
 std::vector<std::string> StreetPath(actor_t* actor, const world_t* world);

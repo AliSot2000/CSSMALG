@@ -1,3 +1,15 @@
+/*
+This file contains definitions for the various types used in the simulation.
+
+Types:
+
+actor_t: Represents an actor(vehicle) in the simulation.
+StreetTypes : Enum representing the type of street(OnlyBike, OnlyCar, Both).
+street_t : Represents a street in the simulation.
+intersection_t : Represents an intersection in the simulation.
+World : Represents the entire simulation world.
+*/
+
 #pragma once
 
 #include <cstdint>

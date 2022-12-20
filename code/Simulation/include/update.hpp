@@ -16,54 +16,24 @@ typedef struct FrontVehicles{
 typedef std::vector<Actor*>::iterator TrafficIterator;
 
 /*
- * Finds all vehicles which are in between minDistance and maxDistance
- *
- * @param street Selected street in which vehicle is stored
- * @param vehicle Index of vehicle in street->traffic
- * @param minDistance discards all vehicles which have a distance less than minDistance
- * @param maxDistance discards all vehicles with a distance larger than maxDistance
- * @param start Pointer where first vehicle will be stored
- * @param end Pointer where first vehicle which does not satisfy conditions is stored
- * Street is not allowed to be constant here, because we will use these iterators to sort the algorithm later
-*/
-//void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end);
-
-/*
- * Finds maximum distance a car can drive forward in given street.
- *
- * @param street Selected street in which vehicle is stored
- * @param vehicle Index of vehicle in street->traffic
- * @param timeDelta How much time has elapsed since last frame. In seconds.
- *
- * @param trafficStart Iterator to first vehicle which is in driving distance
- * @param trafficEnd Iterator to last vehicle which is in driving distance
- *
- * @returns Returns a float containing the maximum distance a car is allowed to drive forward.
- *
- * ----------------------------------------------------------------------------------------------
- *
- * --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --
- * std::vector{[A5]              [A4]     [A2]     [A1]              [A0]}
- * ----------------------------------------------------------------------------------------------
- * | Max Distance
- * ---------------------------> | Min Distance = actor->distanceToIntersection - distance_traveled
- * IT-END            IT-START
-*/
-//float maxSpaceInFrontOfVehicle(const Street& street, const Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
-
-/*
  * Locates the vehicle in front, in front and to the immediate right and in front and to the immediate left
  * of the selected actor.
  *
  * @param street Selected street in which vehicle is stored
- * @param vehicle Pointer to vehicle in street->traffic
+ * @param actor Pointer to vehicle in street->traffic
+ * @param trafficStart start of Traffic
+ * @param trafficEnd End pointer of traffic
  *
  * @returns Returns a FrontVehicle struct containing the front vehicle, the front vehicle to the left and the front vehicle to the right.
-
 */
 FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd);
+
 /*
  * Gives the three vehicles which could collide with our actor
+ *
+ * @param street Street to query on
+ * @param actor Actor for which collisions are queried
+ * @param start Start of traffic
  */
 FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, const TrafficIterator start);
 /*
@@ -76,28 +46,6 @@ FrontVehicles GetCollisionVehicles(const Street* street, const Actor* actor, con
  * @returns Pointer to Vehicle in Front
  */
 Actor* moveToOptimalLane(Street* street, Actor* actor);
-/*
- * Chooses the optimal lane for a car and returns the maximal distance it is allowed to drive forward.
- * Bikes will not switch  lanes, cars will go left and right
- *
- * @param street Selected street in which vehicle is stored
- * @param vehicle Index of vehicle in street->traffic
- * @param timeDelta How much time has elapsed since last frame. In seconds.
- *
- * @param trafficStart Iterator to first vehicle which is in driving distance
- * @param trafficEnd Iterator to last vehicle which is in driving distance
- *
- * @returns Returns a float containing the maximum distance a car is allowed to drive forward.
-*/
-// float choseLaneGetMaxDrivingDistance(const Street& street, Actor* actor, const float& timeDelta, const TrafficIterator& trafficStart, const TrafficIterator& trafficEnd);
-
-/*
- * Sorts vehicles in a street based on their distance to the next intersection.
- *
- * @param start Where to begin sorting
- * @param end Where to stop sorting
-*/
-//void sortStreet(TrafficIterator& start, TrafficIterator& end);
 
 /*
  * Updates all vehicles in all streets
@@ -154,19 +102,56 @@ float dynamicBrakingDistance(const Actor* actor, const float &delta_velocity, co
 
 /*
  * If no car could move
+ *
+ * @param world Pointer to world object
+ * @param current_time Timestamp of current time
 */
 void resolveDeadLocks(world_t* world, const float current_time);
 
+/**
+
+Updates the actors in a world in a single-street stride pattern.
+@param world A pointer to the world object.
+@param timeDelta The time delta for the update.
+@param stride The stride for the update.
+@param offset The offset for the update.
+@return True if the update was successful, false otherwise.
+*/
 bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int stride, const int offset);
 
+/**
+
+Updates the actors in a world in a single-intersection stride pattern.
+@param world A pointer to the world object.
+@param timeDelta The time delta for the update.
+@param stupidIntersections A flag indicating whether to use the "stupid intersections" update method.
+@param current_time The current time of the simulation.
+@param stride The stride for the update.
+@param offset The offset for the update.
+*/
 void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool stupidIntersections, const float current_time, const int stride, const int offset);
 
+/*
+    Checks if streets are empty
+*/
 bool emptynessOfStreets(world_t* world);
 
+/*
+    Teleports the actor 
+*/
 void teleportActor(Actor* actor, Street* target, int distanceToRight);
 
+/*
+    Helper funciton to update the data
+*/
 void updateData(world_t* world);
 
+/**
+
+Inserts actors into intersections in a single-intersection stride pattern.
+@param world A pointer to the world object.
+@param current_time The current time of the simulation.
+@param stride The stride for the update.
+@param offset The offset for the update.
+*/
 void singleIntersectionStrideUpdateInsert(world_t* world, const float current_time, const int stride, const int offset);
-
-void updateData(world_t* world);

@@ -1,6 +1,3 @@
-//
-// Created by alisot2000 on 02.12.22.
-//
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -22,8 +19,6 @@ static unsigned long long
 #define CNG ( z=6906969069LL*z+1234567 )
 #define KISS (MWC+XSH+CNG)
 
-
-// TODO Parallel actor generation is generating a segfault when inserting the actors into the intersections.
 int randint(int min, int max) {
     return static_cast<int>(KISS % (max - min + 1) + min);
 }

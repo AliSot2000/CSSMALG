@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <cmath>
 #include <cassert>
@@ -7,23 +6,6 @@
 
 #include "update.hpp"
 #include <omp.h>
-
-//void trafficInDrivingDistance(Street* street, const float& minDistance, const float& maxDistance, TrafficIterator* start, TrafficIterator* end) {
-//
-//	auto& traffic = street->traffic;
-//
-//	// Find all elements in front of vehicle which are in range of a collision if the vehicle would move forward
-//	// Lower bound binary search (traffic must always be sorted!)
-//	*start = std::lower_bound(traffic.begin(), traffic.end(), minDistance,
-//		[](const Actor* a, const float& b) {
-//			return a->distanceToIntersection + a->length + MIN_DISTANCE_BETWEEN_VEHICLES <= b;
-//	});
-//
-//	*end = std::upper_bound(traffic.begin(), traffic.end(), maxDistance,
-//		[](const float& b, const Actor* a) {
-//			return a->distanceToIntersection > b;
-//	});
-//}
 
 FrontVehicles GetFrontVehicles(const Street* street, const Actor* actor, const TrafficIterator& trafficStart, TrafficIterator& trafficEnd) {
     FrontVehicles f;
@@ -165,20 +147,6 @@ Actor* moveToOptimalLane(Street* street, Actor* actor) {
     actor->distanceToRight = distanceToRight;
     return OptimalFrontActor;
 }
-/*void sortStreet(TrafficIterator& start, TrafficIterator& end) {
-    std::sort(start, end, [](const Actor* a, const Actor* b) {
-        // Lexicographical order, starting with distanceToIntersection and then distanceToRight
-        if (a->distanceToIntersection == b->distanceToIntersection) {
-            // this if statement make sure that no vehicles have the same ordering
-            if (a->distanceToRight == b->distanceToRight) {
-                //throw std::runtime_error("Two Vehicles with identical position");
-                return a < b;
-            }
-            return a->distanceToRight < b->distanceToRight;
-        }
-        return a->distanceToIntersection < b->distanceToIntersection;
-    });
-}*/
 
 void teleportActor(Actor* actor, Street* target, int distanceToRight){
     actor->tempDistanceToRight = distanceToRight;
@@ -239,7 +207,6 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
 
 
     // Keep in mind which lanes are available.
-    // bool lanes[target->width / LANE_WIDTH];
     std::vector<bool> lanes(target->width / LANE_WIDTH);
     int avlLanes = static_cast<int>(target->width) / LANE_WIDTH;
     for (int i = 0; i < target->width / LANE_WIDTH; i++) {
@@ -273,11 +240,8 @@ bool tryInsertInNextStreet(Intersection* intersection, Actor* actor, World* worl
             avlLanes--;
         }
     }
-    // std::cerr << "I'm fucking stupid since I was not able to foresee this case happening" << std::endl;
-    // This occurs when there are exactly as many vehicles as there are lanes. We don't get to the avgLanes == 0,
-    // therefore, we don't return the false and exit the for loop. Then we end up here.
-    return false;
 
+    return false;
 }
 
 void updateIntersectionPhase(Intersection* intersection, float timeDelta, bool stupidIntersections) {
@@ -501,13 +465,7 @@ void updateData(world_t* world){
 bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int stride, const int offset) {
     bool actorMoved = false;
 
-    // Move so no thread is colliding with another thread.
-//    std::vector<Street>::iterator start_iter = world->streets.begin();
-//    std::advance(start_iter, offset);
-
-//    #pragma omp parallel for private(empty, actorMoved)
     for (int32_t x = offset; x < world->streets.size(); x+=stride){
-//    for (auto& street : world->streets) {
         Street *street = world->StreetPtr.at(x);
         int bikes = 0;
         int cars = 0;
@@ -522,14 +480,8 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
             }
 
 			const float distance = actor->current_velocity * timeDelta;
-//			const float wantedDistanceToIntersection = std::max(0.0f, actor->distanceToIntersection - distance);
-//			const float maxDistance = actor->distanceToIntersection + actor->length + MIN_DISTANCE_BETWEEN_VEHICLES;
-
-//			TrafficIterator start;
-//			TrafficIterator end;
 
 			// Find all traffic which could be colliding with vehicle
-//			trafficInDrivingDistance(street, wantedDistanceToIntersection, maxDistance, &start, &end);
             Actor* frontVehicle = moveToOptimalLane(street, actor);
 
             float maxDrivableDistance = actor->distanceToIntersection;
@@ -555,16 +507,9 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
             // Clamping distance
             if (actor->distanceToIntersection < 0.01f){actor->distanceToIntersection = 0;}
 
-            // assert(std::isnan(actor->distanceToIntersection) == false && "Distance to Intersection is nan");
-            // assert(std::isinf(actor->distanceToIntersection) == false && "Distance to Intersection is inf");
-            // assert(actor->distanceToIntersection >= -10.0f && "Distance to intersection needs to be >= -10.0f");
-
             actor->current_velocity = std::min(std::max(actor->current_acceleration * timeDelta + actor->current_velocity, 0.0f),
                                                actor->max_velocity);
             if (actor->current_velocity < 0.01f){actor->current_velocity = 0;}
-            // assert(std::isnan(actor->current_velocity) == false && "Current Velocity is not nan");
-            // assert(std::isinf(actor->current_velocity) == false && "Current Velocity is not inf");
-
 
             // Only update the speed with formula if the vehicle is not at the end of the street (div by zero error)
             // and if the distance to intersection was not updated beforehand to 0.
@@ -593,7 +538,6 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 actor->current_velocity = 0.0f;
             }
             // Will make sure traffic is still sorted
-//			sortStreet(start, end);
             std::sort(street->traffic.begin(), street->traffic.end(), [](const Actor* a, const Actor* b) {
                 // Lexicographical order, starting with distanceToIntersection and then distanceToRight
                 if (a->distanceToIntersection == b->distanceToIntersection) {
@@ -605,6 +549,7 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 }
                 return a->distanceToIntersection < b->distanceToIntersection;
             });
+
             assert(std::is_sorted(street->traffic.begin(), street->traffic.end(), [](const Actor* a, const Actor* b) {
                 // Lexicographical order, starting with distanceToIntersection and then distanceToRight
                 if (a->distanceToIntersection == b->distanceToIntersection) {
@@ -617,11 +562,6 @@ bool singleStreetStrideUpdate(world_t* world, const float timeDelta, const int s
                 return a->distanceToIntersection < b->distanceToIntersection;
             }) && "Street is sorted");
 
-            // assert(std::isnan(actor->current_acceleration) == false && "Acceleration is not nan");
-            // assert(std::isinf(actor->current_acceleration) == false && "Acceleration is not inf");
-//            if (actor->distanceToIntersection <= 1.0f && actor->distanceToIntersection > 0.0f) {
-//                assert(actor->current_velocity >= 0.01f && "Acceleration needs to be >= -10.0f");
-//            }
             actor->distanceToFront = maxDrivableDistance;
         }
         street->density_accumulate_bike += static_cast<float>(bikes) / street->length;
