@@ -2,7 +2,7 @@
 
 #include <map>
 #include "actors.hpp"
-#define USE_CUDA
+#define USE_CUDA // Use Cuda for Floyd Warschall
 //#define ALTFW
 // The option alt fw uses a different weight for  the edges in the graph during the floyd warshall computation.
 // This was done to debug an error. It might also be useful for testing different configurations.
@@ -14,25 +14,25 @@ typedef struct SPT {
     int size;
 } spt_t;
 
-/*
- * Calculates the shortest path tree for the given world.
- *
- * @param world The world to calculate the shortest path tree for.
- * @param include The types of streets to include in the calculation.
- *
- * @return The shortest path tree.
- */
+/**
+Calculates the shortest path tree for the given world.
+
+@param world The world to calculate the shortest path tree for.
+@param include The types of streets to include in the calculation.
+
+@return The shortest path tree.
+*/
 spt_t calculateShortestPathTree(const world_t* world, const std::vector<StreetTypes>& include);
 
-/*
- * Retrieves the path from start to end.
- *
- * @param spt The shortest path tree.
- * @param start The start of the path, string_id from the web_interface.
- * @param end The end of the path, string_id from the web_interface.
- *
- * @return The path from start to end.
- */
+/**
+Retrieves the path from start to end.
+
+@param spt The shortest path tree.
+@param start The start of the path, string_id from the web_interface.
+@param end The end of the path, string_id from the web_interface.
+
+@return The path from start to end.
+*/
 Path retrievePath(spt_t* spt, const int &start, const int &end);
 
 /**
@@ -46,7 +46,7 @@ float distanceFromPath(const world_t* world, actor_t* actor);
 
 /**
 
-Calculates the path of an actor in the world.
+Calculates the intersection path of an actor in the world.
 @param actor A pointer to the actor object.
 @param world A pointer to the world object.
 @return A vector of strings representing the IDs of the streets in the actor's path.
@@ -55,7 +55,7 @@ std::vector<std::string> getPath(actor_t* actor, const world_t* world);
 
 /**
 
-Calculates the path of an actor on a single street.
+Calculates the street path of afn actor in the world.
 @param actor A pointer to the actor object.
 @param world A pointer to the world object.
 @return A vector of strings representing the IDs of the streets in the actor's path.
