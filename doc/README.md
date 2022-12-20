@@ -1,5 +1,5 @@
 # Doc Folder
 
-Your project report goes here. It is mandatory to use one of the templates (latex or word) that you find herein.
+The `Report` directory contains the LaTeX files of the project report. 
 
-Save the final report as report.pdf
+The PDF `report.pdf` contains the finished report in PDF format including the declaration of originality and the agreement for free-download.
