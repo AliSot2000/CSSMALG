@@ -4,7 +4,7 @@
 
 #define MIN_DISTANCE_BETWEEN_VEHICLES 1.0f // There should be at least half a meter distance between vehicles
 #define LANE_WIDTH 2 // A lane is per default 2 meters
-#define DISTANCE_TO_CROSSING_FOR_TELEPORT 0.5f
+#define DISTANCE_TO_CROSSING_FOR_TELEPORT 0.5f // Meters after which an agent may be teleported
 #define SAFETY_TIME_HEADWAY 0.5f // 1.6 seconds headway
 
 typedef struct FrontVehicles {
