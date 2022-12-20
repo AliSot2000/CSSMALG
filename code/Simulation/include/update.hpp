@@ -7,7 +7,7 @@
 #define DISTANCE_TO_CROSSING_FOR_TELEPORT 0.5f
 #define SAFETY_TIME_HEADWAY 0.5f // 1.6 seconds headway
 
-typedef struct FrontVehicles{
+typedef struct FrontVehicles {
     Actor* frontVehicle = nullptr;
     Actor* frontVehicleLeft = nullptr;
     Actor* frontVehicleRight = nullptr;
@@ -137,7 +137,7 @@ void singleIntersectionStrideUpdate(world_t* world, const float timeDelta, bool 
 bool emptynessOfStreets(world_t* world);
 
 /*
-    Teleports the actor 
+    Teleports the actor
 */
 void teleportActor(Actor* actor, Street* target, int distanceToRight);
 

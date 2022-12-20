@@ -6,16 +6,18 @@
 #include <iostream>
 
 static const std::string base64_chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz"
-        "0123456789+/";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz"
+    "0123456789+/";
 
 
-static inline bool is_base64(BYTE c) {
+static inline bool is_base64(BYTE c)
+{
     return (isalnum(c) || (c == '+') || (c == '/'));
 }
 
-std::string base64_encode(BYTE const* buf, unsigned int bufLen) {
+std::string base64_encode(BYTE const* buf, unsigned int bufLen)
+{
     std::string ret;
     int i = 0;
     int j = 0;
@@ -36,8 +38,7 @@ std::string base64_encode(BYTE const* buf, unsigned int bufLen) {
         }
     }
 
-    if (i)
-    {
+    if (i) {
         for(j = i; j < 3; j++)
             char_array_3[j] = '\0';
 
@@ -56,7 +57,8 @@ std::string base64_encode(BYTE const* buf, unsigned int bufLen) {
     return ret;
 }
 
-void Large_base64_encode(BYTE const* buf, unsigned int bufLen, char* output, unsigned int outputLen) {
+void Large_base64_encode(BYTE const* buf, unsigned int bufLen, char* output, unsigned int outputLen)
+{
     char* ret = new char[outputLen * 3 + 4];
 //    std::string ret;
     int i = 0;
@@ -78,8 +80,7 @@ void Large_base64_encode(BYTE const* buf, unsigned int bufLen, char* output, uns
         }
     }
 
-    if (i)
-    {
+    if (i) {
         for(j = i; j < 3; j++)
             char_array_3[j] = '\0';
 
@@ -99,7 +100,8 @@ void Large_base64_encode(BYTE const* buf, unsigned int bufLen, char* output, uns
 //    return ret;
 }
 
-std::vector<BYTE> base64_decode(std::string const& encoded_string) {
+std::vector<BYTE> base64_decode(std::string const& encoded_string)
+{
     int in_len = encoded_string.size();
     int i = 0;
     int j = 0;
@@ -108,7 +110,8 @@ std::vector<BYTE> base64_decode(std::string const& encoded_string) {
     std::vector<BYTE> ret;
 
     while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
-        char_array_4[i++] = encoded_string[in_]; in_++;
+        char_array_4[i++] = encoded_string[in_];
+        in_++;
         if (i ==4) {
             for (i = 0; i <4; i++)
                 char_array_4[i] = base64_chars.find(char_array_4[i]);
