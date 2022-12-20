@@ -3,11 +3,30 @@ import argparse
 
 
 def generate_dirs(root, dirs):
+    """
+    Generate a directories from a root dir and a list of suffixes. If the directory already exists, it will be skipped.
+    Function is used to create the output directories for the simulations.
+
+
+    :param root: Where the output is to be stored
+    :param dirs: All the directories to create in the output directory
+    :return:
+    """
     for d in dirs:
         os.makedirs(os.path.join(root, d), exist_ok=True)
 
 
-def recursive_list(root_path: str, prefix: str):
+def task_list(root_path: str, prefix: str):
+    """
+    Lists the files in a directory. Since we had multiple different sizes of simulations of the same map,
+    the prefix allowed us to select only one of the files to generate the batch scripts  from.
+    For exapmle you had full_sim, small_sim, and tiny_sim and you only wanted to create scripts for full_sim, you would
+    pass in "full_sim" as the prefix.
+
+    :param root_path: directory to start listing from
+    :param prefix: prefix to only include files matching it.
+    :return:
+    """
     results = []
     for files in os.listdir(root_path):
         if os.path.isfile(os.path.join(root_path, files)):
@@ -19,7 +38,28 @@ def recursive_list(root_path: str, prefix: str):
     return results
 
 
-def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int, output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str, traffic_sig: bool):
+def write_bash_file(executable: str, map_in: str, car_in: str, bike_in: str, agents_in: str, stats_interval: int,
+                    output_dir: str, runtime: float, delta: float, script_dir: str, bash_file_name: str,
+                    traffic_sig: bool):
+    """
+    Function to write the bash file for the execution of a single simulation. These batch files are then submitted to
+    the cluster with sbatch.
+
+    :param executable: Path to executable i.e. path/to/Simulate
+    :param map_in: Path to map i.e. path/to/map.tsim
+    :param car_in: Path to precomputed car shortest path tree i.e. path/to/car.spt
+    :param bike_in: Path to precomputed bike shortest path tree i.e. path/to/bike.spt
+    :param agents_in: Path to the precomputed random agents i.e. path/to/agents.json
+    :param stats_interval: Interval at which to log the statistics to a json file in seconds simulation time. i.e. 600
+    :param output_dir: Directory to store the stats in i.e. path/to/output
+    :param runtime: Number of seconds to run the simulation time for i.e. 86400 so a day.
+    :param delta: Time increments in which the simulation is calculated. We used 0.25s
+    :param script_dir: Directory to output the scripts to i.e. path/to/scripts
+    :param bash_file_name: The name to give to this new file. i.e. "0percentBikes_full_sim-1.sh"
+    :param traffic_sig: Weather or not the simulation should use traffic signals. i.e. True
+    :return:
+    """
+
     tsig = 1 if traffic_sig else 0
     file = f"""
 #!/bin/bash
@@ -33,6 +73,13 @@ echo "Computation of {agents_in} file finished"
 
 
 def write_enqueue_file(script_dir: str, file_list: list, slurm_command: str):
+    """
+    Writes a script to enqueue the previously written scripts in slurm.
+    :param script_dir:
+    :param file_list:
+    :param slurm_command:
+    :return:
+    """
     if os.path.exists(os.path.join(script_dir, "enqueue.sh")):
         os.remove(os.path.join(script_dir, "enqueue.sh"))
         print("Removed old enqueue.sh file")
@@ -49,6 +96,7 @@ def write_enqueue_file(script_dir: str, file_list: list, slurm_command: str):
 
 
 if __name__ == "__main__":
+    # Argparsing to make the it easyer for this script to interface with bash scripts.
     parser = argparse.ArgumentParser(description='Generate batch files for simulation. This script is '
                                                  'intended to run with SLURM.')
     parser.add_argument('-e', '--executable', type=str, help='Path to the executable', required=True)
@@ -75,23 +123,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # executable_path: str = "/home/asotoude/CSSMALG/code/Simulation/build/Simulate"
-    #
-    # map_path: str = "/home/asotoude/FINAL_MAPS/fullMapExport.tsim"
-    # bike_path: str = "/home/asotoude/PrecomputedMaps/fullBikeTree.spt"
-    # car_path: str = "/home/asotoude/PrecomputedMaps/fullCarTree.spt"
-    #
-    # agentsDir: str = "/home/asotoude/input-large/"
-    # agentsPrefix: str = "full_sim_"
-    #
-    # simOutDir: str = "/home/asotoude/LARGE_TRAFFIC_SIG/"
-    # batchFileDir: str = "/home/asotoude/CSSMALG_BATCH"
-    #
-    # stats_interval: int = 900
-    # runtime = 100000
-    # delta = 0.25
-    # slurm_command = "sbatch -n 16 --wrap="
-
     executable_path: str = args.executable
 
     map_path: str = args.map
@@ -112,7 +143,7 @@ if __name__ == "__main__":
     traffic_sig: bool = args.trafficSignal
 
     # get all the agents
-    agentsFiles = recursive_list(agentsDir, agentsPrefix)
+    agentsFiles = task_list(agentsDir, agentsPrefix)
     agent_dirs = []
     print("Found {} agents".format(len(agentsFiles)))
 
