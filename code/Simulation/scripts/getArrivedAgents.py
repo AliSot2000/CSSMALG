@@ -16,6 +16,14 @@ class Road:
 
 
 def fill(base: str, length: int, fill_char: str = " "):
+    """
+    Due to a lack of research, I decided to write a quick function which emulates std::setw and std::fill
+
+    :param base: thing you want to write
+    :param length: length to fill up to
+    :param fill_char: character to use to fill
+    :return:
+    """
     if len(base) >= length:
         return base
 
@@ -51,7 +59,7 @@ def print_stats(sim_out: dict):
 
 def build_new_imput(allowed: list, all_agents: dict) -> dict:
     """
-    Builld new input by selecting the agents from the input file.
+    Build new input by selecting the agents from the input file.
 
     :param allowed: list of allowed agents
     :param all_agents: all agents from the previous file
@@ -145,10 +153,12 @@ def get_stuck_roads(sim_out: dict, number_of_roads: int = 20):
             waiting_streets[agent["road"]].agents += 1
 
         else:
+            # update the actors which are on streets and stuck
             if traffic_streets.get(agent["road"]) is None:
                 traffic_streets[agent["road"]] = Road(agent["road"])
             traffic_streets[agent["road"]].agents += 1
 
+        # update the actors overall which are stuck
         if overall_streets.get(agent["road"]) is None:
             overall_streets[agent["road"]] = Road(agent["road"])
         overall_streets[agent["road"]].agents += 1
@@ -166,6 +176,7 @@ def get_stuck_roads(sim_out: dict, number_of_roads: int = 20):
     print(header)
     print(len(header) * "-")
 
+    # printing statistics on roads with the most stuck agents
     for i in range(number_of_roads):
         waiting = ""
         traffic = ""
@@ -185,6 +196,7 @@ def get_stuck_roads(sim_out: dict, number_of_roads: int = 20):
 
 
 if __name__ == "__main__":
+    # arg parsing to make interfacing with bash easier
     parser = argparse.ArgumentParser(description="Give a resulting agents.json file and a agents input json file to "
                                                  "create a new agents file containing only the ones that arrived and"
                                                  "or only the ones that didn't arrive.")
@@ -215,12 +227,14 @@ if __name__ == "__main__":
         arrived_agents, stuck_agents = split_arrived_stuck(data)
         initial_data = load_json(sim_in)
 
+        # writing the arrived agents if a path was provided
         if arrived is not None:
             print("Generating Arrived Agents")
             only_arrived = build_new_imput(arrived_agents, initial_data)
             print("Writing Arrived Agents")
             write_json(arrived, only_arrived)
 
+        # writing the stuck agents if a path was provided
         if stuck is not None:
             print("Generating Stuck Agents")
             only_stuck = build_new_imput(stuck_agents, initial_data)
