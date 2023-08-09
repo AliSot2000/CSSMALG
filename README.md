@@ -3,6 +3,9 @@
 > * Group participants names: Nils Egger, Sophia Herrmann, Jan Hochstrasser, Jannick Schröer, Alexander Sotoudeh
 > * Project Title: The Influence of Cyclists on Traffic
 
+## State of Project
+A few miscellaneous files were added later on to improve reproducibility. The state of the project at the time of submission is marked with the tag `final_submission`.
+
 ## General Introduction
 
 Traffic Jams and road congestions are one of the most prominent problems in travel. Congestions lead to higher levels of harmful emissions, 
